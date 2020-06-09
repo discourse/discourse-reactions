@@ -1,0 +1,4 @@
+en:
+  site_settings:
+    discourse_reactions_enabled: "Enable the discourse-reactions plugin."
+    discourse_reactions_test_topic_id: "Temporary setting to add the plugin only on one topic."

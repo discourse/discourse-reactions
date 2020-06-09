@@ -1,0 +1,19 @@
+discourse_reactions:
+  discourse_reactions_enabled:
+    default: true
+    client: true
+  discourse_reactions_test_topic_id:
+    default: ""
+    client: true
+  discourse_reactions_like_icon:
+    client: true
+    type: enum
+    default: "heart"
+    choices:
+      - heart
+      - star
+      - thumbs-up
+  discourse_reactions_enabled_reactions:
+    type: list
+    default: laughing|open_mouth|cry|angry|thumbsup|thumbsdown
+    client: true

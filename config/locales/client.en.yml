@@ -1,0 +1,12 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Reactions"
+  js:
+    discourse_reactions:
+      can_react: react to this post
+      has_react: you've reacted to this post
+      discourse_reactions_list:
+        users_reacted: "%{count} user(s)"
