@@ -59,47 +59,22 @@ export default createWidget("discourse-reactions-actions", {
   expandReactionsPicker() {
     this._laterCollapseStatePanel && cancel(this._laterCollapseStatePanel);
     this.state.statePanelExpanded = false;
-
     this.state.reactionsPickerExpanded = true;
-
     this.scheduleRerender();
-
-    next(() => {
-      const button = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id} .btn-reaction`
-      );
-      const picker = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id} .discourse-reactions-picker`
-      );
-
-      picker.classList.add("is-expanded");
-      if (this._pickerPopper) return;
-      this._pickerPopper = this._applyPopper(button, picker);
-    });
+    this._setupPopper(this.attrs.post.id, "_popperPicker", [
+      (".btn-reaction", ".discourse-reactions-picker")
+    ]);
   },
 
   expandStatePanel() {
     this._laterCollapsePicker && cancel(this._laterCollapsePicker);
     this.state.reactionsPickerExpanded = false;
-
     this.state.statePanelExpanded = true;
-
     this.scheduleRerender();
-
-    next(() => {
-      const button = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id} .discourse-reactions-counter`
-      );
-      const panel = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id} .discourse-reactions-state-panel`
-      );
-
-      panel.classList.add("is-expanded");
-      if (this._panelPopper) return;
-
-      // eslint-disable-next-line
-      this._panelPopper = this._pickerPopper = this._applyPopper(button, panel);
-    });
+    this._setupPopper(this.attrs.post.id, "_popperStatePanel", [
+      ".discourse-reactions-counter",
+      ".discourse-state-panel"
+    ]);
   },
 
   scheduleCollapseStatePanel(event, force = false) {
@@ -236,6 +211,21 @@ export default createWidget("discourse-reactions-actions", {
       event.clientY >= bounds.top &&
       event.clientY <= bounds.bottom
     );
+  },
+
+  _setupPopper(postId, popperVariable, selectors) {
+    next(() => {
+      const trigger = document.querySelector(
+        `#discourse-reactions-actions-${postId} ${selectors[0]}`
+      );
+      const popper = document.querySelector(
+        `#discourse-reactions-actions-${postId} ${selectors[1]}`
+      );
+
+      popper.classList.add("is-expanded");
+      if (this[popperVariable]) return;
+      this[popperVariable] = this._applyPopper(trigger, popper);
+    });
   },
 
   _applyPopper(button, picker) {
