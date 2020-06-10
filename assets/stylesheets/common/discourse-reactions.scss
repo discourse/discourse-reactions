@@ -166,7 +166,7 @@
       color: $love;
     }
 
-    &:hover {
+    .double-button:hover {
       background: $primary-low;
 
       .d-icon {
@@ -175,7 +175,7 @@
     }
   }
 
-  &:hover {
+  .double-button:hover {
     background: $love-low;
 
     .d-icon {
