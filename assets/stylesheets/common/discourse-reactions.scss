@@ -224,6 +224,7 @@
     outline: none;
     padding-right: 0 !important;
     background: none !important;
+    user-select: none;
 
     &:hover {
       color: $primary !important;
@@ -233,4 +234,8 @@
 
 nav.post-controls .actions {
   display: inline-flex;
+
+  .like-count {
+    user-select: none;
+  }
 }
