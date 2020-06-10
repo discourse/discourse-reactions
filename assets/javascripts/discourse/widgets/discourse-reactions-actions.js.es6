@@ -73,7 +73,7 @@ export default createWidget("discourse-reactions-actions", {
     this.scheduleRerender();
     this._setupPopper(this.attrs.post.id, "_popperStatePanel", [
       ".discourse-reactions-counter",
-      ".discourse-state-panel"
+      ".discourse-reactions-state-panel"
     ]);
   },
 
@@ -223,6 +223,7 @@ export default createWidget("discourse-reactions-actions", {
       );
 
       popper.classList.add("is-expanded");
+
       if (this[popperVariable]) return;
       this[popperVariable] = this._applyPopper(trigger, popper);
     });
