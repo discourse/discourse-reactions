@@ -79,7 +79,7 @@
   visibility: hidden;
   display: none;
   padding-bottom: 15px;
-  z-index: z("dropdown");
+  z-index: z("usercard") - 1;
   position: relative;
 
   &.is-expanded {
