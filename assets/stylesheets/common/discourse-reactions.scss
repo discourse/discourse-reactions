@@ -224,8 +224,6 @@
     outline: none;
     padding-right: 0 !important;
     background: none !important;
-    user-select: none;
-    -webkit-touch-callout: none;
 
     &:hover {
       color: $primary !important;
@@ -236,8 +234,9 @@
 nav.post-controls .actions {
   display: inline-flex;
 
-  .like-count {
-    -webkit-touch-callout: none;
-    user-select: none;
+  * {
+    -webkit-touch-callout: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
   }
 }
