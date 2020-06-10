@@ -14,6 +14,22 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
+  toggleReactions(event) {
+    if (this.state.reactionsPickerExpanded) {
+      this.scheduleCollapseReactionsPicker(event, true);
+    } else {
+      this.expandReactionsPicker(event);
+    }
+  },
+
+  toggleStatePanel(event) {
+    if (this.state.statePanelExpanded) {
+      this.scheduleCollapseStatePanel(event, true);
+    } else {
+      this.expandStatePanel(event);
+    }
+  },
+
   toggleReaction(params) {
     bootbox.alert(`TOGGLE ${params.reaction}`);
   },
@@ -30,9 +46,13 @@ export default createWidget("discourse-reactions-actions", {
 
   buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
-  clickOutside() {
+  clickOutside(event) {
     if (this.state.reactionsPickerExpanded) {
-      this.collapseReactionsPicker();
+      this.collapseReactionsPicker(event, true);
+    }
+
+    if (this.state.statePanelExpanded) {
+      this.collapseStatePanel(event, true);
     }
   },
 
@@ -82,24 +102,32 @@ export default createWidget("discourse-reactions-actions", {
     });
   },
 
-  scheduleCollapseStatePanel(event) {
-    this._laterCollapseStatePanel && cancel(this._laterCollapseStatePanel);
+  scheduleCollapseStatePanel(event, force = false) {
+    if (this.mobileView) {
+      this.collapseStatePanel(event, force);
+    } else {
+      this._laterCollapseStatePanel && cancel(this._laterCollapseStatePanel);
 
-    this._laterCollapseStatePanel = later(
-      this,
-      this.collapseStatePanel,
-      event,
-      250
-    );
+      this._laterCollapseStatePanel = later(
+        this,
+        this.collapseStatePanel,
+        event,
+        force,
+        250
+      );
+    }
   },
 
-  collapseStatePanel(event) {
+  collapseStatePanel(event, force = false) {
     const container = document.getElementById(this.buildId(this.attrs));
     const panelContainer = container.querySelector(
       ".discourse-reactions-state-panel"
     );
 
-    if (!this._isCursorInsideContainers([container, panelContainer], event)) {
+    if (
+      force ||
+      !this._isCursorInsideContainers([container, panelContainer], event)
+    ) {
       this.state.statePanelExpanded = false;
 
       next(() => {
@@ -112,24 +140,32 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
-  scheduleCollapseReactionsPicker(event) {
-    this._laterCollapsePicker && cancel(this._laterCollapsePicker);
+  scheduleCollapseReactionsPicker(event, force = false) {
+    if (this.site.mobileView) {
+      this.collapseReactionsPicker(event, force);
+    } else {
+      this._laterCollapsePicker && cancel(this._laterCollapsePicker);
 
-    this._laterCollapsePicker = later(
-      this,
-      this.collapseReactionsPicker,
-      event,
-      250
-    );
+      this._laterCollapsePicker = later(
+        this,
+        this.collapseReactionsPicker,
+        event,
+        force,
+        250
+      );
+    }
   },
 
-  collapseReactionsPicker(event) {
+  collapseReactionsPicker(event, force = false) {
     const container = document.getElementById(this.buildId(this.attrs));
     const pickerContainer = container.querySelector(
       ".discourse-reactions-picker"
     );
 
-    if (!this._isCursorInsideContainers([container, pickerContainer], event)) {
+    if (
+      force ||
+      !this._isCursorInsideContainers([container, pickerContainer], event)
+    ) {
       this.state.reactionsPickerExpanded = false;
 
       next(() => {
@@ -139,22 +175,6 @@ export default createWidget("discourse-reactions-actions", {
 
         picker.classList.remove("is-expanded");
       });
-    }
-  },
-
-  toggleReactions(event) {
-    if (this.state.reactionsPickerExpanded) {
-      this.scheduleCollapseReactionsPicker(event);
-    } else {
-      this.expandReactionsPicker(event);
-    }
-  },
-
-  toggleStatePanel(event) {
-    if (this.state.statePanelExpanded) {
-      this.scheduleCollapseStatePanel(event);
-    } else {
-      this.expandStatePanel(event);
     }
   },
 
@@ -211,10 +231,10 @@ export default createWidget("discourse-reactions-actions", {
   _isCursorInsideContainer(event, bounds) {
     // slight inset to prevent false positives
     return (
-      event.clientX >= bounds.left + 5 &&
-      event.clientX <= bounds.right - 5 &&
+      event.clientX >= bounds.left &&
+      event.clientX <= bounds.right &&
       event.clientY >= bounds.top &&
-      event.clientY <= bounds.bottom - 5
+      event.clientY <= bounds.bottom
     );
   },
 
