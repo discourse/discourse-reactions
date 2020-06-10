@@ -19,7 +19,11 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleLike() {
-    bootbox.alert("TOGGLE LIKE");
+    if (this.state.reactionsPickerExpanded) {
+      this.collapseReactionsPicker();
+    } else {
+      bootbox.alert("TOGGLE LIKE");
+    }
   },
 
   buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
