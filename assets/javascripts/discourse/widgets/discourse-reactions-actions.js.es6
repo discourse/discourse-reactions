@@ -21,6 +21,8 @@ export default createWidget("discourse-reactions-actions", {
   toggleLike() {
     if (this.state.reactionsPickerExpanded) {
       this.collapseReactionsPicker();
+    } else if (this.state.statePanelExpanded) {
+      this.collapseStatePanel();
     } else {
       bootbox.alert("TOGGLE LIKE");
     }
