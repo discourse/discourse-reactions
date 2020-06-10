@@ -8,7 +8,7 @@ export default createWidget("discourse-reactions-list", {
   tagName: "div.discourse-reactions-list",
 
   html() {
-    // TODO should come for actions_summary
+    // TODO should come from actions_summary
     const count = 2;
     const reactions = ["thumbsup", "smile"];
 
