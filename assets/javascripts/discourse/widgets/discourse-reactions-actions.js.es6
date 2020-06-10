@@ -1,25 +1,16 @@
+import { h } from "virtual-dom";
 import I18n from "I18n";
 import { cancel, later, next } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 
 export default createWidget("discourse-reactions-actions", {
-  tagName: "div.discourse-reactions-actions.double-button",
+  tagName: "div.discourse-reactions-actions",
 
   buildKey: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
   buildClasses(attrs) {
     if (attrs.post.liked) {
       return "is-liked";
-    }
-  },
-
-  buildAttributes(attrs) {
-    // TODO should have a way to know if there's a reaction
-    // and not just a like
-    if (attrs.post.liked) {
-      return { title: I18n.t("discourse_reactions.has_react") };
-    } else {
-      return { title: I18n.t("discourse_reactions.can_react") };
     }
   },
 
@@ -182,9 +173,21 @@ export default createWidget("discourse-reactions-actions", {
       )
     );
 
-    items.push(this.attach("discourse-reactions-counter", attrs));
+    let title;
+    // TODO should have a way to know if there's a reaction
+    // and not just a like
+    if (attrs.post.liked) {
+      title = I18n.t("discourse_reactions.has_react");
+    } else {
+      title = I18n.t("discourse_reactions.can_react");
+    }
 
-    items.push(this.attach("discourse-reactions-reaction-button", attrs));
+    items.push(
+      h("div.double-button", { title }, [
+        this.attach("discourse-reactions-counter", attrs),
+        this.attach("discourse-reactions-reaction-button", attrs)
+      ])
+    );
 
     return items;
   },
