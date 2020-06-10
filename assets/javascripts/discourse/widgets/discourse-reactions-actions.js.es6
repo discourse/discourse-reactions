@@ -62,7 +62,8 @@ export default createWidget("discourse-reactions-actions", {
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      (".btn-reaction", ".discourse-reactions-picker")
+      ".btn-reaction",
+      ".discourse-reactions-picker"
     ]);
   },
 
