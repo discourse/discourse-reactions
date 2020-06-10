@@ -223,6 +223,7 @@
   .btn-reaction-counter {
     outline: none;
     background: none !important;
+    transition: none;
 
     &:hover {
       color: $primary !important;
