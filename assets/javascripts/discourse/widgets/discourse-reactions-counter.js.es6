@@ -18,6 +18,10 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
+  click(event) {
+    this.callWidgetFunction("toggleStatePanel", event);
+  },
+
   html(attrs) {
     if (attrs.post.likeCount) {
       return h(
