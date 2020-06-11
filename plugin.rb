@@ -27,8 +27,16 @@ after_initialize do
 
   [
     "../app/controllers/discourse_reactions_controller.rb",
-    "../app/controllers/discourse_reactions/custom_reactions_controller.rb"
+    "../app/controllers/discourse_reactions/custom_reactions_controller.rb",
+    "../app/models/discourse_reactions/reaction.rb",
+    "../lib/discourse_reactions/post_extension.rb",
+    "../lib/discourse_reactions/topic_view_extension.rb"
   ].each { |path| load File.expand_path(path, __FILE__) }
+
+  reloadable_patch do |plugin|
+    Post.class_eval { prepend DiscourseReactions::PostExtension }
+    TopicView.class_eval { prepend DiscourseReactions::TopicViewExtension }
+  end
 
   Discourse::Application.routes.append do
     mount ::DiscourseReactions::Engine, at: '/'
@@ -36,5 +44,18 @@ after_initialize do
 
   DiscourseReactions::Engine.routes.draw do
     get '/discourse-reactions/custom-reactions' => 'custom_reactions#index', constraints: { format: :json }
+  end
+
+  add_to_serializer(:post, :reactions) do
+    return false unless SiteSetting.discourse_reactions_enabled
+    object.reactions.each_with_object({}) do |reaction, result|
+      key = reaction.reaction_value
+      result[key] = {
+        id: key,
+        type: reaction.reaction_type.to_sym,
+        users: (result.dig(key, :users) || []) << { username: reaction.user.username, avatar_template: reaction.user.avatar_template },
+        count: result.dig(key, :count).to_i + 1
+      }
+    end.values
   end
 end
