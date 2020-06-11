@@ -48,6 +48,7 @@ function initializeDiscourseReactions(api) {
         siteSettings.discourse_reactions_enabled_reactions
           .split("|")
           .filter(Boolean)
+          .map(r => r.replace(/^\-/, ""))
       )
     )
   ];
