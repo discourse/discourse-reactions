@@ -1,4 +1,5 @@
 en:
   site_settings:
     discourse_reactions_enabled: "Enable the discourse-reactions plugin."
+    discourse_reactions_enabled_reactions: "Defines a list of enabled reactions, any emoji is allowed here. A reaction prefixed with a - will not trigger a like when used."
     discourse_reactions_test_topic_id: "Temporary setting to add the plugin only on one topic."
