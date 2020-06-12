@@ -1,11 +1,13 @@
-.discourse-reactions-counter {
-  .btn-reaction-counter {
-    padding-right: 0 !important;
-  }
+.desktop-view {
+  .discourse-reactions-counter {
+    .btn-reaction-counter {
+      padding-right: 0 !important;
+    }
 
-  + .discourse-reactions-reaction-button {
-    .toggle-like {
-      padding-left: 8px;
+    + .discourse-reactions-reaction-button {
+      .toggle-like {
+        padding-left: 8px;
+      }
     }
   }
 }

@@ -43,7 +43,7 @@
   visibility: hidden;
   display: none;
   padding-bottom: 15px;
-  z-index: z("usercard") - 1;
+  z-index: z("usercard") - 2;
   position: relative;
 
   &.is-expanded {
@@ -81,7 +81,7 @@
   visibility: hidden;
   display: none;
   padding-bottom: 15px;
-  z-index: z("usercard") - 1;
+  z-index: z("usercard") - 2;
   position: relative;
 
   &.is-expanded {
@@ -169,28 +169,41 @@
       color: $love;
     }
 
-    .double-button:hover {
-      background: $primary-low;
+    :hover {
+      .double-button {
+        background: $primary-low;
 
-      .d-icon {
-        color: $primary-medium !important;
+        .d-icon {
+          color: $primary-medium !important;
+        }
       }
     }
   }
 
-  .double-button:hover {
-    background: $love-low;
-
-    .d-icon {
-      color: $love;
-    }
-  }
-
   &:hover {
+    .double-button {
+      background: $love-low;
+      z-index: z("usercard") - 1;
+
+      .d-icon {
+        color: $love;
+      }
+    }
+
     .discourse-reactions-reaction-button,
     .discourse-reactions-counter {
       z-index: 2;
     }
+  }
+
+  .fake-zone {
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    position: absolute;
+    bottom: -15px;
+    left: calc(100% / 2 - 25px);
+    z-index: 0;
   }
 }
 
@@ -234,18 +247,6 @@
   }
 }
 
-.discourse-reactions-actions {
-  .fake-zone {
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
-    position: absolute;
-    bottom: -15px;
-    left: calc(100% / 2 - 25px);
-    z-index: 0;
-  }
-}
-
 nav.post-controls .actions {
   display: inline-flex;
 
@@ -254,4 +255,10 @@ nav.post-controls .actions {
     user-select: none !important;
     -webkit-user-select: none !important;
   }
+}
+
+.post-stream .gap {
+  -webkit-touch-callout: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
