@@ -13,7 +13,7 @@ export default createWidget("discourse-reactions-state-panel", {
   buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
 
   mouseOut(event) {
-    this.callWidgetFunction("scheduleCollapseStatePanel", event);
+    this.callWidgetFunction("collapseStatePanel", event);
   },
 
   init(attrs) {
@@ -24,6 +24,14 @@ export default createWidget("discourse-reactions-state-panel", {
       if (reactions) {
         next(() => {
           this.state.reactions = reactions;
+
+          if (reactions && reactions.length) {
+            let shouldRerender = !this.state.displayedReactionId;
+
+            this.state.displayedReactionId = reactions.firstObject.id;
+
+            shouldRerender && this.scheduleRerender();
+          }
         });
       } else {
         this.store
@@ -33,8 +41,11 @@ export default createWidget("discourse-reactions-state-panel", {
           .then(result => {
             cachePostReactions(postId, result.content);
             this.state.reactions = result.content;
-            this.state.displayedReactionId = result.content.firstObject.id;
-            this.scheduleRerender();
+
+            if (result.content && result.content.length) {
+              this.state.displayedReactionId = result.content.firstObject.id;
+              this.scheduleRerender();
+            }
           });
       }
     }
@@ -59,25 +70,28 @@ export default createWidget("discourse-reactions-state-panel", {
     );
     if (!displayedReaction) return;
 
-    return h("div.container", [
-      h(
-        "div.counters",
-        this.state.reactions.map(reaction =>
-          this.attach("discourse-reactions-state-panel-reaction", {
-            reaction,
-            isDisplayed: reaction.id === this.state.displayedReactionId
-          })
+    return [
+      h("div.fake-zone"),
+      h("div.container", [
+        h(
+          "div.counters",
+          this.state.reactions.map(reaction =>
+            this.attach("discourse-reactions-state-panel-reaction", {
+              reaction,
+              isDisplayed: reaction.id === this.state.displayedReactionId
+            })
+          )
+        ),
+        h(
+          "div.users",
+          displayedReaction.users.map(user =>
+            avatarFor("tiny", {
+              username: user.username,
+              template: user.avatar_template
+            })
+          )
         )
-      ),
-      h(
-        "div.users",
-        displayedReaction.users.map(user =>
-          avatarFor("tiny", {
-            username: user.username,
-            template: user.avatar_template
-          })
-        )
-      )
-    ]);
+      ])
+    ];
   }
 });

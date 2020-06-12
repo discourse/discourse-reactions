@@ -2,4 +2,10 @@
   .btn-reaction-counter {
     padding-right: 0 !important;
   }
+
+  + .discourse-reactions-reaction-button {
+    .toggle-like {
+      padding-left: 8px;
+    }
+  }
 }

@@ -1,10 +1,17 @@
 import { h } from "virtual-dom";
 import I18n from "I18n";
-import { cancel, later, next } from "@ember/runloop";
+import { next } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 
 export default createWidget("discourse-reactions-actions", {
   tagName: "div.discourse-reactions-actions",
+
+  defaultState() {
+    return {
+      reactionsPickerExpanded: false,
+      statePanelExpanded: false
+    };
+  },
 
   buildKey: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
@@ -16,7 +23,7 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReactions(event) {
     if (this.state.reactionsPickerExpanded) {
-      this.scheduleCollapseReactionsPicker(event, true);
+      this.collapseReactionsPicker(event);
     } else {
       this.expandReactionsPicker(event);
     }
@@ -24,7 +31,7 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleStatePanel(event) {
     if (this.state.statePanelExpanded) {
-      this.scheduleCollapseStatePanel(event, true);
+      this.collapseStatePanel(event);
     } else {
       this.expandStatePanel(event);
     }
@@ -46,18 +53,11 @@ export default createWidget("discourse-reactions-actions", {
 
   buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
-  clickOutside(event) {
-    if (this.state.reactionsPickerExpanded) {
-      this.collapseReactionsPicker(event, true);
-    }
-
-    if (this.state.statePanelExpanded) {
-      this.collapseStatePanel(event, true);
-    }
+  clickOutside() {
+    this.collapsePanels();
   },
 
   expandReactionsPicker() {
-    this._laterCollapseStatePanel && cancel(this._laterCollapseStatePanel);
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
@@ -68,7 +68,6 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   expandStatePanel() {
-    this._laterCollapsePicker && cancel(this._laterCollapsePicker);
     this.state.reactionsPickerExpanded = false;
     this.state.statePanelExpanded = true;
     this.scheduleRerender();
@@ -78,79 +77,38 @@ export default createWidget("discourse-reactions-actions", {
     ]);
   },
 
-  scheduleCollapseStatePanel(event, force = false) {
-    if (this.mobileView) {
-      this.collapseStatePanel(event, force);
-    } else {
-      this._laterCollapseStatePanel && cancel(this._laterCollapseStatePanel);
+  collapsePanels() {
+    this.state.statePanelExpanded = false;
+    this.state.reactionsPickerExpanded = false;
 
-      this._laterCollapseStatePanel = later(
-        this,
-        this.collapseStatePanel,
-        event,
-        force,
-        250
-      );
-    }
-  },
-
-  collapseStatePanel(event, force = false) {
     const container = document.getElementById(this.buildId(this.attrs));
-    const panelContainer = container.querySelector(
-      ".discourse-reactions-state-panel"
-    );
+    container &&
+      container
+        .querySelectorAll(
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
+        )
+        .forEach(popper => popper.classList.remove("is-expanded"));
 
-    if (
-      force ||
-      !this._isCursorInsideContainers([container, panelContainer], event)
-    ) {
-      this.state.statePanelExpanded = false;
-
-      next(() => {
-        const panel = document.querySelector(
-          `#discourse-reactions-actions-${this.attrs.post.id} .discourse-reactions-state-panel`
-        );
-
-        panel.classList.remove("is-expanded");
-      });
-    }
+    this.scheduleRerender();
   },
 
-  scheduleCollapseReactionsPicker(event, force = false) {
-    if (this.site.mobileView) {
-      this.collapseReactionsPicker(event, force);
-    } else {
-      this._laterCollapsePicker && cancel(this._laterCollapsePicker);
-
-      this._laterCollapsePicker = later(
-        this,
-        this.collapseReactionsPicker,
-        event,
-        force,
-        250
-      );
-    }
-  },
-
-  collapseReactionsPicker(event, force = false) {
+  collapseStatePanel(event) {
     const container = document.getElementById(this.buildId(this.attrs));
-    const pickerContainer = container.querySelector(
-      ".discourse-reactions-picker"
-    );
+    const trigger = container.querySelector(".discourse-reactions-counter");
+    const popper = container.querySelector(".discourse-reactions-state-panel");
 
-    if (
-      force ||
-      !this._isCursorInsideContainers([container, pickerContainer], event)
-    ) {
-      this.state.reactionsPickerExpanded = false;
+    if (!this._isCursorInsideContainers([trigger, popper], event)) {
+      this.collapsePanels();
+    }
+  },
 
-      next(() => {
-        const picker = document.querySelector(
-          `#discourse-reactions-actions-${this.attrs.post.id} .discourse-reactions-picker`
-        );
+  collapseReactionsPicker(event) {
+    const container = document.getElementById(this.buildId(this.attrs));
+    const trigger = container.querySelector(".btn-reaction");
+    const popper = container.querySelector(".discourse-reactions-picker");
 
-        picker.classList.remove("is-expanded");
-      });
+    if (!this._isCursorInsideContainers([trigger, popper], event)) {
+      this.collapsePanels();
     }
   },
 
@@ -205,7 +163,6 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   _isCursorInsideContainer(event, bounds) {
-    // slight inset to prevent false positives
     return (
       event.clientX >= bounds.left &&
       event.clientX <= bounds.right &&

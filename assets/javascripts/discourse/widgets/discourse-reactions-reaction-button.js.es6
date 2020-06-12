@@ -40,7 +40,7 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   mouseOut(event) {
     if (!this.site.mobileView) {
-      this.callWidgetFunction("scheduleCollapseReactionsPicker", event);
+      this.callWidgetFunction("collapseReactionsPicker", event);
     }
   },
 

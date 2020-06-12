@@ -8,7 +8,7 @@ export default createWidget("discourse-reactions-counter", {
 
   mouseOut(event) {
     if (!this.site.mobileView) {
-      this.callWidgetFunction("scheduleCollapseStatePanel", event);
+      this.callWidgetFunction("collapseStatePanel", event);
     }
   },
 

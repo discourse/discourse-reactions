@@ -1,4 +1,3 @@
-// import ComponentConnector from "discourse/widgets/component-connector";
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 let cachedPostDiscourseReactions = {};
@@ -54,8 +53,6 @@ function initializeDiscourseReactions(api) {
   ];
 
   api.cleanupStream(resetPostReactions);
-
-  api.includePostAttributes("reactions");
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
     if (!canHaveReactions(dec.attrs, siteSettings)) {

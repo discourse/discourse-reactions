@@ -6,4 +6,10 @@
   .btn-reaction-counter {
     padding-right: 8px !important;
   }
+
+  + .discourse-reactions-reaction-button {
+    .toggle-like {
+      padding-left: 4px;
+    }
+  }
 }

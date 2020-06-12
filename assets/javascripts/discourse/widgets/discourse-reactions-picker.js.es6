@@ -9,26 +9,29 @@ export default createWidget("discourse-reactions-picker", {
   buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
 
   mouseOut(event) {
-    this.callWidgetFunction("scheduleCollapseReactionsPicker", event);
+    this.callWidgetFunction("collapseReactionsPicker", event);
   },
 
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
-      return h(
-        "div.container",
-        attrs.enabledReactions.map(reaction =>
-          this.attach("button", {
-            action: "toggleReaction",
-            actionParam: { reaction, postId: attrs.post.id },
-            className: "pickable-reaction",
-            contents: [
-              new RawHtml({
-                html: emojiUnescape(`:${reaction}:`)
-              })
-            ]
-          })
+      return [
+        h("div.fake-zone"),
+        h(
+          "div.container",
+          attrs.enabledReactions.map(reaction =>
+            this.attach("button", {
+              action: "toggleReaction",
+              actionParam: { reaction, postId: attrs.post.id },
+              className: "pickable-reaction",
+              contents: [
+                new RawHtml({
+                  html: emojiUnescape(`:${reaction}:`)
+                })
+              ]
+            })
+          )
         )
-      );
+      ];
     }
   }
 });
