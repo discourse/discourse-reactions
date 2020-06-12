@@ -10,4 +10,34 @@
       }
     }
   }
+
+  .discourse-reactions-actions {
+    &.is-liked {
+      :hover {
+        .double-button {
+          background: $primary-low;
+
+          .d-icon {
+            color: $primary-medium !important;
+          }
+        }
+      }
+    }
+
+    &:hover {
+      .double-button {
+        background: $love-low;
+        z-index: z("usercard") - 1;
+
+        .d-icon {
+          color: $love;
+        }
+      }
+
+      .discourse-reactions-reaction-button,
+      .discourse-reactions-counter {
+        z-index: 2;
+      }
+    }
+  }
 }
