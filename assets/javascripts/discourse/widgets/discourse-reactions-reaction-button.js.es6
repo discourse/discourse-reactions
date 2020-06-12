@@ -1,6 +1,7 @@
 import { iconNode } from "discourse-common/lib/icon-library";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
+import { later, cancel } from "@ember/runloop";
 
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
@@ -14,14 +15,22 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   touchStart() {
+    this._touchTimeout && cancel(this._touchTimeout);
+
     if (this.site.mobileView) {
       this._touchStartAt = Date.now();
+      this._touchTimeout = later(() => {
+        this._touchStartAt = null;
+        this.callWidgetFunction("toggleReactions");
+      }, 400);
       return false;
     }
   },
 
   touchEnd(event) {
-    if (this.site.mobileView) {
+    this._touchTimeout && cancel(this._touchTimeout);
+
+    if (this.site.mobileView && this._touchStartAt) {
       const duration = Date.now() - (this._touchStartAt || 0);
       this._touchStartAt = null;
       if (duration > 400) {
