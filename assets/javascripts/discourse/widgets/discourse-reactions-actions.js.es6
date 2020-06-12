@@ -98,7 +98,11 @@ export default createWidget("discourse-reactions-actions", {
     const popper = container.querySelector(".discourse-reactions-state-panel");
     const fake = container.querySelector(".fake-zone");
 
-    if (!this._isCursorInsideContainers([trigger, popper, fake], event)) {
+    if (this.site.mobileView) {
+      this.collapsePanels();
+    } else if (
+      !this._isCursorInsideContainers([trigger, popper, fake], event)
+    ) {
       this.collapsePanels();
     }
   },
@@ -109,7 +113,11 @@ export default createWidget("discourse-reactions-actions", {
     const popper = container.querySelector(".discourse-reactions-picker");
     const fake = container.querySelector(".fake-zone");
 
-    if (!this._isCursorInsideContainers([trigger, popper, fake], event)) {
+    if (this.site.mobileView) {
+      this.collapsePanels();
+    } else if (
+      !this._isCursorInsideContainers([trigger, popper, fake], event)
+    ) {
       this.collapsePanels();
     }
   },
