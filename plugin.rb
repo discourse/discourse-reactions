@@ -47,7 +47,6 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    return false unless SiteSetting.discourse_reactions_enabled
     object.reactions.each_with_object({}) do |reaction, result|
       key = reaction.reaction_value
       result[key] = {
