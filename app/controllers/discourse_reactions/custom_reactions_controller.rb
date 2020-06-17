@@ -30,15 +30,22 @@ module DiscourseReactions
       render json: reactions
     end
 
-    def create
+    def toggle
       return render_json_error(@post) unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
-      reaction_scope.first_or_create!
-      add_or_remove_shadow_like
-      render_json_dump(post_serializer.as_json)
-    end
+      ActiveRecord::Base.transaction do
+        reaction = reaction_scope.first_or_create
+        reaction_user = reaction_user_scope(reaction)&.first_or_initialize
 
-    def destroy
-      reaction_scope.delete_all
+        if reaction_user.persisted?
+          reaction_user.destroy
+        else
+          reaction_user.save!
+        end
+
+        reaction.destroy if reaction.reload.reaction_users_count == 0
+        add_or_remove_shadow_like
+      end
+
       render_json_dump(post_serializer.as_json)
     end
 
@@ -51,9 +58,13 @@ module DiscourseReactions
 
     def reaction_scope
       DiscourseReactions::Reaction.where(post_id: @post.id,
-                                         user_id: current_user.id,
                                          reaction_value: params[:reaction],
                                          reaction_type:  DiscourseReactions::Reaction.reaction_types['emoji'])
+    end
+
+    def reaction_user_scope(reaction)
+      return nil unless reaction
+      DiscourseReactions::ReactionUser.where(reaction_id: reaction.id, user_id: current_user.id)
     end
 
     def post_serializer

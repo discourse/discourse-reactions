@@ -6,7 +6,8 @@ module DiscourseReactions
 
     enum reaction_type: { emoji: 0 }
 
-    belongs_to :user
+    has_many :reaction_users, class_name: 'DiscourseReactions::ReactionUser'
+    has_many :users, through: :reaction_users
     belongs_to :post
 
     def self.valid_reactions
