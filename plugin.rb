@@ -58,4 +58,8 @@ after_initialize do
       }
     end
   end
+
+  add_to_serializer(:topic_view, :valid_reactions) do
+    DiscourseReactions::Reaction.valid_reactions
+  end
 end
