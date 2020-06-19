@@ -18,7 +18,7 @@ export default createWidget("discourse-reactions-picker", {
         h("div.fake-zone"),
         h(
           "div.container",
-          attrs.enabledReactions.map(reaction =>
+          attrs.post.topic.valid_reactions.map(reaction =>
             this.attach("button", {
               action: "toggleReaction",
               actionParam: { reaction, postId: attrs.post.id },

@@ -35,8 +35,10 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
+    const post = dec.getModel();
+
     return dec.attach("discourse-reactions-actions", {
-      post: dec.attrs,
+      post
     });
   });
 
