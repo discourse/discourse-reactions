@@ -220,6 +220,7 @@
     outline: none;
     background: none !important;
     transition: none;
+    cursor: default;
 
     &:hover {
       color: $primary !important;
