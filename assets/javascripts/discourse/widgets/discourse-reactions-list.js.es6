@@ -12,6 +12,10 @@ export default createWidget("discourse-reactions-list", {
     const sum = (acc, current) => acc + current.count;
     const count = attrs.post.reactions.reduce(sum, 0);
 
+    if (count <= 0) {
+      return;
+    }
+
     return [
       h(
         "div.reactions",
