@@ -23,10 +23,17 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   html(attrs) {
-    if (attrs.post.likeCount) {
+    if (attrs.post.reactions) {
+      const sum = (acc, current) => acc + current.count;
+      const count = attrs.post.reactions.reduce(sum, 0);
+
+      if (count <= 0) {
+        return;
+      }
+
       return h(
         "button.btn-flat.fade-out.btn-default.btn-reaction-counter",
-        attrs.post.likeCount.toString()
+        count.toString()
       );
     }
   }
