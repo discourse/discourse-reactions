@@ -11,7 +11,10 @@ module DiscourseReactions
     belongs_to :post
 
     def self.valid_reactions
-      SiteSetting.discourse_reactions_enabled_reactions.split(/\|-?/)
+      Set[
+        reaction_for_icon(SiteSetting.discourse_reactions_like_icon),
+        *SiteSetting.discourse_reactions_enabled_reactions.split(/\|-?/)
+      ]
     end
 
     def self.positive_reactions
@@ -22,6 +25,21 @@ module DiscourseReactions
       SiteSetting.discourse_reactions_enabled_reactions.split('|').map do |reaction|
         reaction =~ /^\-/ ? reaction.delete_prefix("-") : nil
       end.compact
+    end
+
+    private
+
+    def self.reaction_for_icon(icon)
+      case icon
+      when 'heart'
+        'heart'
+      when 'star'
+        'star'
+      when 'thumbs-up'
+        'thumbsup'
+      else
+        'heart'
+      end
     end
   end
 end

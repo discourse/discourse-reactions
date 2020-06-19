@@ -18,19 +18,6 @@ export function resetPostReactions(postId) {
   }
 }
 
-function reactionForIcon(icon) {
-  switch (icon) {
-    case "heart":
-      return "heart";
-    case "star":
-      return "star";
-    case "thumbs-up":
-      return "thumbsup";
-    default:
-      return "heart";
-  }
-}
-
 function canHaveReactions(post, siteSettings) {
   return (
     post &&
@@ -41,17 +28,6 @@ function canHaveReactions(post, siteSettings) {
 
 function initializeDiscourseReactions(api) {
   const siteSettings = api.container.lookup("site-settings:main");
-  const enabledReactions = [
-    ...new Set(
-      [reactionForIcon(siteSettings.discourse_reactions_like_icon)].concat(
-        siteSettings.discourse_reactions_enabled_reactions
-          .split("|")
-          .filter(Boolean)
-          .map(r => r.replace(/^\-/, ""))
-      )
-    )
-  ];
-
   api.cleanupStream(resetPostReactions);
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
@@ -61,7 +37,6 @@ function initializeDiscourseReactions(api) {
 
     return dec.attach("discourse-reactions-actions", {
       post: dec.attrs,
-      enabledReactions
     });
   });
 
