@@ -9,4 +9,4 @@ en:
       can_react: react to this post
       has_react: you've reacted to this post
       discourse_reactions_list:
-        users_reacted: "%{count} user(s)"
+        reactions_count: "%{count} reaction(s)"

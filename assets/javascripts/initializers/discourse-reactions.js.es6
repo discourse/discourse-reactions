@@ -45,8 +45,10 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
+    const post = dec.getModel();
+
     return dec.attach("discourse-reactions-list", {
-      post: dec.attrs
+      post
     });
   });
 }

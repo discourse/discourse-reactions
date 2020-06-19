@@ -7,10 +7,10 @@ import { createWidget } from "discourse/widgets/widget";
 export default createWidget("discourse-reactions-list", {
   tagName: "div.discourse-reactions-list",
 
-  html() {
-    // TODO should come from actions_summary
-    const count = 2;
-    const reactions = ["thumbsup", "smile"];
+  html(attrs) {
+    const reactions = attrs.post.reactions;
+    const sum = (acc, current) => acc + current.count;
+    const count = attrs.post.reactions.reduce(sum, 0);
 
     return [
       h(
@@ -19,14 +19,14 @@ export default createWidget("discourse-reactions-list", {
           h(
             "span.reaction",
             new RawHtml({
-              html: emojiUnescape(`:${reaction}:`)
+              html: emojiUnescape(`:${reaction.id}:`)
             })
           )
         )
       ),
       h(
         "span.users",
-        I18n.t("discourse_reactions.discourse_reactions_list.users_reacted", {
+        I18n.t("discourse_reactions.discourse_reactions_list.reactions_count", {
           count
         })
       )
