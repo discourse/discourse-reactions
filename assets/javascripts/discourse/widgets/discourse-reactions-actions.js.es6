@@ -167,18 +167,26 @@ export default createWidget("discourse-reactions-actions", {
     if (!event) return false;
 
     return containers
-      .map(container =>
-        this._isCursorInsideContainer(event, container.getBoundingClientRect())
-      )
+      .map(container => {
+        if (!container) {
+          return false;
+        }
+        return this._isCursorInsideContainer(
+          event,
+          container.getBoundingClientRect()
+        );
+      })
       .includes(true);
   },
 
   _isCursorInsideContainer(event, bounds) {
+    // we inset so we do the check slightly before leaving container to make
+    // it more reliable
     return (
-      event.clientX >= bounds.left &&
-      event.clientX <= bounds.right &&
-      event.clientY >= bounds.top &&
-      event.clientY <= bounds.bottom
+      event.clientX >= bounds.left + 5 &&
+      event.clientX <= bounds.right - 5 &&
+      event.clientY >= bounds.top + 5 &&
+      event.clientY <= bounds.bottom - 5
     );
   },
 
