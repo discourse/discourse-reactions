@@ -1,23 +1,5 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
-let cachedPostDiscourseReactions = {};
-
-export function cachePostReactions(postId, reactions) {
-  cachedPostDiscourseReactions[postId] = reactions;
-}
-
-export function fetchPostReactions(postId) {
-  return cachedPostDiscourseReactions[postId];
-}
-
-export function resetPostReactions(postId) {
-  if (postId) {
-    delete cachedPostDiscourseReactions[postId];
-  } else {
-    cachedPostDiscourseReactions = {};
-  }
-}
-
 function canHaveReactions(post, siteSettings) {
   return (
     post &&
@@ -28,7 +10,6 @@ function canHaveReactions(post, siteSettings) {
 
 function initializeDiscourseReactions(api) {
   const siteSettings = api.container.lookup("site-settings:main");
-  api.cleanupStream(resetPostReactions);
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
     if (!canHaveReactions(dec.attrs, siteSettings)) {
