@@ -4,6 +4,16 @@ import { next } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
+function offset(elt) {
+  const rect = elt.getBoundingClientRect();
+  const bodyElt = document.body;
+
+  return {
+    top: rect.top + bodyElt.scrollTop,
+    left: rect.left + bodyElt.scrollLeft
+  };
+}
+
 export default createWidget("discourse-reactions-actions", {
   tagName: "div.discourse-reactions-actions",
 
@@ -171,23 +181,44 @@ export default createWidget("discourse-reactions-actions", {
         if (!container) {
           return false;
         }
-        return this._isCursorInsideContainer(
-          event,
-          container.getBoundingClientRect()
-        );
+        return this._isCursorInsideContainer(event, container);
       })
       .includes(true);
   },
 
-  _isCursorInsideContainer(event, bounds) {
-    // we inset so we do the check slightly before leaving container to make
+  _isCursorInsideContainer(event, container) {
+    const bounds = container.getBoundingClientRect();
+    const isCircle =
+      window.getComputedStyle(container)["border-radius"] !== "0px";
+
+    // we inset (-5/+5) so we do the check slightly before leaving container to make
     // it more reliable
-    return (
-      event.clientX >= bounds.left + 5 &&
-      event.clientX <= bounds.right - 5 &&
-      event.clientY >= bounds.top + 5 &&
-      event.clientY <= bounds.bottom - 5
-    );
+
+    if (isCircle) {
+      const distance = Math.floor(
+        Math.sqrt(
+          Math.pow(
+            event.clientX -
+              (offset(container).left + container.offsetWidth / 2),
+            2
+          ) +
+            Math.pow(
+              event.clientY -
+                (offset(container).top + container.offsetHeight / 2),
+              2
+            )
+        )
+      );
+
+      return container.offsetWidth / 2 - 5 > distance;
+    } else {
+      return (
+        event.clientX >= bounds.left + 5 &&
+        event.clientX <= bounds.right - 5 &&
+        event.clientY >= bounds.top + 5 &&
+        event.clientY <= bounds.bottom - 5
+      );
+    }
   },
 
   _setupPopper(postId, popperVariable, selectors) {

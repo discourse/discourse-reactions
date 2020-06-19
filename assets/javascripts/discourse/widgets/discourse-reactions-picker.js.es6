@@ -15,7 +15,9 @@ export default createWidget("discourse-reactions-picker", {
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
       return [
-        h("div.fake-zone"),
+        this.attach("fake-zone", {
+          collapseFunction: "collapseReactionsPicker"
+        }),
         h(
           "div.container",
           attrs.post.topic.valid_reactions.map(reaction =>

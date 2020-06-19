@@ -71,7 +71,9 @@ export default createWidget("discourse-reactions-state-panel", {
     if (!displayedReaction) return;
 
     return [
-      h("div.fake-zone"),
+      this.attach("fake-zone", {
+        collapseFunction: "collapseStatePanel"
+      }),
       h("div.container", [
         h(
           "div.counters",
