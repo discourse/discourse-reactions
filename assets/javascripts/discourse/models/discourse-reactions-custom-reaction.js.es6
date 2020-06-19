@@ -1,6 +1,8 @@
+import EmberObject from "@ember/object";
+import { ajax } from "discourse/lib/ajax";
 import RestModel from "discourse/models/rest";
 
-const Event = RestModel.extend({
+const CustomReaction = RestModel.extend({
   init() {
     this._super(...arguments);
 
@@ -36,4 +38,13 @@ const Event = RestModel.extend({
   }
 });
 
-export default Event;
+CustomReaction.reopenClass({
+  toggle(postId, reactionId) {
+    return ajax(
+      `/discourse-reactions/posts/${postId}/custom-reactions/${reactionId}/toggle.json`,
+      { type: "PUT" }
+    );
+  }
+});
+
+export default CustomReaction;

@@ -2,6 +2,7 @@ import { h } from "virtual-dom";
 import I18n from "I18n";
 import { next } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
+import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default createWidget("discourse-reactions-actions", {
   tagName: "div.discourse-reactions-actions",
@@ -38,7 +39,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleReaction(params) {
-    bootbox.alert(`TOGGLE ${params.reaction}`);
+    CustomReaction.toggle(params.postId, params.reaction);
   },
 
   toggleLike() {
