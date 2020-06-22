@@ -34,13 +34,15 @@ after_initialize do
     "../lib/discourse_reactions/post_extension.rb",
     "../lib/discourse_reactions/topic_view_extension.rb",
     "../lib/discourse_reactions/notification_extension.rb",
-    "../lib/discourse_reactions/post_alerter_extension.rb"
+    "../lib/discourse_reactions/post_alerter_extension.rb",
+    "../lib/discourse_reactions/guardian_extension.rb"
   ].each { |path| load File.expand_path(path, __FILE__) }
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
     TopicView.class_eval { prepend DiscourseReactions::TopicViewExtension }
     PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
+    Guardian.class_eval { prepend DiscourseReactions::GuardianExtension }
     Notification.singleton_class.class_eval { prepend DiscourseReactions::NotificationExtension }
   end
 
@@ -58,7 +60,7 @@ after_initialize do
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
-        users: reaction.reaction_users.map { |reaction_user| { username: reaction_user.username, avatar_template: reaction_user.avatar_template } },
+        users: reaction.reaction_users.map { |reaction_user| { username: reaction_user.username, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
         count: reaction.reaction_users_count
       }
     end

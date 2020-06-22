@@ -22,13 +22,21 @@ module DiscourseReactions
     end
 
     def self.positive_reactions
-      valid_reactions - negative_or_neutral_reactions
+      (valid_reactions - negative_or_neutral_reactions).to_set
     end
 
     def self.negative_or_neutral_reactions
       SiteSetting.discourse_reactions_enabled_reactions.split('|').map do |reaction|
         reaction =~ /^\-/ ? reaction.delete_prefix("-") : nil
-      end.compact
+      end.compact.to_set
+    end
+
+    def positive?
+      self.class.positive_reactions.include?(reaction_value)
+    end
+
+    def negative?
+      self.class.negative_or_neutral_reactions.include?(reaction_value)
     end
 
     private
@@ -44,14 +52,6 @@ module DiscourseReactions
       else
         'heart'
       end
-    end
-
-    def positive?
-      self.class.positive_reactions.include?(reaction_value)
-    end
-
-    def negative?
-      self.class.negative_or_neutral_reactions.include?(reaction_value)
     end
   end
 end

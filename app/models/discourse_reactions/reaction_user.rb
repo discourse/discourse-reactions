@@ -9,5 +9,9 @@ module DiscourseReactions
 
     delegate :username, to: :user
     delegate :avatar_template, to: :user
+
+    def can_undo?
+      self.created_at > SiteSetting.post_undo_action_window_mins.minutes.ago
+    end
   end
 end

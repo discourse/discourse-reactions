@@ -11,6 +11,10 @@ module DiscourseReactions
         reaction_user = reaction_user_scope(reaction)&.first_or_initialize
 
         if reaction_user.persisted?
+          unless guardian.can_delete_reaction_user?(reaction_user)
+            return render json: failed_json.merge(errors: I18n.t("invalid_access")), status: 400
+          end
+
           reaction_user.destroy
           remove_shadow_like(reaction) if reaction.positive?
           remove_reaction_notification(reaction) if reaction.negative?
