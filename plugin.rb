@@ -30,13 +30,18 @@ after_initialize do
     "../app/controllers/discourse_reactions/custom_reactions_controller.rb",
     "../app/models/discourse_reactions/reaction.rb",
     "../app/models/discourse_reactions/reaction_user.rb",
+    "../app/services/discourse_reactions/reaction_notification.rb",
     "../lib/discourse_reactions/post_extension.rb",
-    "../lib/discourse_reactions/topic_view_extension.rb"
+    "../lib/discourse_reactions/topic_view_extension.rb",
+    "../lib/discourse_reactions/notification_extension.rb",
+    "../lib/discourse_reactions/post_alerter_extension.rb"
   ].each { |path| load File.expand_path(path, __FILE__) }
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
     TopicView.class_eval { prepend DiscourseReactions::TopicViewExtension }
+    PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
+    Notification.singleton_class.class_eval { prepend DiscourseReactions::NotificationExtension }
   end
 
   Discourse::Application.routes.append do

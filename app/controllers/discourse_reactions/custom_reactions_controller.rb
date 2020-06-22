@@ -4,32 +4,6 @@ module DiscourseReactions
   class CustomReactionsController < DiscourseReactionsController
     before_action :fetch_post_from_params
 
-    def index
-      user = User.last
-
-      reactions = [
-        {
-          id: 'otter',
-          type: :emoji,
-          users: [
-            { username: user.username, avatar_template: user.avatar_template }
-          ],
-          count: 1
-        },
-        {
-          id: 'thumbsup',
-          type: :emoji,
-          users: [
-            { username: user.username, avatar_template: user.avatar_template },
-            { username: current_user.username, avatar_template: current_user.avatar_template },
-          ],
-          count: 2
-        }
-      ]
-
-      render json: reactions
-    end
-
     def toggle
       return render_json_error(@post) unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
       ActiveRecord::Base.transaction do
@@ -38,12 +12,14 @@ module DiscourseReactions
 
         if reaction_user.persisted?
           reaction_user.destroy
+          remove_shadow_like(reaction) if reaction.positive?
+          remove_reaction_notification(reaction) if reaction.negative?
         else
           reaction_user.save!
+          add_shadow_like(reaction) if reaction.positive?
+          add_reaction_notification(reaction) if reaction.negative?
         end
-
         reaction.destroy if reaction.reload.reaction_users_count == 0
-        add_or_remove_shadow_like
       end
 
       render_json_dump(post_serializer.as_json)
@@ -51,9 +27,22 @@ module DiscourseReactions
 
     private 
 
-    def add_or_remove_shadow_like
-      # TODO add like when positive emoji exists and like was not already given
-      # TODO remove like when all positive emojis are removed for specific user and post
+    def add_shadow_like(reaction)
+      return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 1
+      PostActionCreator.like(current_user, @post)
+    end
+
+    def remove_shadow_like(reaction)
+      return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 0
+      PostActionDestroyer.new(current_user, @post, PostActionType.types[:like]).perform if reaction.positive?
+    end
+
+    def add_reaction_notification(reaction)
+      ReactionNotification.new(reaction, current_user).create
+    end
+
+    def remove_reaction_notification(reaction)
+      ReactionNotification.new(reaction, current_user).delete
     end
 
     def reaction_scope

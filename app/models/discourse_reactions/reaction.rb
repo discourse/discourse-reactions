@@ -10,6 +10,10 @@ module DiscourseReactions
     has_many :users, through: :reaction_users
     belongs_to :post
 
+    scope :positive, -> { where(reaction_value: self.positive_reactions) }
+    scope :negative_or_neutral, -> { where(reaction_value: self.negative_or_neutral_reactions) }
+    scope :by_user, ->(user) { joins(:reaction_users).where(discourse_reactions_reaction_users: { user_id: user.id }) }
+
     def self.valid_reactions
       Set[
         reaction_for_icon(SiteSetting.discourse_reactions_like_icon),
@@ -40,6 +44,14 @@ module DiscourseReactions
       else
         'heart'
       end
+    end
+
+    def positive?
+      self.class.positive_reactions.include?(reaction_value)
+    end
+
+    def negative?
+      self.class.negative_or_neutral_reactions.include?(reaction_value)
     end
   end
 end
