@@ -26,6 +26,8 @@ module DiscourseReactions
         reaction.destroy if reaction.reload.reaction_users_count == 0
       end
 
+      @post.publish_change_to_clients! :acted
+
       render_json_dump(post_serializer.as_json)
     end
 
@@ -38,7 +40,7 @@ module DiscourseReactions
 
     def remove_shadow_like(reaction)
       return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 0
-      PostActionDestroyer.new(current_user, @post, PostActionType.types[:like]).perform if reaction.positive?
+      PostActionDestroyer.new(current_user, @post, PostActionType.types[:like]).perform
     end
 
     def add_reaction_notification(reaction)
