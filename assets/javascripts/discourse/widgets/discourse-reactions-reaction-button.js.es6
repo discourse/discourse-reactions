@@ -18,6 +18,9 @@ export default createWidget("discourse-reactions-reaction-button", {
     this._touchTimeout && cancel(this._touchTimeout);
 
     if (this.site.mobileView) {
+      const root = document.getElementsByTagName("html")[0];
+      root && root.classList.add("no-select");
+
       this._touchStartAt = Date.now();
       this._touchTimeout = later(() => {
         this._touchStartAt = null;
@@ -29,6 +32,9 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   touchEnd(event) {
     this._touchTimeout && cancel(this._touchTimeout);
+
+    const root = document.getElementsByTagName("html")[0];
+    root && root.classList.remove("no-select");
 
     if (this.site.mobileView && this._touchStartAt) {
       const duration = Date.now() - (this._touchStartAt || 0);

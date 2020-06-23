@@ -1,3 +1,9 @@
+html.no-select {
+  -webkit-touch-callout: none; /* Disables long-touch menu */
+  -webkit-user-select: none; /* Disable text selection (for Webkit) */
+  user-select: none; /* Disable text selection (standard syntax) */
+}
+
 .discourse-reactions-list {
   display: flex;
   align-items: center;
@@ -229,16 +235,4 @@
 
 nav.post-controls .actions {
   display: inline-flex;
-
-  * {
-    -webkit-touch-callout: none !important;
-    user-select: none !important;
-    -webkit-user-select: none !important;
-  }
-}
-
-.post-stream .gap {
-  -webkit-touch-callout: none !important;
-  user-select: none !important;
-  -webkit-user-select: none !important;
 }
