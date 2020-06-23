@@ -32,7 +32,7 @@ after_initialize do
     "../app/models/discourse_reactions/reaction_user.rb",
     "../app/services/discourse_reactions/reaction_notification.rb",
     "../lib/discourse_reactions/post_extension.rb",
-    "../lib/discourse_reactions/topic_view_extension.rb",
+    "../lib/discourse_reactions/topic_view_serializer_extension.rb",
     "../lib/discourse_reactions/notification_extension.rb",
     "../lib/discourse_reactions/post_alerter_extension.rb",
     "../lib/discourse_reactions/guardian_extension.rb"
@@ -40,7 +40,7 @@ after_initialize do
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
-    TopicView.class_eval { prepend DiscourseReactions::TopicViewExtension }
+    TopicViewSerializer.class_eval { prepend DiscourseReactions::TopicViewSerializerExtension }
     PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
     Guardian.class_eval { prepend DiscourseReactions::GuardianExtension }
     Notification.singleton_class.class_eval { prepend DiscourseReactions::NotificationExtension }
