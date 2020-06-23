@@ -52,7 +52,7 @@ module DiscourseReactions
     def reaction_scope
       DiscourseReactions::Reaction.where(post_id: @post.id,
                                          reaction_value: params[:reaction],
-                                         reaction_type:  DiscourseReactions::Reaction.reaction_types['emoji'])
+                                         reaction_type: DiscourseReactions::Reaction.reaction_types['emoji'])
     end
 
     def reaction_user_scope(reaction)
