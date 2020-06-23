@@ -193,27 +193,21 @@
 }
 
 .discourse-reactions-reaction-button {
-  .btn-reaction {
+  .btn-toggle-reaction {
     outline: none;
     pointer-events: none;
     background: none !important;
-  }
 
-  &:hover {
-    .d-icon {
-      color: $love;
-    }
-  }
-
-  &.is-liked {
-    .d-icon {
-      color: $love;
-    }
-
-    &:hover {
+    &.has-like {
       .d-icon {
         color: $love;
       }
+    }
+  }
+
+  &:hover {
+    .btn-toggle-reaction.has-like .d-icon {
+      color: $primary-medium !important;
     }
   }
 }

@@ -55,10 +55,13 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   html(attrs) {
     const likeIcon = this.siteSettings.discourse_reactions_like_icon;
-    const icon = attrs.post.liked ? likeIcon : `far-${likeIcon}`;
+    const hasLike = attrs.post.likeAction.acted;
+    const icon = hasLike ? likeIcon : `far-${likeIcon}`;
 
     return h(
-      "button.btn-flat.fade-out.btn-reaction.toggle-like.like.btn-icon.no-text",
+      `button.btn-toggle-reaction.btn-icon.no-text${
+        hasLike ? ".has-like" : ""
+      }`,
       [iconNode(icon)]
     );
   }

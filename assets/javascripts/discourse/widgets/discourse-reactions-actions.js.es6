@@ -60,7 +60,10 @@ export default createWidget("discourse-reactions-actions", {
     } else if (this.state.statePanelExpanded) {
       this.collapseStatePanel();
     } else {
-      bootbox.alert("TOGGLE LIKE");
+      CustomReaction.toggle(
+        this.attrs.post.id,
+        this.attrs.post.topic.valid_reactions.firstObject
+      );
     }
   },
 
@@ -75,7 +78,7 @@ export default createWidget("discourse-reactions-actions", {
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      ".btn-reaction",
+      ".btn-toggle-reaction",
       ".discourse-reactions-picker"
     ]);
   },
@@ -122,7 +125,7 @@ export default createWidget("discourse-reactions-actions", {
 
   collapseReactionsPicker(event) {
     const container = document.getElementById(this.buildId(this.attrs));
-    const trigger = container.querySelector(".btn-reaction");
+    const trigger = container.querySelector(".btn-toggle-reaction");
     const popper = container.querySelector(".discourse-reactions-picker");
     const fake = container.querySelector(".fake-zone");
 
