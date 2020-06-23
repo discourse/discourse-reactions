@@ -33,7 +33,7 @@ module DiscourseReactions
       end
       refresh_notification(read)
     end
-    
+
     private
 
     def enabled_reaction_notifications?
@@ -62,6 +62,7 @@ module DiscourseReactions
         username2: usernames[1],
         count: usernames.length
       }
+
       Notification.create(
         notification_type: Notification.types[:reaction],
         topic_id: @post.topic_id,

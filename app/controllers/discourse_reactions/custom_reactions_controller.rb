@@ -29,7 +29,7 @@ module DiscourseReactions
       render_json_dump(post_serializer.as_json)
     end
 
-    private 
+    private
 
     def add_shadow_like(reaction)
       return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 1
