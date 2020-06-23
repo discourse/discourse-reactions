@@ -50,7 +50,9 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReaction(params) {
     if (params.canUndo) {
-      CustomReaction.toggle(params.postId, params.reaction);
+      CustomReaction.toggle(params.postId, params.reaction).finally(() =>
+        this.collapseReactionsPicker()
+      );
     }
   },
 
