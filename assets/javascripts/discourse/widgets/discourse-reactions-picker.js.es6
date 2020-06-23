@@ -7,8 +7,13 @@ function extractCurrentUserReactions(user, reactions) {
   const usedReactions = [];
 
   reactions.forEach(reaction => {
-    if (reaction.users.filterBy("uername", user.username)) {
-      usedReactions.push(reaction.id);
+    const userReaction = reaction.users.findBy("username", user.username);
+    if (userReaction) {
+      usedReactions.push({
+        id: reaction.id,
+        type: reaction.type,
+        can_undo: userReaction.can_undo
+      });
     }
   });
 
@@ -38,11 +43,15 @@ export default createWidget("discourse-reactions-picker", {
         h(
           "div.container",
           attrs.post.topic.valid_reactions.map(reaction => {
-            const isUsed = currentUserReactions.includes(reaction);
+            const isUsed = currentUserReactions.findBy("id", reaction);
+            const canUndo = !isUsed || isUsed.can_undo;
+
             return this.attach("button", {
               action: "toggleReaction",
-              actionParam: { reaction, postId: attrs.post.id },
-              className: `pickable-reaction ${isUsed ? "is-used" : ""}`,
+              actionParam: { reaction, postId: attrs.post.id, canUndo },
+              className: `pickable-reaction ${canUndo ? "can-undo" : ""} ${
+                isUsed ? "is-used" : ""
+              }`,
               contents: [
                 new RawHtml({
                   html: emojiUnescape(`:${reaction}:`)

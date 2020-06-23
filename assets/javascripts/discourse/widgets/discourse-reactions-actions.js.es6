@@ -49,7 +49,9 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleReaction(params) {
-    CustomReaction.toggle(params.postId, params.reaction);
+    if (params.canUndo) {
+      CustomReaction.toggle(params.postId, params.reaction);
+    }
   },
 
   toggleLike() {
