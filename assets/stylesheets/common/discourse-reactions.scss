@@ -71,7 +71,6 @@ html.no-select {
     margin: 0.25em !important;
     background: none !important;
     border: 1px solid transparent !important;
-    border-radius: 3px !important;
     cursor: not-allowed;
 
     &.can-undo {
@@ -85,10 +84,10 @@ html.no-select {
     .emoji {
       width: 1em;
       height: 1em;
-    }
 
-    &:hover {
-      background: $primary-low !important;
+      &:hover {
+        transform: scale(1.2) !important;
+      }
     }
   }
 }
