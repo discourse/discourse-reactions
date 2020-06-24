@@ -162,9 +162,7 @@ export default createWidget("discourse-reactions-actions", {
     );
 
     let title;
-    // TODO should have a way to know if there's a reaction
-    // and not just a like
-    if (attrs.post.liked) {
+    if (attrs.post.reactions.length) {
       title = I18n.t("discourse_reactions.has_react");
     } else {
       title = I18n.t("discourse_reactions.can_react");
