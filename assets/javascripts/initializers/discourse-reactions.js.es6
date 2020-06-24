@@ -1,4 +1,7 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
+import { replaceIcon } from "discourse-common/lib/icon-library";
+
+replaceIcon("notification.reaction", "bell");
 
 function canHaveReactions(post, siteSettings) {
   return (
