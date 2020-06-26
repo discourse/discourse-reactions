@@ -35,10 +35,18 @@ export default createWidget("discourse-reactions-actions", {
 
       return acc;
     }, 0);
+    const userHasReacted =
+      hasReactions &&
+      attrs.post.reactions.firstObject.users.findBy(
+        "username",
+        this.currentUser.username
+      );
 
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
     if (hasReacted > 0) classes.push("has-reacted");
+    if (!hasReactions || (userHasReacted && userHasReacted.can_undo))
+      classes.push("can-toggle");
     return classes;
   },
 
