@@ -1,8 +1,10 @@
+import { Promise } from "rsvp";
 import { h } from "virtual-dom";
 import I18n from "I18n";
-import { next } from "@ember/runloop";
+import { next, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
+import { isTesting } from "discourse-common/config/environment";
 
 function offset(elt) {
   const rect = elt.getBoundingClientRect();
@@ -12,6 +14,30 @@ function offset(elt) {
     top: rect.top + bodyElt.scrollTop,
     left: rect.left + bodyElt.scrollLeft
   };
+}
+
+function animateReaction(mainReaction, start, end, complete) {
+  if (isTesting()) {
+    return run(this, complete);
+  }
+
+  $(mainReaction)
+    .stop()
+    .css("textIndent", start)
+    .animate(
+      { textIndent: end },
+      {
+        complete,
+        step(now) {
+          $(this)
+            .css("transform", `scale(${now})`)
+            .addClass("d-liked")
+            .removeClass("d-unliked");
+        },
+        duration: 150
+      },
+      "linear"
+    );
 }
 
 export default createWidget("discourse-reactions-actions", {
@@ -68,9 +94,19 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReaction(params) {
     if (params.canUndo) {
-      CustomReaction.toggle(params.postId, params.reaction).finally(() =>
-        this.collapseReactionsPicker()
+      const reaction = document.querySelector(
+        `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${params.reaction} .emoji`
       );
+      const scales = [1.0, 1.5];
+      return new Promise(resolve => {
+        animateReaction(reaction, scales[0], scales[1], () => {
+          animateReaction(reaction, scales[1], scales[0], () => {
+            CustomReaction.toggle(params.postId, params.reaction)
+              .then(resolve)
+              .finally(() => this.collapseReactionsPicker());
+          });
+        });
+      });
     }
   },
 
@@ -80,10 +116,20 @@ export default createWidget("discourse-reactions-actions", {
     } else if (this.state.statePanelExpanded) {
       this.collapseStatePanel();
     } else {
-      CustomReaction.toggle(
-        this.attrs.post.id,
-        this.attrs.post.topic.valid_reactions.firstObject
+      const mainReaction = document.querySelector(
+        `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
       );
+      const scales = [1.0, 1.5];
+      return new Promise(resolve => {
+        animateReaction(mainReaction, scales[0], scales[1], () => {
+          animateReaction(mainReaction, scales[1], scales[0], () => {
+            CustomReaction.toggle(
+              this.attrs.post.id,
+              this.attrs.post.topic.valid_reactions.firstObject
+            ).then(resolve);
+          });
+        });
+      });
     }
   },
 

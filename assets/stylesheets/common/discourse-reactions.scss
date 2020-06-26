@@ -69,7 +69,6 @@ html.no-select {
     // TODO fix this in core
     padding: 0.25em !important;
     margin: 0.25em !important;
-    background: none !important;
     border: 1px solid transparent !important;
     cursor: not-allowed;
 
@@ -81,13 +80,13 @@ html.no-select {
       border-color: $tertiary-low !important;
     }
 
+    &:hover {
+      background: $primary-very-low;
+    }
+
     .emoji {
       width: 1em;
       height: 1em;
-
-      &:hover {
-        transform: scale(1.2) !important;
-      }
     }
   }
 }
