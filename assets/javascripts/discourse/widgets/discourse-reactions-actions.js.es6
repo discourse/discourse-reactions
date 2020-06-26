@@ -65,17 +65,13 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleReactions(event) {
-    if (this.state.reactionsPickerExpanded) {
-      this.scheduleCollapse();
-    } else {
+    if (!this.state.reactionsPickerExpanded) {
       this.expandReactionsPicker(event);
     }
   },
 
   toggleStatePanel(event) {
-    if (this.state.statePanelExpanded) {
-      this.scheduleCollapse();
-    } else {
+    if (!this.state.statePanelExpanded) {
       this.expandStatePanel(event);
     }
   },
@@ -126,7 +122,6 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   scheduleCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
     this._collapseHandler = later(this, this.collapsePanels, 500);
   },
 
