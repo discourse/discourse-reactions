@@ -152,14 +152,16 @@ export default createWidget("discourse-reactions-actions", {
       )
     );
 
-    items.push(
-      this.attach(
-        "discourse-reactions-picker",
-        Object.assign({}, attrs, {
-          reactionsPickerExpanded: this.state.reactionsPickerExpanded
-        })
-      )
-    );
+    if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
+      items.push(
+        this.attach(
+          "discourse-reactions-picker",
+          Object.assign({}, attrs, {
+            reactionsPickerExpanded: this.state.reactionsPickerExpanded
+          })
+        )
+      );
+    }
 
     let title;
     if (attrs.post.reactions.length) {
