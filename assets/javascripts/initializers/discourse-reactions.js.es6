@@ -37,6 +37,22 @@ function initializeDiscourseReactions(api) {
       post
     });
   });
+
+  api.onPageChange((url, title) => {
+    const topicRegex = new RegExp(
+      `^\/t\/.*?\/${siteSettings.discourse_reactions_test_topic_id}.*`
+    );
+
+    if (topicRegex.test(url)) {
+      document
+        .querySelector("body")
+        .classList.add("discourse-reactions-test-topic");
+    } else {
+      document
+        .querySelector("body")
+        .classList.remove("discourse-reactions-test-topic");
+    }
+  });
 }
 
 export default {

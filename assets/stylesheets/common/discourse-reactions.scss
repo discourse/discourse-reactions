@@ -235,3 +235,9 @@ html.no-select {
 nav.post-controls .actions {
   display: inline-flex;
 }
+
+body.discourse-reactions-test-topic {
+  .actions > .double-button {
+    display: none;
+  }
+}
