@@ -27,9 +27,19 @@ export default createWidget("discourse-reactions-actions", {
   buildKey: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
   buildClasses(attrs) {
-    if (attrs.post.liked) {
-      return "is-liked";
-    }
+    const hasReactions = attrs.post.reactions.length > 0;
+    const hasReacted = (attrs.post.reactions || []).reduce((acc, reaction) => {
+      if (reaction.users.findBy("username", this.currentUser.username)) {
+        acc += 1;
+      }
+
+      return acc;
+    }, 0);
+
+    const classes = [];
+    if (hasReactions) classes.push("has-reactions");
+    if (hasReacted > 0) classes.push("has-reacted");
+    return classes;
   },
 
   toggleReactions(event) {

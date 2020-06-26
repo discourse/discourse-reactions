@@ -60,15 +60,11 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   html(attrs) {
-    const likeIcon = this.siteSettings.discourse_reactions_like_icon;
-    const hasLike = attrs.post.likeAction.acted;
-    const icon = hasLike ? likeIcon : `far-${likeIcon}`;
+    const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
+    const hasReactions =
+      attrs.post.reactions && attrs.post.reactions.length > 0;
+    const icon = hasReactions ? mainReactionIcon : `far-${mainReactionIcon}`;
 
-    return h(
-      `button.btn-toggle-reaction.btn-icon.no-text${
-        hasLike ? ".has-like" : ""
-      }`,
-      [iconNode(icon)]
-    );
+    return h(`button.btn-toggle-reaction.btn-icon.no-text}`, [iconNode(icon)]);
   }
 });

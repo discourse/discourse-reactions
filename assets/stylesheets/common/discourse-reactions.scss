@@ -180,7 +180,59 @@ html.no-select {
   display: inline-flex;
   cursor: pointer;
 
-  &.is-liked {
+  &.has-reactions {
+    .discourse-reactions-reaction-button {
+      .d-icon {
+        color: $love;
+      }
+    }
+
+    &:hover {
+      .d-icon {
+        color: $primary-medium;
+      }
+    }
+  }
+
+  &.can-toggle {
+    &:hover {
+      background: $love-low;
+
+      .discourse-reactions-reaction-button {
+        .d-icon {
+          color: $love;
+        }
+      }
+    }
+
+    .discourse-reactions-reaction-button {
+      cursor: pointer;
+    }
+  }
+
+  &:not(.can-toggle) {
+    &:hover {
+      background: $primary-low;
+    }
+  }
+
+  &:not(.can-toggle):not(.has-reacted).has-reactions {
+    .discourse-reactions-reaction-button {
+      .d-icon {
+        color: $primary-low-mid;
+      }
+    }
+  }
+
+  &:not(.can-toggle).has-reactions {
+    .discourse-reactions-reaction-button {
+      .d-icon {
+        color: $love;
+      }
+    }
+  }
+
+  .has-reacted {
     .d-icon {
       color: $love;
     }
@@ -198,22 +250,12 @@ html.no-select {
 }
 
 .discourse-reactions-reaction-button {
+  cursor: not-allowed;
+
   .btn-toggle-reaction {
     outline: none;
     pointer-events: none;
     background: none !important;
-
-    &.has-like {
-      .d-icon {
-        color: $love;
-      }
-    }
-  }
-
-  &:hover {
-    .btn-toggle-reaction.has-like .d-icon {
-      color: $primary-medium !important;
-    }
   }
 }
 
