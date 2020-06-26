@@ -27,11 +27,9 @@ export default createWidget("discourse-reactions-state-panel", {
     if (!attrs.statePanelExpanded) return;
     if (!attrs.post.reactions.length) return;
 
-    const displayedReaction = attrs.post.reactions.findBy(
-      "id",
-      this.state.displayedReactionId
-    );
-    if (!displayedReaction) return;
+    const displayedReaction =
+      attrs.post.reactions.findBy("id", this.state.displayedReactionId) ||
+      attrs.post.reactions.firstObject;
 
     return [
       this.attach("fake-zone", {
