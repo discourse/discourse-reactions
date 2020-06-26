@@ -6,8 +6,8 @@ replaceIcon("notification.reaction", "bell");
 function canHaveReactions(post, siteSettings) {
   return (
     post &&
-    post.showLike &&
-    post.topicId.toString() === siteSettings.discourse_reactions_test_topic_id
+    post.topic_id &&
+    post.topic_id.toString() === siteSettings.discourse_reactions_test_topic_id
   );
 }
 
@@ -15,11 +15,11 @@ function initializeDiscourseReactions(api) {
   const siteSettings = api.container.lookup("site-settings:main");
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
-    if (!canHaveReactions(dec.attrs, siteSettings)) {
+    const post = dec.getModel();
+
+    if (!canHaveReactions(post, siteSettings)) {
       return;
     }
-
-    const post = dec.getModel();
 
     return dec.attach("discourse-reactions-actions", {
       post
@@ -27,11 +27,11 @@ function initializeDiscourseReactions(api) {
   });
 
   api.decorateWidget("post-menu:before", dec => {
-    if (!canHaveReactions(dec.attrs, siteSettings)) {
+    const post = dec.getModel();
+
+    if (!canHaveReactions(post, siteSettings)) {
       return;
     }
-
-    const post = dec.getModel();
 
     return dec.attach("discourse-reactions-list", {
       post
