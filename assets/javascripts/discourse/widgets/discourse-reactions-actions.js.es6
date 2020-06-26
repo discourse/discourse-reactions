@@ -21,7 +21,7 @@ function animateReaction(mainReaction, start, end, complete) {
     return run(this, complete);
   }
 
-  $(mainReaction)
+  return $(mainReaction)
     .stop()
     .css("textIndent", start)
     .animate(
@@ -29,10 +29,7 @@ function animateReaction(mainReaction, start, end, complete) {
       {
         complete,
         step(now) {
-          $(this)
-            .css("transform", `scale(${now})`)
-            .addClass("d-liked")
-            .removeClass("d-unliked");
+          $(this).css("transform", `scale(${now})`);
         },
         duration: 150
       },

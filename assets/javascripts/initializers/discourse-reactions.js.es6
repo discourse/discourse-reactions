@@ -26,7 +26,7 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.decorateWidget("post-menu:before", dec => {
+  api.decorateWidget("post-menu:after", dec => {
     const post = dec.getModel();
 
     if (!canHaveReactions(post, siteSettings)) {
