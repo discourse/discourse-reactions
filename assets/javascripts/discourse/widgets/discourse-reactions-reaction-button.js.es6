@@ -36,6 +36,13 @@ export default createWidget("discourse-reactions-reaction-button", {
     const root = document.getElementsByTagName("html")[0];
     root && root.classList.remove("no-select");
 
+    // if (this.site.mobileView) {
+    //   const touch = event.originalEvent.touches[0];
+    //   if (touch.classList.contains("pickable-reaction")) {
+    //     touch.click();
+    //   }
+    // }
+
     if (this.site.mobileView && this._touchStartAt) {
       const duration = Date.now() - (this._touchStartAt || 0);
       this._touchStartAt = null;
@@ -49,13 +56,14 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   mouseOver(event) {
     if (!this.site.mobileView) {
+      this.callWidgetFunction("cancelCollapse");
       this.callWidgetFunction("toggleReactions", event);
     }
   },
 
-  mouseOut(event) {
+  mouseOut() {
     if (!this.site.mobileView) {
-      this.callWidgetFunction("collapseReactionsPicker", event);
+      this.callWidgetFunction("scheduleCollapse");
     }
   },
 

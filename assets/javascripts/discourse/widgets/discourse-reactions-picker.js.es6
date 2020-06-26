@@ -25,8 +25,16 @@ export default createWidget("discourse-reactions-picker", {
 
   buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
 
-  mouseOut(event) {
-    this.callWidgetFunction("collapseReactionsPicker", event);
+  mouseOut() {
+    if (!this.site.mobileView) {
+      this.callWidgetFunction("scheduleCollapse");
+    }
+  },
+
+  mouseOver() {
+    if (!this.site.mobileView) {
+      this.callWidgetFunction("cancelCollapse");
+    }
   },
 
   html(attrs) {
@@ -37,9 +45,6 @@ export default createWidget("discourse-reactions-picker", {
       );
 
       return [
-        this.attach("fake-zone", {
-          collapseFunction: "collapseReactionsPicker"
-        }),
         h(
           "div.container",
           attrs.post.topic.valid_reactions.map(reaction => {

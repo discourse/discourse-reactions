@@ -6,14 +6,15 @@ export default createWidget("discourse-reactions-counter", {
 
   buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
-  mouseOut(event) {
+  mouseOut() {
     if (!this.site.mobileView) {
-      this.callWidgetFunction("collapseStatePanel", event);
+      this.callWidgetFunction("scheduleCollapse");
     }
   },
 
   mouseOver(event) {
     if (!this.site.mobileView) {
+      this.callWidgetFunction("cancelCollapse");
       this.callWidgetFunction("toggleStatePanel", event);
     }
   },

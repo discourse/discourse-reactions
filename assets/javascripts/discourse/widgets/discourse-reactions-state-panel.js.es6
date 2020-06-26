@@ -7,8 +7,16 @@ export default createWidget("discourse-reactions-state-panel", {
 
   buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
 
-  mouseOut(event) {
-    this.callWidgetFunction("collapseStatePanel", event);
+  mouseOut() {
+    if (!this.site.mobileView) {
+      this.callWidgetFunction("scheduleCollapse");
+    }
+  },
+
+  mouseOver() {
+    if (!this.site.mobileView) {
+      this.callWidgetFunction("cancelCollapse");
+    }
   },
 
   onChangeDisplayedReaction(reactionId) {
@@ -32,9 +40,7 @@ export default createWidget("discourse-reactions-state-panel", {
       attrs.post.reactions.firstObject;
 
     return [
-      this.attach("fake-zone", {
-        collapseFunction: "collapseStatePanel"
-      }),
+      ,
       h("div.container", [
         h(
           "div.counters",

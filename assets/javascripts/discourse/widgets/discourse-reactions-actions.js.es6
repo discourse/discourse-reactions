@@ -5,16 +5,7 @@ import { next, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
-
-function offset(elt) {
-  const rect = elt.getBoundingClientRect();
-  const bodyElt = document.body;
-
-  return {
-    top: rect.top + bodyElt.scrollTop,
-    left: rect.left + bodyElt.scrollLeft
-  };
-}
+import { later, cancel } from "@ember/runloop";
 
 function animateReaction(mainReaction, start, end, complete) {
   if (isTesting()) {
@@ -75,7 +66,7 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReactions(event) {
     if (this.state.reactionsPickerExpanded) {
-      this.collapseReactionsPicker(event);
+      this.scheduleCollapse();
     } else {
       this.expandReactionsPicker(event);
     }
@@ -83,7 +74,7 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleStatePanel(event) {
     if (this.state.statePanelExpanded) {
-      this.collapseStatePanel(event);
+      this.scheduleCollapse();
     } else {
       this.expandStatePanel(event);
     }
@@ -100,7 +91,7 @@ export default createWidget("discourse-reactions-actions", {
           animateReaction(reaction, scales[1], scales[0], () => {
             CustomReaction.toggle(params.postId, params.reaction)
               .then(resolve)
-              .finally(() => this.collapseReactionsPicker());
+              .finally(() => this.collapsePanels());
           });
         });
       });
@@ -109,9 +100,9 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleLike() {
     if (this.state.reactionsPickerExpanded) {
-      this.collapseReactionsPicker();
+      this.collapsePanels();
     } else if (this.state.statePanelExpanded) {
-      this.collapseStatePanel();
+      this.collapsePanels();
     } else {
       const mainReaction = document.querySelector(
         `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
@@ -128,6 +119,15 @@ export default createWidget("discourse-reactions-actions", {
         });
       });
     }
+  },
+
+  cancelCollapse() {
+    this._collapseHandler && cancel(this._collapseHandler);
+  },
+
+  scheduleCollapse() {
+    this._collapseHandler && cancel(this._collapseHandler);
+    this._collapseHandler = later(this, this.collapsePanels, 500);
   },
 
   buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
@@ -157,6 +157,8 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   collapsePanels() {
+    this.cancelCollapse();
+
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
 
@@ -169,36 +171,6 @@ export default createWidget("discourse-reactions-actions", {
         .forEach(popper => popper.classList.remove("is-expanded"));
 
     this.scheduleRerender();
-  },
-
-  collapseStatePanel(event) {
-    const container = document.getElementById(this.buildId(this.attrs));
-    const trigger = container.querySelector(".discourse-reactions-counter");
-    const popper = container.querySelector(".discourse-reactions-state-panel");
-    const fake = container.querySelector(".fake-zone");
-
-    if (this.site.mobileView) {
-      this.collapsePanels();
-    } else if (
-      !this._isCursorInsideContainers([trigger, popper, fake], event)
-    ) {
-      this.collapsePanels();
-    }
-  },
-
-  collapseReactionsPicker(event) {
-    const container = document.getElementById(this.buildId(this.attrs));
-    const trigger = container.querySelector(".btn-toggle-reaction");
-    const popper = container.querySelector(".discourse-reactions-picker");
-    const fake = container.querySelector(".fake-zone");
-
-    if (this.site.mobileView) {
-      this.collapsePanels();
-    } else if (
-      !this._isCursorInsideContainers([trigger, popper, fake], event)
-    ) {
-      this.collapsePanels();
-    }
   },
 
   html(attrs) {
@@ -239,54 +211,6 @@ export default createWidget("discourse-reactions-actions", {
     );
 
     return items;
-  },
-
-  _isCursorInsideContainers(containers, event) {
-    if (!event) return false;
-
-    return containers
-      .map(container => {
-        if (!container) {
-          return false;
-        }
-        return this._isCursorInsideContainer(event, container);
-      })
-      .includes(true);
-  },
-
-  _isCursorInsideContainer(event, container) {
-    const bounds = container.getBoundingClientRect();
-    const isCircle =
-      window.getComputedStyle(container)["border-radius"] !== "0px";
-
-    // we inset (-5/+5) so we do the check slightly before leaving container to make
-    // it more reliable
-
-    if (isCircle) {
-      const distance = Math.floor(
-        Math.sqrt(
-          Math.pow(
-            event.clientX -
-              (offset(container).left + container.offsetWidth / 2),
-            2
-          ) +
-            Math.pow(
-              event.clientY -
-                (offset(container).top + container.offsetHeight / 2),
-              2
-            )
-        )
-      );
-
-      return container.offsetWidth / 2 - 5 > distance;
-    } else {
-      return (
-        event.clientX >= bounds.left + 5 &&
-        event.clientX <= bounds.right - 5 &&
-        event.clientY >= bounds.top + 5 &&
-        event.clientY <= bounds.bottom - 5
-      );
-    }
   },
 
   _setupPopper(postId, popperVariable, selectors) {

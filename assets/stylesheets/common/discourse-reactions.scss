@@ -238,16 +238,6 @@ html.no-select {
       color: $love;
     }
   }
-
-  .fake-zone {
-    width: 70px;
-    height: 50px;
-    border-radius: 25px;
-    position: absolute;
-    bottom: -15px;
-    left: calc(100% / 2 - 35px);
-    z-index: 0;
-  }
 }
 
 .discourse-reactions-reaction-button {
