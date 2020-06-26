@@ -38,7 +38,7 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.onPageChange((url, title) => {
+  api.onPageChange(url => {
     const topicRegex = new RegExp(
       `^\/t\/.*?\/${siteSettings.discourse_reactions_test_topic_id}.*`
     );
