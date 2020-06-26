@@ -315,6 +315,12 @@ export default createWidget("discourse-reactions-actions", {
           options: {
             offset: [0, -5]
           }
+        },
+        {
+          name: "preventOverflow",
+          options: {
+            padding: 5
+          }
         }
       ]
     });
