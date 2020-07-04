@@ -66,6 +66,15 @@ after_initialize do
     end
   end
 
+  add_to_serializer(:post, :default_reaction_clicked) do
+    return object.default_reaction_clicked unless object.default_reaction_clicked.nil?
+    object
+      .reactions
+      .find do |reaction| 
+        reaction.reaction_value == SiteSetting.discourse_reactions_like_icon && reaction.reaction_users.find { |reaction_user| reaction_user.user_id == scope.user.id }
+      end.present?
+  end
+
   add_to_serializer(:topic_view, :valid_reactions) do
     DiscourseReactions::Reaction.valid_reactions
   end
