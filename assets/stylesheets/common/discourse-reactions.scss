@@ -111,14 +111,14 @@ html.no-select {
     box-shadow: shadow("card");
     background-color: $secondary;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     z-index: 1;
   }
 
   .counters {
-    border-right: 1px solid $primary-low;
+    border-bottom: 1px solid $primary-low;
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     grid-column-gap: 0.5em;
     grid-row-gap: 0.5em;
     padding: 0.5em;
