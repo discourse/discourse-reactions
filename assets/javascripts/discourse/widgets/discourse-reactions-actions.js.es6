@@ -41,6 +41,10 @@ export default createWidget("discourse-reactions-actions", {
   buildKey: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
   buildClasses(attrs) {
+    if (!attrs.post.reactions) {
+      return;
+    }
+
     const hasReactions = attrs.post.reactions.length > 0;
     const hasReacted = (attrs.post.reactions || []).reduce((acc, reaction) => {
       if (reaction.users.findBy("username", this.currentUser.username)) {
@@ -95,26 +99,22 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleLike() {
-    if (this.state.reactionsPickerExpanded) {
-      this.collapsePanels();
-    } else if (this.state.statePanelExpanded) {
-      this.collapsePanels();
-    } else {
-      const mainReaction = document.querySelector(
-        `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
-      );
-      const scales = [1.0, 1.5];
-      return new Promise(resolve => {
-        animateReaction(mainReaction, scales[0], scales[1], () => {
-          animateReaction(mainReaction, scales[1], scales[0], () => {
-            CustomReaction.toggle(
-              this.attrs.post.id,
-              this.attrs.post.topic.valid_reactions.firstObject
-            ).then(resolve);
-          });
+    this.collapsePanels();
+
+    const mainReaction = document.querySelector(
+      `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
+    );
+    const scales = [1.0, 1.5];
+    return new Promise(resolve => {
+      animateReaction(mainReaction, scales[0], scales[1], () => {
+        animateReaction(mainReaction, scales[1], scales[0], () => {
+          CustomReaction.toggle(
+            this.attrs.post.id,
+            this.attrs.post.topic.valid_reactions.firstObject
+          ).then(resolve);
         });
       });
-    }
+    });
   },
 
   cancelCollapse() {
@@ -217,10 +217,15 @@ export default createWidget("discourse-reactions-actions", {
         `#discourse-reactions-actions-${postId} ${selectors[1]}`
       );
 
-      popper.classList.add("is-expanded");
+      if (popper) {
+        popper.classList.add("is-expanded");
 
-      if (this[popperVariable]) return;
-      this[popperVariable] = this._applyPopper(trigger, popper);
+        if (this[popperVariable]) {
+          return;
+        }
+
+        this[popperVariable] = this._applyPopper(trigger, popper);
+      }
     });
   },
 
