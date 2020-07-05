@@ -101,6 +101,14 @@ export default createWidget("discourse-reactions-actions", {
   toggleLike() {
     this.collapsePanels();
 
+    if (!this.currentUser) {
+      return;
+    }
+
+    if (this.attrs.post.user_id === this.currentUser.id) {
+      return;
+    }
+
     const mainReaction = document.querySelector(
       `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
     );
