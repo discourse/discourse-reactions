@@ -116,10 +116,16 @@ export default createWidget("discourse-reactions-actions", {
     return new Promise(resolve => {
       animateReaction(mainReaction, scales[0], scales[1], () => {
         animateReaction(mainReaction, scales[1], scales[0], () => {
+          mainReaction.classList.add("is-toggling");
+
           CustomReaction.toggle(
             this.attrs.post.id,
             this.attrs.post.topic.valid_reactions.firstObject
-          ).then(resolve);
+          )
+            .then(resolve)
+            .finally(
+              () => mainReaction && mainReaction.classList.remove("is-toggling")
+            );
         });
       });
     });

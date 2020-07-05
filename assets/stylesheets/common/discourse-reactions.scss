@@ -202,6 +202,10 @@ html.no-select {
       .discourse-reactions-reaction-button {
         .d-icon {
           color: $love;
+
+          &.is-toggling {
+            color: $love;
+          }
         }
       }
     }
@@ -241,7 +245,7 @@ html.no-select {
 }
 
 .discourse-reactions-reaction-button {
-  cursor: not-allowed;
+  cursor: default;
 
   .btn-toggle-reaction {
     outline: none;
