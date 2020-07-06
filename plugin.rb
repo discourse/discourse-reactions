@@ -66,6 +66,14 @@ after_initialize do
     end
   end
 
+  add_to_serializer(:post, :reaction_users_count) do
+    DiscourseReactions::ReactionUser
+      .select(:user_id)
+      .distinct(:user_id)
+      .where(reaction_id: object.reactions.pluck(:id))
+      .count
+  end
+
   add_to_serializer(:post, :default_reaction_clicked) do
     return object.default_reaction_clicked unless object.default_reaction_clicked.nil?
     object

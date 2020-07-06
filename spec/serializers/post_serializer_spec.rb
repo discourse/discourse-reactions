@@ -42,6 +42,7 @@ describe PostSerializer do
     expect(json[:default_reaction_clicked]).to eq(false)
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
     expect(json[:default_reaction_clicked]).to eq(true)
+    expect(json[:reaction_users_count]).to eq(2)
   end
 
   context 'disabled' do
