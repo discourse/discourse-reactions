@@ -21,7 +21,7 @@ export default createWidget("discourse-reactions-list", {
           .reverse()
           .map(reaction =>
             h(
-              "span.reaction",
+              `span.reaction.${reaction.id}`,
               new RawHtml({
                 html: emojiUnescape(`:${reaction.id}:`)
               })

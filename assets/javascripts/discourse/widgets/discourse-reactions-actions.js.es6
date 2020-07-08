@@ -7,6 +7,34 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
 
+function dropReaction(reaction) {
+  if (isTesting()) {
+    return;
+  }
+
+  return $(reaction)
+    .stop()
+    .css({
+      position: "absolute",
+      left: 0,
+      top: "0px",
+      opacity: 1
+    })
+    .animate(
+      {
+        top: "30px",
+        opacity: 0
+      },
+      {
+        duration: 250,
+        complete: () => {
+          $(reaction).remove();
+        }
+      },
+      "swing"
+    );
+}
+
 function animateReaction(mainReaction, start, end, complete) {
   if (isTesting()) {
     return run(this, complete);
@@ -147,13 +175,21 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReaction(params) {
     if (params.canUndo) {
-      const reaction = document.querySelector(
+      const pickedReaction = document.querySelector(
         `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${params.reaction} .emoji`
       );
-      const scales = [1.0, 1.5];
+
+      const scales = [1.0, 1.75];
       return new Promise(resolve => {
-        animateReaction(reaction, scales[0], scales[1], () => {
-          animateReaction(reaction, scales[1], scales[0], () => {
+        animateReaction(pickedReaction, scales[0], scales[1], () => {
+          animateReaction(pickedReaction, scales[1], scales[0], () => {
+            const droppableReaction = document.querySelector(
+              `[data-post-id="${params.postId}"] .discourse-reactions-list .reaction.${params.reaction}`
+            );
+            if (droppableReaction) {
+              dropReaction(droppableReaction);
+            }
+
             CustomReaction.toggle(params.postId, params.reaction)
               .then(resolve)
               .finally(() => this.collapsePanels());
