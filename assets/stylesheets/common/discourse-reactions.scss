@@ -254,6 +254,6 @@ nav.post-controls .actions {
 
 body.discourse-reactions-test-topic {
   .actions > .double-button {
-    display: none;
+    display: none !important;
   }
 }
