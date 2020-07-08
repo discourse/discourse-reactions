@@ -63,7 +63,7 @@ export default createWidget("discourse-reactions-actions", {
       attrs.post.likeAction &&
       (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
     ) {
-      classes.push("can-toggle-default-reaction");
+      classes.push("can-toggle-positive-reaction");
     }
     return classes;
   },
@@ -166,7 +166,13 @@ export default createWidget("discourse-reactions-actions", {
   toggleLike() {
     this.collapsePanels();
 
-    if (this.attrs.post.likeAction && !this.attrs.post.likeAction.canToggle) {
+    if (
+      this.attrs.post.likeAction &&
+      !(
+        this.attrs.post.likeAction.canToggle ||
+        this.attrs.post.likeAction.can_undo
+      )
+    ) {
       return;
     }
 

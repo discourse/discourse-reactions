@@ -225,21 +225,25 @@ html.no-select {
     }
   }
 
-  &.can-toggle-default-reaction {
+  &:not(.can-toggle-positive-reaction) {
     .discourse-reactions-reaction-button {
-      cursor: pointer;
+      cursor: default;
+    }
+
+    &:hover {
+      .discourse-reactions-reaction-button {
+        background: none;
+
+        .d-icon {
+          color: $love;
+        }
+      }
     }
   }
 
-  .discourse-reactions-reaction-button {
-    .d-icon.is-toggling {
-      &.on {
-        color: $love;
-      }
-
-      &.off {
-        color: $primary-medium;
-      }
+  &.can-toggle-positive-reaction {
+    .discourse-reactions-reaction-button {
+      cursor: pointer;
     }
   }
 }
