@@ -276,12 +276,15 @@ export default createWidget("discourse-reactions-actions", {
       title = I18n.t("discourse_reactions.can_react");
     }
 
-    items.push(
-      h("div.double-button", { title }, [
-        this.attach("discourse-reactions-counter", attrs),
+    const doubleButton = [this.attach("discourse-reactions-counter", attrs)];
+
+    if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
+      doubleButton.push(
         this.attach("discourse-reactions-reaction-button", attrs)
-      ])
-    );
+      );
+    }
+
+    items.push(h("div.double-button", { title }, doubleButton));
 
     return items;
   },
