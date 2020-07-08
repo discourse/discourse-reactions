@@ -7,7 +7,21 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
   tagName: "div.discourse-reactions-state-panel-reaction",
 
   click() {
-    this.sendWidgetAction("onChangeDisplayedReaction", this.attrs.reaction.id);
+    if (!this.site.mobileView) {
+      this.sendWidgetAction(
+        "onChangeDisplayedReaction",
+        this.attrs.reaction.id
+      );
+    }
+  },
+
+  touchStart() {
+    if (this.site.mobileView) {
+      this.sendWidgetAction(
+        "onChangeDisplayedReaction",
+        this.attrs.reaction.id
+      );
+    }
   },
 
   buildClasses(attrs) {
