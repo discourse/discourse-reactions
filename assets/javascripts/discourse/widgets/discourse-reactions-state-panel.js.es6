@@ -26,7 +26,7 @@ export default createWidget("discourse-reactions-state-panel", {
   defaultState(attrs) {
     return {
       displayedReactionId: attrs.post.reactions.length
-        ? attrs.post.reactions.firstObject.id
+        ? attrs.post.reactions.sortBy("count").reverse().firstObject.id
         : null
     };
   },
@@ -35,16 +35,19 @@ export default createWidget("discourse-reactions-state-panel", {
     if (!attrs.statePanelExpanded) return;
     if (!attrs.post.reactions.length) return;
 
+    const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
+
     const displayedReaction =
       attrs.post.reactions.findBy("id", this.state.displayedReactionId) ||
-      attrs.post.reactions.firstObject;
+      sortedReactions.firstObject;
 
     return [
       ,
       h("div.container", [
         h(
           "div.counters",
-          attrs.post.reactions.map(reaction =>
+
+          sortedReactions.map(reaction =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
               isDisplayed: reaction.id === this.state.displayedReactionId

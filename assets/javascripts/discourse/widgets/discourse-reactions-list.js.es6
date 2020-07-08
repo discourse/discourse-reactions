@@ -16,14 +16,17 @@ export default createWidget("discourse-reactions-list", {
     return [
       h(
         "div.reactions",
-        reactions.sortBy("count").map(reaction =>
-          h(
-            "span.reaction",
-            new RawHtml({
-              html: emojiUnescape(`:${reaction.id}:`)
-            })
+        reactions
+          .sortBy("count")
+          .reverse()
+          .map(reaction =>
+            h(
+              "span.reaction",
+              new RawHtml({
+                html: emojiUnescape(`:${reaction.id}:`)
+              })
+            )
           )
-        )
       )
     ];
   }
