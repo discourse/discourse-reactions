@@ -251,6 +251,7 @@ html.no-select {
 .discourse-reactions-reaction-button {
   cursor: default;
   display: flex;
+  touch-action: none;
 
   .btn-toggle-reaction {
     outline: none;
