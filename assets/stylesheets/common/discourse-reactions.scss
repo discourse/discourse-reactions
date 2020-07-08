@@ -8,7 +8,6 @@ html.no-select {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  margin-left: 0.5em;
 
   .reactions {
     display: flex;
@@ -20,7 +19,7 @@ html.no-select {
       margin-left: -0.25em;
 
       &:first-child {
-        margin-left: 0.33em;
+        margin-left: 0.25em;
       }
 
       &:first-child {
@@ -90,6 +89,10 @@ html.no-select {
     margin: 0.25em !important;
     border: 1px solid transparent !important;
     cursor: not-allowed;
+
+    &:not(.can-undo) {
+      filter: grayscale(1);
+    }
 
     &.can-undo {
       cursor: pointer;
@@ -195,6 +198,17 @@ html.no-select {
     margin-right: 0px !important;
   }
 
+  .discourse-reactions-reaction-button {
+    .d-icon {
+      &.yolo-1 {
+        color: blue;
+      }
+      &.yolo-2 {
+        color: green;
+      }
+    }
+  }
+
   &.has-default-reacted {
     .discourse-reactions-reaction-button {
       .d-icon {
@@ -224,6 +238,7 @@ html.no-select {
 
 .discourse-reactions-reaction-button {
   cursor: default;
+  display: flex;
 
   .btn-toggle-reaction {
     outline: none;
@@ -235,15 +250,13 @@ html.no-select {
 .discourse-reactions-counter {
   display: flex;
 
-  .btn-reaction-counter {
-    outline: none;
-    background: none !important;
-    transition: none;
-    cursor: default;
-    padding: 8px 4px !important;
+  .reactions-counter {
+    display: flex;
+    align-items: center;
+    margin-left: 0.25em;
   }
 
-  &:hover .btn-reaction-counter {
+  &:hover .reactions-counter {
     color: $primary !important;
   }
 }
