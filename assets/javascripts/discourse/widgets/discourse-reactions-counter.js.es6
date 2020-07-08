@@ -6,6 +6,20 @@ export default createWidget("discourse-reactions-counter", {
 
   buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
+  click(event) {
+    if (!this.site.mobileView) {
+      this.callWidgetFunction("toggleStatePanel", event);
+    }
+  },
+
+  touchStart(event) {
+    if (this.site.mobileView) {
+      this.callWidgetFunction("toggleStatePanel", event);
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  },
+
   mouseOut() {
     if (!this.site.mobileView) {
       this.callWidgetFunction("scheduleCollapse");
@@ -19,10 +33,6 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  click(event) {
-    this.callWidgetFunction("toggleStatePanel", event);
-  },
-
   html(attrs) {
     if (attrs.post.reaction_users_count) {
       const count = attrs.post.reaction_users_count;
@@ -33,10 +43,7 @@ export default createWidget("discourse-reactions-counter", {
 
       return [
         this.attach("discourse-reactions-list", attrs),
-        h(
-          "button.btn-flat.fade-out.btn-default.btn-reaction-counter",
-          count.toString()
-        )
+        h("div.reactions-counter", count.toString())
       ];
     }
   }
