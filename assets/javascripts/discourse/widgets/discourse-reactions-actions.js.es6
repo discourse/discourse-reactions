@@ -79,6 +79,71 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
+  touchStart() {
+    this._touchTimeout && cancel(this._touchTimeout);
+
+    if (this.site.mobileView) {
+      const root = document.getElementsByTagName("html")[0];
+      root && root.classList.add("no-select");
+
+      this._touchStartAt = Date.now();
+      this._touchTimeout = later(() => {
+        this._touchStartAt = null;
+        this.toggleReactions();
+      }, 400);
+      return false;
+    }
+  },
+
+  touchEnd(event) {
+    this._touchTimeout && cancel(this._touchTimeout);
+
+    const root = document.getElementsByTagName("html")[0];
+    root && root.classList.remove("no-select");
+
+    if (this.site.mobileView) {
+      if (event.originalEvent.changedTouches.length) {
+        const endTarget = document.elementFromPoint(
+          event.originalEvent.changedTouches[0].clientX,
+          event.originalEvent.changedTouches[0].clientY
+        );
+
+        if (endTarget) {
+          const parentNode = endTarget.parentNode;
+
+          if (
+            parentNode &&
+            parentNode.classList.contains("pickable-reaction")
+          ) {
+            parentNode.click();
+            return;
+          }
+        }
+      }
+
+      const duration = Date.now() - (this._touchStartAt || 0);
+      this._touchStartAt = null;
+      if (duration > 400) {
+        if (
+          event.originalEvent &&
+          event.originalEvent.target &&
+          event.originalEvent.target.classList.contains(
+            "discourse-reactions-reaction-button"
+          )
+        ) {
+          this.toggleReactions(event);
+        }
+      } else {
+        if (
+          event.target &&
+          event.target.classList.contains("discourse-reactions-reaction-button")
+        ) {
+          this.toggleLike();
+        }
+      }
+    }
+  },
+
   toggleReaction(params) {
     if (params.canUndo) {
       const reaction = document.querySelector(
