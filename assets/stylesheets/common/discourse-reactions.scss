@@ -189,12 +189,6 @@ html.no-select {
   display: inline-flex;
   cursor: pointer;
 
-  &:hover {
-    .emoji {
-      filter: grayscale(0) !important;
-    }
-  }
-
   .double-button {
     margin-right: 0px !important;
   }
@@ -210,10 +204,30 @@ html.no-select {
     }
   }
 
-  &.has-default-reacted {
+  &:not(.user-has-positively-reacted) {
+    .discourse-reactions-reaction-button {
+      &:hover {
+        .d-icon {
+          color: $love;
+        }
+
+        background: $primary-low;
+      }
+    }
+  }
+
+  &.user-has-positively-reacted {
     .discourse-reactions-reaction-button {
       .d-icon {
         color: $love;
+      }
+
+      &:hover {
+        .d-icon {
+          color: $primary-medium;
+        }
+
+        background: $primary-low;
       }
     }
   }
@@ -246,6 +260,10 @@ html.no-select {
     pointer-events: none;
     background: none !important;
   }
+
+  &:hover {
+    background: $primary-low;
+  }
 }
 
 .discourse-reactions-counter {
@@ -255,10 +273,19 @@ html.no-select {
     display: flex;
     align-items: center;
     margin-left: 0.25em;
+    margin-right: 0.5em;
   }
 
-  &:hover .reactions-counter {
-    color: $primary !important;
+  &:hover {
+    background: $primary-low;
+
+    .emoji {
+      filter: grayscale(0) !important;
+    }
+
+    .reactions-counter {
+      color: $primary !important;
+    }
   }
 }
 

@@ -30,7 +30,7 @@ describe TopicViewSerializer do
         }
       ]
     )
-    expect(json[:post_stream][:posts][0][:default_reaction_used]).to eq(true)
-    expect(json[:post_stream][:posts][1][:default_reaction_used]).to eq(false)
+    expect(json[:post_stream][:posts][0][:user_positively_reacted]).to eq(true)
+    expect(json[:post_stream][:posts][1][:user_positively_reacted]).to eq(false)
   end
 end

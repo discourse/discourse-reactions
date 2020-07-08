@@ -57,7 +57,8 @@ export default createWidget("discourse-reactions-actions", {
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
     if (hasReacted > 0) classes.push("has-reacted");
-    if (attrs.post.default_reaction_used) classes.push("has-default-reacted");
+    if (attrs.post.user_positively_reacted)
+      classes.push("user-has-positively-reacted");
     if (
       attrs.post.likeAction &&
       (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)

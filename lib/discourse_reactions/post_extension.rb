@@ -3,6 +3,6 @@
 module DiscourseReactions::PostExtension
   def self.prepended(base)
     base.has_many :reactions, class_name: 'DiscourseReactions::Reaction'
-    base.attr_accessor :default_reaction_used
+    base.attr_accessor :user_positively_reacted
   end
 end

@@ -39,8 +39,10 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   html(attrs) {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-    const hasReactions = attrs.post.default_reaction_used;
-    const icon = hasReactions ? mainReactionIcon : `far-${mainReactionIcon}`;
+    const hasPositivelyReacted = attrs.post.user_positively_reacted;
+    const icon = hasPositivelyReacted
+      ? mainReactionIcon
+      : `far-${mainReactionIcon}`;
 
     return h(`button.btn-toggle-reaction.btn-icon.no-text`, [iconNode(icon)]);
   }

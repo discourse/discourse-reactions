@@ -6,15 +6,15 @@ module DiscourseReactions::TopicViewSerializerExtension
       posts = object.posts.includes(reactions: { reaction_users: :user })
 
       if scope.user
-        posts_default_reaction_used =
+        posts_user_positively_reacted =
           DiscourseReactions::Reaction
-            .where(post_id: posts.map(&:id), reaction_value: SiteSetting.discourse_reactions_like_icon)
+            .where(post_id: posts.map(&:id), reaction_value: DiscourseReactions::Reaction.positive_reactions)
             .joins(:reaction_users)
             .where(discourse_reactions_reaction_users: { user_id: scope.user.id })
             .pluck(:post_id)
 
         posts.each do |post|
-          post.default_reaction_used = posts_default_reaction_used.include?(post.id)
+          post.user_positively_reacted = posts_user_positively_reacted.include?(post.id)
         end
       end
 
