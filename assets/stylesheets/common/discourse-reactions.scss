@@ -193,17 +193,6 @@ html.no-select {
     margin-right: 0px !important;
   }
 
-  .discourse-reactions-reaction-button {
-    .d-icon {
-      &.yolo-1 {
-        color: blue;
-      }
-      &.yolo-2 {
-        color: green;
-      }
-    }
-  }
-
   &:not(.user-has-positively-reacted) {
     .discourse-reactions-reaction-button {
       &:hover {
