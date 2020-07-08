@@ -53,18 +53,17 @@ export default createWidget("discourse-reactions-actions", {
 
       return acc;
     }, 0);
-    const userHasReacted =
-      hasReactions &&
-      attrs.post.reactions.firstObject.users.findBy(
-        "username",
-        this.currentUser.username
-      );
 
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
     if (hasReacted > 0) classes.push("has-reacted");
-    if (!hasReactions || (userHasReacted && userHasReacted.can_undo))
-      classes.push("can-toggle");
+    if (attrs.post.default_reaction_used) classes.push("has-default-reacted");
+    if (
+      attrs.post.likeAction &&
+      (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
+    ) {
+      classes.push("can-toggle-default-reaction");
+    }
     return classes;
   },
 
@@ -101,6 +100,10 @@ export default createWidget("discourse-reactions-actions", {
   toggleLike() {
     this.collapsePanels();
 
+    if (this.attrs.post.likeAction && !this.attrs.post.likeAction.canToggle) {
+      return;
+    }
+
     if (!this.currentUser) {
       return;
     }
@@ -121,11 +124,7 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(
             this.attrs.post.id,
             this.attrs.post.topic.valid_reactions.firstObject
-          )
-            .then(resolve)
-            .finally(
-              () => mainReaction && mainReaction.classList.remove("is-toggling")
-            );
+          ).then(resolve);
         });
       });
     });

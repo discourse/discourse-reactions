@@ -82,6 +82,6 @@ export default createWidget("discourse-reactions-reaction-button", {
     const hasReactions = attrs.post.default_reaction_used;
     const icon = hasReactions ? mainReactionIcon : `far-${mainReactionIcon}`;
 
-    return h(`button.btn-toggle-reaction.btn-icon.no-text}`, [iconNode(icon)]);
+    return h(`button.btn-toggle-reaction.btn-icon.no-text`, [iconNode(icon)]);
   }
 });

@@ -26,18 +26,6 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.decorateWidget("post-menu:after", dec => {
-    const post = dec.getModel();
-
-    if (!canHaveReactions(post, siteSettings)) {
-      return;
-    }
-
-    return dec.attach("discourse-reactions-list", {
-      post
-    });
-  });
-
   api.onPageChange(url => {
     const topicRegex = new RegExp(
       `^\/t\/.*?\/${siteSettings.discourse_reactions_test_topic_id}.*`

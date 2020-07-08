@@ -1,4 +1,3 @@
-import I18n from "I18n";
 import { h } from "virtual-dom";
 import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
@@ -9,17 +8,15 @@ export default createWidget("discourse-reactions-list", {
 
   html(attrs) {
     const reactions = attrs.post.reactions;
-    const sum = (acc, current) => acc + current.count;
-    const count = attrs.post.reactions.reduce(sum, 0);
 
-    if (count <= 0) {
+    if (attrs.post.reaction_users_count <= 0) {
       return;
     }
 
     return [
       h(
         "div.reactions",
-        reactions.map(reaction =>
+        reactions.sortBy("count").map(reaction =>
           h(
             "span.reaction",
             new RawHtml({
@@ -27,12 +24,6 @@ export default createWidget("discourse-reactions-list", {
             })
           )
         )
-      ),
-      h(
-        "span.users",
-        I18n.t("discourse_reactions.discourse_reactions_list.reactions_count", {
-          count
-        })
       )
     ];
   }

@@ -8,8 +8,6 @@ en:
     discourse_reactions:
       can_react: react to this post
       has_react: you've reacted to this post
-      discourse_reactions_list:
-        reactions_count: "%{count} reaction(s)"
     notifications:
       reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"

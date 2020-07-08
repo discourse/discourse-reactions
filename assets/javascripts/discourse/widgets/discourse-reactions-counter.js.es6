@@ -31,10 +31,13 @@ export default createWidget("discourse-reactions-counter", {
         return;
       }
 
-      return h(
-        "button.btn-flat.fade-out.btn-default.btn-reaction-counter",
-        count.toString()
-      );
+      return [
+        this.attach("discourse-reactions-list", attrs),
+        h(
+          "button.btn-flat.fade-out.btn-default.btn-reaction-counter",
+          count.toString()
+        )
+      ];
     }
   }
 });
