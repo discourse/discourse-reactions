@@ -7,28 +7,32 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
 
-function dropReaction(reaction) {
+function dropReaction(reaction, start, end, complete) {
   if (isTesting()) {
     return;
   }
 
-  return $(reaction)
-    .stop()
+  const $reaction = $(reaction);
+  const $clonedReaction = $(reaction).clone();
+
+  return $clonedReaction
+    .appendTo($reaction)
     .css({
       position: "absolute",
       left: 0,
-      top: "0px",
-      opacity: 1
+      top: 0,
+      opacity: start
     })
     .animate(
       {
         top: "30px",
-        opacity: 0
+        opacity: end
       },
       {
         duration: 250,
         complete: () => {
-          $(reaction).remove();
+          $clonedReaction.remove();
+          complete();
         }
       },
       "swing"
@@ -183,18 +187,34 @@ export default createWidget("discourse-reactions-actions", {
       return new Promise(resolve => {
         animateReaction(pickedReaction, scales[0], scales[1], () => {
           animateReaction(pickedReaction, scales[1], scales[0], () => {
-            const droppableReaction = document.querySelector(
-              `[data-post-id="${params.postId}"] .discourse-reactions-list .reaction.${params.reaction}`
+            const reactionsUsers = this.attrs.post.reactions.findBy(
+              "id",
+              params.reaction
             );
-            if (droppableReaction) {
-              dropReaction(droppableReaction);
+            if (
+              this.currentUser &&
+              reactionsUsers &&
+              reactionsUsers.users.findBy("username", this.currentUser.username)
+            ) {
+              const droppableReaction = document.querySelector(
+                `[data-post-id="${params.postId}"] .discourse-reactions-list .reaction.${params.reaction}`
+              );
+              dropReaction(droppableReaction, 0, 1, () => {
+                return CustomReaction.toggle(
+                  params.postId,
+                  params.reaction
+                ).then(resolve);
+              });
+            } else {
+              CustomReaction.toggle(params.postId, params.reaction).then(
+                resolve
+              );
             }
-
-            CustomReaction.toggle(params.postId, params.reaction)
-              .then(resolve)
-              .finally(() => this.collapsePanels());
           });
         });
+      }).finally(() => {
+        this.collapsePanels();
+        this.scheduleRerender();
       });
     }
   },
