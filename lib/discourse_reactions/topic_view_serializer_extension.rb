@@ -6,7 +6,7 @@ module DiscourseReactions::TopicViewSerializerExtension
       posts = object.posts.includes(reactions: { reaction_users: :user })
 
       if scope.user
-        posts_default_reaction_clicked =
+        posts_default_reaction_used =
           DiscourseReactions::Reaction
             .where(post_id: posts.map(&:id), reaction_value: SiteSetting.discourse_reactions_like_icon)
             .joins(:reaction_users)
@@ -14,7 +14,7 @@ module DiscourseReactions::TopicViewSerializerExtension
             .pluck(:post_id)
 
         posts.each do |post|
-          post.default_reaction_clicked = posts_default_reaction_clicked.include?(post.id)
+          post.default_reaction_used = posts_default_reaction_used.include?(post.id)
         end
       end
 

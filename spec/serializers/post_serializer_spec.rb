@@ -37,11 +37,11 @@ describe PostSerializer do
         count: 1
       }
     ])
-    expect(json[:default_reaction_clicked]).to eq(false)
+    expect(json[:default_reaction_used]).to eq(false)
     SiteSetting.discourse_reactions_like_icon = "thumbs-up"
-    expect(json[:default_reaction_clicked]).to eq(false)
+    expect(json[:default_reaction_used]).to eq(false)
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
-    expect(json[:default_reaction_clicked]).to eq(true)
+    expect(json[:default_reaction_used]).to eq(true)
     expect(json[:reaction_users_count]).to eq(2)
   end
 

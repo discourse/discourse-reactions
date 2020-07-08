@@ -74,11 +74,11 @@ after_initialize do
       .count
   end
 
-  add_to_serializer(:post, :default_reaction_clicked) do
-    return object.default_reaction_clicked unless object.default_reaction_clicked.nil?
+  add_to_serializer(:post, :default_reaction_used) do
+    return object.default_reaction_used unless object.default_reaction_used.nil?
     object
       .reactions
-      .find do |reaction| 
+      .find do |reaction|
         reaction.reaction_value == SiteSetting.discourse_reactions_like_icon && reaction.reaction_users.find { |reaction_user| reaction_user.user_id == scope.user.id }
       end.present?
   end
