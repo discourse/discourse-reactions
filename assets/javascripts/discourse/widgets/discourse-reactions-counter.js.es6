@@ -1,5 +1,6 @@
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
+import I18n from "I18n";
 
 export default createWidget("discourse-reactions-counter", {
   tagName: "div.discourse-reactions-counter",
@@ -31,6 +32,14 @@ export default createWidget("discourse-reactions-counter", {
       this.callWidgetFunction("cancelCollapse");
       this.callWidgetFunction("toggleStatePanel", event);
     }
+  },
+
+  buildAttributes(attrs) {
+    return {
+      title: I18n.t("discourse_reactions.users_reacted", {
+        count: attrs.post.reaction_users_count
+      })
+    };
   },
 
   html(attrs) {

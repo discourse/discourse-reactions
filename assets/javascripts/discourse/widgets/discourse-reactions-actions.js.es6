@@ -1,6 +1,5 @@
 import { Promise } from "rsvp";
 import { h } from "virtual-dom";
-import I18n from "I18n";
 import { next, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
@@ -332,13 +331,6 @@ export default createWidget("discourse-reactions-actions", {
       );
     }
 
-    let title;
-    if (attrs.post.reactions.length) {
-      title = I18n.t("discourse_reactions.has_react");
-    } else {
-      title = I18n.t("discourse_reactions.can_react");
-    }
-
     const doubleButton = [this.attach("discourse-reactions-counter", attrs)];
 
     if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
@@ -347,7 +339,7 @@ export default createWidget("discourse-reactions-actions", {
       );
     }
 
-    items.push(h("div.double-button", { title }, doubleButton));
+    items.push(h("div.double-button", {}, doubleButton));
 
     return items;
   },

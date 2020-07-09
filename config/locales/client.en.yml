@@ -6,8 +6,10 @@ en:
           discourse_reactions: "Discourse Reactions"
   js:
     discourse_reactions:
-      can_react: react to this post
-      has_react: you've reacted to this post
+      users_reacted:
+        zero: "No one has reacted yet"
+        one: "One user reacted"
+        other: "%{count} users reacted"
     notifications:
       reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
