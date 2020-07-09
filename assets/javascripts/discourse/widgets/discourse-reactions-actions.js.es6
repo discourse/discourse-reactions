@@ -19,7 +19,7 @@ function dropReaction(reaction, start, end, complete) {
     .appendTo($reaction)
     .css({
       position: "absolute",
-      left: 0,
+      left: "calc(50% - 0.65em)",
       top: 0,
       opacity: start
     })
