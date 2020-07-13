@@ -1,3 +1,4 @@
+import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
 import { h } from "virtual-dom";
 import { next, run } from "@ember/runloop";
@@ -6,39 +7,62 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
 
-function dropReaction(reaction, start, end, complete) {
+function buildFakeReaction(reactionId) {
+  const img = document.createElement("img");
+  img.src = emojiUrlFor(reactionId);
+  img.classList.add("emoji");
+
+  const div = document.createElement("div");
+  div.classList.add("fake-reaction", "reaction", reactionId);
+  div.appendChild(img);
+
+  return div;
+}
+
+function moveReactionAnimation(
+  list,
+  reactionId,
+  startPosition,
+  endPosition,
+  startOpacity,
+  endOpacity,
+  complete
+) {
   if (isTesting()) {
     return;
   }
 
-  const $reaction = $(reaction);
-  const $clonedReaction = $(reaction).clone();
+  const fakeReaction = buildFakeReaction(reactionId);
+  fakeReaction.style.top = startPosition;
+  fakeReaction.style.opacity = startOpacity;
 
-  return $clonedReaction
-    .appendTo($reaction)
-    .css({
-      position: "absolute",
-      left: "calc(50% - 0.65em)",
-      top: 0,
-      opacity: start
-    })
-    .animate(
-      {
-        top: "30px",
-        opacity: end
-      },
-      {
-        duration: 250,
-        complete: () => {
-          $clonedReaction.remove();
-          complete();
-        }
-      },
-      "swing"
-    );
+  list.appendChild(fakeReaction);
+
+  $(fakeReaction).animate(
+    {
+      top: endPosition,
+      opacity: endOpacity
+    },
+    {
+      duration: 350,
+      complete: () => {
+        fakeReaction.remove();
+        complete();
+      }
+    },
+    "swing"
+  );
 }
 
-function animateReaction(mainReaction, start, end, complete) {
+function addReaction(list, reactionId, complete) {
+  moveReactionAnimation(list, reactionId, "-50px", 0, 0, 1, complete);
+}
+
+function dropReaction(list, reactionId, complete) {
+  moveReactionAnimation(list, reactionId, 0, "50px", 0, 1, complete);
+}
+
+function scaleReactionAnimation(mainReaction, start, end, complete) {
   if (isTesting()) {
     return run(this, complete);
   }
@@ -184,30 +208,33 @@ export default createWidget("discourse-reactions-actions", {
 
       const scales = [1.0, 1.75];
       return new Promise(resolve => {
-        animateReaction(pickedReaction, scales[0], scales[1], () => {
-          animateReaction(pickedReaction, scales[1], scales[0], () => {
+        scaleReactionAnimation(pickedReaction, scales[0], scales[1], () => {
+          scaleReactionAnimation(pickedReaction, scales[1], scales[0], () => {
             const reactionsUsers = this.attrs.post.reactions.findBy(
               "id",
               params.reaction
             );
+            const reactionsList = document.querySelector(
+              `[data-post-id="${params.postId}"] .discourse-reactions-list .reactions`
+            );
+
             if (
               this.currentUser &&
               reactionsUsers &&
               reactionsUsers.users.findBy("username", this.currentUser.username)
             ) {
-              const droppableReaction = document.querySelector(
-                `[data-post-id="${params.postId}"] .discourse-reactions-list .reaction.${params.reaction}`
-              );
-              dropReaction(droppableReaction, 0, 1, () => {
+              dropReaction(reactionsList, params.reaction, () => {
                 return CustomReaction.toggle(
                   params.postId,
                   params.reaction
                 ).then(resolve);
               });
             } else {
-              CustomReaction.toggle(params.postId, params.reaction).then(
-                resolve
-              );
+              addReaction(reactionsList, params.reaction, () => {
+                CustomReaction.toggle(params.postId, params.reaction).then(
+                  resolve
+                );
+              });
             }
           });
         });
@@ -244,8 +271,8 @@ export default createWidget("discourse-reactions-actions", {
     );
     const scales = [1.0, 1.5];
     return new Promise(resolve => {
-      animateReaction(mainReaction, scales[0], scales[1], () => {
-        animateReaction(mainReaction, scales[1], scales[0], () => {
+      scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
+        scaleReactionAnimation(mainReaction, scales[1], scales[0], () => {
           mainReaction.classList.add("is-toggling");
 
           CustomReaction.toggle(
