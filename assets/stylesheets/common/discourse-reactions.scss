@@ -9,6 +9,7 @@ html.no-select {
   align-items: center;
   justify-content: flex-end;
   margin-left: 0.25em;
+  pointer-events: none;
 
   .reactions {
     display: flex;
@@ -255,6 +256,7 @@ html.no-select {
     align-items: center;
     margin-left: 0.25em;
     margin-right: 0.5em;
+    pointer-events: none;
   }
 
   &:hover {

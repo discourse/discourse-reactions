@@ -1,6 +1,7 @@
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
 import I18n from "I18n";
+import { later, cancel } from "@ember/runloop";
 
 export default createWidget("discourse-reactions-counter", {
   tagName: "div.discourse-reactions-counter",
@@ -21,16 +22,19 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  mouseOut() {
+  mouseOver(event) {
+    this._laterHoverHandler && cancel(this._laterHoverHandler);
+
     if (!this.site.mobileView) {
-      this.callWidgetFunction("scheduleCollapse");
+      this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
     }
   },
 
-  mouseOver(event) {
+  mouseOut() {
+    this._laterHoverHandler && cancel(this._laterHoverHandler);
+
     if (!this.site.mobileView) {
-      this.callWidgetFunction("cancelCollapse");
-      this.callWidgetFunction("toggleStatePanel", event);
+      this.callWidgetFunction("scheduleCollapse");
     }
   },
 
@@ -55,5 +59,10 @@ export default createWidget("discourse-reactions-counter", {
         h("div.reactions-counter", count.toString())
       ];
     }
+  },
+
+  _hoverHandler(event) {
+    this.callWidgetFunction("cancelCollapse");
+    this.callWidgetFunction("toggleStatePanel", event);
   }
 });

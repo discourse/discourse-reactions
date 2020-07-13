@@ -8,10 +8,6 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   buildKey: attrs => `discourse-reactions-reaction-button-${attrs.post.id}`,
 
-  init() {
-    this._laterHoverHandler = null;
-  },
-
   click() {
     if (!this.site.mobileView) {
       this.callWidgetFunction("toggleLike");
@@ -22,10 +18,7 @@ export default createWidget("discourse-reactions-reaction-button", {
     this._laterHoverHandler && cancel(this._laterHoverHandler);
 
     if (!this.site.mobileView) {
-      this._laterHoverHandler = later(() => {
-        this.callWidgetFunction("cancelCollapse");
-        this.callWidgetFunction("toggleReactions", event);
-      }, 250);
+      this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
     }
   },
 
@@ -45,5 +38,10 @@ export default createWidget("discourse-reactions-reaction-button", {
       : `far-${mainReactionIcon}`;
 
     return h(`button.btn-toggle-reaction.btn-icon.no-text`, [iconNode(icon)]);
+  },
+
+  _hoverHandler(event) {
+    this.callWidgetFunction("cancelCollapse");
+    this.callWidgetFunction("toggleReactions", event);
   }
 });
