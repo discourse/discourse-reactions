@@ -289,6 +289,8 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   scheduleCollapse() {
+    this._collapseHandler && cancel(this._collapseHandler);
+
     this._collapseHandler = later(this, this.collapsePanels, 500);
   },
 

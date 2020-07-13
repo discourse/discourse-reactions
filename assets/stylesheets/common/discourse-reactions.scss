@@ -68,7 +68,7 @@ html.no-select {
   }
 
   .container {
-    padding: 0.25em;
+    margin: 0.25em;
     box-shadow: shadow("card");
     background-color: $secondary;
     z-index: 1;
@@ -80,6 +80,10 @@ html.no-select {
     margin: 0.25em !important;
     border: 1px solid transparent !important;
     cursor: not-allowed;
+
+    .emoji {
+      pointer-events: none;
+    }
 
     &:not(.can-undo) {
       filter: grayscale(1);
