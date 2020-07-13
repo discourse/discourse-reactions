@@ -67,11 +67,8 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reaction_users_count) do
-    DiscourseReactions::ReactionUser
-      .select(:user_id)
-      .distinct(:user_id)
-      .where(reaction_id: object.reactions.pluck(:id))
-      .count
+    return object.reaction_users_count unless object.reaction_users_count.nil?
+    object.reactions.map(&:reaction_users).flatten.uniq(&:user_id).count
   end
 
   add_to_serializer(:post, :user_positively_reacted) do
