@@ -4,7 +4,6 @@ require 'rails_helper'
 require_relative '../fabricators/reaction_fabricator.rb'
 require_relative '../fabricators/reaction_user_fabricator.rb'
 
-
 describe PostSerializer do
   fab!(:user_1) { Fabricate(:user) }
   fab!(:user_2) { Fabricate(:user) }

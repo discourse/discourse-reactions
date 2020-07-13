@@ -5,4 +5,3 @@ module DiscourseReactions::NotificationExtension
     @types_with_reaction ||= super.merge(reaction: 90)
   end
 end
-
