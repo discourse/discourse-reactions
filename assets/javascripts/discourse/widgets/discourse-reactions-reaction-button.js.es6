@@ -9,6 +9,8 @@ export default createWidget("discourse-reactions-reaction-button", {
   buildKey: attrs => `discourse-reactions-reaction-button-${attrs.post.id}`,
 
   click() {
+    this._laterHoverHandler && cancel(this._laterHoverHandler);
+
     if (!this.site.mobileView) {
       this.callWidgetFunction("toggleLike");
     }
