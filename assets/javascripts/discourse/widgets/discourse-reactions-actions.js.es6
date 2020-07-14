@@ -1,3 +1,4 @@
+import { iconHTML } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
 import { h } from "virtual-dom";
@@ -272,9 +273,18 @@ export default createWidget("discourse-reactions-actions", {
     const scales = [1.0, 1.5];
     return new Promise(resolve => {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
-        scaleReactionAnimation(mainReaction, scales[1], scales[0], () => {
-          mainReaction.classList.add("is-toggling");
+        const mainReactionIcon = this.siteSettings
+          .discourse_reactions_like_icon;
+        const hasPositivelyReacted = this.attrs.post.user_positively_reacted;
+        const template = document.createElement("template");
+        template.innerHTML = iconHTML(
+          hasPositivelyReacted ? `far-${mainReactionIcon}` : mainReactionIcon
+        ).trim();
+        const icon = template.content.firstChild;
+        icon.style.transform = `scale(${scales[1]})`;
 
+        mainReaction.parentNode.replaceChild(icon, mainReaction);
+        scaleReactionAnimation(icon, scales[1], scales[0], () => {
           CustomReaction.toggle(
             this.attrs.post.id,
             this.attrs.post.topic.valid_reactions.firstObject
