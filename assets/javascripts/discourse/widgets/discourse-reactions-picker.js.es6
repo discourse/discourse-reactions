@@ -8,12 +8,8 @@ export default createWidget("discourse-reactions-picker", {
 
   buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
 
-  mouseOut(event) {
-    if (
-      !this.site.mobileView &&
-      !event.target.classList.contains("pickable-reaction") &&
-      !event.target.classList.contains("container")
-    ) {
+  mouseOut() {
+    if (!this.site.mobileView) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },
