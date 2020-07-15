@@ -1,14 +1,2 @@
 .desktop-view {
-  .discourse-reactions-actions {
-    &:hover {
-      .double-button {
-        z-index: z("usercard") - 1;
-      }
-
-      .discourse-reactions-reaction-button,
-      .discourse-reactions-counter {
-        z-index: 2;
-      }
-    }
-  }
 }
