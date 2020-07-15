@@ -3,6 +3,8 @@ import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
 import { later, cancel } from "@ember/runloop";
 
+let _laterHoverHandlers = {};
+
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
 
@@ -20,7 +22,12 @@ export default createWidget("discourse-reactions-reaction-button", {
     this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
-      this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
+      _laterHoverHandlers[this.attrs.post.id] = later(
+        this,
+        this._hoverHandler,
+        event,
+        500
+      );
     }
   },
 
@@ -43,7 +50,8 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   _cancelHoverHandler() {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    const handler = _laterHoverHandlers[this.attrs.post.id];
+    handler && cancel(handler);
   },
 
   _hoverHandler(event) {

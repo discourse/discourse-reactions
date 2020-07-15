@@ -3,6 +3,8 @@ import { createWidget } from "discourse/widgets/widget";
 import I18n from "I18n";
 import { later, cancel } from "@ember/runloop";
 
+let _laterHoverHandlers = {};
+
 export default createWidget("discourse-reactions-counter", {
   tagName: "div.discourse-reactions-counter",
 
@@ -28,7 +30,12 @@ export default createWidget("discourse-reactions-counter", {
     this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
-      this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
+      _laterHoverHandlers[this.attrs.post.id] = later(
+        this,
+        this._hoverHandler,
+        event,
+        500
+      );
     }
   },
 
@@ -64,7 +71,8 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   _cancelHoverHandler() {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    const handler = _laterHoverHandlers[this.attrs.post.id];
+    handler && cancel(handler);
   },
 
   _hoverHandler(event) {
