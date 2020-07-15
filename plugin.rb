@@ -66,12 +66,24 @@ after_initialize do
     end
   end
 
+  add_to_serializer(:post, :current_user_reactions) do
+    return [] unless scope.user.present?
+    object.reactions.map do |reaction|
+      next unless reaction.reaction_users.find { |reaction_user| reaction_user.user_id == scope.user.id }
+      {
+        id: reaction.reaction_value,
+        type: reaction.reaction_type.to_sym
+      }
+    end.compact
+  end
+
   add_to_serializer(:post, :reaction_users_count) do
     return object.reaction_users_count unless object.reaction_users_count.nil?
     object.reactions.map(&:reaction_users).flatten.uniq(&:user_id).count
   end
 
   add_to_serializer(:post, :user_positively_reacted) do
+    return false unless scope.user.present?
     return object.user_positively_reacted unless object.user_positively_reacted.nil?
     object
       .reactions

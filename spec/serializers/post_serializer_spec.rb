@@ -53,6 +53,11 @@ describe PostSerializer do
         count: 1
       }
     ])
+
+    expect(json[:current_user_reactions]).to eq([
+      { type: :emoji, id: 'otter' }
+    ])
+
     expect(json[:user_positively_reacted]).to eq(false)
 
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
