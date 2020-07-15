@@ -9,6 +9,8 @@ export default createWidget("discourse-reactions-counter", {
   buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
   click(event) {
+    this._cancelHoverHandler();
+
     if (!this.site.mobileView) {
       this.callWidgetFunction("toggleStatePanel", event);
     }
@@ -23,7 +25,7 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   mouseOver(event) {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
       this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
@@ -31,7 +33,7 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   mouseOut() {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
       this.callWidgetFunction("scheduleCollapse");
@@ -59,6 +61,10 @@ export default createWidget("discourse-reactions-counter", {
         h("div.reactions-counter", count.toString())
       ];
     }
+  },
+
+  _cancelHoverHandler() {
+    this._laterHoverHandler && cancel(this._laterHoverHandler);
   },
 
   _hoverHandler(event) {

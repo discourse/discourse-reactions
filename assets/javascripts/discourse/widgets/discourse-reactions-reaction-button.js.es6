@@ -9,7 +9,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   buildKey: attrs => `discourse-reactions-reaction-button-${attrs.post.id}`,
 
   click() {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
       this.callWidgetFunction("toggleLike");
@@ -17,7 +17,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   mouseOver(event) {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
       this._laterHoverHandler = later(this, this._hoverHandler, event, 500);
@@ -25,7 +25,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   mouseOut() {
-    this._laterHoverHandler && cancel(this._laterHoverHandler);
+    this._cancelHoverHandler();
 
     if (!this.site.mobileView) {
       this.callWidgetFunction("scheduleCollapse");
@@ -40,6 +40,10 @@ export default createWidget("discourse-reactions-reaction-button", {
       : `far-${mainReactionIcon}`;
 
     return h(`button.btn-toggle-reaction.btn-icon.no-text`, [iconNode(icon)]);
+  },
+
+  _cancelHoverHandler() {
+    this._laterHoverHandler && cancel(this._laterHoverHandler);
   },
 
   _hoverHandler(event) {
