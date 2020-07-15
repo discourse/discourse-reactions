@@ -83,7 +83,7 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", 0, 0, 1, complete);
+  moveReactionAnimation(list, reactionId, "-50px", "-8px", 0, 1, complete);
 }
 
 function dropReaction(list, reactionId, complete) {
