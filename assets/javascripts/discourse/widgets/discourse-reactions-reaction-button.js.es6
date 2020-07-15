@@ -65,7 +65,8 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   html(attrs) {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-    const hasPositivelyReacted = attrs.post.user_positively_reacted;
+    const hasPositivelyReacted =
+      attrs.post.likeAction && attrs.post.likeAction.acted;
     const icon = hasPositivelyReacted
       ? mainReactionIcon
       : `far-${mainReactionIcon}`;

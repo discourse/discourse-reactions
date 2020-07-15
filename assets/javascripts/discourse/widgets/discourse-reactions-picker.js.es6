@@ -26,11 +26,19 @@ export default createWidget("discourse-reactions-picker", {
         h(
           "div.container",
           attrs.post.topic.valid_reactions.map(reaction => {
-            const isUsed = attrs.post.current_user_reactions.findBy(
-              "id",
-              reaction
-            );
-            const canUndo = !isUsed || isUsed.can_undo;
+            let isUsed;
+            let canUndo;
+            if (reaction === this.siteSettings.discourse_reactions_like_icon) {
+              isUsed = attrs.post.likeAction && attrs.post.likeAction.acted;
+              canUndo =
+                attrs.post.likeAction &&
+                ((attrs.post.likeAction.acted &&
+                  attrs.post.likeAction.canToggle) ||
+                  !attrs.post.likeAction.acted);
+            } else {
+              isUsed = attrs.post.current_user_reactions.findBy("id", reaction);
+              canUndo = !isUsed || isUsed.can_undo;
+            }
 
             let title;
             let titleOptions;

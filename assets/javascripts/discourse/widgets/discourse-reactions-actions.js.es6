@@ -133,7 +133,7 @@ export default createWidget("discourse-reactions-actions", {
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
     if (hasReacted) classes.push("has-reacted");
-    if (attrs.post.user_positively_reacted)
+    if (attrs.post.likeAction && attrs.post.likeAction.acted)
       classes.push("user-has-positively-reacted");
     if (
       attrs.post.likeAction &&
@@ -291,7 +291,8 @@ export default createWidget("discourse-reactions-actions", {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
         const mainReactionIcon = this.siteSettings
           .discourse_reactions_like_icon;
-        const hasPositivelyReacted = this.attrs.post.user_positively_reacted;
+        const hasPositivelyReacted =
+          this.attrs.post.likeAction && this.attrs.post.likeAction.acted;
         const template = document.createElement("template");
         template.innerHTML = iconHTML(
           hasPositivelyReacted ? `far-${mainReactionIcon}` : mainReactionIcon
