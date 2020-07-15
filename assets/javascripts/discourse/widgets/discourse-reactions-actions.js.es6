@@ -21,7 +21,7 @@ function buildFakeReaction(reactionId) {
 }
 
 function moveReactionAnimation(
-  list,
+  postContainer,
   reactionId,
   startPosition,
   endPosition,
@@ -33,11 +33,41 @@ function moveReactionAnimation(
     return;
   }
 
+  let done;
+
   const fakeReaction = buildFakeReaction(reactionId);
   fakeReaction.style.top = startPosition;
   fakeReaction.style.opacity = startOpacity;
 
-  list.appendChild(fakeReaction);
+  const list = postContainer.querySelector(
+    ".discourse-reactions-list .reactions"
+  );
+
+  if (list) {
+    list.appendChild(fakeReaction);
+
+    done = () => {
+      fakeReaction.remove();
+      complete();
+    };
+  } else {
+    const counter = postContainer.querySelector(".discourse-reactions-counter");
+
+    const reactionsList = document.createElement("div");
+    reactionsList.classList.add("discourse-reactions-list");
+
+    const reactions = document.createElement("div");
+    reactions.classList.add("reactions");
+
+    reactions.appendChild(fakeReaction);
+    reactionsList.appendChild(reactions);
+    counter.appendChild(reactionsList);
+
+    done = () => {
+      reactionsList.remove();
+      complete();
+    };
+  }
 
   $(fakeReaction).animate(
     {
@@ -46,10 +76,7 @@ function moveReactionAnimation(
     },
     {
       duration: 350,
-      complete: () => {
-        fakeReaction.remove();
-        complete();
-      }
+      complete: done
     },
     "swing"
   );
@@ -105,7 +132,7 @@ export default createWidget("discourse-reactions-actions", {
     const hasReacted = attrs.post.current_user_reactions.length;
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
-    if (hasReacted > 0) classes.push("has-reacted");
+    if (hasReacted) classes.push("has-reacted");
     if (attrs.post.user_positively_reacted)
       classes.push("user-has-positively-reacted");
     if (
@@ -207,24 +234,20 @@ export default createWidget("discourse-reactions-actions", {
             const postContainer = document.querySelector(
               `[data-post-id="${params.postId}"]`
             );
-            const reactionsList = document.querySelector(
-              `[data-post-id="${params.postId}"] .discourse-reactions-list .reactions`
-            );
-
             if (
               this.attrs.post.current_user_reactions.findBy(
                 "id",
                 params.reaction
               )
             ) {
-              dropReaction(reactionsList, params.reaction, () => {
+              dropReaction(postContainer, params.reaction, () => {
                 return CustomReaction.toggle(
                   params.postId,
                   params.reaction
                 ).then(resolve);
               });
             } else {
-              addReaction(reactionsList, params.reaction, () => {
+              addReaction(postContainer, params.reaction, () => {
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   resolve
                 );

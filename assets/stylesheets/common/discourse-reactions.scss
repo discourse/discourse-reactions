@@ -259,6 +259,8 @@ html.no-select {
 
 .discourse-reactions-counter {
   display: flex;
+  position: relative;
+  min-width: 1em;
 
   .reactions-counter {
     display: flex;
