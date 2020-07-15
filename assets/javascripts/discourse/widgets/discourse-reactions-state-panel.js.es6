@@ -25,9 +25,10 @@ export default createWidget("discourse-reactions-state-panel", {
 
   defaultState(attrs) {
     return {
-      displayedReactionId: attrs.post.reactions.length
-        ? attrs.post.reactions.sortBy("count").reverse().firstObject.id
-        : null
+      displayedReactionId:
+        attrs.post.reactions && attrs.post.reactions.length
+          ? attrs.post.reactions.sortBy("count").reverse().firstObject.id
+          : null
     };
   },
 
