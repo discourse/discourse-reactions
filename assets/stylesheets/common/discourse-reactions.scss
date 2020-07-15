@@ -239,6 +239,20 @@ html.no-select {
       cursor: pointer;
     }
   }
+
+  &.has-reactions {
+    .discourse-reactions-counter:hover {
+      background: $primary-low;
+
+      .emoji {
+        filter: grayscale(0) !important;
+      }
+
+      .reactions-counter {
+        color: $primary !important;
+      }
+    }
+  }
 }
 
 .discourse-reactions-reaction-button {
@@ -268,18 +282,6 @@ html.no-select {
     margin-left: 0.25em;
     margin-right: 0.5em;
     pointer-events: none;
-  }
-
-  &:hover {
-    background: $primary-low;
-
-    .emoji {
-      filter: grayscale(0) !important;
-    }
-
-    .reactions-counter {
-      color: $primary !important;
-    }
   }
 }
 
