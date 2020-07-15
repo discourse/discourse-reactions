@@ -55,7 +55,7 @@ describe PostSerializer do
     ])
 
     expect(json[:current_user_reactions]).to eq([
-      { type: :emoji, id: 'otter' }
+      { type: :emoji, id: 'otter', can_undo: true }
     ])
 
     expect(json[:user_positively_reacted]).to eq(false)

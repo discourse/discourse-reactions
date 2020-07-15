@@ -69,10 +69,14 @@ after_initialize do
   add_to_serializer(:post, :current_user_reactions) do
     return [] unless scope.user.present?
     object.reactions.map do |reaction|
-      next unless reaction.reaction_users.find { |reaction_user| reaction_user.user_id == scope.user.id }
+      reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
+
+      next unless reaction_user
+
       {
         id: reaction.reaction_value,
-        type: reaction.reaction_type.to_sym
+        type: reaction.reaction_type.to_sym,
+        can_undo: reaction_user.can_undo?
       }
     end.compact
   end
