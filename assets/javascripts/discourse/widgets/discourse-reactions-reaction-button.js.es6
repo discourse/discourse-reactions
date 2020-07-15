@@ -44,6 +44,10 @@ export default createWidget("discourse-reactions-reaction-button", {
     let title;
     const likeAction = attrs.post.likeAction;
 
+    if (!likeAction) {
+      return;
+    }
+
     if (likeAction.canToggle && !likeAction.hasOwnProperty("can_undo")) {
       title = "discourse_reactions.main_reaction.add";
     }
