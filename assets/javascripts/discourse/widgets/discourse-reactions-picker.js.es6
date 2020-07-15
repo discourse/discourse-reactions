@@ -36,12 +36,23 @@ export default createWidget("discourse-reactions-picker", {
             );
             const canUndo = !isUsed || isUsed.can_undo;
 
+            let title;
+            let titleOptions;
+            if (canUndo) {
+              title = "discourse_reactions.picker.react_with";
+              titleOptions = { reaction };
+            } else {
+              title = "discourse_reactions.picker.cant_remove_reaction";
+            }
+
             return this.attach("button", {
               action: "toggleReaction",
               actionParam: { reaction, postId: attrs.post.id, canUndo },
               className: `pickable-reaction ${reaction} ${
                 canUndo ? "can-undo" : ""
               } ${isUsed ? "is-used" : ""}`,
+              title,
+              titleOptions,
               contents: [
                 new RawHtml({
                   html: emojiUnescape(`:${reaction}:`)

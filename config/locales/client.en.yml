@@ -6,6 +6,13 @@ en:
           discourse_reactions: "Discourse Reactions"
   js:
     discourse_reactions:
+      picker:
+        react_with: "React to this post with: %{reaction}"
+        cant_remove_reaction: "You can’t remove this reaction"
+      main_reaction:
+        add: "Like this post"
+        remove: "Remove this like"
+        cant_remove: "You can’t remove this like"
       users_reacted:
         zero: "No one has reacted yet"
         one: "One user reacted"

@@ -1,3 +1,4 @@
+import I18n from "I18n";
 import { iconNode } from "discourse-common/lib/icon-library";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
@@ -37,6 +38,25 @@ export default createWidget("discourse-reactions-reaction-button", {
     if (!this.site.mobileView) {
       this.callWidgetFunction("scheduleCollapse");
     }
+  },
+
+  buildAttributes(attrs) {
+    let title;
+    const likeAction = attrs.post.likeAction;
+
+    if (likeAction.canToggle && !likeAction.hasOwnProperty("can_undo")) {
+      title = "discourse_reactions.main_reaction.add";
+    }
+
+    if (likeAction.canToggle && likeAction.can_undo) {
+      title = "discourse_reactions.main_reaction.remove";
+    }
+
+    if (!likeAction.canToggle) {
+      title = "discourse_reactions.main_reaction.cant_remove";
+    }
+
+    return { title: I18n.t(title) };
   },
 
   html(attrs) {
