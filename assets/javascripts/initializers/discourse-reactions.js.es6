@@ -6,6 +6,13 @@ replaceIcon("notification.reaction", "bell");
 function initializeDiscourseReactions(api) {
   api.removePostMenuButton("like");
 
+  api.addKeyboardShortcut("l", () => {
+    const button = document.querySelector(
+      ".topic-post.selected .discourse-reactions-reaction-button"
+    );
+    button && button.click();
+  });
+
   api.decorateWidget("post-menu:before-extra-controls", dec => {
     const post = dec.getModel();
 
