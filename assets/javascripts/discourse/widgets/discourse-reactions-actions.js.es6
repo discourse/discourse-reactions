@@ -101,17 +101,8 @@ export default createWidget("discourse-reactions-actions", {
       return;
     }
 
-    const hasReactions = attrs.post.reactions.length > 0;
-    const hasReacted =
-      this.currentUser &&
-      (attrs.post.reactions || []).reduce((acc, reaction) => {
-        if (reaction.users.findBy("username", this.currentUser.username)) {
-          acc += 1;
-        }
-
-        return acc;
-      }, 0);
-
+    const hasReactions = attrs.post.reactions.length;
+    const hasReacted = attrs.post.current_user_reactions.length;
     const classes = [];
     if (hasReactions) classes.push("has-reactions");
     if (hasReacted > 0) classes.push("has-reacted");
@@ -213,18 +204,18 @@ export default createWidget("discourse-reactions-actions", {
       return new Promise(resolve => {
         scaleReactionAnimation(pickedReaction, scales[0], scales[1], () => {
           scaleReactionAnimation(pickedReaction, scales[1], scales[0], () => {
-            const reactionsUsers = this.attrs.post.reactions.findBy(
-              "id",
-              params.reaction
+            const postContainer = document.querySelector(
+              `[data-post-id="${params.postId}"]`
             );
             const reactionsList = document.querySelector(
               `[data-post-id="${params.postId}"] .discourse-reactions-list .reactions`
             );
 
             if (
-              this.currentUser &&
-              reactionsUsers &&
-              reactionsUsers.users.findBy("username", this.currentUser.username)
+              this.attrs.post.current_user_reactions.findBy(
+                "id",
+                params.reaction
+              )
             ) {
               dropReaction(reactionsList, params.reaction, () => {
                 return CustomReaction.toggle(
