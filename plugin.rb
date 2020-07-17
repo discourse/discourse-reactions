@@ -71,7 +71,7 @@ after_initialize do
       id: SiteSetting.discourse_reactions_like_icon,
       type: :emoji,
       users: likes.map { |like| { username: like.user.username, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
-      count: object.like_count
+      count: likes.length
     }
 
     reactions << like_reaction
@@ -103,7 +103,8 @@ after_initialize do
 
   add_to_serializer(:post, :reaction_users_count) do
     return object.reaction_users_count unless object.reaction_users_count.nil?
-    object.reactions.map(&:reaction_users).flatten.uniq(&:user_id).count
+    (object.reactions.map(&:reaction_users).flatten.map(&:user_id) |
+     object.post_actions.select {|action| action.post_action_type_id == PostActionType.types[:like] }.map(&:user_id)).uniq.count
   end
 
   add_to_serializer(:post, :user_positively_reacted) do
