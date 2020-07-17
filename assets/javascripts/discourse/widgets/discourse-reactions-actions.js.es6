@@ -188,7 +188,10 @@ export default createWidget("discourse-reactions-actions", {
         if (endTarget) {
           const parentNode = endTarget.parentNode;
 
-          if (
+          if (endTarget.classList.contains("pickable-reaction")) {
+            endTarget.click();
+            return;
+          } else if (
             parentNode &&
             parentNode.classList.contains("pickable-reaction")
           ) {
