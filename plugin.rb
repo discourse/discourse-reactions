@@ -103,14 +103,15 @@ after_initialize do
 
   add_to_serializer(:post, :reaction_users_count) do
     return object.reaction_users_count unless object.reaction_users_count.nil?
-    (object.reactions.map(&:reaction_users).flatten.map(&:user_id) |
-     object.post_actions.select {|action| action.post_action_type_id == PostActionType.types[:like] }.map(&:user_id)).uniq.count
+    (
+      object.reactions.map(&:reaction_users).flatten.map(&:user_id) |
+      object.post_actions.select { |action| action.post_action_type_id == PostActionType.types[:like] }.map(&:user_id)
+    ).uniq.count
   end
 
-  add_to_serializer(:post, :user_positively_reacted) do
+  add_to_serializer(:post, :current_user_used_main_reaction) do
     return false unless scope.user.present?
-    return object.user_positively_reacted unless object.user_positively_reacted.nil?
-    object.post_actions.find_by(user: scope.user, post_action_type_id: PostActionType.types[:like]).present?
+    object.post_actions.find { |l| l.post_action_type_id == PostActionType.types[:like] && l.user_id = scope.user.id }
   end
 
   add_to_serializer(:topic_view, :valid_reactions) do

@@ -6,11 +6,6 @@ module DiscourseReactions::TopicViewSerializerExtension
       posts = object.posts.includes(:post_actions, reactions: { reaction_users: :user })
       post_ids = posts.map(&:id)
 
-      posts_user_positively_reacted =
-        if scope.user
-          PostAction.where(user: scope.user, post: post_ids, post_action_type_id: PostActionType.types[:like]).pluck(:post_id)
-        end
-
       posts_reaction_users_count_query = DB.query(<<~SQL, post_ids: post_ids, like_id: PostActionType.types[:like])
         SELECT posts.id,
         COUNT(DISTINCT(ARRAY[post_actions.user_id] || ARRAY[discourse_reactions_reaction_users.user_id]))
@@ -27,7 +22,6 @@ module DiscourseReactions::TopicViewSerializerExtension
       end
 
       posts.each do |post|
-        post.user_positively_reacted = posts_user_positively_reacted&.include?(post.id)
         post.reaction_users_count = posts_reaction_users_count[post.id].to_i
       end
 

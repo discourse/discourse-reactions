@@ -29,12 +29,10 @@ export default createWidget("discourse-reactions-picker", {
             let isUsed;
             let canUndo;
             if (reaction === this.siteSettings.discourse_reactions_like_icon) {
-              isUsed = attrs.post.likeAction && attrs.post.likeAction.acted;
+              isUsed = attrs.post.current_user_used_main_reaction;
               canUndo =
                 attrs.post.likeAction &&
-                ((attrs.post.likeAction.acted &&
-                  attrs.post.likeAction.canToggle) ||
-                  !attrs.post.likeAction.acted);
+                ((isUsed && attrs.post.likeAction.canToggle) || !isUsed);
             } else {
               isUsed = attrs.post.current_user_reactions.findBy("id", reaction);
               canUndo = !isUsed || isUsed.can_undo;

@@ -70,10 +70,7 @@ describe PostSerializer do
       { type: :emoji, id: 'heart', can_undo: true }
     ])
 
-    expect(json[:user_positively_reacted]).to eq(true)
-
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
-    expect(json[:user_positively_reacted]).to eq(false)
 
     expect(json[:reaction_users_count]).to eq(3)
   end
