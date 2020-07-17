@@ -65,7 +65,7 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.where(post_action_type_id: PostActionType.types[:like])
+    likes = object.post_actions.select { |l| l.post_action_type_id == PostActionType.types[:like] }
     return reactions if likes.blank?
     like_reaction = {
       id: SiteSetting.discourse_reactions_like_icon,
@@ -79,7 +79,7 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_reactions) do
     return [] unless scope.user.present?
-    object.reactions.map do |reaction|
+    reactions = object.reactions.map do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
       next unless reaction_user
@@ -90,6 +90,15 @@ after_initialize do
         can_undo: reaction_user.can_undo?
       }
     end.compact
+
+    like = object.post_actions.find { |l| l.post_action_type_id == PostActionType.types[:like] && l.user_id = scope.user.id }
+    return reactions if like.blank?
+    like_reaction = {
+      id: SiteSetting.discourse_reactions_like_icon,
+      type: :emoji,
+      can_undo: scope.can_delete_post_action?(like)
+    }
+    reactions << like_reaction
   end
 
   add_to_serializer(:post, :reaction_users_count) do

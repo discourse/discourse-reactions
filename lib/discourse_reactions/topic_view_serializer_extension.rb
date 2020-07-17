@@ -3,7 +3,7 @@
 module DiscourseReactions::TopicViewSerializerExtension
   def posts
     if SiteSetting.discourse_reactions_enabled
-      posts = object.posts.includes(reactions: { reaction_users: :user })
+      posts = object.posts.includes(:post_actions, reactions: { reaction_users: :user })
       post_ids = posts.map(&:id)
 
       posts_user_positively_reacted =
@@ -17,7 +17,7 @@ module DiscourseReactions::TopicViewSerializerExtension
         FROM posts
         LEFT JOIN discourse_reactions_reactions ON discourse_reactions_reactions.post_id = posts.id
         LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.reaction_id = discourse_reactions_reactions.id
-        LEFT JOIN post_actions on post_actions.post_id = discourse_reactions_reactions.post_id
+        LEFT JOIN post_actions on post_actions.post_id = posts.id
         WHERE post_actions.post_action_type_id = :like_id
         AND posts.id IN (:post_ids)
         GROUP BY posts.id
