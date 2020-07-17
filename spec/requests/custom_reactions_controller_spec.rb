@@ -90,38 +90,20 @@ describe DiscourseReactions::CustomReactionsController do
       PostActionNotifier.enable
     end
 
-    it 'creates notification when first positive like' do
+    it 'creates notification when first like' do
       sign_in(user_1)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
       expect(Notification.count).to eq(1)
       expect(PostAction.count).to eq(1)
       expect(PostAction.last.post_action_type_id).to eq(PostActionType.types[:like])
 
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/laughing/toggle.json"
-      expect(Notification.count).to eq(1)
-      expect(PostAction.count).to eq(1)
-
-      sign_in(user_2)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(Notification.count).to eq(1)
-      expect(PostAction.count).to eq(2)
-
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(Notification.count).to eq(1)
-      expect(PostAction.count).to eq(1)
-
-      sign_in(user_1)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(Notification.count).to eq(1)
-      expect(PostAction.count).to eq(1)
-
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/laughing/toggle.json"
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
       expect(Notification.count).to eq(0)
       expect(PostAction.count).to eq(0)
     end
   end
 
-  context 'neutral or negative notifications' do
+  context 'reaction notifications' do
     it 'calls ReactinNotification service' do
       sign_in(user_1)
       DiscourseReactions::ReactionNotification.any_instance.expects(:create).once

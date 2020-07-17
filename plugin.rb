@@ -56,7 +56,7 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    object.reactions.map do |reaction|
+    reactions = object.reactions.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
@@ -64,6 +64,17 @@ after_initialize do
         count: reaction.reaction_users_count
       }
     end
+
+    likes = object.post_actions.where(post_action_type_id: PostActionType.types[:like])
+    return reactions if likes.blank?
+    like_reaction = {
+      id: SiteSetting.discourse_reactions_like_icon,
+      type: :emoji,
+      users: likes.map { |like| { username: like.user.username, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
+      count: object.like_count
+    }
+
+    reactions << like_reaction
   end
 
   add_to_serializer(:post, :current_user_reactions) do
@@ -89,11 +100,7 @@ after_initialize do
   add_to_serializer(:post, :user_positively_reacted) do
     return false unless scope.user.present?
     return object.user_positively_reacted unless object.user_positively_reacted.nil?
-    object
-      .reactions
-      .find do |reaction|
-        reaction.positive? && reaction.reaction_users.find { |reaction_user| reaction_user.user_id == scope.user.id }
-      end.present?
+    object.post_actions.find_by(user: scope.user, post_action_type_id: PostActionType.types[:like]).present?
   end
 
   add_to_serializer(:topic_view, :valid_reactions) do

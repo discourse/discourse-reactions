@@ -14,8 +14,10 @@ describe PostSerializer do
   fab!(:reaction_user_2) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2) }
   fab!(:reaction_2) { Fabricate(:reaction, reaction_value: "thumbsup", post: post_1) }
   fab!(:reaction_user_3) { Fabricate(:reaction_user, reaction: reaction_2, user: user_2, created_at: 20.minutes.ago) }
-  fab!(:reaction_3) { Fabricate(:reaction, reaction_value: "heart", post: post_1) }
+  fab!(:reaction_3) { Fabricate(:reaction, reaction_value: "cry", post: post_1) }
   fab!(:reaction_user_4) { Fabricate(:reaction_user, reaction: reaction_3, user: user_3) }
+  fab!(:like) { Fabricate(:post_action, post: post_1, user: user_1, post_action_type_id: PostActionType.types[:like]) }
+  fab!(:like) { Fabricate(:post_action, post: post_1, user: user_3, post_action_type_id: PostActionType.types[:like]) }
 
   before do
     SiteSetting.post_undo_action_window_mins = 10
@@ -45,12 +47,21 @@ describe PostSerializer do
         count: 1
       },
       {
-        id: 'heart',
+        id: 'cry',
         type: :emoji,
         users: [
           { username: user_3.username, avatar_template: user_3.avatar_template, can_undo: true }
         ],
         count: 1
+      },
+      {
+        id: 'heart',
+        type: :emoji,
+        users: [
+          { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
+          { username: user_3.username, avatar_template: user_3.avatar_template, can_undo: false }
+        ],
+        count: 2
       }
     ])
 
@@ -58,13 +69,10 @@ describe PostSerializer do
       { type: :emoji, id: 'otter', can_undo: true }
     ])
 
-    expect(json[:user_positively_reacted]).to eq(false)
+    expect(json[:user_positively_reacted]).to eq(true)
 
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
-    expect(json[:user_positively_reacted]).to eq(true)
-
-    json = PostSerializer.new(post_1, scope: Guardian.new(user_3), root: false).as_json
-    expect(json[:user_positively_reacted]).to eq(true)
+    expect(json[:user_positively_reacted]).to eq(false)
 
     expect(json[:reaction_users_count]).to eq(3)
   end

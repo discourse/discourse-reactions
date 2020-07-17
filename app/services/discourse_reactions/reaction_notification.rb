@@ -11,7 +11,6 @@ module DiscourseReactions
     def create
       return if !enabled_reaction_notifications? ||
           DiscourseReactions::Reaction
-            .negative_or_neutral
             .where(post_id: @post.id)
             .by_user(@user)
             .where('discourse_reactions_reactions.created_at >= ?', 24.hours.ago)
@@ -20,7 +19,7 @@ module DiscourseReactions
     end
 
     def delete
-      return if DiscourseReactions::Reaction.negative_or_neutral.where(post_id: @post.id).by_user(@user).count != 0
+      return if DiscourseReactions::Reaction.where(post_id: @post.id).by_user(@user).count != 0
       read = true
       Notification.where(
         topic_id: @post.topic_id,
@@ -40,8 +39,8 @@ module DiscourseReactions
       @post.user.user_option.like_notification_frequency != UserOption.like_notification_frequency_type[:never]
     end
 
-    def natural_or_negative_usernames
-      @post.reactions.negative_or_neutral
+    def reaction_usernames
+      @post.reactions
         .joins(:users)
         .order("discourse_reactions_reactions.created_at DESC")
         .where('discourse_reactions_reactions.created_at > ?', 1.day.ago)
@@ -51,7 +50,7 @@ module DiscourseReactions
     def refresh_notification(read)
       return unless @post && @post.user_id && @post.topic
 
-      usernames = natural_or_negative_usernames
+      usernames = reaction_usernames
 
       return if usernames.blank?
 

@@ -7,23 +7,27 @@ module DiscourseReactions
     def toggle
       return render_json_error(@post) unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
       ActiveRecord::Base.transaction do
-        reaction = reaction_scope.first_or_create
-        reaction_user = reaction_user_scope(reaction)&.first_or_initialize
-
-        if reaction_user.persisted?
-          unless guardian.can_delete_reaction_user?(reaction_user)
+        if params[:reaction] == SiteSetting.discourse_reactions_like_icon
+          like =  @post.post_actions.find_by(user: current_user, post_action_type_id: PostActionType.types[:like])
+          if like && !guardian.can_delete_post_action?(like)
             return render json: failed_json.merge(errors: I18n.t("invalid_access")), status: 400
           end
-
-          reaction_user.destroy
-          remove_shadow_like(reaction) if reaction.positive?
-          remove_reaction_notification(reaction) if reaction.negative?
+          like ? remove_shadow_like : add_shadow_like
         else
-          reaction_user.save!
-          add_shadow_like(reaction) if reaction.positive?
-          add_reaction_notification(reaction) if reaction.negative?
+          reaction = reaction_scope.first_or_create
+          reaction_user = reaction_user_scope(reaction)&.first_or_initialize
+          if reaction_user.persisted?
+            unless guardian.can_delete_reaction_user?(reaction_user)
+              return render json: failed_json.merge(errors: I18n.t("invalid_access")), status: 400
+            end
+            reaction_user.destroy
+            remove_reaction_notification(reaction)
+          else
+            reaction_user.save!
+            add_reaction_notification(reaction)
+          end
+          reaction.destroy if reaction.reload.reaction_users_count == 0
         end
-        reaction.destroy if reaction.reload.reaction_users_count == 0
       end
 
       @post.publish_change_to_clients! :acted
@@ -33,13 +37,11 @@ module DiscourseReactions
 
     private
 
-    def add_shadow_like(reaction)
-      return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 1
+    def add_shadow_like
       PostActionCreator.like(current_user, @post)
     end
 
-    def remove_shadow_like(reaction)
-      return if DiscourseReactions::Reaction.positive.where(post_id: @post.id).by_user(current_user).count != 0
+    def remove_shadow_like
       PostActionDestroyer.new(current_user, @post, PostActionType.types[:like]).perform
     end
 

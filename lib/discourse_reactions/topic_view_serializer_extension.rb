@@ -8,23 +8,22 @@ module DiscourseReactions::TopicViewSerializerExtension
 
       posts_user_positively_reacted =
         if scope.user
-          DiscourseReactions::Reaction
-            .where(post_id: post_ids, reaction_value: DiscourseReactions::Reaction.positive_reactions)
-            .joins(:reaction_users)
-            .where(discourse_reactions_reaction_users: { user_id: scope.user.id })
-            .pluck(:post_id)
-
+          PostAction.where(user: scope.user, post: post_ids, post_action_type_id: PostActionType.types[:like]).pluck(:post_id)
         end
 
-      posts_reaction_users_count_query = DB.query(<<~SQL, post_ids: post_ids)
-        SELECT discourse_reactions_reactions.post_id, COUNT(DISTINCT(discourse_reactions_reaction_users.user_id))
-        FROM discourse_reactions_reactions
+      posts_reaction_users_count_query = DB.query(<<~SQL, post_ids: post_ids, like_id: PostActionType.types[:like])
+        SELECT posts.id,
+        COUNT(DISTINCT(ARRAY[post_actions.user_id] || ARRAY[discourse_reactions_reaction_users.user_id]))
+        FROM posts
+        LEFT JOIN discourse_reactions_reactions ON discourse_reactions_reactions.post_id = posts.id
         LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.reaction_id = discourse_reactions_reactions.id
-        WHERE discourse_reactions_reactions.post_id IN (:post_ids)
-        GROUP BY discourse_reactions_reactions.post_id
+        LEFT JOIN post_actions on post_actions.post_id = discourse_reactions_reactions.post_id
+        WHERE post_actions.post_action_type_id = :like_id
+        AND posts.id IN (:post_ids)
+        GROUP BY posts.id
       SQL
       posts_reaction_users_count = posts_reaction_users_count_query.each_with_object({}) do |row, hash|
-        hash[row.post_id] = row.count
+        hash[row.id] = row.count
       end
 
       posts.each do |post|
