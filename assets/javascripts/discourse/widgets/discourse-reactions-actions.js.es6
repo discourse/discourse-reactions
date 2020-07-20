@@ -131,16 +131,26 @@ export default createWidget("discourse-reactions-actions", {
     const hasReactions = attrs.post.reactions.length;
     const hasReacted = attrs.post.current_user_reactions.length;
     const classes = [];
-    if (hasReactions) classes.push("has-reactions");
-    if (hasReacted) classes.push("has-reacted");
-    if (attrs.post.current_user_used_main_reaction)
-      classes.push("user-has-positively-reacted");
+
+    if (hasReactions) {
+      classes.push("has-reactions");
+    }
+
+    if (hasReacted) {
+      classes.push("has-reacted");
+    }
+
+    if (attrs.post.current_user_used_main_reaction) {
+      classes.push("has-used-main-reaction");
+    }
+
     if (
       attrs.post.likeAction &&
       (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
     ) {
-      classes.push("can-toggle-positive-reaction");
+      classes.push("can-toggle-main-reaction");
     }
+
     return classes;
   },
 

@@ -218,7 +218,7 @@ html.no-select {
     }
   }
 
-  &:not(.can-toggle-positive-reaction) {
+  &:not(.can-toggle-main-reaction) {
     .discourse-reactions-reaction-button {
       cursor: default;
     }
@@ -234,7 +234,7 @@ html.no-select {
     }
   }
 
-  &.can-toggle-positive-reaction {
+  &.can-toggle-main-reaction {
     .discourse-reactions-reaction-button {
       cursor: pointer;
     }
