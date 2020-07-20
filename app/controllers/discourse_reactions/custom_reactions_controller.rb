@@ -14,6 +14,7 @@ module DiscourseReactions
           end
           like ? remove_shadow_like : add_shadow_like
         else
+          PostAction.limit_action!(current_user, @post, post_action_like_type)
           reaction = reaction_scope.first_or_create
           reaction_user = reaction_user_scope(reaction)&.first_or_initialize
           if reaction_user.persisted?
@@ -37,12 +38,16 @@ module DiscourseReactions
 
     private
 
+    def post_action_like_type
+      PostActionType.types[:like]
+    end
+
     def add_shadow_like
       PostActionCreator.like(current_user, @post)
     end
 
     def remove_shadow_like
-      PostActionDestroyer.new(current_user, @post, PostActionType.types[:like]).perform
+      PostActionDestroyer.new(current_user, @post, post_action_like_type).perform
     end
 
     def add_reaction_notification(reaction)
