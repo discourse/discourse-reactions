@@ -98,7 +98,7 @@ after_initialize do
     like = object.post_actions.find do |l|
       l.post_action_type_id == PostActionType.types[:like] &&
       l.deleted_at.blank? &&
-      l.user_id = scope.user.id
+      l.user_id == scope.user.id
     end
 
     return reactions if like.blank?
@@ -123,9 +123,10 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_used_main_reaction) do
     return false unless scope.user.present?
+
     object.post_actions.find do |l|
       l.post_action_type_id == PostActionType.types[:like] &&
-      l.user_id = scope.user.id &&
+      l.user_id == scope.user.id &&
       l.deleted_at.blank?
     end
   end
