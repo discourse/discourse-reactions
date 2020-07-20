@@ -66,7 +66,10 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.select { |l| l.post_action_type_id == PostActionType.types[:like] }
+    likes = object.post_actions.select do |l|
+      l.post_action_type_id == PostActionType.types[:like] &&
+      l.deleted_at.blank?
+    end
     return reactions if likes.blank?
     like_reaction = {
       id: SiteSetting.discourse_reactions_like_icon,
@@ -92,7 +95,12 @@ after_initialize do
       }
     end.compact
 
-    like = object.post_actions.find { |l| l.post_action_type_id == PostActionType.types[:like] && l.user_id = scope.user.id }
+    like = object.post_actions.find do |l|
+      l.post_action_type_id == PostActionType.types[:like] &&
+      l.deleted_at.blank? &&
+      l.user_id = scope.user.id
+    end
+
     return reactions if like.blank?
     like_reaction = {
       id: SiteSetting.discourse_reactions_like_icon,
@@ -106,7 +114,10 @@ after_initialize do
     return object.reaction_users_count unless object.reaction_users_count.nil?
     (
       object.reactions.map(&:reaction_users).flatten.map(&:user_id) |
-      object.post_actions.select { |action| action.post_action_type_id == PostActionType.types[:like] }.map(&:user_id)
+      object.post_actions.select do |action|
+        action.post_action_type_id == PostActionType.types[:like] &&
+        action.deleted_at.blank?
+      end.map(&:user_id)
     ).uniq.count
   end
 
