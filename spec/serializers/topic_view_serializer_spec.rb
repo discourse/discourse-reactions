@@ -46,6 +46,24 @@ describe TopicViewSerializer do
 
       expect(json[:post_stream][:posts][0][:reaction_users_count]).to eq(2)
     end
+
+    it 'doesnt count deleted likes' do
+      SiteSetting.discourse_reactions_like_icon = "heart"
+
+      json = TopicViewSerializer.new(topic_view, scope: Guardian.new(user_2), root: false).as_json
+
+      expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(0)
+
+      DiscourseReactions::ReactionManager.toggle!("heart", user_2, Guardian.new(user_2), post_2)
+      json = TopicViewSerializer.new(TopicView.new(topic), scope: Guardian.new(user_2), root: false).as_json
+
+      expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(1)
+
+      DiscourseReactions::ReactionManager.toggle!("heart", user_2, Guardian.new(user_2), post_2)
+      json = TopicViewSerializer.new(TopicView.new(topic), scope: Guardian.new(user_2), root: false).as_json
+
+      expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(0)
+    end
   end
 
   context 'only shadow like' do

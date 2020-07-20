@@ -14,7 +14,9 @@ module DiscourseReactions::TopicViewSerializerExtension
         LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.reaction_id = discourse_reactions_reactions.id
         LEFT JOIN post_actions on post_actions.post_id = posts.id
         WHERE post_actions.post_action_type_id = :like_id
-        AND posts.id IN (:post_ids)
+          AND post_actions.deleted_at IS NULL
+          AND posts.deleted_at IS NULL
+          AND posts.id IN (:post_ids)
         GROUP BY posts.id
       SQL
       posts_reaction_users_count = posts_reaction_users_count_query.each_with_object({}) do |row, hash|

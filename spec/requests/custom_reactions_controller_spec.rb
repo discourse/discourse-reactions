@@ -7,6 +7,10 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:user_1) { Fabricate(:user) }
   fab!(:user_2) { Fabricate(:user) }
 
+  before do
+    SiteSetting.discourse_reactions_like_icon = 'heart'
+  end
+
   context '#toggle' do
     let(:payload_with_user) {
       [
@@ -37,18 +41,18 @@ describe DiscourseReactions::CustomReactionsController do
       expect(DiscourseReactions::Reaction.count).to eq(1)
       expect(DiscourseReactions::ReactionUser.count).to eq(1)
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body)['reactions']).to eq(expected_payload)
+      expect(response.parsed_body['reactions']).to eq(expected_payload)
 
       reaction = DiscourseReactions::Reaction.last
-      expect(reaction.reaction_value). to eq('thumbsup')
-      expect(reaction.reaction_users_count). to eq(1)
+      expect(reaction.reaction_value).to eq('thumbsup')
+      expect(reaction.reaction_users_count).to eq(1)
 
       sign_in(user_2)
       put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
       reaction = DiscourseReactions::Reaction.last
-      expect(reaction.reaction_value). to eq('thumbsup')
+      expect(reaction.reaction_value).to eq('thumbsup')
       expect(reaction.reaction_users_count).to eq(2)
-      expect(JSON.parse(response.body)['reactions'][0]['users']).to eq([
+      expect(response.parsed_body['reactions'][0]['users']).to eq([
         { 'username' => user_1.username, 'avatar_template' => user_1.avatar_template, 'can_undo' => true },
         { 'username' => user_2.username, 'avatar_template' => user_2.avatar_template, 'can_undo' => true }
       ])
@@ -57,14 +61,14 @@ describe DiscourseReactions::CustomReactionsController do
       expect(DiscourseReactions::Reaction.count).to eq(1)
       expect(DiscourseReactions::ReactionUser.count).to eq(1)
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body)['reactions']).to eq(expected_payload)
+      expect(response.parsed_body['reactions']).to eq(expected_payload)
 
       sign_in(user_1)
       put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
       expect(DiscourseReactions::Reaction.count).to eq(0)
       expect(DiscourseReactions::ReactionUser.count).to eq(0)
       expect(response.status).to eq(200)
-      expect(JSON.parse(response.body)['reactions']).to eq([])
+      expect(response.parsed_body['reactions']).to eq([])
     end
 
     it 'sends MessageBus message that user acted' do
@@ -129,6 +133,6 @@ describe DiscourseReactions::CustomReactionsController do
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(1)
     expect(DiscourseReactions::ReactionUser.count).to eq(1)
-    expect(response.status).to eq(400)
+    expect(response.status).to eq(403)
   end
 end

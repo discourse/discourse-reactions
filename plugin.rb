@@ -30,6 +30,7 @@ after_initialize do
     "../app/controllers/discourse_reactions/custom_reactions_controller.rb",
     "../app/models/discourse_reactions/reaction.rb",
     "../app/models/discourse_reactions/reaction_user.rb",
+    "../app/services/discourse_reactions/reaction_manager.rb",
     "../app/services/discourse_reactions/reaction_notification.rb",
     "../lib/discourse_reactions/post_extension.rb",
     "../lib/discourse_reactions/topic_view_serializer_extension.rb",
