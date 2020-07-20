@@ -112,7 +112,11 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_used_main_reaction) do
     return false unless scope.user.present?
-    object.post_actions.find { |l| l.post_action_type_id == PostActionType.types[:like] && l.user_id = scope.user.id }
+    object.post_actions.find do |l|
+      l.post_action_type_id == PostActionType.types[:like] &&
+      l.user_id = scope.user.id &&
+      l.deleted_at.blank?
+    end
   end
 
   add_to_serializer(:topic_view, :valid_reactions) do
