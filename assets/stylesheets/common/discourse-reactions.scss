@@ -86,7 +86,7 @@ html.no-select {
     }
 
     &:not(.can-undo) {
-      filter: grayscale(1);
+      background: $primary-very-low;
     }
 
     &.can-undo {
