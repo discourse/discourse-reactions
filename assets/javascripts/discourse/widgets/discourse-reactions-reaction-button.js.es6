@@ -14,7 +14,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   click() {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("toggleLike");
     }
   },
@@ -22,7 +22,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   mouseOver(event) {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       _laterHoverHandlers[this.attrs.post.id] = later(
         this,
         this._hoverHandler,
@@ -35,7 +35,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   mouseOut() {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },

@@ -7,7 +7,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
   tagName: "div.discourse-reactions-state-panel-reaction",
 
   click() {
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.sendWidgetAction(
         "onChangeDisplayedReaction",
         this.attrs.reaction.id
@@ -16,7 +16,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
   },
 
   touchStart() {
-    if (this.site.mobileView) {
+    if (this.capabilities.touch) {
       this.sendWidgetAction(
         "onChangeDisplayedReaction",
         this.attrs.reaction.id

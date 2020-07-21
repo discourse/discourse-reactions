@@ -9,13 +9,13 @@ export default createWidget("discourse-reactions-picker", {
   buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
 
   mouseOut() {
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },
 
   mouseOver() {
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("cancelCollapse");
     }
   },

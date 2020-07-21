@@ -13,13 +13,13 @@ export default createWidget("discourse-reactions-counter", {
   click(event) {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("toggleStatePanel", event);
     }
   },
 
   touchStart(event) {
-    if (this.site.mobileView) {
+    if (this.capabilities.touch) {
       this.callWidgetFunction("toggleStatePanel", event);
       event.preventDefault();
       event.stopPropagation();
@@ -29,7 +29,7 @@ export default createWidget("discourse-reactions-counter", {
   mouseOver(event) {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       _laterHoverHandlers[this.attrs.post.id] = later(
         this,
         this._hoverHandler,
@@ -42,7 +42,7 @@ export default createWidget("discourse-reactions-counter", {
   mouseOut() {
     this._cancelHoverHandler();
 
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },

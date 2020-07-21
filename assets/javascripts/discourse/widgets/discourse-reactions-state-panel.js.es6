@@ -8,13 +8,13 @@ export default createWidget("discourse-reactions-state-panel", {
   buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
 
   mouseOut() {
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },
 
   mouseOver() {
-    if (!this.site.mobileView) {
+    if (!this.capabilities.touch) {
       this.callWidgetFunction("cancelCollapse");
     }
   },

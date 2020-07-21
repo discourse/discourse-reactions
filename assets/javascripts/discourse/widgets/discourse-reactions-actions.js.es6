@@ -169,7 +169,7 @@ export default createWidget("discourse-reactions-actions", {
   touchStart() {
     this._touchTimeout && cancel(this._touchTimeout);
 
-    if (this.site.mobileView) {
+    if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
       root && root.classList.add("no-select");
 
@@ -188,7 +188,7 @@ export default createWidget("discourse-reactions-actions", {
     const root = document.getElementsByTagName("html")[0];
     root && root.classList.remove("no-select");
 
-    if (this.site.mobileView) {
+    if (this.capabilities.touch) {
       if (event.originalEvent.changedTouches.length) {
         const endTarget = document.elementFromPoint(
           event.originalEvent.changedTouches[0].clientX,
