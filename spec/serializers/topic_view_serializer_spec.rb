@@ -10,8 +10,9 @@ describe TopicViewSerializer do
     fab!(:user_2) { Fabricate(:user) }
     fab!(:post_1) { Fabricate(:post, user: user_1) }
     fab!(:post_2) { Fabricate(:post, user: user_1, topic: post_1.topic) }
-    fab!(:thumbsdown) { Fabricate(:reaction, post: post_1, reaction_value: 'otter') }
-    fab!(:reaction_user1) { Fabricate(:reaction_user, reaction: thumbsdown, user: user_1) }
+    fab!(:otter) { Fabricate(:reaction, post: post_1, reaction_value: 'otter') }
+    fab!(:reaction_user1) { Fabricate(:reaction_user, reaction: otter, user: user_1) }
+    fab!(:reaction_user2) { Fabricate(:reaction_user, reaction: otter, user: user_2) }
     fab!(:like_1) { Fabricate(:post_action, post: post_1, user: user_1, post_action_type_id: PostActionType.types[:like]) }
     fab!(:like_2) { Fabricate(:post_action, post: post_1, user: user_2, post_action_type_id: PostActionType.types[:like]) }
     let(:topic) { post_1.topic }
@@ -28,9 +29,10 @@ describe TopicViewSerializer do
             id: "otter",
             type: :emoji,
             users: [
-              { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true }
+              { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
+              { username: user_2.username, avatar_template: user_2.avatar_template, can_undo: true }
             ],
-            count: 1
+            count: 2
           },
           {
             id: "heart",
