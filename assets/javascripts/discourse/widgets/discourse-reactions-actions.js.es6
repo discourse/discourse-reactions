@@ -2,18 +2,19 @@ import { iconHTML } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
 import { h } from "virtual-dom";
-import { next, run, later, cancel } from "@ember/runloop";
+import { next, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
+import { later, cancel } from "@ember/runloop";
 
-function buildFakeReaction(reactionId, extraClass = "fake-reaction") {
+function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
   img.classList.add("emoji");
 
   const div = document.createElement("div");
-  div.classList.add("reaction", extraClass, reactionId);
+  div.classList.add("fake-reaction", "reaction", reactionId);
   div.appendChild(img);
 
   return div;
@@ -34,39 +35,22 @@ function moveReactionAnimation(
 
   let done;
 
+  const fakeReaction = buildFakeReaction(reactionId);
+  fakeReaction.style.top = startPosition;
+  fakeReaction.style.opacity = startOpacity;
+
   const list = postContainer.querySelector(
     ".discourse-reactions-list .reactions"
   );
 
   if (list) {
-    const fakeReaction = buildFakeReaction(
-      reactionId,
-      "fake-absolute-reaction"
-    );
-    fakeReaction.style.top = startPosition;
-    fakeReaction.style.opacity = startOpacity;
-
     list.appendChild(fakeReaction);
 
     done = () => {
       fakeReaction.remove();
       complete();
     };
-
-    $(fakeReaction).animate(
-      {
-        top: endPosition,
-        opacity: endOpacity
-      },
-      {
-        duration: 350,
-        complete: done
-      },
-      "swing"
-    );
   } else {
-    const fakeReaction = buildFakeReaction(reactionId);
-
     const counter = postContainer.querySelector(".discourse-reactions-counter");
 
     const reactionsList = document.createElement("div");
@@ -75,40 +59,27 @@ function moveReactionAnimation(
     const reactions = document.createElement("div");
     reactions.classList.add("reactions");
 
-    const reactionsCounter = document.createElement("div");
-    reactionsCounter.classList.add("reactions-counter");
-    reactionsCounter.textContent = "1";
-
     reactions.appendChild(fakeReaction);
     reactionsList.appendChild(reactions);
     counter.appendChild(reactionsList);
-    counter.appendChild(reactionsCounter);
 
     done = () => {
-      // hacky positioning to ensure UI is not blinking while we replace the fake
-      // with the real
-      counter.style.width = "43px";
-      reactionsList.style.position = "absolute";
-      reactionsList.style.top = "10px";
-      reactionsCounter.style.position = "absolute";
-      reactionsCounter.style.top = "7px";
-      reactionsCounter.style.left = "23px";
-
-      complete().then(() => {
-        later(() => {
-          reactionsList && reactionsList.remove();
-          reactionsCounter && reactionsCounter.remove();
-          if (counter) {
-            counter.style.width = "auto";
-          }
-        }, 1500);
-      });
+      reactionsList.remove();
+      complete();
     };
-
-    scaleReactionAnimation(fakeReaction, 0, 1.5, () => {
-      scaleReactionAnimation(fakeReaction, 1.5, 1, done);
-    });
   }
+
+  $(fakeReaction).animate(
+    {
+      top: endPosition,
+      opacity: endOpacity
+    },
+    {
+      duration: 350,
+      complete: done
+    },
+    "swing"
+  );
 }
 
 function addReaction(list, reactionId, complete) {
@@ -290,10 +261,9 @@ export default createWidget("discourse-reactions-actions", {
               });
             } else {
               addReaction(postContainer, params.reaction, () => {
-                return CustomReaction.toggle(
-                  params.postId,
-                  params.reaction
-                ).then(resolve);
+                CustomReaction.toggle(params.postId, params.reaction).then(
+                  resolve
+                );
               });
             }
           });
