@@ -38,21 +38,20 @@ function moveReactionAnimation(
     ".discourse-reactions-list .reactions"
   );
 
-  const hasReactions = list.querySelectorAll(".reaction").length;
+  if (list) {
+    const fakeReaction = buildFakeReaction(
+      reactionId,
+      "fake-absolute-reaction"
+    );
+    fakeReaction.style.top = startPosition;
+    fakeReaction.style.opacity = startOpacity;
 
-  const fakeReaction = buildFakeReaction(reactionId);
-  list.appendChild(fakeReaction);
+    list.appendChild(fakeReaction);
 
-  if (hasReactions) {
     done = () => {
       fakeReaction.remove();
       complete();
     };
-
-    fakeReaction.style.position = "absolute";
-    fakeReaction.style.left = "calc(50% - 0.65em)";
-    fakeReaction.style.top = startPosition;
-    fakeReaction.style.opacity = startOpacity;
 
     $(fakeReaction).animate(
       {
@@ -66,21 +65,48 @@ function moveReactionAnimation(
       "swing"
     );
   } else {
+    const fakeReaction = buildFakeReaction(reactionId);
+
+    const counter = postContainer.querySelector(".discourse-reactions-counter");
+
+    const reactionsList = document.createElement("div");
+    reactionsList.classList.add("discourse-reactions-list");
+
+    const reactions = document.createElement("div");
+    reactions.classList.add("reactions");
+
     const reactionsCounter = document.createElement("div");
     reactionsCounter.classList.add("reactions-counter");
     reactionsCounter.textContent = "1";
-    postContainer
-      .querySelector(".discourse-reactions-counter")
-      .appendChild(reactionsCounter);
+
+    reactions.appendChild(fakeReaction);
+    reactionsList.appendChild(reactions);
+    counter.appendChild(reactionsList);
+    counter.appendChild(reactionsCounter);
 
     done = () => {
-      fakeReaction.remove();
-      reactionsCounter.remove();
-    };
-    scaleReactionAnimation(fakeReaction, 0, 1.5, () => {
-      scaleReactionAnimation(fakeReaction, 1.5, 1, () => {
-        complete().then(done);
+      // hacky positioning to ensure UI is not blinking while we replace the fake
+      // with the real
+      counter.style.width = "43px";
+      reactionsList.style.position = "absolute";
+      reactionsList.style.top = "10px";
+      reactionsCounter.style.position = "absolute";
+      reactionsCounter.style.top = "7px";
+      reactionsCounter.style.left = "23px";
+
+      complete().then(() => {
+        later(() => {
+          reactionsList && reactionsList.remove();
+          reactionsCounter && reactionsCounter.remove();
+          if (counter) {
+            counter.style.width = "auto";
+          }
+        }, 1500);
       });
+    };
+
+    scaleReactionAnimation(fakeReaction, 0, 1.5, () => {
+      scaleReactionAnimation(fakeReaction, 1.5, 1, done);
     });
   }
 }
