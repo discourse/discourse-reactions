@@ -9,14 +9,10 @@ export default createWidget("discourse-reactions-list", {
   html(attrs) {
     const reactions = attrs.post.reactions;
 
-    if (attrs.post.reaction_users_count <= 0) {
-      return;
-    }
-
     return [
       h(
         "div.reactions",
-        reactions
+        (reactions || [])
           .sortBy("count")
           .reverse()
           .map(reaction =>

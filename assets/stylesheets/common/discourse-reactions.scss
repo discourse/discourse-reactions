@@ -16,11 +16,6 @@ html.no-select {
     align-items: center;
     position: relative;
 
-    .fake-absolute-reaction {
-      position: absolute;
-      left: calc(50% - 0.65em);
-    }
-
     .reaction {
       display: flex;
       align-items: center;

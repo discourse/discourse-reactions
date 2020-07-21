@@ -56,18 +56,15 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   html(attrs) {
-    if (attrs.post.reaction_users_count) {
-      const count = attrs.post.reaction_users_count;
+    const count = attrs.post.reaction_users_count;
 
-      if (count <= 0) {
-        return;
-      }
+    const items = [this.attach("discourse-reactions-list", attrs)];
 
-      return [
-        this.attach("discourse-reactions-list", attrs),
-        h("div.reactions-counter", count.toString())
-      ];
+    if (count && count > 0) {
+      items.push(h("div.reactions-counter", count.toString()));
     }
+
+    return items;
   },
 
   _cancelHoverHandler() {
