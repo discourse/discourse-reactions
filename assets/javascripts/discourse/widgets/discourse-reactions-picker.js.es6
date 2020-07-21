@@ -49,6 +49,7 @@ export default createWidget("discourse-reactions-picker", {
 
             return this.attach("button", {
               action: "toggleReaction",
+              data: { reaction },
               actionParam: { reaction, postId: attrs.post.id, canUndo },
               className: `pickable-reaction ${reaction} ${
                 canUndo ? "can-undo" : ""
