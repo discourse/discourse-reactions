@@ -72,7 +72,7 @@ after_initialize do
     end
     return reactions if likes.blank?
     like_reaction = {
-      id: SiteSetting.discourse_reactions_like_icon,
+      id: DiscourseReactions::ReactionManager.main_reaction_id,
       type: :emoji,
       users: likes.map { |like| { username: like.user.username, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
       count: likes.length
@@ -103,7 +103,7 @@ after_initialize do
 
     return reactions if like.blank?
     like_reaction = {
-      id: SiteSetting.discourse_reactions_like_icon,
+      id: DiscourseReactions::ReactionManager.main_reaction_id,
       type: :emoji,
       can_undo: scope.can_delete_post_action?(like)
     }

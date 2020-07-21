@@ -3,9 +3,22 @@
 module DiscourseReactions
   class ReactionManager
     class << self
+      def main_reaction_id
+        case SiteSetting.discourse_reactions_like_icon
+        when 'heart'
+          'heart'
+        when 'star'
+          'star'
+        when 'thumbs-up'
+          'thumbsup'
+        else
+          'heart'
+        end
+      end
+
       def toggle!(reaction, user, guardian, post)
         ActiveRecord::Base.transaction do
-          if reaction == SiteSetting.discourse_reactions_like_icon
+          if reaction == DiscourseReactions::ReactionManager.main_reaction_id
             like = post.post_actions.find_by(user: user, post_action_type_id: PostActionType.types[:like])
             if like && !guardian.can_delete_post_action?(like)
               raise Discourse::InvalidAccess

@@ -16,24 +16,9 @@ module DiscourseReactions
 
     def self.valid_reactions
       Set[
-        reaction_for_icon(SiteSetting.discourse_reactions_like_icon),
+        DiscourseReactions::ReactionManager.main_reaction_id,
         *SiteSetting.discourse_reactions_enabled_reactions.split(/\|-?/)
       ]
-    end
-
-    private
-
-    def self.reaction_for_icon(icon)
-      case icon
-      when 'heart'
-        'heart'
-      when 'star'
-        'star'
-      when 'thumbs-up'
-        'thumbsup'
-      else
-        'heart'
-      end
     end
   end
 end
