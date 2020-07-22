@@ -6,7 +6,20 @@ module DiscourseReactions::TopicViewSerializerExtension
       posts = object.posts.includes(:post_actions, reactions: { reaction_users: :user })
       post_ids = posts.map(&:id).uniq
 
-      posts_reaction_users_count_query = DB.query(<<~SQL, post_ids: post_ids, like_id: PostActionType.types[:like])
+      posts_reaction_users_count = TopicViewSerializer.posts_reaction_users_count(post_ids)
+
+      posts.each do |post|
+        post.reaction_users_count = posts_reaction_users_count[post.id].to_i
+      end
+
+      object.instance_variable_set(:@posts, posts)
+    end
+    super
+  end
+
+  def self.prepended(base)
+    def base.posts_reaction_users_count(post_ids)
+      posts_reaction_users_count_query = DB.query(<<~SQL, post_ids: Array.wrap(post_ids), like_id: PostActionType.types[:like])
         SELECT union_subquery.post_id, COUNT(DISTINCT(union_subquery.user_id)) FROM (
             SELECT user_id, post_id FROM post_actions
               WHERE post_id IN (:post_ids)
@@ -19,16 +32,10 @@ module DiscourseReactions::TopicViewSerializerExtension
               WHERE posts.id IN (:post_ids)
         ) AS union_subquery WHERE union_subquery.post_ID IS NOT NULL GROUP BY union_subquery.post_id
       SQL
-      posts_reaction_users_count = posts_reaction_users_count_query.each_with_object({}) do |row, hash|
+
+      posts_reaction_users_count_query.each_with_object({}) do |row, hash|
         hash[row.post_id] = row.count
       end
-
-      posts.each do |post|
-        post.reaction_users_count = posts_reaction_users_count[post.id].to_i
-      end
-
-      object.instance_variable_set(:@posts, posts)
     end
-    super
   end
 end

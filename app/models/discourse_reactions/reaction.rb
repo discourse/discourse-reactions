@@ -16,9 +16,13 @@ module DiscourseReactions
 
     def self.valid_reactions
       Set[
-        DiscourseReactions::ReactionManager.main_reaction_id,
+        DiscourseReactions::Reaction.main_reaction_id,
         *SiteSetting.discourse_reactions_enabled_reactions.split(/\|-?/)
       ]
+    end
+
+    def self.main_reaction_id
+      SiteSetting.discourse_reactions_like_icon.gsub('-', '')
     end
   end
 end

@@ -56,12 +56,12 @@ describe TopicViewSerializer do
 
       expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(0)
 
-      DiscourseReactions::ReactionManager.toggle!("heart", user_2, Guardian.new(user_2), post_2)
+      DiscourseReactions::ReactionManager.new(reaction_value: "heart", user: user_2, guardian: Guardian.new(user_2), post: post_2).toggle!
       json = TopicViewSerializer.new(TopicView.new(topic), scope: Guardian.new(user_2), root: false).as_json
 
       expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(1)
 
-      DiscourseReactions::ReactionManager.toggle!("heart", user_2, Guardian.new(user_2), post_2)
+      DiscourseReactions::ReactionManager.new(reaction_value: "heart", user: user_2, guardian: Guardian.new(user_2), post: post_2).toggle!
       json = TopicViewSerializer.new(TopicView.new(topic), scope: Guardian.new(user_2), root: false).as_json
 
       expect(json[:post_stream][:posts][1][:reaction_users_count]).to eq(0)

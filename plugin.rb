@@ -72,7 +72,7 @@ after_initialize do
     end
     return reactions if likes.blank?
     like_reaction = {
-      id: DiscourseReactions::ReactionManager.main_reaction_id,
+      id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
       users: likes.map { |like| { username: like.user.username, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
       count: likes.length
@@ -103,7 +103,7 @@ after_initialize do
 
     return reactions if like.blank?
     like_reaction = {
-      id: DiscourseReactions::ReactionManager.main_reaction_id,
+      id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
       can_undo: scope.can_delete_post_action?(like)
     }
@@ -112,13 +112,7 @@ after_initialize do
 
   add_to_serializer(:post, :reaction_users_count) do
     return object.reaction_users_count unless object.reaction_users_count.nil?
-    (
-      object.reactions.map(&:reaction_users).flatten.map(&:user_id) |
-      object.post_actions.select do |action|
-        action.post_action_type_id == PostActionType.types[:like] &&
-        action.deleted_at.blank?
-      end.map(&:user_id)
-    ).uniq.count
+    TopicViewSerializer.posts_reaction_users_count(object.id)[object.id]
   end
 
   add_to_serializer(:post, :current_user_used_main_reaction) do

@@ -7,7 +7,7 @@ module DiscourseReactions
     def toggle
       return render_json_error(@post) unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
 
-      DiscourseReactions::ReactionManager.toggle!(params[:reaction], current_user, guardian, @post)
+      DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: @post).toggle!
 
       @post.publish_change_to_clients! :acted
 
