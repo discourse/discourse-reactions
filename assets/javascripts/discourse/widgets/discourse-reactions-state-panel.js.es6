@@ -46,21 +46,20 @@ export default createWidget("discourse-reactions-state-panel", {
       ,
       h("div.container", [
         h(
-          "div.counters",
-
-          sortedReactions.map(reaction =>
-            this.attach("discourse-reactions-state-panel-reaction", {
-              reaction,
-              isDisplayed: reaction.id === this.state.displayedReactionId
-            })
-          )
-        ),
-        h(
           "div.users",
           displayedReaction.users.map(user =>
             avatarFor("tiny", {
               username: user.username,
               template: user.avatar_template
+            })
+          )
+        ),
+        h(
+          "div.counters",
+          sortedReactions.map(reaction =>
+            this.attach("discourse-reactions-state-panel-reaction", {
+              reaction,
+              isDisplayed: reaction.id === this.state.displayedReactionId
             })
           )
         )

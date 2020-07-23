@@ -127,7 +127,7 @@ html.no-select {
   }
 
   .counters {
-    border-bottom: 1px solid $primary-low;
+    border-top: 1px solid $primary-low;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-column-gap: 0.5em;
@@ -146,7 +146,6 @@ html.no-select {
 
     .trigger-user-card {
       display: flex;
-
       align-items: center;
       justify-content: center;
     }
@@ -202,10 +201,10 @@ html.no-select {
     }
   }
 
-  &.user-has-positively-reacted {
+  &.has-used-main-reaction {
     .discourse-reactions-reaction-button {
       .d-icon {
-        color: $primary-low-mid;
+        color: $love;
       }
 
       &:hover {
