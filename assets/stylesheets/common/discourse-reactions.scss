@@ -72,6 +72,7 @@ html.no-select {
     box-shadow: shadow("card");
     background-color: $secondary;
     z-index: 1;
+    border-radius: 2em;
   }
 
   .pickable-reaction {
@@ -80,9 +81,12 @@ html.no-select {
     margin: 0.25em !important;
     border: 1px solid transparent !important;
     cursor: not-allowed;
+    border-radius: 2em;
 
     .emoji {
       pointer-events: none;
+      height: 1.2em;
+      width: 1.2em;
     }
 
     &:not(.can-undo) {
@@ -98,7 +102,9 @@ html.no-select {
     }
 
     &:hover {
-      background: $primary-very-low;
+      background: none !important;
+      border-color: transparent !important;
+      transform: scale(1.5);
     }
   }
 }
