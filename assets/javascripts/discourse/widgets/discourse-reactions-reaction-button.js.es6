@@ -22,7 +22,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   mouseOver(event) {
     this._cancelHoverHandler();
 
-    if (!this.capabilities.touch) {
+    if (!window.matchMedia("(hover: none)").matches) {
       _laterHoverHandlers[this.attrs.post.id] = later(
         this,
         this._hoverHandler,
@@ -35,7 +35,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   mouseOut() {
     this._cancelHoverHandler();
 
-    if (!this.capabilities.touch) {
+    if (!window.matchMedia("(hover: none)").matches) {
       this.callWidgetFunction("scheduleCollapse");
     }
   },
