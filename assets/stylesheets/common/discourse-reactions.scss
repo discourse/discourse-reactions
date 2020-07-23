@@ -1,4 +1,4 @@
-html.no-select {
+html.discourse-reactions-no-select {
   -webkit-touch-callout: none; /* Disables long-touch menu */
   -webkit-user-select: none; /* Disable text selection (for Webkit) */
   user-select: none; /* Disable text selection (standard syntax) */
@@ -95,16 +95,16 @@ html.no-select {
 
     &.can-undo {
       cursor: pointer;
+
+      &:hover {
+        background: none !important;
+        border-color: transparent !important;
+        transform: scale(1.5);
+      }
     }
 
     &.is-used {
       border-color: $tertiary-low !important;
-    }
-
-    &:hover {
-      background: none !important;
-      border-color: transparent !important;
-      transform: scale(1.5);
     }
   }
 }

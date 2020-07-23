@@ -25,8 +25,6 @@ function moveReactionAnimation(
   reactionId,
   startPosition,
   endPosition,
-  startOpacity,
-  endOpacity,
   complete
 ) {
   if (isTesting()) {
@@ -37,7 +35,7 @@ function moveReactionAnimation(
 
   const fakeReaction = buildFakeReaction(reactionId);
   fakeReaction.style.top = startPosition;
-  fakeReaction.style.opacity = startOpacity;
+  fakeReaction.style.opacity = 0;
 
   const list = postContainer.querySelector(
     ".discourse-reactions-list .reactions"
@@ -72,7 +70,7 @@ function moveReactionAnimation(
   $(fakeReaction).animate(
     {
       top: endPosition,
-      opacity: endOpacity
+      opacity: 1
     },
     {
       duration: 350,
@@ -83,11 +81,11 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "-8px", 0, 1, complete);
+  moveReactionAnimation(list, reactionId, "-50px", "-8px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, 0, "50px", 0, 1, complete);
+  moveReactionAnimation(list, reactionId, 0, "50px", complete);
 }
 
 function scaleReactionAnimation(mainReaction, start, end, complete) {
@@ -171,7 +169,7 @@ export default createWidget("discourse-reactions-actions", {
 
     if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
-      root && root.classList.add("no-select");
+      root && root.classList.add("discourse-reactions-no-select");
 
       this._touchStartAt = Date.now();
       this._touchTimeout = later(() => {
@@ -186,7 +184,7 @@ export default createWidget("discourse-reactions-actions", {
     this._touchTimeout && cancel(this._touchTimeout);
 
     const root = document.getElementsByTagName("html")[0];
-    root && root.classList.remove("no-select");
+    root && root.classList.remove("discourse-reactions-no-select");
 
     if (this.capabilities.touch) {
       if (event.originalEvent.changedTouches.length) {
@@ -288,11 +286,7 @@ export default createWidget("discourse-reactions-actions", {
       return;
     }
 
-    if (!this.currentUser) {
-      return;
-    }
-
-    if (this.attrs.post.user_id === this.currentUser.id) {
+    if (!this.currentUser || this.attrs.post.user_id === this.currentUser.id) {
       return;
     }
 
@@ -304,11 +298,11 @@ export default createWidget("discourse-reactions-actions", {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
         const mainReactionIcon = this.siteSettings
           .discourse_reactions_like_icon;
-        const hasPositivelyReacted = this.attrs.post
+        const hasUsedMainReaction = this.attrs.post
           .current_user_used_main_reaction;
         const template = document.createElement("template");
         template.innerHTML = iconHTML(
-          hasPositivelyReacted ? `far-${mainReactionIcon}` : mainReactionIcon
+          hasUsedMainReaction ? `far-${mainReactionIcon}` : mainReactionIcon
         ).trim();
         const icon = template.content.firstChild;
         icon.style.transform = `scale(${scales[1]})`;
@@ -330,14 +324,15 @@ export default createWidget("discourse-reactions-actions", {
 
   scheduleCollapse() {
     this._collapseHandler && cancel(this._collapseHandler);
-
     this._collapseHandler = later(this, this.collapsePanels, 500);
   },
 
   buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
 
   clickOutside() {
-    this.collapsePanels();
+    if (this.state.reactionsPickerExpanded || this.state.statePanelExpanded) {
+      this.collapsePanels();
+    }
   },
 
   expandReactionsPicker() {
