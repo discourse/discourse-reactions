@@ -189,7 +189,7 @@ html.no-select {
     margin-right: 0px !important;
   }
 
-  &:not(.user-has-positively-reacted) {
+  &:not(.has-used-main-reaction) {
     .discourse-reactions-reaction-button {
       &:hover {
         .d-icon {
@@ -208,10 +208,6 @@ html.no-select {
       }
 
       &:hover {
-        .d-icon {
-          color: $love;
-        }
-
         background: $primary-low;
       }
     }
@@ -220,16 +216,6 @@ html.no-select {
   &:not(.can-toggle-main-reaction) {
     .discourse-reactions-reaction-button {
       cursor: default;
-    }
-
-    &:hover {
-      .discourse-reactions-reaction-button {
-        background: none;
-
-        .d-icon {
-          color: $love;
-        }
-      }
     }
   }
 
@@ -242,10 +228,6 @@ html.no-select {
   &.has-reactions {
     .discourse-reactions-counter:hover {
       background: $primary-low;
-
-      .emoji {
-        filter: grayscale(0) !important;
-      }
 
       .reactions-counter {
         color: $primary !important;
