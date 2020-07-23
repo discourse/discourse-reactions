@@ -2,4 +2,4 @@ en:
   site_settings:
     discourse_reactions_like_icon: "Defines the icon used for the main reaction button."
     discourse_reactions_enabled: "Enable the discourse-reactions plugin."
-    discourse_reactions_enabled_reactions: "Defines a list of enabled reactions, any emoji is allowed here. A reaction prefixed with a - will not trigger a like when used."
+    discourse_reactions_enabled_reactions: "Defines a list of enabled reactions, any emoji is allowed here."

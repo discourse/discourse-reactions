@@ -12,5 +12,5 @@ discourse_reactions:
       - thumbs-up
   discourse_reactions_enabled_reactions:
     type: list
-    default: laughing|-open_mouth|-cry|-angry|thumbsup|-thumbsdown
+    default: laughing|open_mouth|cry|angry|thumbsup|thumbsdown
     client: true
