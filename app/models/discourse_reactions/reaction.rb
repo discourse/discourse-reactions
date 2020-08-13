@@ -22,7 +22,7 @@ module DiscourseReactions
     end
 
     def self.main_reaction_id
-      SiteSetting.discourse_reactions_like_icon.gsub('-', '')
+      SiteSetting.discourse_reactions_reaction_for_like.gsub('-', '')
     end
   end
 end

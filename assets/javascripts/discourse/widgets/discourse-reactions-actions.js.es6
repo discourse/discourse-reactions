@@ -311,7 +311,7 @@ export default createWidget("discourse-reactions-actions", {
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
           CustomReaction.toggle(
             this.attrs.post.id,
-            this.attrs.post.topic.valid_reactions.firstObject
+            this.siteSettings.discourse_reactions_reaction_for_like
           ).then(resolve);
         });
       });

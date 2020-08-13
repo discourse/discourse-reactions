@@ -4,12 +4,10 @@ discourse_reactions:
     client: true
   discourse_reactions_like_icon:
     client: true
-    type: enum
     default: "heart"
-    choices:
-      - heart
-      - star
-      - thumbs-up
+  discourse_reactions_reaction_for_like:
+    client: true
+    default: "heart"
   discourse_reactions_enabled_reactions:
     type: list
     default: laughing|open_mouth|cry|angry|thumbsup|thumbsdown

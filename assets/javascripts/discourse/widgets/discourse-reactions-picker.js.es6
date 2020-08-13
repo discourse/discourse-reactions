@@ -28,7 +28,10 @@ export default createWidget("discourse-reactions-picker", {
           attrs.post.topic.valid_reactions.map(reaction => {
             let isUsed;
             let canUndo;
-            if (reaction === this.siteSettings.discourse_reactions_like_icon) {
+            if (
+              reaction ===
+              this.siteSettings.discourse_reactions_reaction_for_like
+            ) {
               isUsed = attrs.post.current_user_used_main_reaction;
               canUndo =
                 attrs.post.likeAction &&
