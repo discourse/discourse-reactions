@@ -42,9 +42,10 @@ export default createWidget("discourse-reactions-state-panel", {
       attrs.post.reactions.findBy("id", this.state.displayedReactionId) ||
       sortedReactions.firstObject;
 
-    return [
-      ,
-      h("div.container", [
+    const elements = [];
+
+    if (displayedReaction.users.length > 0) {
+      elements.push(
         h(
           "div.users",
           displayedReaction.users.map(user =>
@@ -53,17 +54,22 @@ export default createWidget("discourse-reactions-state-panel", {
               template: user.avatar_template
             })
           )
-        ),
-        h(
-          "div.counters",
-          sortedReactions.map(reaction =>
-            this.attach("discourse-reactions-state-panel-reaction", {
-              reaction,
-              isDisplayed: reaction.id === this.state.displayedReactionId
-            })
-          )
         )
-      ])
-    ];
+      );
+    }
+
+    elements.push(
+      h(
+        "div.counters",
+        sortedReactions.map(reaction =>
+          this.attach("discourse-reactions-state-panel-reaction", {
+            reaction,
+            isDisplayed: reaction.id === this.state.displayedReactionId
+          })
+        )
+      )
+    );
+
+    return [, h("div.container", elements)];
   }
 });

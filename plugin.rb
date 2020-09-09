@@ -128,4 +128,8 @@ after_initialize do
   add_to_serializer(:topic_view, :valid_reactions) do
     DiscourseReactions::Reaction.valid_reactions
   end
+
+  add_model_callback(User, :before_destroy) do
+    DiscourseReactions::ReactionUser.where(user_id: self.id).delete_all
+  end
 end
