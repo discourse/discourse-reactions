@@ -26,9 +26,9 @@ module DiscourseReactions::TopicViewSerializerExtension
                 AND post_action_type_id = :like_id
                 AND deleted_at IS NULL
           UNION ALL
-            SELECT discourse_reactions_reaction_users.user_id, post_id from posts
-              LEFT JOIN discourse_reactions_reactions ON discourse_reactions_reactions.post_id = posts.id
-              LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.reaction_id = discourse_reactions_reactions.id
+            SELECT discourse_reactions_reaction_users.user_id, posts.id from posts
+            LEFT JOIN discourse_reactions_reactions ON discourse_reactions_reactions.post_id = posts.id
+            LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.reaction_id = discourse_reactions_reactions.id
               WHERE posts.id IN (:post_ids)
         ) AS union_subquery WHERE union_subquery.post_ID IS NOT NULL GROUP BY union_subquery.post_id
       SQL

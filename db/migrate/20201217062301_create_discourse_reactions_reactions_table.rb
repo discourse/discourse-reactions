@@ -13,3 +13,4 @@ class CreateDiscourseReactionsReactionsTable < ActiveRecord::Migration[6.0]
     add_index :discourse_reactions_reactions, [:post_id, :reaction_type, :reaction_value], unique: true, name: 'reaction_type_reaction_value'
   end
 end
+

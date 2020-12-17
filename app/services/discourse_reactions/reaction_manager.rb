@@ -7,6 +7,8 @@ module DiscourseReactions
       @user = user
       @guardian = guardian
       @post = post
+      @reaction = reaction_scope.first_or_create
+      @like = @post.post_actions.find_by(user: @user, post_action_type_id: post_action_like_type)
     end
 
     def toggle!
@@ -18,16 +20,17 @@ module DiscourseReactions
     private
 
     def toggle_like
-      like = @post.post_actions.find_by(user: @user, post_action_type_id: post_action_like_type)
-      raise Discourse::InvalidAccess if like && !@guardian.can_delete_post_action?(like)
-      like ? remove_shadow_like : add_shadow_like
+      raise Discourse::InvalidAccess if @like && !@guardian.can_delete_post_action?(like)
+      remove_shadow_like if @like
+      remove_reaction if is_reacted_by_user
+      add_shadow_like unless @like
     end
 
     def toggle_reaction
       PostAction.limit_action!(@user, @post, post_action_like_type)
-      @reaction = reaction_scope.first_or_create
-      @reaction_user = reaction_user_scope&.first_or_initialize
-      @reaction_user.persisted? ? remove_reaction : add_reaction
+      remove_reaction if is_reacted_by_user
+      remove_shadow_like if @like
+      add_reaction unless is_reacted_by_user
     end
 
     def post_action_like_type
@@ -50,7 +53,11 @@ module DiscourseReactions
 
     def reaction_user_scope
       return nil unless @reaction
-      DiscourseReactions::ReactionUser.where(reaction_id: @reaction.id, user_id: @user.id)
+      DiscourseReactions::ReactionUser.where(reaction_id: @reaction.id, user_id: @user.id, post_id: @post.id)
+    end
+
+    def is_reacted_by_user
+      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id) ? true : false
     end
 
     def add_shadow_like
@@ -62,15 +69,23 @@ module DiscourseReactions
     end
 
     def add_reaction
-      @reaction_user.save!
+      add_reaction_user
       add_reaction_notification
     end
 
     def remove_reaction
-      raise Discourse::InvalidAccess if !@guardian.can_delete_reaction_user?(@reaction_user)
-      @reaction_user.destroy
+      remove_reaction_user
       remove_reaction_notification
       @reaction.destroy if @reaction.reload.reaction_users_count == 0
+    end
+
+    def add_reaction_user
+      return nil unless @reaction
+      DiscourseReactions::ReactionUser.where(reaction_id: @reaction.id, user_id: @user.id, post_id: @post.id)&.first_or_initialize.save!
+    end
+
+    def remove_reaction_user
+      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id).destroy
     end
   end
 end
