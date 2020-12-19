@@ -57,7 +57,8 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    reactions = object.reactions.map do |reaction|
+
+    reactions = object.reactions.reject { |hash| hash[:reaction_users_count] == nil }.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
