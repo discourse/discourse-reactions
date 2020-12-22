@@ -9,6 +9,7 @@ en:
       picker:
         react_with: "React to this post with: %{reaction}"
         cant_remove_reaction: "You can’t remove this reaction"
+        remove_reaction: "Remove this %{reaction} reaction"
       main_reaction:
         add: "Like this post"
         remove: "Remove this like"

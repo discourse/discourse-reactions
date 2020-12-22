@@ -339,8 +339,18 @@ export default createWidget("discourse-reactions-actions", {
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
+
+    const currentUserReactions = this.attrs.post.current_user_reactions;
+    let currentUsedReaction;
+
+    if (currentUserReactions[0] && currentUserReactions[0].id !== "heart") {
+      currentUsedReaction = ".btn-toggle-reaction-emoji";
+    } else {
+      currentUsedReaction = ".btn-toggle-reaction-like";
+    }
+
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      ".btn-toggle-reaction",
+      currentUsedReaction,
       ".discourse-reactions-picker"
     ]);
   },

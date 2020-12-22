@@ -1,5 +1,6 @@
 import I18n from "I18n";
 import { iconNode } from "discourse-common/lib/icon-library";
+import { emojiUrlFor } from "discourse/lib/text";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
 import { later, cancel } from "@ember/runloop";
@@ -13,9 +14,21 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   click() {
     this._cancelHoverHandler();
+    const hasUsedMainReaction = this.attrs.post.current_user_used_main_reaction;
+    const currentUserReactions = this.attrs.post.current_user_reactions;
 
     if (!this.capabilities.touch) {
-      this.callWidgetFunction("toggleLike");
+      if (hasUsedMainReaction) {
+        this.callWidgetFunction("toggleLike");
+      } else if (currentUserReactions[0]) {
+        this.callWidgetFunction("toggleReaction", {
+          reaction: currentUserReactions[0].id,
+          postId: this.attrs.post.id,
+          canUndo: currentUserReactions[0].can_undo
+        });
+      } else {
+        this.callWidgetFunction("toggleLike");
+      }
     }
   },
 
@@ -42,7 +55,9 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   buildAttributes(attrs) {
     let title;
+    let options;
     const likeAction = attrs.post.likeAction;
+    const currentUserReactions = this.attrs.post.current_user_reactions;
 
     if (!likeAction) {
       return;
@@ -60,17 +75,43 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.main_reaction.cant_remove";
     }
 
-    return { title: I18n.t(title) };
+    if (
+      currentUserReactions[0] &&
+      currentUserReactions[0].can_undo &&
+      !likeAction.hasOwnProperty("can_undo")
+    ) {
+      title = "discourse_reactions.picker.remove_reaction";
+      options = { reaction: currentUserReactions[0].id };
+    }
+
+    if (currentUserReactions[0] && !currentUserReactions[0].can_undo) {
+      title = "discourse_reactions.picker.cant_remove_reaction";
+    }
+
+    return options
+      ? { title: I18n.t(title, options) }
+      : { title: I18n.t(title) };
   },
 
   html(attrs) {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
     const hasUsedMainReaction = attrs.post.current_user_used_main_reaction;
-    const icon = hasUsedMainReaction
-      ? mainReactionIcon
-      : `far-${mainReactionIcon}`;
+    const currentUserReactions = attrs.post.current_user_reactions;
 
-    return h(`button.btn-toggle-reaction.btn-icon.no-text`, [iconNode(icon)]);
+    if (hasUsedMainReaction) {
+      return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
+        iconNode(mainReactionIcon)
+      ]);
+    } else if (currentUserReactions[0]) {
+      return h(`img.btn-toggle-reaction-emoji.btn-icon.no-text`, {
+        src: emojiUrlFor(currentUserReactions[0].id),
+        alt: `:${currentUserReactions[0].id}:`
+      });
+    } else {
+      return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
+        iconNode(`far-${mainReactionIcon}`)
+      ]);
+    }
   },
 
   _cancelHoverHandler() {

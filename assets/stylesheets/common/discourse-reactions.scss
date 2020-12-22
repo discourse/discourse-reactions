@@ -247,10 +247,17 @@ html.discourse-reactions-no-select {
   display: flex;
   touch-action: none;
 
-  .btn-toggle-reaction {
+  .btn-toggle-reaction-like {
     outline: none;
     pointer-events: none;
     background: none !important;
+  }
+
+  img.btn-toggle-reaction-emoji {
+    align-self: center;
+    margin: 0 0.1em;
+    width: 1.1em;
+    height: 1.1em;
   }
 
   &:hover {
