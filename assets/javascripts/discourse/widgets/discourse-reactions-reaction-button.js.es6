@@ -15,16 +15,16 @@ export default createWidget("discourse-reactions-reaction-button", {
   click() {
     this._cancelHoverHandler();
     const hasUsedMainReaction = this.attrs.post.current_user_used_main_reaction;
-    const currentUserReactions = this.attrs.post.current_user_reactions;
+    const currentUserReaction = this.attrs.post.current_user_reaction;
 
     if (!this.capabilities.touch) {
       if (hasUsedMainReaction) {
         this.callWidgetFunction("toggleLike");
-      } else if (currentUserReactions[0]) {
+      } else if (currentUserReaction) {
         this.callWidgetFunction("toggleReaction", {
-          reaction: currentUserReactions[0].id,
+          reaction: currentUserReaction.id,
           postId: this.attrs.post.id,
-          canUndo: currentUserReactions[0].can_undo
+          canUndo: currentUserReaction.can_undo
         });
       } else {
         this.callWidgetFunction("toggleLike");
@@ -57,7 +57,7 @@ export default createWidget("discourse-reactions-reaction-button", {
     let title;
     let options;
     const likeAction = attrs.post.likeAction;
-    const currentUserReactions = this.attrs.post.current_user_reactions;
+    const currentUserReaction = this.attrs.post.current_user_reaction;
 
     if (!likeAction) {
       return;
@@ -76,15 +76,15 @@ export default createWidget("discourse-reactions-reaction-button", {
     }
 
     if (
-      currentUserReactions[0] &&
-      currentUserReactions[0].can_undo &&
+      currentUserReaction &&
+      currentUserReaction.can_undo &&
       !likeAction.hasOwnProperty("can_undo")
     ) {
       title = "discourse_reactions.picker.remove_reaction";
-      options = { reaction: currentUserReactions[0].id };
+      options = { reaction: currentUserReaction.id };
     }
 
-    if (currentUserReactions[0] && !currentUserReactions[0].can_undo) {
+    if (currentUserReaction && !currentUserReaction.can_undo) {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }
 
@@ -96,22 +96,24 @@ export default createWidget("discourse-reactions-reaction-button", {
   html(attrs) {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
     const hasUsedMainReaction = attrs.post.current_user_used_main_reaction;
-    const currentUserReactions = attrs.post.current_user_reactions;
+    const currentUserReaction = attrs.post.current_user_reaction;
 
     if (hasUsedMainReaction) {
       return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
         iconNode(mainReactionIcon)
       ]);
-    } else if (currentUserReactions[0]) {
-      return h(`img.btn-toggle-reaction-emoji.btn-icon.no-text`, {
-        src: emojiUrlFor(currentUserReactions[0].id),
-        alt: `:${currentUserReactions[0].id}:`
-      });
-    } else {
-      return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
-        iconNode(`far-${mainReactionIcon}`)
-      ]);
     }
+
+    if (currentUserReaction) {
+      return h(`img.btn-toggle-reaction-emoji.btn-icon.no-text`, {
+        src: emojiUrlFor(currentUserReaction.id),
+        alt: `:${currentUserReaction.id}:`
+      });
+    }
+
+    return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
+      iconNode(`far-${mainReactionIcon}`)
+    ]);
   },
 
   _cancelHoverHandler() {

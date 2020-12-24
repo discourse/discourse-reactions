@@ -60,7 +60,7 @@ module DiscourseReactions
     end
 
     def is_reacted_by_user
-      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id) ? true : false
+      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
     end
 
     def old_reacted_user
@@ -73,7 +73,7 @@ module DiscourseReactions
 
     def remove_shadow_like
       PostActionDestroyer.new(@user, @post, post_action_like_type).perform
-      DiscourseReactions::Reaction.where("reaction_value = 'heart' AND post_id = ?", @post.id).destroy_all
+      DiscourseReactions::Reaction.where("reaction_value = '#{DiscourseReactions::Reaction.main_reaction_id}' AND post_id = ?", @post.id).destroy_all
     end
 
     def add_reaction

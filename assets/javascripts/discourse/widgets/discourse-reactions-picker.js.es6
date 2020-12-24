@@ -34,12 +34,14 @@ export default createWidget("discourse-reactions-picker", {
             ) {
               isUsed = attrs.post.current_user_used_main_reaction;
             } else {
-              isUsed = attrs.post.current_user_reactions.findBy("id", reaction);
+              isUsed =
+                attrs.post.current_user_reaction &&
+                attrs.post.current_user_reaction.id == reaction;
             }
 
-            if (attrs.post.current_user_reactions.length > 0) {
+            if (attrs.post.current_user_reaction) {
               canUndo =
-                attrs.post.current_user_reactions[0].can_undo &&
+                attrs.post.current_user_reaction.can_undo &&
                 attrs.post.likeAction.canToggle;
             } else {
               canUndo = attrs.post.likeAction.canToggle;

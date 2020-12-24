@@ -82,19 +82,19 @@ after_initialize do
     reactions << like_reaction
   end
 
-  add_to_serializer(:post, :current_user_reactions) do
-    return [] unless scope.user.present?
-    reactions = object.reactions.map do |reaction|
+  add_to_serializer(:post, :current_user_reaction) do
+    return nil unless scope.user.present?
+    object.reactions.each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
       next unless reaction_user
 
-      {
+      return {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
         can_undo: reaction_user.can_undo?
-      }
-    end.compact
+      } if reaction.reaction_users_count
+    end
 
     like = object.post_actions.find do |l|
       l.post_action_type_id == PostActionType.types[:like] &&
@@ -102,13 +102,13 @@ after_initialize do
       l.user_id == scope.user.id
     end
 
-    return reactions if like.blank?
+    return nil if like.blank?
+
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
       can_undo: scope.can_delete_post_action?(like)
     }
-    reactions << like_reaction
   end
 
   add_to_serializer(:post, :reaction_users_count) do
