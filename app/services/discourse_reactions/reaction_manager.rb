@@ -14,7 +14,7 @@ module DiscourseReactions
       ActiveRecord::Base.transaction do
         return if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(old_reacted_user))
         @reaction = reaction_scope&.first_or_create
-        @reaction_user = reaction_user_scope&.first_or_initialize
+        @reaction_user = reaction_user_scope
         @reaction_value == DiscourseReactions::Reaction.main_reaction_id ? toggle_like : toggle_reaction
       end
     end
@@ -55,8 +55,8 @@ module DiscourseReactions
     def reaction_user_scope
       return nil unless @reaction
       search_reaction_user = DiscourseReactions::ReactionUser.where(user_id: @user.id, post_id: @post.id)
-      create_reaction_user = DiscourseReactions::ReactionUser.where(reaction_id: @reaction.id, user_id: @user.id, post_id: @post.id)
-      search_reaction_user.length > 0 ? search_reaction_user : create_reaction_user
+      create_reaction_user = DiscourseReactions::ReactionUser.new(reaction_id: @reaction.id, user_id: @user.id, post_id: @post.id)
+      search_reaction_user.length > 0 ? search_reaction_user.first : create_reaction_user
     end
 
     def is_reacted_by_user
@@ -73,11 +73,15 @@ module DiscourseReactions
 
     def remove_shadow_like
       PostActionDestroyer.new(@user, @post, post_action_like_type).perform
+      delete_like_reaction
+    end
+
+    def delete_like_reaction
       DiscourseReactions::Reaction.where("reaction_value = '#{DiscourseReactions::Reaction.main_reaction_id}' AND post_id = ?", @post.id).destroy_all
     end
 
     def add_reaction
-      @reaction_user = reaction_user_scope&.first_or_initialize unless is_reacted_by_user
+      @reaction_user = reaction_user_scope unless is_reacted_by_user
       @reaction_user.save!
       add_reaction_notification
     end
@@ -85,6 +89,10 @@ module DiscourseReactions
     def remove_reaction
       @reaction_user.destroy
       remove_reaction_notification
+      delete_reaction
+    end
+
+    def delete_reaction
       DiscourseReactions::Reaction.where("reaction_users_count = 0 AND post_id = ?", @post.id).destroy_all
     end
 

@@ -58,7 +58,7 @@ after_initialize do
 
   add_to_serializer(:post, :reactions) do
 
-    reactions = object.reactions.reject { |hash| hash[:reaction_users_count] == nil }.map do |reaction|
+    reactions = object.reactions.reject { |reaction| !reaction[:reaction_users_count] }.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
@@ -71,7 +71,9 @@ after_initialize do
       l.post_action_type_id == PostActionType.types[:like] &&
       l.deleted_at.blank?
     end
+
     return reactions if likes.blank?
+
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
