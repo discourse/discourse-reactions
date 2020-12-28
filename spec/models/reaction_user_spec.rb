@@ -21,7 +21,8 @@ describe DiscourseReactions::ReactionUser do
     it 'deletes all the reactions for that user' do
       user = Fabricate(:user)
       reaction = Fabricate(:reaction)
-      user_reaction = Fabricate(:reaction_user, user: user, reaction: reaction)
+      post = Fabricate(:post)
+      user_reaction = Fabricate(:reaction_user, user: user, reaction: reaction, post: post)
 
       user.destroy!
       reaction_users = described_class.where(user_id: user.id)

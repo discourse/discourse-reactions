@@ -12,7 +12,7 @@ module DiscourseReactions
 
     def toggle!
       ActiveRecord::Base.transaction do
-        return if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(old_reacted_user))
+        return if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(is_reacted_by_user))
         @reaction = reaction_scope&.first_or_create
         @reaction_user = reaction_user_scope
         @reaction_value == DiscourseReactions::Reaction.main_reaction_id ? toggle_like : toggle_reaction
@@ -29,7 +29,9 @@ module DiscourseReactions
 
     def toggle_reaction
       PostAction.limit_action!(@user, @post, post_action_like_type)
+      previous_reaction = old_reaction(is_reacted_by_user) if is_reacted_by_user
       remove_reaction if is_reacted_by_user
+      return if previous_reaction && previous_reaction.reaction_value == @reaction_value
       remove_shadow_like if @like
       add_reaction unless is_reacted_by_user
     end
@@ -63,8 +65,9 @@ module DiscourseReactions
       DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
     end
 
-    def old_reacted_user
-      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
+    def old_reaction(is_reacted_by_user)
+      return unless is_reacted_by_user
+      DiscourseReactions::Reaction.where(id: is_reacted_by_user.reaction_id).first
     end
 
     def add_shadow_like

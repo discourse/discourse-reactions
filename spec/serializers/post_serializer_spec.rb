@@ -8,16 +8,14 @@ describe PostSerializer do
   fab!(:user_1) { Fabricate(:user) }
   fab!(:user_2) { Fabricate(:user) }
   fab!(:user_3) { Fabricate(:user) }
+  fab!(:user_4) { Fabricate(:user) }
   fab!(:post_1) { Fabricate(:post, user: user_1) }
   fab!(:reaction_1) { Fabricate(:reaction, post: post_1) }
-  fab!(:reaction_user_1) { Fabricate(:reaction_user, reaction: reaction_1, user: user_1) }
-  fab!(:reaction_user_2) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2) }
   fab!(:reaction_2) { Fabricate(:reaction, reaction_value: "thumbsup", post: post_1) }
-  fab!(:reaction_user_3) { Fabricate(:reaction_user, reaction: reaction_2, user: user_2, created_at: 20.minutes.ago) }
-  fab!(:reaction_3) { Fabricate(:reaction, reaction_value: "cry", post: post_1) }
-  fab!(:reaction_user_4) { Fabricate(:reaction_user, reaction: reaction_3, user: user_3) }
-  fab!(:like) { Fabricate(:post_action, post: post_1, user: user_1, post_action_type_id: PostActionType.types[:like]) }
-  fab!(:like) { Fabricate(:post_action, post: post_1, user: user_3, post_action_type_id: PostActionType.types[:like]) }
+  fab!(:reaction_user_1) { Fabricate(:reaction_user, reaction: reaction_1, user: user_1, post: post_1) }
+  fab!(:reaction_user_2) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_1) }
+  fab!(:reaction_user_3) { Fabricate(:reaction_user, reaction: reaction_2, user: user_3, post: post_1, created_at: 20.minutes.ago) }
+  fab!(:like) { Fabricate(:post_action, post: post_1, user: user_4, post_action_type_id: PostActionType.types[:like]) }
 
   before do
     SiteSetting.post_undo_action_window_mins = 10
@@ -42,15 +40,7 @@ describe PostSerializer do
         id: 'thumbsup',
         type: :emoji,
         users: [
-          { username: user_2.username, avatar_template: user_2.avatar_template, can_undo: false }
-        ],
-        count: 1
-      },
-      {
-        id: 'cry',
-        type: :emoji,
-        users: [
-          { username: user_3.username, avatar_template: user_3.avatar_template, can_undo: true }
+          { username: user_3.username, avatar_template: user_3.avatar_template, can_undo: false }
         ],
         count: 1
       },
@@ -58,21 +48,17 @@ describe PostSerializer do
         id: 'heart',
         type: :emoji,
         users: [
-          { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
-          { username: user_3.username, avatar_template: user_3.avatar_template, can_undo: false }
+          { username: user_4.username, avatar_template: user_4.avatar_template, can_undo: false }
         ],
-        count: 2
+        count: 1
       }
     ])
 
-    expect(json[:current_user_reactions]).to eq([
-      { type: :emoji, id: 'otter', can_undo: true },
-      { type: :emoji, id: 'heart', can_undo: true }
-    ])
+    expect(json[:current_user_reaction]).to eq({ type: :emoji, id: 'otter', can_undo: true })
 
     json = PostSerializer.new(post_1, scope: Guardian.new(user_2), root: false).as_json
 
-    expect(json[:reaction_users_count]).to eq(3)
+    expect(json[:reaction_users_count]).to eq(4)
   end
 
   context 'disabled' do
