@@ -75,7 +75,9 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.main_reaction.cant_remove";
     }
 
-    // !likeAction.hasOwnProperty("can_undo")  it specifies user have not liked the post
+    // used !likeAction.hasOwnProperty("can_undo") rather than !likeAction.can_undo
+    // to check whether can_undo property is present or not irrsepective of its value
+
     if (
       currentUserReaction &&
       currentUserReaction.can_undo &&
@@ -85,7 +87,7 @@ export default createWidget("discourse-reactions-reaction-button", {
       options = { reaction: currentUserReaction.id };
     }
 
-    if (currentUserReaction && !currentUserReaction.can_undo) {
+    if (currentUserReaction && !currentUserReaction.can_undo && !likeAction.hasOwnProperty("can_undo")) {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }
 
