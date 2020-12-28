@@ -58,7 +58,7 @@ after_initialize do
 
   add_to_serializer(:post, :reactions) do
 
-    reactions = object.reactions.reject { |reaction| !reaction[:reaction_users_count] }.map do |reaction|
+    reactions = object.reactions.select { |reaction| reaction[:reaction_users_count] }.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,

@@ -75,6 +75,7 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.main_reaction.cant_remove";
     }
 
+    // !likeAction.hasOwnProperty("can_undo")  it specifies user have not liked the post
     if (
       currentUserReaction &&
       currentUserReaction.can_undo &&
