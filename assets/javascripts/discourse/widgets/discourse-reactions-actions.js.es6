@@ -127,7 +127,7 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     const hasReactions = attrs.post.reactions.length;
-    const hasReacted = attrs.post.current_user_reactions.length;
+    const hasReacted = attrs.post.current_user_reaction;
     const classes = [];
 
     if (hasReactions) {
@@ -246,10 +246,8 @@ export default createWidget("discourse-reactions-actions", {
               `[data-post-id="${params.postId}"]`
             );
             if (
-              this.attrs.post.current_user_reactions.findBy(
-                "id",
-                params.reaction
-              )
+              this.attrs.post.current_user_reaction &&
+              this.attrs.post.current_user_reaction.id == params.reaction
             ) {
               dropReaction(postContainer, params.reaction, () => {
                 return CustomReaction.toggle(
@@ -339,8 +337,14 @@ export default createWidget("discourse-reactions-actions", {
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
+
+    const currentUserReaction = this.attrs.post.current_user_reaction;
+    const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
+
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      ".btn-toggle-reaction",
+      currentUserReaction && currentUserReaction.id != mainReactionIcon
+        ? ".btn-toggle-reaction-emoji"
+        : ".btn-toggle-reaction-like",
       ".discourse-reactions-picker"
     ]);
   },

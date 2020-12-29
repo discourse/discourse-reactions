@@ -33,12 +33,18 @@ export default createWidget("discourse-reactions-picker", {
               this.siteSettings.discourse_reactions_reaction_for_like
             ) {
               isUsed = attrs.post.current_user_used_main_reaction;
-              canUndo =
-                attrs.post.likeAction &&
-                ((isUsed && attrs.post.likeAction.canToggle) || !isUsed);
             } else {
-              isUsed = attrs.post.current_user_reactions.findBy("id", reaction);
-              canUndo = !isUsed || isUsed.can_undo;
+              isUsed =
+                attrs.post.current_user_reaction &&
+                attrs.post.current_user_reaction.id == reaction;
+            }
+
+            if (attrs.post.current_user_reaction) {
+              canUndo =
+                attrs.post.current_user_reaction.can_undo &&
+                attrs.post.likeAction.canToggle;
+            } else {
+              canUndo = attrs.post.likeAction.canToggle;
             }
 
             let title;

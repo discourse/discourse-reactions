@@ -123,16 +123,18 @@ describe DiscourseReactions::CustomReactionsController do
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(1)
     expect(DiscourseReactions::ReactionUser.count).to eq(1)
+
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(0)
     expect(DiscourseReactions::ReactionUser.count).to eq(0)
+
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(1)
     expect(DiscourseReactions::ReactionUser.count).to eq(1)
+
     freeze_time(Time.zone.now + 11.minutes)
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(1)
     expect(DiscourseReactions::ReactionUser.count).to eq(1)
-    expect(response.status).to eq(403)
   end
 end

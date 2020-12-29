@@ -32,7 +32,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
   html(attrs) {
     return [
-      h("span.count", attrs.reaction.count.toString()),
+      h("count", attrs.reaction.count),
       new RawHtml({
         html: emojiUnescape(`:${attrs.reaction.id}:`)
       })

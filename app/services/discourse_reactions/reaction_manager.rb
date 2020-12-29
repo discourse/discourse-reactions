@@ -7,10 +7,14 @@ module DiscourseReactions
       @user = user
       @guardian = guardian
       @post = post
+      @like = @post.post_actions.find_by(user: @user, post_action_type_id: post_action_like_type)
     end
 
     def toggle!
       ActiveRecord::Base.transaction do
+        return if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(is_reacted_by_user))
+        @reaction = reaction_scope&.first_or_create
+        @reaction_user = reaction_user_scope
         @reaction_value == DiscourseReactions::Reaction.main_reaction_id ? toggle_like : toggle_reaction
       end
     end
@@ -18,16 +22,18 @@ module DiscourseReactions
     private
 
     def toggle_like
-      like = @post.post_actions.find_by(user: @user, post_action_type_id: post_action_like_type)
-      raise Discourse::InvalidAccess if like && !@guardian.can_delete_post_action?(like)
-      like ? remove_shadow_like : add_shadow_like
+      remove_shadow_like if @like
+      remove_reaction if is_reacted_by_user
+      add_shadow_like unless @like
     end
 
     def toggle_reaction
       PostAction.limit_action!(@user, @post, post_action_like_type)
-      @reaction = reaction_scope.first_or_create
-      @reaction_user = reaction_user_scope&.first_or_initialize
-      @reaction_user.persisted? ? remove_reaction : add_reaction
+      previous_reaction = old_reaction(is_reacted_by_user) if is_reacted_by_user
+      remove_reaction if is_reacted_by_user
+      return if previous_reaction && previous_reaction.reaction_value == @reaction_value
+      remove_shadow_like if @like
+      add_reaction unless is_reacted_by_user
     end
 
     def post_action_like_type
@@ -50,7 +56,18 @@ module DiscourseReactions
 
     def reaction_user_scope
       return nil unless @reaction
-      DiscourseReactions::ReactionUser.where(reaction_id: @reaction.id, user_id: @user.id)
+      search_reaction_user = DiscourseReactions::ReactionUser.where(user_id: @user.id, post_id: @post.id)
+      create_reaction_user = DiscourseReactions::ReactionUser.new(reaction_id: @reaction.id, user_id: @user.id, post_id: @post.id)
+      search_reaction_user.length > 0 ? search_reaction_user.first : create_reaction_user
+    end
+
+    def is_reacted_by_user
+      DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
+    end
+
+    def old_reaction(is_reacted_by_user)
+      return unless is_reacted_by_user
+      DiscourseReactions::Reaction.where(id: is_reacted_by_user.reaction_id).first
     end
 
     def add_shadow_like
@@ -59,18 +76,28 @@ module DiscourseReactions
 
     def remove_shadow_like
       PostActionDestroyer.new(@user, @post, post_action_like_type).perform
+      delete_like_reaction
+    end
+
+    def delete_like_reaction
+      DiscourseReactions::Reaction.where("reaction_value = '#{DiscourseReactions::Reaction.main_reaction_id}' AND post_id = ?", @post.id).destroy_all
     end
 
     def add_reaction
+      @reaction_user = reaction_user_scope unless is_reacted_by_user
       @reaction_user.save!
       add_reaction_notification
     end
 
     def remove_reaction
-      raise Discourse::InvalidAccess if !@guardian.can_delete_reaction_user?(@reaction_user)
       @reaction_user.destroy
       remove_reaction_notification
-      @reaction.destroy if @reaction.reload.reaction_users_count == 0
+      delete_reaction
     end
+
+    def delete_reaction
+      DiscourseReactions::Reaction.where("reaction_users_count = 0 AND post_id = ?", @post.id).destroy_all
+    end
+
   end
 end
