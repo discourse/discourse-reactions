@@ -249,6 +249,10 @@ export default createWidget("discourse-reactions-actions", {
               this.attrs.post.current_user_reaction &&
               this.attrs.post.current_user_reaction.id == params.reaction
             ) {
+              this.dropUserReaction();
+              this.attrs.post.reaction_users_count -= 1;
+              this.setCurrentUserReaction();
+              this.attrs.post.current_user_used_main_reaction = false;
               dropReaction(postContainer, params.reaction, () => {
                 return CustomReaction.toggle(
                   params.postId,
@@ -256,6 +260,20 @@ export default createWidget("discourse-reactions-actions", {
                 ).then(resolve);
               });
             } else {
+              this.dropUserReaction();
+              this.addUserReaction(params.reaction);
+
+              if(!this.attrs.post.current_user_reaction) {
+                this.attrs.post.reaction_users_count += 1;
+              }
+              this.setCurrentUserReaction(params.reaction);
+
+              if(this.attrs.post.current_user_reaction && this.attrs.post.current_user_reaction.id == this.siteSettings.discourse_reactions_like_icon ){
+                this.attrs.post.current_user_used_main_reaction = true;
+              } else {
+                this.attrs.post.current_user_used_main_reaction = false;
+              }
+
               addReaction(postContainer, params.reaction, () => {
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   resolve
@@ -307,6 +325,22 @@ export default createWidget("discourse-reactions-actions", {
 
         mainReaction.parentNode.replaceChild(icon, mainReaction);
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
+          this.dropUserReaction();
+          this.addUserReaction(this.siteSettings.discourse_reactions_like_icon);
+
+          if (!this.attrs.post.current_user_reaction) {
+            this.attrs.post.reaction_users_count += 1;
+            this.setCurrentUserReaction(this.siteSettings.discourse_reactions_like_icon);
+            this.attrs.post.current_user_used_main_reaction = true;
+          } else if (this.attrs.post.current_user_reaction && this.attrs.post.current_user_reaction.id == this.siteSettings.discourse_reactions_like_icon) {
+            this.attrs.post.reaction_users_count -= 1;
+            this.setCurrentUserReaction();
+            this.attrs.post.current_user_used_main_reaction = false;
+          } else {
+            this.setCurrentUserReaction(this.siteSettings.discourse_reactions_like_icon);
+            this.attrs.post.current_user_used_main_reaction = true;
+          }
+
           CustomReaction.toggle(
             this.attrs.post.id,
             this.siteSettings.discourse_reactions_reaction_for_like
@@ -314,6 +348,63 @@ export default createWidget("discourse-reactions-actions", {
         });
       });
     });
+  },
+
+  setCurrentUserReaction(reaction_id = null) {
+    if(reaction_id) {
+      this.attrs.post.current_user_reaction = {
+        id: reaction_id,
+        type: 'emoji',
+        can_undo: true,
+      };
+    } else {
+      this.attrs.post.current_user_reaction = null;
+    }
+  },
+
+  dropUserReaction() {
+    if(this.attrs.post.current_user_reaction) {
+      this.attrs.post.reactions.every((reaction, index) => {
+        if((reaction.count <= 1 && reaction.id == this.attrs.post.current_user_reaction.id)) {
+          this.attrs.post.reactions.splice(index, 1);
+          return false;
+        } else if(reaction.id == this.attrs.post.current_user_reaction) {
+          this.attrs.post.reactions[index].count -= 1;
+          return false;
+        }
+
+        return true;
+      });
+    }
+  },
+
+  addUserReaction(reaction_id) {
+    let isAvailable = false;
+    this.attrs.post.reactions.every((reaction, index) => {
+      if(reaction.id == reaction_id) {
+        this.attrs.post.reactions[index].count += 1;
+        this.attrs.post.reactions[index].users.push({
+          username: this.currentUser.username,
+          avatar_template: this.currentUser.avatar_template,
+          can_undo: true
+        });
+        isAvailable = true;
+        return false;
+      }
+      return true;
+    });
+    if (!isAvailable) {
+      this.attrs.post.reactions.push({
+        id: reaction_id,
+        type: 'emoji',
+        count: 1,
+        users: [{
+          username: this.currentUser.username,
+          avatar_template: this.currentUser.avatar_template,
+          can_undo: true
+        }]
+      });
+    }
   },
 
   cancelCollapse() {
