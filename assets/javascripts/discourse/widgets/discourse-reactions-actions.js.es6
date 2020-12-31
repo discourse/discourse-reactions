@@ -249,32 +249,42 @@ export default createWidget("discourse-reactions-actions", {
               this.attrs.post.current_user_reaction &&
               this.attrs.post.current_user_reaction.id == params.reaction
             ) {
+              this.collapsePanels();
               this.dropUserReaction();
               this.attrs.post.reaction_users_count -= 1;
-              this.setCurrentUserReaction();
               this.attrs.post.current_user_used_main_reaction = false;
-              dropReaction(postContainer, params.reaction, () => {
-                return CustomReaction.toggle(
-                  params.postId,
-                  params.reaction
-                ).then(resolve);
-              });
+              this.setCurrentUserReaction();
+              setTimeout(() => {
+                dropReaction(postContainer, params.reaction, () => {
+                  return CustomReaction.toggle(
+                    params.postId,
+                    params.reaction
+                  ).then(resolve);
+                });
+              }, 100);
             } else {
               this.dropUserReaction();
               this.addUserReaction(params.reaction);
 
-              if(!this.attrs.post.current_user_reaction) {
+              if (!this.attrs.post.current_user_reaction) {
                 this.attrs.post.reaction_users_count += 1;
               }
               this.setCurrentUserReaction(params.reaction);
 
-              if(this.attrs.post.current_user_reaction && this.attrs.post.current_user_reaction.id == this.siteSettings.discourse_reactions_like_icon ){
+              if (
+                this.attrs.post.current_user_reaction &&
+                this.attrs.post.current_user_reaction.id ==
+                  this.siteSettings.discourse_reactions_like_icon
+              ) {
                 this.attrs.post.current_user_used_main_reaction = true;
               } else {
                 this.attrs.post.current_user_used_main_reaction = false;
               }
 
               addReaction(postContainer, params.reaction, () => {
+                setTimeout(() => {
+                  this.collapsePanels();
+                });
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   resolve
                 );
@@ -330,14 +340,22 @@ export default createWidget("discourse-reactions-actions", {
 
           if (!this.attrs.post.current_user_reaction) {
             this.attrs.post.reaction_users_count += 1;
-            this.setCurrentUserReaction(this.siteSettings.discourse_reactions_like_icon);
+            this.setCurrentUserReaction(
+              this.siteSettings.discourse_reactions_like_icon
+            );
             this.attrs.post.current_user_used_main_reaction = true;
-          } else if (this.attrs.post.current_user_reaction && this.attrs.post.current_user_reaction.id == this.siteSettings.discourse_reactions_like_icon) {
+          } else if (
+            this.attrs.post.current_user_reaction &&
+            this.attrs.post.current_user_reaction.id ==
+              this.siteSettings.discourse_reactions_like_icon
+          ) {
             this.attrs.post.reaction_users_count -= 1;
             this.setCurrentUserReaction();
             this.attrs.post.current_user_used_main_reaction = false;
           } else {
-            this.setCurrentUserReaction(this.siteSettings.discourse_reactions_like_icon);
+            this.setCurrentUserReaction(
+              this.siteSettings.discourse_reactions_like_icon
+            );
             this.attrs.post.current_user_used_main_reaction = true;
           }
 
@@ -351,11 +369,11 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   setCurrentUserReaction(reaction_id = null) {
-    if(reaction_id) {
+    if (reaction_id) {
       this.attrs.post.current_user_reaction = {
         id: reaction_id,
-        type: 'emoji',
-        can_undo: true,
+        type: "emoji",
+        can_undo: true
       };
     } else {
       this.attrs.post.current_user_reaction = null;
@@ -363,12 +381,15 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   dropUserReaction() {
-    if(this.attrs.post.current_user_reaction) {
+    if (this.attrs.post.current_user_reaction) {
       this.attrs.post.reactions.every((reaction, index) => {
-        if((reaction.count <= 1 && reaction.id == this.attrs.post.current_user_reaction.id)) {
+        if (
+          reaction.count <= 1 &&
+          reaction.id == this.attrs.post.current_user_reaction.id
+        ) {
           this.attrs.post.reactions.splice(index, 1);
           return false;
-        } else if(reaction.id == this.attrs.post.current_user_reaction) {
+        } else if (reaction.id == this.attrs.post.current_user_reaction) {
           this.attrs.post.reactions[index].count -= 1;
           return false;
         }
@@ -381,7 +402,7 @@ export default createWidget("discourse-reactions-actions", {
   addUserReaction(reaction_id) {
     let isAvailable = false;
     this.attrs.post.reactions.every((reaction, index) => {
-      if(reaction.id == reaction_id) {
+      if (reaction.id == reaction_id) {
         this.attrs.post.reactions[index].count += 1;
         this.attrs.post.reactions[index].users.push({
           username: this.currentUser.username,
@@ -396,13 +417,15 @@ export default createWidget("discourse-reactions-actions", {
     if (!isAvailable) {
       this.attrs.post.reactions.push({
         id: reaction_id,
-        type: 'emoji',
+        type: "emoji",
         count: 1,
-        users: [{
-          username: this.currentUser.username,
-          avatar_template: this.currentUser.avatar_template,
-          can_undo: true
-        }]
+        users: [
+          {
+            username: this.currentUser.username,
+            avatar_template: this.currentUser.avatar_template,
+            can_undo: true
+          }
+        ]
       });
     }
   },

@@ -87,7 +87,11 @@ export default createWidget("discourse-reactions-reaction-button", {
       options = { reaction: currentUserReaction.id };
     }
 
-    if (currentUserReaction && !currentUserReaction.can_undo && !likeAction.hasOwnProperty("can_undo")) {
+    if (
+      currentUserReaction &&
+      !currentUserReaction.can_undo &&
+      !likeAction.hasOwnProperty("can_undo")
+    ) {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }
 
