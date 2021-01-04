@@ -254,7 +254,7 @@ export default createWidget("discourse-reactions-actions", {
               this.attrs.post.reaction_users_count -= 1;
               this.attrs.post.current_user_used_main_reaction = false;
               this.setCurrentUserReaction();
-              setTimeout(() => {
+              later(() => {
                 dropReaction(postContainer, params.reaction, () => {
                   return CustomReaction.toggle(
                     params.postId,
@@ -282,9 +282,7 @@ export default createWidget("discourse-reactions-actions", {
               }
 
               addReaction(postContainer, params.reaction, () => {
-                setTimeout(() => {
-                  this.collapsePanels();
-                });
+                this.collapsePanels();
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   resolve
                 );
