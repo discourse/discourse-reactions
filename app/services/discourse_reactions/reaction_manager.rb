@@ -12,7 +12,7 @@ module DiscourseReactions
 
     def toggle!
       ActiveRecord::Base.transaction do
-        return if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(is_reacted_by_user))
+        raise Discourse::InvalidAccess if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(is_reacted_by_user))
         @reaction = reaction_scope&.first_or_create
         @reaction_user = reaction_user_scope
         @reaction_value == DiscourseReactions::Reaction.main_reaction_id ? toggle_like : toggle_reaction
