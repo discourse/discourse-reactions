@@ -14,7 +14,7 @@ export default createWidget("discourse-reactions-list", {
       return;
     }
 
-    if(currentUserReaction && reactions.length == 1 && reactions[0].id == currentUserReaction.id) {
+    if(currentUserReaction && reactions.length == 1) {
       return;
     }
 
