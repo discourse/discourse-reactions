@@ -15,9 +15,7 @@ CustomReaction.reopenClass({
       `/discourse-reactions/posts/${postId}/custom-reactions/${reactionId}/toggle.json`,
       { type: "PUT" }
     ).catch(e => {
-      bootbox.alert(I18n.t("discourse_reactions.reaction.error"), () => {
-        location.reload();
-      });
+      bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
     });
   }
 });

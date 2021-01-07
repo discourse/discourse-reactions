@@ -245,6 +245,11 @@ export default createWidget("discourse-reactions-actions", {
             const postContainer = document.querySelector(
               `[data-post-id="${params.postId}"]`
             );
+            const current_user_reaction = this.attrs.post.current_user_reaction;
+            const current_user_used_main_reaction = this.attrs.post.current_user_used_main_reaction;
+            const reactions = Object.assign([], this.attrs.post.reactions);
+            const reaction_users_count = this.attrs.post.reaction_users_count;
+
             if (
               this.attrs.post.current_user_reaction &&
               this.attrs.post.current_user_reaction.id == params.reaction
@@ -259,7 +264,16 @@ export default createWidget("discourse-reactions-actions", {
                   return CustomReaction.toggle(
                     params.postId,
                     params.reaction
-                  ).then(resolve);
+                  ).then((value) => {
+                    resolve;
+                    if(value == undefined) {
+                      this.attrs.post.current_user_reaction = current_user_reaction;
+                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                      this.attrs.post.reactions = reactions;
+                      this.attrs.post.reaction_users_count = reaction_users_count;
+                      this.scheduleRerender();
+                    }
+                  });
                 });
               }, 100);
             } else {
@@ -283,9 +297,16 @@ export default createWidget("discourse-reactions-actions", {
 
               addReaction(postContainer, params.reaction, () => {
                 this.collapsePanels();
-                CustomReaction.toggle(params.postId, params.reaction).then(
-                  resolve
-                );
+                CustomReaction.toggle(params.postId, params.reaction).then((value) => {
+                  resolve;
+                  if(value == undefined) {
+                    this.attrs.post.current_user_reaction = current_user_reaction;
+                    this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                    this.attrs.post.reactions = reactions;
+                    this.attrs.post.reaction_users_count = reaction_users_count;
+                    this.scheduleRerender();
+                  }
+                });
               });
             }
           });
@@ -299,6 +320,10 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleLike() {
     this.collapsePanels();
+    const current_user_reaction = this.attrs.post.current_user_reaction;
+    const current_user_used_main_reaction = this.attrs.post.current_user_used_main_reaction;
+    const reactions = Object.assign([], this.attrs.post.reactions);
+    const reaction_users_count = this.attrs.post.reaction_users_count;
 
     if (
       this.attrs.post.likeAction &&
@@ -360,7 +385,27 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(
             this.attrs.post.id,
             this.siteSettings.discourse_reactions_reaction_for_like
-          ).then(resolve);
+          ).then((value) => {
+            resolve;
+            if(value == undefined) {
+              const mainReactionIcon = this.siteSettings
+                .discourse_reactions_like_icon;
+              const hasUsedMainReaction = this.attrs.post
+                .current_user_used_main_reaction;
+              const template = document.createElement("template");
+              template.innerHTML = iconHTML(
+                hasUsedMainReaction ? `far-${mainReactionIcon}` : mainReactionIcon
+              ).trim();
+              const mainReaction = template.content.firstChild;
+              icon.parentNode.replaceChild(mainReaction, icon);
+
+              this.attrs.post.current_user_reaction = current_user_reaction;
+              this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+              this.attrs.post.reactions = reactions;
+              this.attrs.post.reaction_users_count = reaction_users_count;
+              this.scheduleRerender();
+            }
+          });
         });
       });
     });
