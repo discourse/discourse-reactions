@@ -246,7 +246,8 @@ export default createWidget("discourse-reactions-actions", {
               `[data-post-id="${params.postId}"]`
             );
             const current_user_reaction = this.attrs.post.current_user_reaction;
-            const current_user_used_main_reaction = this.attrs.post.current_user_used_main_reaction;
+            const current_user_used_main_reaction = this.attrs.post
+              .current_user_used_main_reaction;
             const reactions = Object.assign([], this.attrs.post.reactions);
             const reaction_users_count = this.attrs.post.reaction_users_count;
 
@@ -264,9 +265,9 @@ export default createWidget("discourse-reactions-actions", {
                   return CustomReaction.toggle(
                     params.postId,
                     params.reaction
-                  ).then((value) => {
+                  ).then(value => {
                     resolve;
-                    if(value == undefined) {
+                    if (value === undefined) {
                       this.attrs.post.current_user_reaction = current_user_reaction;
                       this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
                       this.attrs.post.reactions = reactions;
@@ -297,16 +298,18 @@ export default createWidget("discourse-reactions-actions", {
 
               addReaction(postContainer, params.reaction, () => {
                 this.collapsePanels();
-                CustomReaction.toggle(params.postId, params.reaction).then((value) => {
-                  resolve;
-                  if(value == undefined) {
-                    this.attrs.post.current_user_reaction = current_user_reaction;
-                    this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
-                    this.attrs.post.reactions = reactions;
-                    this.attrs.post.reaction_users_count = reaction_users_count;
-                    this.scheduleRerender();
+                CustomReaction.toggle(params.postId, params.reaction).then(
+                  value => {
+                    resolve;
+                    if (value === undefined) {
+                      this.attrs.post.current_user_reaction = current_user_reaction;
+                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                      this.attrs.post.reactions = reactions;
+                      this.attrs.post.reaction_users_count = reaction_users_count;
+                      this.scheduleRerender();
+                    }
                   }
-                });
+                );
               });
             }
           });
@@ -321,7 +324,8 @@ export default createWidget("discourse-reactions-actions", {
   toggleLike() {
     this.collapsePanels();
     const current_user_reaction = this.attrs.post.current_user_reaction;
-    const current_user_used_main_reaction = this.attrs.post.current_user_used_main_reaction;
+    const current_user_used_main_reaction = this.attrs.post
+      .current_user_used_main_reaction;
     const reactions = Object.assign([], this.attrs.post.reactions);
     const reaction_users_count = this.attrs.post.reaction_users_count;
 
@@ -385,16 +389,18 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(
             this.attrs.post.id,
             this.siteSettings.discourse_reactions_reaction_for_like
-          ).then((value) => {
+          ).then(value => {
             resolve;
-            if(value == undefined) {
+            if (value === undefined) {
               const mainReactionIcon = this.siteSettings
                 .discourse_reactions_like_icon;
               const hasUsedMainReaction = this.attrs.post
                 .current_user_used_main_reaction;
               const template = document.createElement("template");
               template.innerHTML = iconHTML(
-                hasUsedMainReaction ? `far-${mainReactionIcon}` : mainReactionIcon
+                hasUsedMainReaction
+                  ? `far-${mainReactionIcon}`
+                  : mainReactionIcon
               ).trim();
               const mainReaction = template.content.firstChild;
               icon.parentNode.replaceChild(mainReaction, icon);
