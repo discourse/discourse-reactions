@@ -371,19 +371,10 @@ export default createWidget("discourse-reactions-actions", {
               this.siteSettings.discourse_reactions_like_icon
             );
             this.attrs.post.current_user_used_main_reaction = true;
-          } else if (
-            this.attrs.post.current_user_reaction &&
-            this.attrs.post.current_user_reaction.id ==
-              this.siteSettings.discourse_reactions_like_icon
-          ) {
+          } else {
             this.attrs.post.reaction_users_count -= 1;
             this.setCurrentUserReaction();
             this.attrs.post.current_user_used_main_reaction = false;
-          } else {
-            this.setCurrentUserReaction(
-              this.siteSettings.discourse_reactions_like_icon
-            );
-            this.attrs.post.current_user_used_main_reaction = true;
           }
 
           CustomReaction.toggle(
@@ -427,6 +418,7 @@ export default createWidget("discourse-reactions-actions", {
     } else {
       this.attrs.post.current_user_reaction = null;
     }
+    this.scheduleRerender();
   },
 
   dropUserReaction() {
@@ -446,6 +438,7 @@ export default createWidget("discourse-reactions-actions", {
         return true;
       });
     }
+    this.scheduleRerender();
   },
 
   addUserReaction(reaction_id) {
@@ -477,6 +470,7 @@ export default createWidget("discourse-reactions-actions", {
         ]
       });
     }
+    this.scheduleRerender();
   },
 
   cancelCollapse() {
