@@ -22,17 +22,20 @@ html.discourse-reactions-no-select {
     }
 
     .reaction {
+      border-radius: 100px;
+      border: 2px solid #ffffff;
       display: flex;
+      background-color: #ffffff;
       align-items: center;
-      margin: 0 0.1em;
+      margin: 0 0 0 -0.5em;
 
       &:nth-of-type(1n + 4) {
         display: none;
       }
 
       .emoji {
-        width: 1.1em;
-        height: 1.1em;
+        width: 1.3em;
+        height: 1.3em;
       }
     }
   }
@@ -230,16 +233,6 @@ html.discourse-reactions-no-select {
       cursor: pointer;
     }
   }
-
-  &.has-reactions {
-    .discourse-reactions-counter:hover {
-      background: $primary-low;
-
-      .reactions-counter {
-        color: $primary !important;
-      }
-    }
-  }
 }
 
 .discourse-reactions-reaction-button {
@@ -269,6 +262,8 @@ html.discourse-reactions-no-select {
   display: flex;
   position: relative;
   min-width: 1em;
+  float: left;
+  padding: 0.5em;
 
   .reactions-counter {
     display: flex;
@@ -276,6 +271,14 @@ html.discourse-reactions-no-select {
     margin-left: 0.25em;
     margin-right: 0.5em;
     pointer-events: none;
+  }
+
+  &:hover {
+    background: $primary-low;
+
+    .reactions-counter {
+      color: $primary !important;
+    }
   }
 }
 

@@ -399,15 +399,11 @@ export default createWidget("discourse-reactions-actions", {
       );
     }
 
-    const doubleButton = [this.attach("discourse-reactions-counter", attrs)];
+    items.push(this.attach("discourse-reactions-counter", attrs));
 
     if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
-      doubleButton.push(
-        this.attach("discourse-reactions-reaction-button", attrs)
-      );
+      items.push(this.attach("discourse-reactions-reaction-button", attrs));
     }
-
-    items.push(h("div.double-button", {}, doubleButton));
 
     return items;
   },
