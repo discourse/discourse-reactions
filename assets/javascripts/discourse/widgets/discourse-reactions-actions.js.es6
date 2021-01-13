@@ -408,10 +408,10 @@ export default createWidget("discourse-reactions-actions", {
     });
   },
 
-  setCurrentUserReaction(reaction_id = null) {
-    if (reaction_id) {
+  setCurrentUserReaction(reactionId = null) {
+    if (reactionId) {
       this.attrs.post.current_user_reaction = {
-        id: reaction_id,
+        id: reactionId,
         type: "emoji",
         can_undo: true
       };
@@ -441,10 +441,10 @@ export default createWidget("discourse-reactions-actions", {
     this.scheduleRerender();
   },
 
-  addUserReaction(reaction_id) {
+  addUserReaction(reactionId) {
     let isAvailable = false;
     this.attrs.post.reactions.every((reaction, index) => {
-      if (reaction.id == reaction_id) {
+      if (reaction.id == reactionId) {
         this.attrs.post.reactions[index].count += 1;
         this.attrs.post.reactions[index].users.push({
           username: this.currentUser.username,
@@ -458,7 +458,7 @@ export default createWidget("discourse-reactions-actions", {
     });
     if (!isAvailable) {
       this.attrs.post.reactions.push({
-        id: reaction_id,
+        id: reactionId,
         type: "emoji",
         count: 1,
         users: [
