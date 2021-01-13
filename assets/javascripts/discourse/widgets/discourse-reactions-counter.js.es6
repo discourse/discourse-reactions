@@ -63,19 +63,6 @@ export default createWidget("discourse-reactions-counter", {
         return;
       }
 
-      if (attrs.post.reactions.length == 1 && attrs.post.reactions[0].count == 1 && attrs.post.current_user_reaction) {
-        return [
-          this.attach("discourse-reactions-list", attrs),
-          h("div.reactions-counter.reaction-by-current.only-current-reacted", this.currentUser.name || this.currentUser.username),
-          this.attach(
-            "discourse-reactions-state-panel",
-            Object.assign({}, attrs, {
-              statePanelExpanded: this.state.statePanelExpanded
-            })
-          )
-        ];
-      }
-
       return [
         this.attach("discourse-reactions-list", attrs),
         h("div.reactions-counter", count.toString()),
