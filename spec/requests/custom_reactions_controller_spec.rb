@@ -136,5 +136,6 @@ describe DiscourseReactions::CustomReactionsController do
     put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
     expect(DiscourseReactions::Reaction.count).to eq(1)
     expect(DiscourseReactions::ReactionUser.count).to eq(1)
+    expect(response.status).to eq(403)
   end
 end
