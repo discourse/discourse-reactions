@@ -23,9 +23,9 @@ html.discourse-reactions-no-select {
 
     .reaction {
       border-radius: 100px;
-      border: 2px solid #ffffff;
+      border: 2px solid $primary-low-mid;
       display: flex;
-      background-color: #ffffff;
+      background-color: $primary-low-mid;
       align-items: center;
       margin: 0 0 0 -0.5em;
 
@@ -193,6 +193,8 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-actions {
   display: inline-flex;
+  justify-content: space-between;
+  width: 100%;
 
   .double-button {
     margin-right: 0px !important;
@@ -262,10 +264,10 @@ html.discourse-reactions-no-select {
   display: flex;
   position: relative;
   min-width: 1em;
-  float: left;
   padding: 0.5em;
 
   .reactions-counter {
+    color: $primary-high;
     display: flex;
     align-items: center;
     margin-left: 0.25em;
@@ -284,4 +286,8 @@ html.discourse-reactions-no-select {
 
 nav.post-controls .actions {
   display: inline-flex;
+}
+
+.post-controls .actions {
+  width: 100%;
 }
