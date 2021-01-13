@@ -266,7 +266,7 @@ export default createWidget("discourse-reactions-actions", {
                     params.postId,
                     params.reaction
                   ).then(value => {
-                    resolve;
+                    resolve();
                     if (value === undefined) {
                       this.attrs.post.current_user_reaction = current_user_reaction;
                       this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
@@ -300,7 +300,7 @@ export default createWidget("discourse-reactions-actions", {
                 this.collapsePanels();
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   value => {
-                    resolve;
+                    resolve();
                     if (value === undefined) {
                       this.attrs.post.current_user_reaction = current_user_reaction;
                       this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
@@ -381,7 +381,7 @@ export default createWidget("discourse-reactions-actions", {
             this.attrs.post.id,
             this.siteSettings.discourse_reactions_reaction_for_like
           ).then(value => {
-            resolve;
+            resolve();
             if (value === undefined) {
               const mainReactionIcon = this.siteSettings
                 .discourse_reactions_like_icon;

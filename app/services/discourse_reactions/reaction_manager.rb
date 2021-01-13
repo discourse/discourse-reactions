@@ -22,6 +22,7 @@ module DiscourseReactions
     private
 
     def toggle_like
+      PostAction.limit_action!(@user, @post, post_action_like_type)
       remove_shadow_like if @like
       remove_reaction if is_reacted_by_user
       add_shadow_like unless @like
