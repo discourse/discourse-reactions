@@ -14,10 +14,6 @@ export default createWidget("discourse-reactions-list", {
       return;
     }
 
-    if(currentUserReaction && reactions.length == 1) {
-      return;
-    }
-
     return [
       h(
         "div.reactions",

@@ -65,7 +65,13 @@ export default createWidget("discourse-reactions-counter", {
 
       return [
         this.attach("discourse-reactions-list", attrs),
-        h("div.reactions-counter", count.toString())
+        h("div.reactions-counter", count.toString()),
+        this.attach(
+          "discourse-reactions-state-panel",
+          Object.assign({}, attrs, {
+            statePanelExpanded: this.state.statePanelExpanded
+          })
+        )
       ];
     }
   },
