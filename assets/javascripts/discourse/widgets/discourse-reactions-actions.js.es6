@@ -15,6 +15,7 @@ function buildFakeReaction(reactionId) {
 
   const div = document.createElement("div");
   div.classList.add("fake-reaction", "reaction", reactionId);
+  div.style.position = "relative";
   div.appendChild(img);
 
   return div;
@@ -31,41 +32,18 @@ function moveReactionAnimation(
     return;
   }
 
-  let done;
-
   const fakeReaction = buildFakeReaction(reactionId);
+  const reactionButton = postContainer.querySelector(".reaction-button");
+
+  reactionButton.appendChild(fakeReaction);
+
+  let done = () => {
+    fakeReaction.remove();
+    complete();
+  };
+
   fakeReaction.style.top = startPosition;
   fakeReaction.style.opacity = 0;
-
-  const list = postContainer.querySelector(
-    ".discourse-reactions-list .reactions"
-  );
-
-  if (list) {
-    list.appendChild(fakeReaction);
-
-    done = () => {
-      fakeReaction.remove();
-      complete();
-    };
-  } else {
-    const counter = postContainer.querySelector(".discourse-reactions-counter");
-
-    const reactionsList = document.createElement("div");
-    reactionsList.classList.add("discourse-reactions-list");
-
-    const reactions = document.createElement("div");
-    reactions.classList.add("reactions");
-
-    reactions.appendChild(fakeReaction);
-    reactionsList.appendChild(reactions);
-    counter.appendChild(reactionsList);
-
-    done = () => {
-      reactionsList.remove();
-      complete();
-    };
-  }
 
   $(fakeReaction).animate(
     {
@@ -499,9 +477,7 @@ export default createWidget("discourse-reactions-actions", {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
 
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      currentUserReaction && currentUserReaction.id != mainReactionIcon
-        ? ".btn-toggle-reaction-emoji"
-        : ".btn-toggle-reaction-like",
+      ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker"
     ]);
   },

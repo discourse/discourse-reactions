@@ -249,10 +249,11 @@ html.discourse-reactions-no-select {
   }
 
   .btn-toggle-reaction-emoji {
-    align-self: center;
-    padding: 8px;
-    width: 1.3em;
-    height: 1.3em;
+    outline: none;
+    pointer-events: none;
+    background: none !important;
+    width: 1.1em;
+    height: 1.1em;
   }
 
   &:hover {
