@@ -11,14 +11,11 @@ import { later, cancel } from "@ember/runloop";
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
-  img.classList.add("emoji");
+  img.style.position = "absolute";
+  img.style.left = "12px";
+  img.classList.add("btn-toggle-reaction-emoji", "reaction-button");
 
-  const div = document.createElement("div");
-  div.classList.add("fake-reaction", "reaction", reactionId);
-  div.style.position = "relative";
-  div.appendChild(img);
-
-  return div;
+  return img;
 }
 
 function moveReactionAnimation(
@@ -59,7 +56,7 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "-8px", complete);
+  moveReactionAnimation(list, reactionId, "-50px", "17px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
