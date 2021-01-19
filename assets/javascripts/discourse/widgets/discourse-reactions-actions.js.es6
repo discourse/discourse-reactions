@@ -253,26 +253,27 @@ export default createWidget("discourse-reactions-actions", {
                 });
               }, 100);
             } else {
-              this.dropUserReaction();
-              this.addUserReaction(params.reaction);
-
-              if (!this.attrs.post.current_user_reaction) {
-                this.attrs.post.reaction_users_count += 1;
-              }
-              this.setCurrentUserReaction(params.reaction);
-
-              if (
-                this.attrs.post.current_user_reaction &&
-                this.attrs.post.current_user_reaction.id ==
-                  this.siteSettings.discourse_reactions_like_icon
-              ) {
-                this.attrs.post.current_user_used_main_reaction = true;
-              } else {
-                this.attrs.post.current_user_used_main_reaction = false;
-              }
-
               addReaction(postContainer, params.reaction, () => {
                 this.collapsePanels();
+                this.dropUserReaction();
+                this.addUserReaction(params.reaction);
+
+                if (!this.attrs.post.current_user_reaction) {
+                  this.attrs.post.reaction_users_count += 1;
+                }
+
+                this.setCurrentUserReaction(params.reaction);
+
+                if (
+                  this.attrs.post.current_user_reaction &&
+                  this.attrs.post.current_user_reaction.id ==
+                    this.siteSettings.discourse_reactions_like_icon
+                ) {
+                  this.attrs.post.current_user_used_main_reaction = true;
+                } else {
+                  this.attrs.post.current_user_used_main_reaction = false;
+                }
+
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   value => {
                     resolve();

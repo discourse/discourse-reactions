@@ -16,11 +16,6 @@ html.discourse-reactions-no-select {
     align-items: center;
     position: relative;
 
-    .fake-reaction {
-      position: absolute;
-      left: calc(50% - 0.65em);
-    }
-
     .reaction {
       border-radius: 100px;
       border: 2px solid $primary-low-mid;

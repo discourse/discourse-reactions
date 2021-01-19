@@ -114,7 +114,7 @@ export default createWidget("discourse-reactions-reaction-button", {
 
     if (currentUserReaction) {
       return h(
-        `button.btn-icon.no-text`,
+        `button.btn-icon.no-text.reaction-button`,
         h(`img.btn-toggle-reaction-emoji.reaction-button`, {
           src: emojiUrlFor(currentUserReaction.id),
           alt: `:${currentUserReaction.id}:`
