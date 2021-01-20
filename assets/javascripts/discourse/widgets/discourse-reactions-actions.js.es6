@@ -11,9 +11,7 @@ import { later, cancel } from "@ember/runloop";
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
-  img.style.position = "absolute";
-  img.style.left = "12px";
-  img.classList.add("btn-toggle-reaction-emoji", "reaction-button");
+  img.classList.add("btn-toggle-reaction-emoji", "reaction-button", "fake-reaction");
 
   return img;
 }
