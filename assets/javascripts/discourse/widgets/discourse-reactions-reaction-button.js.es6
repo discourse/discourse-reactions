@@ -106,21 +106,26 @@ export default createWidget("discourse-reactions-reaction-button", {
     const currentUserReaction = attrs.post.current_user_reaction;
 
     if (hasUsedMainReaction) {
-      return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
-        iconNode(mainReactionIcon)
-      ]);
+      return h(
+        "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+        [iconNode(mainReactionIcon)]
+      );
     }
 
     if (currentUserReaction) {
-      return h(`img.btn-toggle-reaction-emoji.btn-icon.no-text`, {
-        src: emojiUrlFor(currentUserReaction.id),
-        alt: `:${currentUserReaction.id}:`
-      });
+      return h(
+        "button.btn-icon.no-text.reaction-button",
+        h("img.btn-toggle-reaction-emoji.reaction-button", {
+          src: emojiUrlFor(currentUserReaction.id),
+          alt: `:${currentUserReaction.id}:`
+        })
+      );
     }
 
-    return h(`button.btn-toggle-reaction-like.btn-icon.no-text`, [
-      iconNode(`far-${mainReactionIcon}`)
-    ]);
+    return h(
+      "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+      [iconNode(`far-${mainReactionIcon}`)]
+    );
   },
 
   _cancelHoverHandler() {

@@ -11,13 +11,9 @@ import { later, cancel } from "@ember/runloop";
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
-  img.classList.add("emoji");
+  img.classList.add("btn-toggle-reaction-emoji", "reaction-button", "fake-reaction");
 
-  const div = document.createElement("div");
-  div.classList.add("fake-reaction", "reaction", reactionId);
-  div.appendChild(img);
-
-  return div;
+  return img;
 }
 
 function moveReactionAnimation(
@@ -31,41 +27,18 @@ function moveReactionAnimation(
     return;
   }
 
-  let done;
-
   const fakeReaction = buildFakeReaction(reactionId);
+  const reactionButton = postContainer.querySelector(".reaction-button");
+
+  reactionButton.appendChild(fakeReaction);
+
+  let done = () => {
+    fakeReaction.remove();
+    complete();
+  };
+
   fakeReaction.style.top = startPosition;
   fakeReaction.style.opacity = 0;
-
-  const list = postContainer.querySelector(
-    ".discourse-reactions-list .reactions"
-  );
-
-  if (list) {
-    list.appendChild(fakeReaction);
-
-    done = () => {
-      fakeReaction.remove();
-      complete();
-    };
-  } else {
-    const counter = postContainer.querySelector(".discourse-reactions-counter");
-
-    const reactionsList = document.createElement("div");
-    reactionsList.classList.add("discourse-reactions-list");
-
-    const reactions = document.createElement("div");
-    reactions.classList.add("reactions");
-
-    reactions.appendChild(fakeReaction);
-    reactionsList.appendChild(reactions);
-    counter.appendChild(reactionsList);
-
-    done = () => {
-      reactionsList.remove();
-      complete();
-    };
-  }
 
   $(fakeReaction).animate(
     {
@@ -81,7 +54,7 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "-8px", complete);
+  moveReactionAnimation(list, reactionId, "-50px", "17px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
@@ -285,26 +258,27 @@ export default createWidget("discourse-reactions-actions", {
                 });
               }, 100);
             } else {
-              this.dropUserReaction();
-              this.addUserReaction(params.reaction);
-
-              if (!this.attrs.post.current_user_reaction) {
-                this.attrs.post.reaction_users_count += 1;
-              }
-              this.setCurrentUserReaction(params.reaction);
-
-              if (
-                this.attrs.post.current_user_reaction &&
-                this.attrs.post.current_user_reaction.id ==
-                  this.siteSettings.discourse_reactions_like_icon
-              ) {
-                this.attrs.post.current_user_used_main_reaction = true;
-              } else {
-                this.attrs.post.current_user_used_main_reaction = false;
-              }
-
               addReaction(postContainer, params.reaction, () => {
                 this.collapsePanels();
+                this.dropUserReaction();
+                this.addUserReaction(params.reaction);
+
+                if (!this.attrs.post.current_user_reaction) {
+                  this.attrs.post.reaction_users_count += 1;
+                }
+
+                this.setCurrentUserReaction(params.reaction);
+
+                if (
+                  this.attrs.post.current_user_reaction &&
+                  this.attrs.post.current_user_reaction.id ==
+                    this.siteSettings.discourse_reactions_like_icon
+                ) {
+                  this.attrs.post.current_user_used_main_reaction = true;
+                } else {
+                  this.attrs.post.current_user_used_main_reaction = false;
+                }
+
                 CustomReaction.toggle(params.postId, params.reaction).then(
                   value => {
                     resolve();
@@ -506,9 +480,7 @@ export default createWidget("discourse-reactions-actions", {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
 
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
-      currentUserReaction && currentUserReaction.id != mainReactionIcon
-        ? ".btn-toggle-reaction-emoji"
-        : ".btn-toggle-reaction-like",
+      ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker"
     ]);
   },
