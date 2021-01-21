@@ -107,15 +107,15 @@ export default createWidget("discourse-reactions-reaction-button", {
 
     if (hasUsedMainReaction) {
       return h(
-        `button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button`,
+        "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
         [iconNode(mainReactionIcon)]
       );
     }
 
     if (currentUserReaction) {
       return h(
-        `button.btn-icon.no-text.reaction-button`,
-        h(`img.btn-toggle-reaction-emoji.reaction-button`, {
+        "button.btn-icon.no-text.reaction-button",
+        h("img.btn-toggle-reaction-emoji.reaction-button", {
           src: emojiUrlFor(currentUserReaction.id),
           alt: `:${currentUserReaction.id}:`
         })
@@ -123,7 +123,7 @@ export default createWidget("discourse-reactions-reaction-button", {
     }
 
     return h(
-      `button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button`,
+      "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
       [iconNode(`far-${mainReactionIcon}`)]
     );
   },
