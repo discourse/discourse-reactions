@@ -55,24 +55,42 @@ export default createWidget("discourse-reactions-counter", {
     };
   },
 
+  buildClasses(attrs) {
+    const classes = [];
+    const  mainReaction = this.siteSettings.discourse_reactions_reaction_for_like;
+
+    if (
+      attrs.post.reactions.length == 1 &&
+      attrs.post.reactions[0].id == mainReaction
+    ) {
+      classes.push("only-like");
+    }
+
+    return classes;
+  },
+
   html(attrs) {
     if (attrs.post.reaction_users_count) {
       const count = attrs.post.reaction_users_count;
+      const  mainReaction = this.siteSettings.discourse_reactions_reaction_for_like;
+      const items = [];
 
       if (count <= 0) {
         return;
       }
 
-      return [
-        this.attach("discourse-reactions-list", attrs),
-        h("div.reactions-counter", count.toString()),
-        this.attach(
-          "discourse-reactions-state-panel",
-          Object.assign({}, attrs, {
-            statePanelExpanded: this.state.statePanelExpanded
-          })
+      if (
+        !(
+          attrs.post.reactions.length == 1 &&
+          attrs.post.reactions[0].id == mainReaction
         )
-      ];
+      ) {
+        items.push(this.attach("discourse-reactions-list", attrs));
+      }
+
+      items.push(h("div.reactions-counter", count.toString()));
+
+      return items;
     }
   },
 

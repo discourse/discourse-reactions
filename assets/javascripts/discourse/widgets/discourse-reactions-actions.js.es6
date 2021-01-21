@@ -149,6 +149,13 @@ export default createWidget("discourse-reactions-actions", {
       classes.push("can-toggle-main-reaction");
     }
 
+    if (
+      attrs.post.reactions.length == 1 &&
+      attrs.post.reactions[0].id == "heart"
+    ) {
+      return "justify-left";
+    }
+
     return classes;
   },
 
