@@ -235,6 +235,14 @@ html.discourse-reactions-no-select {
       cursor: pointer;
     }
   }
+
+  &:not(.justify-left) {
+    justify-content: space-between;
+  }
+
+  &.justify-left {
+    justify-content: flex-end;
+  }
 }
 
 .discourse-reactions-reaction-button {
@@ -273,6 +281,20 @@ html.discourse-reactions-no-select {
     margin-left: 0.25em;
     margin-right: 0.5em;
     pointer-events: none;
+  }
+
+  &:not(.only-like) {
+    padding-right: 0.5em;
+    .reactions-counter {
+      margin-right: 0.5em;
+    }
+  }
+
+  &.only-like {
+    padding-right: 0px;
+    .reactions-counter {
+      margin-right: 0px;
+    }
   }
 
   &:hover {
