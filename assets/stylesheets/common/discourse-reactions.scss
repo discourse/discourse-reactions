@@ -191,15 +191,27 @@ html.discourse-reactions-no-select {
   justify-content: space-between;
   width: 100%;
 
-  .double-button {
-    margin-right: 0px !important;
-  }
-
-  &:not(.has-used-main-reaction) {
+  &:not(.has-reacted) {
     .discourse-reactions-reaction-button {
       &:hover {
         .d-icon {
           color: $love;
+        }
+
+        background: $love-low;
+      }
+    }
+  }
+
+  &.has-used-main-reaction {
+    .d-icon {
+      color: $love;
+    }
+
+    .discourse-reactions-reaction-button {
+      &:hover {
+        .d-icon {
+          color: $primary-low-mid;
         }
 
         background: $primary-low;
@@ -207,21 +219,20 @@ html.discourse-reactions-no-select {
     }
   }
 
-  &.has-used-main-reaction {
+  &:not(.can-toggle-main-reaction) {
     .discourse-reactions-reaction-button {
-      .d-icon {
-        color: $love;
-      }
+      cursor: not-allowed;
 
       &:hover {
+        .d-icon {
+          color: $primary-low-mid;
+        }
         background: $primary-low;
       }
     }
-  }
 
-  &:not(.can-toggle-main-reaction) {
-    .discourse-reactions-reaction-button {
-      cursor: default;
+    .d-icon {
+      color: $primary-low-mid;
     }
   }
 
@@ -237,6 +248,37 @@ html.discourse-reactions-no-select {
 
   &.justify-left {
     justify-content: flex-end;
+  }
+
+  .double-button {
+    margin-right: 0px !important;
+
+    &:hover {
+      &.can-toggle-main-reaction {
+        .discourse-reactions-reaction-button {
+          &:hover {
+            background: $primary-low;
+
+            .d-icon {
+              color: $primary-low-mid;
+            }
+          }
+        }
+        .reactions-counter {
+          color: $primary !important;
+        }
+
+        .d-icon {
+          color: $primary-low-mid;
+        }
+      }
+
+      &:not(.can-toggle-main-reaction) {
+        cursor: not-allowed;
+      }
+
+      background: $primary-low;
+    }
   }
 }
 
@@ -272,7 +314,7 @@ html.discourse-reactions-no-select {
   padding: 0.5em;
 
   .reactions-counter {
-    color: $primary-high;
+    color: $primary-low-mid;
     display: flex;
     align-items: center;
     margin-left: 0.25em;
@@ -296,6 +338,7 @@ html.discourse-reactions-no-select {
 
   &:hover {
     background: $primary-low;
+    cursor: pointer;
 
     .reactions-counter {
       color: $primary !important;
