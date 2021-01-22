@@ -326,12 +326,7 @@ html.discourse-reactions-no-select {
   }
 
   &:hover {
-    background: $primary-low;
     cursor: pointer;
-
-    .reactions-counter {
-      color: $primary !important;
-    }
   }
 }
 
