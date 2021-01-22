@@ -339,6 +339,11 @@ nav.post-controls .actions {
   display: inline-flex;
 }
 
+nav.post-controls .actions button {
+  display: inline-flex;
+  align-items: center;
+}
+
 .post-controls .actions {
   width: 100%;
 }
