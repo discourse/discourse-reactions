@@ -203,36 +203,54 @@ html.discourse-reactions-no-select {
     }
   }
 
+  &.has-reacted {
+    .discourse-reactions-reaction-button {
+      .d-icon {
+        color: $love;
+      }
+    }
+  }
+
   &.has-used-main-reaction {
     .d-icon {
       color: $love;
     }
 
-    .discourse-reactions-reaction-button {
-      &:hover {
-        .d-icon {
-          color: $primary-low-mid;
-        }
+    &.can-toggle-main-reaction {
+      .discourse-reactions-reaction-button {
+        &:hover {
+          .d-icon {
+            color: $primary-low-mid;
+          }
 
-        background: $primary-low;
+          background: $primary-low;
+        }
       }
     }
   }
 
   &:not(.can-toggle-main-reaction) {
-    .discourse-reactions-reaction-button {
-      cursor: not-allowed;
-
-      &:hover {
-        .d-icon {
-          color: $primary-low-mid;
+    &.your-post {
+      .double-button {
+        &:hover {
+          .discourse-reactions-reaction-button {
+            .d-icon {
+              color: $primary-low-mid;
+            }
+            background: $primary-low;
+          }
         }
-        background: $primary-low;
       }
     }
 
-    .d-icon {
-      color: $primary-low-mid;
+    &:not(.your-post) {
+      .discourse-reactions-reaction-button {
+        cursor: not-allowed;
+
+        &:hover {
+          background: $primary-low;
+        }
+      }
     }
   }
 
@@ -242,41 +260,12 @@ html.discourse-reactions-no-select {
     }
   }
 
-  &:not(.justify-left) {
-    justify-content: space-between;
-  }
-
   &.justify-left {
     justify-content: flex-end;
   }
 
   .double-button {
-    margin-right: 0px !important;
-
     &:hover {
-      &.can-toggle-main-reaction {
-        .discourse-reactions-reaction-button {
-          &:hover {
-            background: $primary-low;
-
-            .d-icon {
-              color: $primary-low-mid;
-            }
-          }
-        }
-        .reactions-counter {
-          color: $primary !important;
-        }
-
-        .d-icon {
-          color: $primary-low-mid;
-        }
-      }
-
-      &:not(.can-toggle-main-reaction) {
-        cursor: not-allowed;
-      }
-
       background: $primary-low;
     }
   }

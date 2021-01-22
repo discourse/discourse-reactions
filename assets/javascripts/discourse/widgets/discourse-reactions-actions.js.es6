@@ -108,6 +108,10 @@ export default createWidget("discourse-reactions-actions", {
     const hasReacted = attrs.post.current_user_reaction;
     const classes = [];
 
+    if (attrs.post.yours) {
+      classes.push("your-post");
+    }
+
     if (hasReactions) {
       classes.push("has-reactions");
     }
@@ -539,13 +543,15 @@ export default createWidget("discourse-reactions-actions", {
       );
     }
 
-    if(attrs.post.reactions.length == 1 &&
-      attrs.post.reactions[0].id == mainReaction ) {
+    if (
+      attrs.post.reactions.length == 1 &&
+      attrs.post.reactions[0].id == mainReaction
+    ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
-    } else if(!attrs.post.yours){
+    } else if (!attrs.post.yours) {
       items.push(this.attach("discourse-reactions-counter", attrs));
       items.push(this.attach("discourse-reactions-reaction-button", attrs));
-    } else if(attrs.post.yours && attrs.post.reactions.length) {
+    } else if (attrs.post.yours && attrs.post.reactions.length) {
       items.push(this.attach("discourse-reactions-counter", attrs));
     }
 

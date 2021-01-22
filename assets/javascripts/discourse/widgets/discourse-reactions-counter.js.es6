@@ -57,7 +57,8 @@ export default createWidget("discourse-reactions-counter", {
 
   buildClasses(attrs) {
     const classes = [];
-    const  mainReaction = this.siteSettings.discourse_reactions_reaction_for_like;
+    const mainReaction = this.siteSettings
+      .discourse_reactions_reaction_for_like;
 
     if (
       attrs.post.reactions.length == 1 &&
@@ -72,7 +73,8 @@ export default createWidget("discourse-reactions-counter", {
   html(attrs) {
     if (attrs.post.reaction_users_count) {
       const count = attrs.post.reaction_users_count;
-      const  mainReaction = this.siteSettings.discourse_reactions_reaction_for_like;
+      const mainReaction = this.siteSettings
+        .discourse_reactions_reaction_for_like;
       const items = [];
 
       if (count <= 0) {
