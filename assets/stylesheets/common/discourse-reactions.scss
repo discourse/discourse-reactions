@@ -191,37 +191,66 @@ html.discourse-reactions-no-select {
   justify-content: space-between;
   width: 100%;
 
-  .double-button {
-    margin-right: 0px !important;
-  }
-
-  &:not(.has-used-main-reaction) {
+  &:not(.has-reacted) {
     .discourse-reactions-reaction-button {
       &:hover {
         .d-icon {
           color: $love;
         }
 
-        background: $primary-low;
+        background: $love-low;
+      }
+    }
+  }
+
+  &.has-reacted {
+    .discourse-reactions-reaction-button {
+      .d-icon {
+        color: $love;
       }
     }
   }
 
   &.has-used-main-reaction {
-    .discourse-reactions-reaction-button {
-      .d-icon {
-        color: $love;
-      }
+    .d-icon {
+      color: $love;
+    }
 
-      &:hover {
-        background: $primary-low;
+    &.can-toggle-main-reaction {
+      .discourse-reactions-reaction-button {
+        &:hover {
+          .d-icon {
+            color: $primary-low-mid;
+          }
+
+          background: $primary-low;
+        }
       }
     }
   }
 
   &:not(.can-toggle-main-reaction) {
-    .discourse-reactions-reaction-button {
-      cursor: default;
+    &.your-post {
+      .double-button {
+        &:hover {
+          .discourse-reactions-reaction-button {
+            .d-icon {
+              color: $primary-low-mid;
+            }
+            background: $primary-low;
+          }
+        }
+      }
+    }
+
+    &:not(.your-post) {
+      .discourse-reactions-reaction-button {
+        cursor: not-allowed;
+
+        &:hover {
+          background: $primary-low;
+        }
+      }
     }
   }
 
@@ -231,12 +260,14 @@ html.discourse-reactions-no-select {
     }
   }
 
-  &:not(.justify-left) {
-    justify-content: space-between;
-  }
-
   &.justify-left {
     justify-content: flex-end;
+  }
+
+  .double-button {
+    &:hover {
+      background: $primary-low;
+    }
   }
 }
 
@@ -272,7 +303,7 @@ html.discourse-reactions-no-select {
   padding: 0.5em;
 
   .reactions-counter {
-    color: $primary-high;
+    color: $primary-low-mid;
     display: flex;
     align-items: center;
     margin-left: 0.25em;
@@ -295,16 +326,17 @@ html.discourse-reactions-no-select {
   }
 
   &:hover {
-    background: $primary-low;
-
-    .reactions-counter {
-      color: $primary !important;
-    }
+    cursor: pointer;
   }
 }
 
 nav.post-controls .actions {
   display: inline-flex;
+}
+
+nav.post-controls .actions button {
+  display: inline-flex;
+  align-items: center;
 }
 
 .post-controls .actions {

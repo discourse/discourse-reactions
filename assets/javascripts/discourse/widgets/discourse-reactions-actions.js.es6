@@ -7,11 +7,16 @@ import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
+import { iconNode } from "discourse-common/lib/icon-library";
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
-  img.classList.add("btn-toggle-reaction-emoji", "reaction-button", "fake-reaction");
+  img.classList.add(
+    "btn-toggle-reaction-emoji",
+    "reaction-button",
+    "fake-reaction"
+  );
 
   return img;
 }
@@ -103,6 +108,10 @@ export default createWidget("discourse-reactions-actions", {
     const hasReacted = attrs.post.current_user_reaction;
     const classes = [];
 
+    if (attrs.post.yours) {
+      classes.push("your-post");
+    }
+
     if (hasReactions) {
       classes.push("has-reactions");
     }
@@ -126,7 +135,7 @@ export default createWidget("discourse-reactions-actions", {
       attrs.post.reactions.length == 1 &&
       attrs.post.reactions[0].id == "heart"
     ) {
-      return "justify-left";
+      classes.push("justify-left");
     }
 
     return classes;
@@ -476,9 +485,6 @@ export default createWidget("discourse-reactions-actions", {
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
 
-    const currentUserReaction = this.attrs.post.current_user_reaction;
-    const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-
     this._setupPopper(this.attrs.post.id, "_popperPicker", [
       ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker"
@@ -514,6 +520,8 @@ export default createWidget("discourse-reactions-actions", {
 
   html(attrs) {
     const items = [];
+    const mainReaction = this.siteSettings
+      .discourse_reactions_reaction_for_like;
 
     items.push(
       this.attach(
@@ -535,10 +543,16 @@ export default createWidget("discourse-reactions-actions", {
       );
     }
 
-    items.push(this.attach("discourse-reactions-counter", attrs));
-
-    if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
+    if (
+      attrs.post.reactions.length == 1 &&
+      attrs.post.reactions[0].id == mainReaction
+    ) {
+      items.push(this.attach("discourse-reactions-double-button", attrs));
+    } else if (!attrs.post.yours) {
+      items.push(this.attach("discourse-reactions-counter", attrs));
       items.push(this.attach("discourse-reactions-reaction-button", attrs));
+    } else if (attrs.post.yours && attrs.post.reactions.length) {
+      items.push(this.attach("discourse-reactions-counter", attrs));
     }
 
     return items;
