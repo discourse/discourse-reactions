@@ -24,6 +24,22 @@ function initializeDiscourseReactions(api) {
       post
     });
   });
+
+  api.decorateWidget("post-menu:extra-post-controls", dec => {
+    const post = dec.getModel();
+
+    if(dec.widget.site.mobileView) {
+      return;
+    }
+
+    if (!post) {
+      return;
+    }
+
+    return dec.attach("discourse-reactions-counter", {
+      post
+    });
+  });
 }
 
 export default {

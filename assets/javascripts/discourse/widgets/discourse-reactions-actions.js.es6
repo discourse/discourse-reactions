@@ -1,13 +1,11 @@
 import { iconHTML } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
-import { h } from "virtual-dom";
 import { next, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
-import { iconNode } from "discourse-common/lib/icon-library";
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
@@ -523,14 +521,16 @@ export default createWidget("discourse-reactions-actions", {
     const mainReaction = this.siteSettings
       .discourse_reactions_reaction_for_like;
 
-    items.push(
-      this.attach(
-        "discourse-reactions-state-panel",
-        Object.assign({}, attrs, {
-          statePanelExpanded: this.state.statePanelExpanded
-        })
-      )
-    );
+    if(attrs.post.site.mobileView) {
+      items.push(
+        this.attach(
+          "discourse-reactions-state-panel",
+          Object.assign({}, attrs, {
+            statePanelExpanded: this.state.statePanelExpanded
+          })
+        )
+      );
+    }
 
     if (this.currentUser && attrs.post.user_id !== this.currentUser.id) {
       items.push(
@@ -548,11 +548,17 @@ export default createWidget("discourse-reactions-actions", {
       attrs.post.reactions[0].id == mainReaction
     ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
-    } else if (!attrs.post.yours) {
-      items.push(this.attach("discourse-reactions-counter", attrs));
-      items.push(this.attach("discourse-reactions-reaction-button", attrs));
-    } else if (attrs.post.yours && attrs.post.reactions.length) {
-      items.push(this.attach("discourse-reactions-counter", attrs));
+    } else if(attrs.post.site.mobileView) {
+      if (!attrs.post.yours) {
+        items.push(this.attach("discourse-reactions-counter", attrs));
+        items.push(this.attach("discourse-reactions-reaction-button", attrs));
+      } else if (attrs.post.yours && attrs.post.reactions.length) {
+        items.push(this.attach("discourse-reactions-counter", attrs));
+      }
+    } else {
+      if (!attrs.post.yours) {
+        items.push(this.attach("discourse-reactions-reaction-button", attrs));
+      }
     }
 
     return items;

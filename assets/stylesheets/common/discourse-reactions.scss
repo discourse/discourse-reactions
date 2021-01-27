@@ -297,7 +297,7 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-counter {
-  display: flex;
+  display: inline-flex;
   position: relative;
   min-width: 1em;
   padding: 0.5em;
@@ -309,13 +309,6 @@ html.discourse-reactions-no-select {
     margin-left: 0.25em;
     margin-right: 0.5em;
     pointer-events: none;
-  }
-
-  &:not(.only-like) {
-    padding-right: 0.5em;
-    .reactions-counter {
-      margin-right: 0.5em;
-    }
   }
 
   &.only-like {
@@ -337,8 +330,4 @@ nav.post-controls .actions {
 nav.post-controls .actions button {
   display: inline-flex;
   align-items: center;
-}
-
-.post-controls .actions {
-  width: 100%;
 }
