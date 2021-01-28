@@ -132,8 +132,8 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (
-      attrs.post.reactions.length == 1 &&
-      attrs.post.reactions[0].id == "heart"
+      attrs.post.reactions.length === 1 &&
+      attrs.post.reactions[0].id === "heart"
     ) {
       classes.push("justify-left");
     }
@@ -242,7 +242,7 @@ export default createWidget("discourse-reactions-actions", {
 
             if (
               this.attrs.post.current_user_reaction &&
-              this.attrs.post.current_user_reaction.id == params.reaction
+              this.attrs.post.current_user_reaction.id === params.reaction
             ) {
               this.collapsePanels();
               this.dropUserReaction();
@@ -251,19 +251,17 @@ export default createWidget("discourse-reactions-actions", {
               this.setCurrentUserReaction();
               later(() => {
                 dropReaction(postContainer, params.reaction, () => {
-                  return CustomReaction.toggle(
+                  return this.toggleCustomReaction(
                     params.postId,
-                    params.reaction
-                  ).then(value => {
-                    resolve();
-                    if (value === undefined) {
-                      this.attrs.post.current_user_reaction = current_user_reaction;
-                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
-                      this.attrs.post.reactions = reactions;
-                      this.attrs.post.reaction_users_count = reaction_users_count;
-                      this.scheduleRerender();
+                    params.reaction,
+                    resolve,
+                    {
+                      current_user_reaction,
+                      current_user_used_main_reaction,
+                      reactions,
+                      reaction_users_count
                     }
-                  });
+                  );
                 });
               }, 100);
             } else {
@@ -280,24 +278,22 @@ export default createWidget("discourse-reactions-actions", {
 
                 if (
                   this.attrs.post.current_user_reaction &&
-                  this.attrs.post.current_user_reaction.id ==
+                  this.attrs.post.current_user_reaction.id ===
                     this.siteSettings.discourse_reactions_like_icon
                 ) {
                   this.attrs.post.current_user_used_main_reaction = true;
                 } else {
                   this.attrs.post.current_user_used_main_reaction = false;
                 }
-
-                CustomReaction.toggle(params.postId, params.reaction).then(
-                  value => {
-                    resolve();
-                    if (value === undefined) {
-                      this.attrs.post.current_user_reaction = current_user_reaction;
-                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
-                      this.attrs.post.reactions = reactions;
-                      this.attrs.post.reaction_users_count = reaction_users_count;
-                      this.scheduleRerender();
-                    }
+                this.toggleCustomReaction(
+                  params.postId,
+                  params.reaction,
+                  resolve,
+                  {
+                    current_user_reaction,
+                    current_user_used_main_reaction,
+                    reactions,
+                    reaction_users_count
                   }
                 );
               });
@@ -311,8 +307,10 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
-  toggleLike() {
+  toggleLike(attrs) {
     this.collapsePanels();
+    const mainReactionName = this.siteSettings
+      .discourse_reactions_reaction_for_like;
     const current_user_reaction = this.attrs.post.current_user_reaction;
     const current_user_used_main_reaction = this.attrs.post
       .current_user_used_main_reaction;
@@ -333,9 +331,13 @@ export default createWidget("discourse-reactions-actions", {
       return;
     }
 
-    const mainReaction = document.querySelector(
-      `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
-    );
+    const selector =
+      !attrs.reaction || attrs.reaction === mainReactionName
+        ? `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
+        : `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+
+    const mainReaction = document.querySelector(selector);
+
     const scales = [1.0, 1.5];
     return new Promise(resolve => {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
@@ -345,7 +347,10 @@ export default createWidget("discourse-reactions-actions", {
           .current_user_used_main_reaction;
         const template = document.createElement("template");
         template.innerHTML = iconHTML(
-          hasUsedMainReaction ? `far-${mainReactionIcon}` : mainReactionIcon
+          hasUsedMainReaction ||
+            (attrs.reaction && attrs.reaction !== mainReactionName)
+            ? `far-${mainReactionIcon}`
+            : mainReactionIcon
         ).trim();
         const icon = template.content.firstChild;
         icon.style.transform = `scale(${scales[1]})`;
@@ -353,48 +358,83 @@ export default createWidget("discourse-reactions-actions", {
         mainReaction.parentNode.replaceChild(icon, mainReaction);
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
           this.dropUserReaction();
-          this.addUserReaction(this.siteSettings.discourse_reactions_like_icon);
+          if (attrs.reaction && attrs.reaction !== mainReactionName) {
+            this.addUserReaction(attrs.reaction);
+          } else {
+            this.addUserReaction(
+              this.siteSettings.discourse_reactions_like_icon
+            );
+          }
 
-          if (!this.attrs.post.current_user_reaction) {
+          if (this.attrs.post.current_user_reaction) {
+            this.attrs.post.reaction_users_count -= 1;
+            this.setCurrentUserReaction();
+            this.attrs.post.current_user_used_main_reaction = false;
+          } else {
             this.attrs.post.reaction_users_count += 1;
             this.setCurrentUserReaction(
               this.siteSettings.discourse_reactions_like_icon
             );
             this.attrs.post.current_user_used_main_reaction = true;
-          } else {
-            this.attrs.post.reaction_users_count -= 1;
-            this.setCurrentUserReaction();
-            this.attrs.post.current_user_used_main_reaction = false;
           }
 
-          CustomReaction.toggle(
+          this.toggleCustomReaction(
             this.attrs.post.id,
-            this.siteSettings.discourse_reactions_reaction_for_like
-          ).then(value => {
-            resolve();
-            if (value === undefined) {
-              const mainReactionIcon = this.siteSettings
-                .discourse_reactions_like_icon;
-              const hasUsedMainReaction = this.attrs.post
-                .current_user_used_main_reaction;
-              const template = document.createElement("template");
-              template.innerHTML = iconHTML(
-                hasUsedMainReaction
-                  ? `far-${mainReactionIcon}`
-                  : mainReactionIcon
-              ).trim();
-              const mainReaction = template.content.firstChild;
-              icon.parentNode.replaceChild(mainReaction, icon);
-
-              this.attrs.post.current_user_reaction = current_user_reaction;
-              this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
-              this.attrs.post.reactions = reactions;
-              this.attrs.post.reaction_users_count = reaction_users_count;
-              this.scheduleRerender();
-            }
-          });
+            attrs.reaction && attrs.reaction !== mainReactionName
+              ? attrs.reaction
+              : this.siteSettings.discourse_reactions_reaction_for_like,
+            resolve,
+            {
+              current_user_reaction,
+              current_user_used_main_reaction,
+              reactions,
+              reaction_users_count
+            },
+            attrs,
+            true
+          );
         });
       });
+    });
+  },
+
+  toggleCustomReaction(
+    postId,
+    reaction,
+    resolve,
+    oldReactionValue,
+    attrs = null,
+    toggleLike = false
+  ) {
+    CustomReaction.toggle(postId, reaction).then(value => {
+      resolve();
+
+      if (value === undefined) {
+        if (toggleLike) {
+          const mainReactionIcon = this.siteSettings
+            .discourse_reactions_like_icon;
+          const hasUsedMainReaction = this.attrs.post
+            .current_user_used_main_reaction;
+          const template = document.createElement("template");
+          template.innerHTML = iconHTML(
+            hasUsedMainReaction ||
+            (attrs.reaction && attrs.reaction !== mainReactionName)
+            ? `far-${mainReactionIcon}`
+            : mainReactionIcon
+          ).trim();
+          const mainReaction = template.content.firstChild;
+          icon.parentNode.replaceChild(mainReaction, icon);
+        }
+
+        this.attrs.post.current_user_reaction =
+          oldReactionValue.current_user_reaction;
+        this.attrs.post.current_user_used_main_reaction =
+          oldReactionValue.current_user_used_main_reaction;
+        this.attrs.post.reactions = oldReactionValue.reactions;
+        this.attrs.post.reaction_users_count =
+          oldReactionValue.reaction_users_count;
+        this.scheduleRerender();
+      }
     });
   },
 
@@ -416,11 +456,11 @@ export default createWidget("discourse-reactions-actions", {
       this.attrs.post.reactions.every((reaction, index) => {
         if (
           reaction.count <= 1 &&
-          reaction.id == this.attrs.post.current_user_reaction.id
+          reaction.id === this.attrs.post.current_user_reaction.id
         ) {
           this.attrs.post.reactions.splice(index, 1);
           return false;
-        } else if (reaction.id == this.attrs.post.current_user_reaction) {
+        } else if (reaction.id === this.attrs.post.current_user_reaction) {
           this.attrs.post.reactions[index].count -= 1;
           return false;
         }
@@ -434,7 +474,7 @@ export default createWidget("discourse-reactions-actions", {
   addUserReaction(reactionId) {
     let isAvailable = false;
     this.attrs.post.reactions.every((reaction, index) => {
-      if (reaction.id == reactionId) {
+      if (reaction.id === reactionId) {
         this.attrs.post.reactions[index].count += 1;
         this.attrs.post.reactions[index].users.push({
           username: this.currentUser.username,
@@ -544,8 +584,8 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (
-      attrs.post.reactions.length == 1 &&
-      attrs.post.reactions[0].id == mainReaction
+      attrs.post.reactions.length === 1 &&
+      attrs.post.reactions[0].id === mainReaction
     ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
     } else if (!attrs.post.yours) {
