@@ -18,7 +18,7 @@ export default createWidget("discourse-reactions-reaction-button", {
     const currentUserReaction = this.attrs.post.current_user_reaction;
 
     if (!this.capabilities.touch) {
-      this.callWidgetFunction("toggleLike", {
+      this.callWidgetFunction("toggleReactionFromButton", {
         reaction: currentUserReaction ? currentUserReaction.id : null
       });
     }
