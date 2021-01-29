@@ -21,18 +21,6 @@ export default createWidget("discourse-reactions-reaction-button", {
       this.callWidgetFunction("toggleLike", {
         reaction: currentUserReaction ? currentUserReaction.id : null
       });
-      // if (hasUsedMainReaction) {
-      //   this.callWidgetFunction("toggleLike");
-      // } else if (currentUserReaction) {
-      //   this.callWidgetFunction("toggleReaction", {
-      //     reaction: currentUserReaction.id,
-      //     postId: this.attrs.post.id,
-      //     canUndo: currentUserReaction.can_undo,
-      //     reactionButton: true
-      //   });
-      // } else {
-      //   this.callWidgetFunction("toggleLike");
-      // }
     }
   },
 
