@@ -260,13 +260,10 @@ export default createWidget("discourse-reactions-actions", {
                     resolve();
 
                     if (value === undefined) {
-                      this.attrs.post.current_user_reaction =
-                        oldReactionValue.current_user_reaction;
-                      this.attrs.post.current_user_used_main_reaction =
-                        oldReactionValue.current_user_used_main_reaction;
-                      this.attrs.post.reactions = oldReactionValue.reactions;
-                      this.attrs.post.reaction_users_count =
-                        oldReactionValue.reaction_users_count;
+                      this.attrs.post.current_user_reaction = current_user_reaction;
+                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                      this.attrs.post.reactions = reactions;
+                      this.attrs.post.reaction_users_count = reaction_users_count;
                       this.scheduleRerender();
                     }
                   });
@@ -299,13 +296,10 @@ export default createWidget("discourse-reactions-actions", {
                     resolve();
 
                     if (value === undefined) {
-                      this.attrs.post.current_user_reaction =
-                        oldReactionValue.current_user_reaction;
-                      this.attrs.post.current_user_used_main_reaction =
-                        oldReactionValue.current_user_used_main_reaction;
-                      this.attrs.post.reactions = oldReactionValue.reactions;
-                      this.attrs.post.reaction_users_count =
-                        oldReactionValue.reaction_users_count;
+                      this.attrs.post.current_user_reaction = current_user_reaction;
+                      this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                      this.attrs.post.reactions = reactions;
+                      this.attrs.post.reaction_users_count = reaction_users_count;
                       this.scheduleRerender();
                     }
                   }
@@ -416,13 +410,10 @@ export default createWidget("discourse-reactions-actions", {
                 const mainReaction = template.content.firstChild;
                 icon.parentNode.replaceChild(mainReaction, icon);
 
-                this.attrs.post.current_user_reaction =
-                  oldReactionValue.current_user_reaction;
-                this.attrs.post.current_user_used_main_reaction =
-                  oldReactionValue.current_user_used_main_reaction;
-                this.attrs.post.reactions = oldReactionValue.reactions;
-                this.attrs.post.reaction_users_count =
-                  oldReactionValue.reaction_users_count;
+                this.attrs.post.current_user_reaction = current_user_reaction;
+                this.attrs.post.current_user_used_main_reaction = current_user_used_main_reaction;
+                this.attrs.post.reactions = reactions;
+                this.attrs.post.reaction_users_count = reaction_users_count;
                 this.scheduleRerender();
               }
             }
