@@ -246,12 +246,13 @@ export default createWidget("discourse-reactions-actions", {
               this.attrs.post.current_user_reaction &&
               this.attrs.post.current_user_reaction.id === params.reaction
             ) {
+              this.dropReactionAnimation && cancel(this.dropReactionAnimation);
               this.collapsePanels();
               this.dropUserReaction();
               this.attrs.post.reaction_users_count -= 1;
               this.attrs.post.current_user_used_main_reaction = false;
               this.setCurrentUserReaction(null);
-              later(() => {
+              let dropReactionAnimation = later(() => {
                 dropReaction(postContainer, params.reaction, () => {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
