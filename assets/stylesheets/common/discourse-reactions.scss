@@ -342,3 +342,14 @@ nav.post-controls .actions button {
 .post-controls .actions {
   width: 100%;
 }
+
+.discourse-reactions-your-reaction {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+
+  .reaction-emoji {
+    margin-right: 5px;
+    height: 15px;
+  }
+}

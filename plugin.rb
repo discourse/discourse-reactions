@@ -26,6 +26,7 @@ after_initialize do
   end
 
   [
+    "../app/serializers/user_reaction_serializer.rb",
     "../app/controllers/discourse_reactions_controller.rb",
     "../app/controllers/discourse_reactions/custom_reactions_controller.rb",
     "../app/models/discourse_reactions/reaction.rb",
@@ -52,8 +53,9 @@ after_initialize do
   end
 
   DiscourseReactions::Engine.routes.draw do
-    get '/discourse-reactions/custom-reactions' => 'custom_reactions#index', constraints: { format: :json }
-    put '/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle' => 'custom_reactions#toggle', constraints: { format: :json }
+    get "/discourse-reactions/custom-reactions" => "custom_reactions#index", constraints: { format: :json }
+    put "/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle" => "custom_reactions#toggle", constraints: { format: :json }
+    get "/discourse-reactions/posts/reactions-given/:username" => "custom_reactions#reactions_given", constraints: { username: ::RouteFormat.username }, as: "reactions_given"
   end
 
   add_to_serializer(:post, :reactions) do
