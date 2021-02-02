@@ -61,8 +61,8 @@ export default createWidget("discourse-reactions-counter", {
       .discourse_reactions_reaction_for_like;
 
     if (
-      attrs.post.reactions.length == 1 &&
-      attrs.post.reactions[0].id == mainReaction
+      attrs.post.reactions.length === 1 &&
+      attrs.post.reactions[0].id === mainReaction
     ) {
       classes.push("only-like");
     }
@@ -83,8 +83,8 @@ export default createWidget("discourse-reactions-counter", {
 
       if (
         !(
-          attrs.post.reactions.length == 1 &&
-          attrs.post.reactions[0].id == mainReaction
+          attrs.post.reactions.length === 1 &&
+          attrs.post.reactions[0].id === mainReaction
         )
       ) {
         items.push(this.attach("discourse-reactions-list", attrs));

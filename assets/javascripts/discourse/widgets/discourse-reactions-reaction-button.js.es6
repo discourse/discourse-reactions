@@ -18,17 +18,9 @@ export default createWidget("discourse-reactions-reaction-button", {
     const currentUserReaction = this.attrs.post.current_user_reaction;
 
     if (!this.capabilities.touch) {
-      if (hasUsedMainReaction) {
-        this.callWidgetFunction("toggleLike");
-      } else if (currentUserReaction) {
-        this.callWidgetFunction("toggleReaction", {
-          reaction: currentUserReaction.id,
-          postId: this.attrs.post.id,
-          canUndo: currentUserReaction.can_undo
-        });
-      } else {
-        this.callWidgetFunction("toggleLike");
-      }
+      this.callWidgetFunction("toggleReactionFromButton", {
+        reaction: currentUserReaction ? currentUserReaction.id : null
+      });
     }
   },
 
