@@ -18,9 +18,7 @@ CustomReaction.reopenClass({
     return ajax(
       `/discourse-reactions/posts/${postId}/custom-reactions/${reactionId}/toggle.json`,
       { type: "PUT" }
-    ).catch(e => {
-      bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
-    });
+    );
   },
 
   findMyReactions(name, opts) {

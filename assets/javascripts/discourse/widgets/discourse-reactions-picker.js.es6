@@ -36,7 +36,7 @@ export default createWidget("discourse-reactions-picker", {
             } else {
               isUsed =
                 attrs.post.current_user_reaction &&
-                attrs.post.current_user_reaction.id == reaction;
+                attrs.post.current_user_reaction.id === reaction;
             }
 
             if (attrs.post.current_user_reaction) {
