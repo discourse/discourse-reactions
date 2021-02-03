@@ -6,19 +6,21 @@ export default DiscourseRoute.extend({
   noContentHelpKey: "discourse_assigns.no_reactions",
 
   model() {
-    return CustomReaction.findYourReactions(this.modelFor("user").get("username_lower"));
+    return CustomReaction.findMyReactions(
+      this.modelFor("user").get("username_lower")
+    );
   },
 
   setupController(controller, model) {
     let loadedAll = model.length < 20;
-    this.controllerFor("user-activity-your-reactions").setProperties({
+    this.controllerFor("user-activity-my-reactions").setProperties({
       model,
-      canLoadMore: !loadedAll,
+      canLoadMore: !loadedAll
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },
 
   renderTemplate() {
-    this.render("user-activity-your-reactions");
-  },
+    this.render("user-activity-my-reactions");
+  }
 });

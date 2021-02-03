@@ -13,7 +13,7 @@ module DiscourseReactions
       render_json_dump(post_serializer.as_json)
     end
 
-    def reactions_given
+    def my_reactions
       user = User.find_by_username_lower(params[:username])
       posts = Post.joins(reactions_user: :reaction)
         .where("discourse_reactions_reaction_users.user_id = ?", user.id)

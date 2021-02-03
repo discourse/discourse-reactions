@@ -23,10 +23,10 @@ CustomReaction.reopenClass({
     });
   },
 
-  findYourReactions(name, opts) {
+  findMyReactions(name, opts) {
     opts = opts || {};
 
-    if(!name ) {
+    if (!name) {
       return;
     }
 
@@ -36,8 +36,10 @@ CustomReaction.reopenClass({
       data.before_post_id = opts.beforePostId;
     }
 
-    return ajax(`/discourse-reactions/posts/reactions-given/${name}.json`, { data }).then((posts) => {
-      return posts.map((p) => {
+    return ajax(`/discourse-reactions/posts/reactions-given/${name}.json`, {
+      data
+    }).then(posts => {
+      return posts.map(p => {
         p.user = User.create(p.user);
         p.topic = Topic.create(p.topic);
         p.category = Category.findById(p.category_id);

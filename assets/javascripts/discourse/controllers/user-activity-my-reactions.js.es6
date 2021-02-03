@@ -19,12 +19,14 @@ export default Controller.extend({
     this.set("loading", true);
     const posts = this.model;
     if (posts && posts.length) {
-      const beforePostId = posts[posts.length - 1].get("current_user_reaction").id;
+      const beforePostId = posts.length
+        ? posts[posts.length - 1].get("current_user_reaction").id
+        : null;
 
       const opts = { beforePostId };
 
-      CustomReaction.findYourReactions(this.currentUser.username_lower, opts)
-        .then((newPosts) => {
+      CustomReaction.findMyReactions(this.currentUser.username_lower, opts)
+        .then(newPosts => {
           posts.addObjects(newPosts);
           if (newPosts.length === 0) {
             this.set("canLoadMore", false);
@@ -39,5 +41,5 @@ export default Controller.extend({
   @observes("canLoadMore")
   _showFooter() {
     this.set("application.showFooter", !this.canLoadMore);
-  },
+  }
 });

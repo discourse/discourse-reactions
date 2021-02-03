@@ -14,20 +14,23 @@ export default Component.extend({
 
   @discourseComputed("post.current_user_reaction.id")
   emojiUrl(currentUserReaction) {
-    if(!currentUserReaction) {
+    if (!currentUserReaction) {
       return;
     }
     return emojiUrlFor(currentUserReaction);
   },
 
-  @discourseComputed("post.current_user_reaction.avatar_template", "currentUser")
-  currentUserAvatar(avatarTemplate, currentUser) {
-    currentUser.avatar_template = avatarTemplate;
-    return currentUser;
+  didReceiveAttrs() {
+    this._super(...arguments);
+
+    this.set(
+      "currentUser.avatar_template",
+      this.post.current_user_reaction.avatar_template
+    );
   },
 
   moderatorAction: propertyEqual(
     "post.post_type",
     "site.post_types.moderator_action"
-  ),
+  )
 });

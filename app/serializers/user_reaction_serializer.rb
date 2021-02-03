@@ -33,7 +33,7 @@ class UserReactionSerializer < ApplicationSerializer
     object.reactions.each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
-      next unless reaction_user
+      next unless reaction_user && reaction.reaction_users_count
 
       return {
         id: reaction.reaction_value,
@@ -42,7 +42,7 @@ class UserReactionSerializer < ApplicationSerializer
         avatar_template: reaction_user.avatar_template,
         created_at: reaction_user.created_at,
         reaction_user_id: reaction_user.id
-      } if reaction.reaction_users_count
+      }
     end
   end
 end

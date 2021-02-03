@@ -24,10 +24,10 @@
 </div>
 
 {{#if post.current_user_reaction.id}}
-  <div class="discourse-reactions-your-reaction">
+  <div class="discourse-reactions-my-reaction">
     <img src={{emojiUrl}} class="reaction-emoji">
     <a href={{currentUser.userUrl}} data-user-card={{currentUser.username}} class="avatar-link">
-      {{avatar currentUserAvatar imageSize="tiny" extraClasses="actor" ignoreTitle="true"}}
+      {{avatar currentUser imageSize="tiny" extraClasses="actor" ignoreTitle="true"}}
     </a>
   </div>
 {{/if}}

@@ -1,6 +1,6 @@
 export default {
   resource: "user.userActivity",
   map() {
-    this.route("yourReactions", { path: "your-reactions" });
-  },
+    this.route("myReactions", { path: "my-reactions" });
+  }
 };
