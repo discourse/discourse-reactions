@@ -20,7 +20,7 @@ export default Controller.extend({
     const posts = this.model;
     if (posts && posts.length) {
       const beforePostId = posts.length
-        ? posts[posts.length - 1].get("current_user_reaction").id
+        ? posts[posts.length - 1].get("current_user_reaction").reaction_user_id
         : null;
 
       const opts = { beforePostId };
