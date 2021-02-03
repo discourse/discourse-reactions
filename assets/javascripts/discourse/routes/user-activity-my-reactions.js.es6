@@ -6,9 +6,7 @@ export default DiscourseRoute.extend({
   noContentHelpKey: "discourse_assigns.no_reactions",
 
   model() {
-    return CustomReaction.findMyReactions(
-      this.modelFor("user").username_lower
-    );
+    return CustomReaction.findMyReactions(this.modelFor("user").username_lower);
   },
 
   setupController(controller, model) {
