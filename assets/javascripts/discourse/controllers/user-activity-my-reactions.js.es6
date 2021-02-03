@@ -10,12 +10,10 @@ export default Controller.extend({
 
   @action
   loadMore() {
-    if (!this.canLoadMore) {
+    if (!this.canLoadMore || this.loading) {
       return;
     }
-    if (this.loading) {
-      return;
-    }
+
     this.set("loading", true);
     const posts = this.model;
     if (posts && posts.length) {

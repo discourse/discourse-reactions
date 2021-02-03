@@ -7,7 +7,7 @@ export default DiscourseRoute.extend({
 
   model() {
     return CustomReaction.findMyReactions(
-      this.modelFor("user").get("username_lower")
+      this.modelFor("user").username_lower
     );
   },
 
