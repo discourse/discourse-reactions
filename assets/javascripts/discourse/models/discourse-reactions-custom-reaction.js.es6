@@ -26,8 +26,8 @@ CustomReaction.reopenClass({
 
     const data = {};
 
-    if (opts.beforePostId) {
-      data.before_post_id = opts.beforePostId;
+    if (opts.beforeReactionUserId) {
+      data.before_reaction_user_id = opts.beforeReactionUserId;
     }
 
     return ajax(`/discourse-reactions/posts/${url}.json`, {

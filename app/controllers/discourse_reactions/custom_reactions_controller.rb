@@ -18,7 +18,7 @@ module DiscourseReactions
         .where(user_id: current_user.id)
         .where("discourse_reactions_reactions.reaction_users_count IS NOT NULL")
 
-      reaction_users = reaction_users.where('discourse_reactions_reaction_users.id < ?', params[:before_post_id].to_i) if params[:before_post_id]
+      reaction_users = reaction_users.where('discourse_reactions_reaction_users.id < ?', params[:before_reaction_user_id].to_i) if params[:before_reaction_user_id]
       reaction_users = reaction_users.order(created_at: :desc).limit(20)
 
       render_serialized reaction_users.to_a, UserReactionSerializer

@@ -16,24 +16,23 @@ export default Controller.extend({
 
     this.set("loading", true);
     const posts = this.model;
-    if (posts && posts.length) {
-      const beforePostId = posts.length
-        ? posts[posts.length - 1].get("current_user_reaction").reaction_user_id
-        : null;
 
-      const opts = { beforePostId };
+    const beforeReactionUserId = posts.length
+      ? posts[posts.length - 1].get('id')
+      : null;
 
-      CustomReaction.findReactions(this.reactionsUrl, opts)
-        .then(newPosts => {
-          posts.addObjects(newPosts);
-          if (newPosts.length === 0) {
-            this.set("canLoadMore", false);
-          }
-        })
-        .finally(() => {
-          this.set("loading", false);
-        });
-    }
+    const opts = { beforeReactionUserId };
+
+    CustomReaction.findReactions(this.reactionsUrl, opts)
+      .then(newPosts => {
+        posts.addObjects(newPosts);
+        if (newPosts.length === 0) {
+          this.set("canLoadMore", false);
+        }
+      })
+      .finally(() => {
+        this.set("loading", false);
+      });
   },
 
   @observes("canLoadMore")
