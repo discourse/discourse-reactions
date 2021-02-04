@@ -7,30 +7,21 @@ import { emojiUrlFor } from "discourse/lib/text";
 export default Component.extend({
   classNameBindings: [":user-stream-item", ":item", "moderatorAction"],
 
-  @discourseComputed("post.url")
+  @discourseComputed("reaction.post.url")
   postUrl(url) {
     return getURL(url);
   },
 
-  @discourseComputed("post.current_user_reaction.id")
-  emojiUrl(currentUserReaction) {
-    if (!currentUserReaction) {
+  @discourseComputed("reaction.reaction.reaction_value")
+  emojiUrl(reactionValue) {
+    if (!reactionValue) {
       return;
     }
-    return emojiUrlFor(currentUserReaction);
-  },
-
-  didReceiveAttrs() {
-    this._super(...arguments);
-
-    this.set(
-      "currentUser.avatar_template",
-      this.post.current_user_reaction.avatar_template
-    );
+    return emojiUrlFor(reactionValue);
   },
 
   moderatorAction: propertyEqual(
-    "post.post_type",
+    "reaction.post.post_type",
     "site.post_types.moderator_action"
   )
 });

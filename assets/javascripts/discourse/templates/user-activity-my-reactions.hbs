@@ -1,7 +1,7 @@
 {{#load-more selector=".user-stream-item" action=(action "loadMore")}}
   <div class="user-stream">
-    {{#each model as |post|}}
-      {{discourse-reactions-reaction-post post=post}}
+    {{#each model as |reaction|}}
+      {{discourse-reactions-reaction-post reaction=reaction}}
     {{else}}
       <div>{{i18n emptyText}}</div>
     {{/each}}

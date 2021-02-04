@@ -10,7 +10,7 @@ export default Controller.extend({
 
   @action
   loadMore() {
-    if (!this.canLoadMore || this.loading) {
+    if (!this.canLoadMore || this.loading || !this.reactionsUrl) {
       return;
     }
 
@@ -23,7 +23,7 @@ export default Controller.extend({
 
       const opts = { beforePostId };
 
-      CustomReaction.findMyReactions(this.currentUser.username_lower, opts)
+      CustomReaction.findReactions(this.reactionsUrl, opts)
         .then(newPosts => {
           posts.addObjects(newPosts);
           if (newPosts.length === 0) {

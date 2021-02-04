@@ -55,7 +55,7 @@ after_initialize do
   DiscourseReactions::Engine.routes.draw do
     get "/discourse-reactions/custom-reactions" => "custom_reactions#index", constraints: { format: :json }
     put "/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle" => "custom_reactions#toggle", constraints: { format: :json }
-    get "/discourse-reactions/posts/reactions-given/:username" => "custom_reactions#my_reactions", constraints: { username: ::RouteFormat.username }, as: "reactions_given"
+    get "/discourse-reactions/posts/my-reactions" => "custom_reactions#my_reactions", as: "my_reactions"
   end
 
   add_to_serializer(:post, :reactions) do

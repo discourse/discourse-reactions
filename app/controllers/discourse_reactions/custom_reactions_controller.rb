@@ -14,16 +14,14 @@ module DiscourseReactions
     end
 
     def my_reactions
-      user = User.find_by_username_lower(params[:username])
-      posts = Post.joins(reactions_user: :reaction)
-        .where("discourse_reactions_reaction_users.user_id = ?", user.id)
+      reaction_users = DiscourseReactions::ReactionUser.joins(:reaction)
+        .where(user_id: current_user.id)
         .where("discourse_reactions_reactions.reaction_users_count IS NOT NULL")
 
-      posts = guardian.filter_allowed_categories(posts)
-      posts = posts.where('discourse_reactions_reaction_users.id < ?', params[:before_post_id].to_i) if params[:before_post_id]
-      posts = posts.order('discourse_reactions_reaction_users.created_at desc').limit(20)
+      reaction_users = reaction_users.where('discourse_reactions_reaction_users.id < ?', params[:before_post_id].to_i) if params[:before_post_id]
+      reaction_users = reaction_users.order(created_at: :desc).limit(20)
 
-      render_serialized posts.to_a, UserReactionSerializer
+      render_serialized reaction_users.to_a, UserReactionSerializer
     end
 
     private

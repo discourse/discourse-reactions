@@ -21,12 +21,8 @@ CustomReaction.reopenClass({
     );
   },
 
-  findMyReactions(name, opts) {
+  findReactions(url, opts) {
     opts = opts || {};
-
-    if (!name) {
-      return;
-    }
 
     const data = {};
 
@@ -34,14 +30,15 @@ CustomReaction.reopenClass({
       data.before_post_id = opts.beforePostId;
     }
 
-    return ajax(`/discourse-reactions/posts/reactions-given/${name}.json`, {
+    return ajax(`/discourse-reactions/posts/${url}.json`, {
       data
-    }).then(posts => {
-      return posts.map(p => {
-        p.user = User.create(p.user);
-        p.topic = Topic.create(p.topic);
-        p.category = Category.findById(p.category_id);
-        return EmberObject.create(p);
+    }).then(reactions => {
+      return reactions.map(reaction => {
+        reaction.user = User.create(reaction.user);
+        reaction.topic = Topic.create(reaction.post.topic);
+        reaction.post_user = User.create(reaction.post.user)
+        reaction.category = Category.findById(reaction.post.category_id);
+        return EmberObject.create(reaction);
       });
     });
   }

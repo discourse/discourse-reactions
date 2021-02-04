@@ -6,14 +6,15 @@ export default DiscourseRoute.extend({
   noContentHelpKey: "discourse_assigns.no_reactions",
 
   model() {
-    return CustomReaction.findMyReactions(this.modelFor("user").username_lower);
+    return CustomReaction.findReactions("my-reactions");
   },
 
   setupController(controller, model) {
     let loadedAll = model.length < 20;
     this.controllerFor("user-activity-my-reactions").setProperties({
       model,
-      canLoadMore: !loadedAll
+      canLoadMore: !loadedAll,
+      reactionsUrl: "my-reactions"
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },
