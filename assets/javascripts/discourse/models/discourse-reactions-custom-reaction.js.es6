@@ -36,7 +36,7 @@ CustomReaction.reopenClass({
       return reactions.map(reaction => {
         reaction.user = User.create(reaction.user);
         reaction.topic = Topic.create(reaction.post.topic);
-        reaction.post_user = User.create(reaction.post.user)
+        reaction.post_user = User.create(reaction.post.user);
         reaction.category = Category.findById(reaction.post.category_id);
         return EmberObject.create(reaction);
       });
