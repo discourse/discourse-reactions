@@ -6,6 +6,7 @@ en:
           discourse_reactions: "Discourse Reactions"
   js:
     discourse_reactions:
+      empty_reactions_post_list: "No reactions found!"
       reactions_title: "Reactions"
       reaction:
         error: "There was an error reacting to this post. press OK to reload the page."

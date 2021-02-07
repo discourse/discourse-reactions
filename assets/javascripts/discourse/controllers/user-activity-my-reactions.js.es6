@@ -4,6 +4,7 @@ import { action } from "@ember/object";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default Controller.extend({
+  emptyText: "discourse_reactions.empty_reactions_post_list",
   canLoadMore: true,
   loading: false,
   application: controller(),
