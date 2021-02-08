@@ -3,7 +3,7 @@
     {{#each model as |reaction|}}
       {{discourse-reactions-reaction-post reaction=reaction}}
     {{else}}
-      <div>{{i18n emptyText}}</div>
+      <div class="alert alert-info">{{i18n "notifications.empty"}}</div>
     {{/each}}
   </div>
   {{conditional-loading-spinner condition=loading}}
