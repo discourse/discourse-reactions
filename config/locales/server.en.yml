@@ -4,3 +4,9 @@ en:
     discourse_reactions_reaction_for_like: "Defines the reaction associated to to the like action."
     discourse_reactions_enabled: "Enable the discourse-reactions plugin."
     discourse_reactions_enabled_reactions: "Defines a list of enabled reactions, any emoji is allowed here."
+  badges:
+    first_reaction:
+      name: First Reaction
+      description: Reacted to the post
+      long_description: |
+        This badge is granted the first time you react to a post. Reacting to the posts is a great way to let your fellow community members know that what they posted was interesting, useful, cool, or fun. Share your reaction!
