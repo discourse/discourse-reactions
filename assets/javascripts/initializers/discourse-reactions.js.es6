@@ -30,9 +30,18 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
+    const mainReaction = dec.widget.siteSettings.discourse_reactions_reaction_for_like;
     const post = dec.getModel();
 
     if (!post) {
+      return;
+    }
+
+    if (
+      post.reactions &&
+      post.reactions.length == 1 &&
+      post.reactions[0].id == mainReaction
+    ) {
       return;
     }
 
