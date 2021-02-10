@@ -6,6 +6,10 @@
 
   nav.post-controls .show-replies {
     position: relative;
-    bottom: 0.25em;
+  }
+
+  .discourse-reactions-counter {
+    top: 0.25em;
+    align-self: center;
   }
 }
