@@ -167,23 +167,23 @@ export default createWidget("discourse-reactions-counter", {
     ]);
   },
 
-  _setupPopper(postId, popperVariable, selectors) {
+  _setupPopper(postId, popper, selectors) {
     next(() => {
       const trigger = document.querySelector(
         `#discourse-reactions-counter-${postId}`
       );
-      const popper = document.querySelector(
+      const popperElement = document.querySelector(
         `#discourse-reactions-counter-${postId} ${selectors[0]}`
       );
 
-      if (popper) {
-        popper.classList.add("is-expanded");
+      if (popperElement) {
+        popperElement.classList.add("is-expanded");
 
-        if (this[popperVariable]) {
+        if (this[popper]) {
           return;
         }
 
-        this[popperVariable] = this._applyPopper(trigger, popper);
+        this[popper] = this._applyPopper(trigger, popperElement);
       }
     });
   },

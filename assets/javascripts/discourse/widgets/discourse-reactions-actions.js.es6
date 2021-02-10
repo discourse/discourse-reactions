@@ -293,11 +293,11 @@ export default createWidget("discourse-reactions-actions", {
                   .catch(e => {
                     bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
 
-                      post.current_user_reaction = current_user_reaction;
-                      post.current_user_used_main_reaction = current_user_used_main_reaction;
-                      post.reactions = reactions;
-                      post.reaction_users_count = reaction_users_count;
-                      this.scheduleRerender();
+                    post.current_user_reaction = current_user_reaction;
+                    post.current_user_used_main_reaction = current_user_used_main_reaction;
+                    post.reactions = reactions;
+                    post.reaction_users_count = reaction_users_count;
+                    this.scheduleRerender();
                   });
               });
             }
@@ -586,23 +586,23 @@ export default createWidget("discourse-reactions-actions", {
     return items;
   },
 
-  _setupPopper(postId, popperVariable, selectors) {
+  _setupPopper(postId, popper, selectors) {
     next(() => {
       const trigger = document.querySelector(
         `#discourse-reactions-actions-${postId} ${selectors[0]}`
       );
-      const popper = document.querySelector(
+      const popperElement = document.querySelector(
         `#discourse-reactions-actions-${postId} ${selectors[1]}`
       );
 
-      if (popper) {
-        popper.classList.add("is-expanded");
+      if (popperElement) {
+        popperElement.classList.add("is-expanded");
 
-        if (this[popperVariable]) {
+        if (this[popper]) {
           return;
         }
 
-        this[popperVariable] = this._applyPopper(trigger, popper);
+        this[popper] = this._applyPopper(trigger, popperElement);
       }
     });
   },
