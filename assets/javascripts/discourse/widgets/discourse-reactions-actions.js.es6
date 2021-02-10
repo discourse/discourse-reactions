@@ -101,12 +101,12 @@ export default createWidget("discourse-reactions-actions", {
     if (!attrs.post.reactions) {
       return;
     }
-
-    const hasReactions = attrs.post.reactions.length;
-    const hasReacted = attrs.post.current_user_reaction;
+    const post = attrs.post;
+    const hasReactions = post.reactions.length;
+    const hasReacted = post.current_user_reaction;
     const classes = [];
 
-    if (attrs.post.yours) {
+    if (post.yours) {
       classes.push("your-post");
     }
 
@@ -118,21 +118,18 @@ export default createWidget("discourse-reactions-actions", {
       classes.push("has-reacted");
     }
 
-    if (attrs.post.current_user_used_main_reaction) {
+    if (post.current_user_used_main_reaction) {
       classes.push("has-used-main-reaction");
     }
 
     if (
-      attrs.post.likeAction &&
-      (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
+      post.likeAction &&
+      (post.likeAction.canToggle || post.likeAction.can_undo)
     ) {
       classes.push("can-toggle-main-reaction");
     }
 
-    if (
-      attrs.post.reactions.length == 1 &&
-      attrs.post.reactions[0].id == "heart"
-    ) {
+    if (post.reactions.length == 1 && post.reactions[0].id == "heart") {
       classes.push("justify-left");
     }
 
@@ -521,7 +518,7 @@ export default createWidget("discourse-reactions-actions", {
     const mainReaction = this.siteSettings
       .discourse_reactions_reaction_for_like;
 
-    if(attrs.post.site.mobileView) {
+    if (attrs.post.site.mobileView) {
       items.push(
         this.attach(
           "discourse-reactions-state-panel",
@@ -544,15 +541,20 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (
+      attrs.reactions &&
       attrs.post.reactions.length == 1 &&
       attrs.post.reactions[0].id == mainReaction
     ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
-    } else if(attrs.post.site.mobileView) {
+    } else if (attrs.post.site.mobileView) {
       if (!attrs.post.yours) {
         items.push(this.attach("discourse-reactions-counter", attrs));
         items.push(this.attach("discourse-reactions-reaction-button", attrs));
-      } else if (attrs.post.yours && attrs.post.reactions.length) {
+      } else if (
+        attrs.post.yours &&
+        attrs.reactions &&
+        attrs.post.reactions.length
+      ) {
         items.push(this.attach("discourse-reactions-counter", attrs));
       }
     } else {

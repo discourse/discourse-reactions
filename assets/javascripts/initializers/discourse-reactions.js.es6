@@ -26,11 +26,11 @@ function initializeDiscourseReactions(api) {
   });
 
   api.decorateWidget("post-menu:extra-post-controls", dec => {
-    const post = dec.getModel();
-
-    if(dec.widget.site.mobileView) {
+    if (dec.widget.site.mobileView) {
       return;
     }
+
+    const post = dec.getModel();
 
     if (!post) {
       return;
