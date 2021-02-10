@@ -9,6 +9,8 @@
   }
 
   .discourse-reactions-counter {
-    top: 0.25em;
+    &:not(.only-like) {
+      top: 0.25em;
+    }
   }
 }

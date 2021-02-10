@@ -29,8 +29,8 @@ html.discourse-reactions-no-select {
       }
 
       .emoji {
-        width: 1.3em;
-        height: 1.3em;
+        width: 1.1em;
+        height: 1.1em;
       }
     }
   }
@@ -300,6 +300,7 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   position: relative;
   min-width: 1em;
+
 
   .reactions-counter {
     color: $primary-low-mid;
