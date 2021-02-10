@@ -15,18 +15,18 @@ export default Controller.extend({
     }
 
     this.set("loading", true);
-    const posts = this.model;
+    const reactionUsers = this.model;
 
-    const beforeReactionUserId = posts.length
-      ? posts[posts.length - 1].get("id")
+    const beforeReactionUserId = reactionUsers.length
+      ? reactionUsers[reactionUsers.length - 1].get("id")
       : null;
 
     const opts = { beforeReactionUserId };
 
     CustomReaction.findReactions(this.reactionsUrl, opts)
-      .then(newPosts => {
-        posts.addObjects(newPosts);
-        if (newPosts.length === 0) {
+      .then(newReactionUsers => {
+        reactionUsers.addObjects(newReactionUsers);
+        if (newReactionUsers.length === 0) {
           this.set("canLoadMore", false);
         }
       })

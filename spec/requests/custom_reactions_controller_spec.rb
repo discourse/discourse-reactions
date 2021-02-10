@@ -40,9 +40,11 @@ describe DiscourseReactions::CustomReactionsController do
           'count' => 1
         }
       ]
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(DiscourseReactions::Reaction.count).to eq(2)
-      expect(DiscourseReactions::ReactionUser.count).to eq(2)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+      end.to change { DiscourseReactions::Reaction.count }.by(1)
+        .and change { DiscourseReactions::ReactionUser.count }.by(1)
+
       expect(response.status).to eq(200)
       expect(response.parsed_body['reactions']).to eq(expected_payload)
 
@@ -60,16 +62,20 @@ describe DiscourseReactions::CustomReactionsController do
         { 'username' => user_2.username, 'avatar_template' => user_2.avatar_template, 'can_undo' => true }
       ])
 
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(DiscourseReactions::Reaction.count).to eq(2)
-      expect(DiscourseReactions::ReactionUser.count).to eq(2)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+      end.to change { DiscourseReactions::Reaction.count }.by(0)
+        .and change { DiscourseReactions::ReactionUser.count }.by(-1)
+
       expect(response.status).to eq(200)
       expect(response.parsed_body['reactions']).to eq(expected_payload)
 
       sign_in(user_1)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-      expect(DiscourseReactions::Reaction.count).to eq(1)
-      expect(DiscourseReactions::ReactionUser.count).to eq(1)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+      end.to change { DiscourseReactions::Reaction.count }.by(-1)
+        .and change { DiscourseReactions::ReactionUser.count }.by(-1)
+
       expect(response.status).to eq(200)
       expect(response.parsed_body['reactions']).to eq([])
     end
@@ -86,8 +92,10 @@ describe DiscourseReactions::CustomReactionsController do
 
     it 'errors when reaction is invalid' do
       sign_in(user_1)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/invalid-reaction/toggle.json"
-      expect(DiscourseReactions::Reaction.count).to eq(1)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/invalid-reaction/toggle.json"
+      end.to change { DiscourseReactions::Reaction.count }.by(0)
+
       expect(response.status).to eq(422)
     end
   end
@@ -127,14 +135,17 @@ describe DiscourseReactions::CustomReactionsController do
 
     it 'creates notification when first like' do
       sign_in(user_1)
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
-      expect(Notification.count).to eq(1)
-      expect(PostAction.count).to eq(1)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
+      end.to change { Notification.count }.by(1)
+        .and change { PostAction.count }.by(1)
+
       expect(PostAction.last.post_action_type_id).to eq(PostActionType.types[:like])
 
-      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
-      expect(Notification.count).to eq(0)
-      expect(PostAction.count).to eq(0)
+      expect do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
+      end.to change { Notification.count }.by(-1)
+        .and change { PostAction.count }.by(-1)
     end
   end
 
@@ -151,22 +162,27 @@ describe DiscourseReactions::CustomReactionsController do
   it 'allows to delete reaction only in undo action window frame' do
     SiteSetting.post_undo_action_window_mins = 10
     sign_in(user_1)
-    put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-    expect(DiscourseReactions::Reaction.count).to eq(2)
-    expect(DiscourseReactions::ReactionUser.count).to eq(2)
+    expect do
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+    end.to change { DiscourseReactions::Reaction.count }.by(1)
+      .and change { DiscourseReactions::ReactionUser.count }.by(1)
 
-    put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-    expect(DiscourseReactions::Reaction.count).to eq(1)
-    expect(DiscourseReactions::ReactionUser.count).to eq(1)
+    expect do
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+    end.to change { DiscourseReactions::Reaction.count }.by(-1)
+      .and change { DiscourseReactions::ReactionUser.count }.by(-1)
 
-    put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-    expect(DiscourseReactions::Reaction.count).to eq(2)
-    expect(DiscourseReactions::ReactionUser.count).to eq(2)
+    expect do
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+    end.to change { DiscourseReactions::Reaction.count }.by(1)
+      .and change { DiscourseReactions::ReactionUser.count }.by(1)
 
     freeze_time(Time.zone.now + 11.minutes)
-    put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
-    expect(DiscourseReactions::Reaction.count).to eq(2)
-    expect(DiscourseReactions::ReactionUser.count).to eq(2)
+    expect do
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
+    end.to change { DiscourseReactions::Reaction.count }.by(0)
+      .and change { DiscourseReactions::ReactionUser.count }.by(0)
+
     expect(response.status).to eq(403)
   end
 end
