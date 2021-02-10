@@ -90,7 +90,7 @@ export default createWidget("discourse-reactions-counter", {
         return;
       }
 
-      if(!attrs.post.site.mobileView) {
+      if (!attrs.post.site.mobileView) {
         items.push(
           this.attach(
             "discourse-reactions-state-panel",

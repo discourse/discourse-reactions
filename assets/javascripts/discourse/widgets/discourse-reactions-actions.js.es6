@@ -231,8 +231,8 @@ export default createWidget("discourse-reactions-actions", {
               `[data-post-id="${params.postId}"]`
             );
             const current_user_reaction = post.current_user_reaction;
-            const current_user_used_main_reaction = post
-              .current_user_used_main_reaction;
+            const current_user_used_main_reaction =
+              post.current_user_used_main_reaction;
             const reactions = Object.assign([], post.reactions);
             const reaction_users_count = post.reaction_users_count;
 
@@ -311,17 +311,14 @@ export default createWidget("discourse-reactions-actions", {
     this.collapsePanels();
     const post = this.attrs.post;
     const current_user_reaction = post.current_user_reaction;
-    const current_user_used_main_reaction = post
-      .current_user_used_main_reaction;
+    const current_user_used_main_reaction =
+      post.current_user_used_main_reaction;
     const reactions = Object.assign([], post.reactions);
     const reaction_users_count = post.reaction_users_count;
 
     if (
       post.likeAction &&
-      !(
-        post.likeAction.canToggle ||
-        post.likeAction.can_undo
-      )
+      !(post.likeAction.canToggle || post.likeAction.can_undo)
     ) {
       return;
     }
@@ -338,8 +335,7 @@ export default createWidget("discourse-reactions-actions", {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
         const mainReactionIcon = this.siteSettings
           .discourse_reactions_like_icon;
-        const hasUsedMainReaction = post
-          .current_user_used_main_reaction;
+        const hasUsedMainReaction = post.current_user_used_main_reaction;
         const template = document.createElement("template");
         template.innerHTML = iconHTML(
           hasUsedMainReaction ? `far-${mainReactionIcon}` : mainReactionIcon
@@ -372,8 +368,7 @@ export default createWidget("discourse-reactions-actions", {
             if (value === undefined) {
               const mainReactionIcon = this.siteSettings
                 .discourse_reactions_like_icon;
-              const hasUsedMainReaction = post
-                .current_user_used_main_reaction;
+              const hasUsedMainReaction = post.current_user_used_main_reaction;
               const template = document.createElement("template");
               template.innerHTML = iconHTML(
                 hasUsedMainReaction
@@ -410,17 +405,14 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   dropUserReaction() {
-    if(!this.attrs.post.current_user_reaction){
+    if (!this.attrs.post.current_user_reaction) {
       return;
     }
 
     const post = this.attrs.post;
 
     post.reactions.every((reaction, index) => {
-      if (
-        reaction.count <= 1 &&
-        reaction.id == post.current_user_reaction.id
-      ) {
+      if (reaction.count <= 1 && reaction.id == post.current_user_reaction.id) {
         post.reactions.splice(index, 1);
         return false;
       } else if (reaction.id == post.current_user_reaction) {
@@ -560,11 +552,7 @@ export default createWidget("discourse-reactions-actions", {
       if (!post.yours) {
         items.push(this.attach("discourse-reactions-counter", attrs));
         items.push(this.attach("discourse-reactions-reaction-button", attrs));
-      } else if (
-        post.yours &&
-        attrs.reactions &&
-        post.reactions.length
-      ) {
+      } else if (post.yours && attrs.reactions && post.reactions.length) {
         items.push(this.attach("discourse-reactions-counter", attrs));
       }
     } else {

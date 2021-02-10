@@ -30,7 +30,8 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
-    const mainReaction = dec.widget.siteSettings.discourse_reactions_reaction_for_like;
+    const mainReaction =
+      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
     const post = dec.getModel();
 
     if (!post) {
