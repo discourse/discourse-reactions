@@ -13,7 +13,7 @@ FROM (
 INNER JOIN discourse_reactions_reaction_users pa1 on pa1.id = x.id
 EOS
 
-Badge.seed do |b|
+Badge.seed(:name) do |b|
   b.name = I18n.t("badges.first_reaction.name")
   b.description = I18n.t("badges.first_reaction.description")
   b.long_description = I18n.t("badges.first_reaction.long_description")
