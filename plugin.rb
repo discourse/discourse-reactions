@@ -16,6 +16,8 @@ register_svg_icon 'fas fa-star'
 register_svg_icon 'far fa-star'
 
 after_initialize do
+  SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
+
   module ::DiscourseReactions
     PLUGIN_NAME ||= 'discourse-reactions'
 
