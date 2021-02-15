@@ -22,29 +22,30 @@ export default createWidget("discourse-reactions-picker", {
 
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
+      const post = attrs.post;
       return [
         h(
           "div.container",
-          attrs.post.topic.valid_reactions.map(reaction => {
+          post.topic.valid_reactions.map(reaction => {
             let isUsed;
             let canUndo;
             if (
               reaction ===
               this.siteSettings.discourse_reactions_reaction_for_like
             ) {
-              isUsed = attrs.post.current_user_used_main_reaction;
+              isUsed = post.current_user_used_main_reaction;
             } else {
               isUsed =
-                attrs.post.current_user_reaction &&
-                attrs.post.current_user_reaction.id === reaction;
+                post.current_user_reaction &&
+                post.current_user_reaction.id == reaction;
             }
 
-            if (attrs.post.current_user_reaction) {
+            if (post.current_user_reaction) {
               canUndo =
-                attrs.post.current_user_reaction.can_undo &&
-                attrs.post.likeAction.canToggle;
+                post.current_user_reaction.can_undo &&
+                post.likeAction.canToggle;
             } else {
-              canUndo = attrs.post.likeAction.canToggle;
+              canUndo = post.likeAction.canToggle;
             }
 
             let title;
@@ -59,7 +60,7 @@ export default createWidget("discourse-reactions-picker", {
             return this.attach("button", {
               action: "toggleReaction",
               data: { reaction },
-              actionParam: { reaction, postId: attrs.post.id, canUndo },
+              actionParam: { reaction, postId: post.id, canUndo },
               className: `pickable-reaction ${reaction} ${
                 canUndo ? "can-undo" : ""
               } ${isUsed ? "is-used" : ""}`,

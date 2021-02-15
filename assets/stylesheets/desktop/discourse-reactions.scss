@@ -3,4 +3,14 @@
     position: absolute;
     left: 12px;
   }
+
+  nav.post-controls .show-replies {
+    position: relative;
+  }
+
+  .discourse-reactions-counter {
+    &:not(.only-like) {
+      top: 0.25em;
+    }
+  }
 }
