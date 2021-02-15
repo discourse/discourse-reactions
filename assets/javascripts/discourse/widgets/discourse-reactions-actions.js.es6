@@ -132,7 +132,7 @@ export default createWidget("discourse-reactions-actions", {
       classes.push("can-toggle-main-reaction");
     }
 
-    if (post.reactions.length == 1 && post.reactions[0].id === mainReaction) {
+    if (post.reactions.length === 1 && post.reactions[0].id === mainReaction) {
       classes.push("justify-left");
     }
 
