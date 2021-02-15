@@ -110,7 +110,7 @@ export default createWidget("discourse-reactions-actions", {
     const classes = [];
 
     if (post.yours) {
-      classes.push("your-post");
+      classes.push("my-post");
     }
 
     if (hasReactions) {

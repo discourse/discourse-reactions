@@ -230,7 +230,7 @@ html.discourse-reactions-no-select {
   }
 
   &:not(.can-toggle-main-reaction) {
-    &.your-post {
+    &.my-post {
       .double-button {
         &:hover {
           .discourse-reactions-reaction-button {
@@ -243,7 +243,7 @@ html.discourse-reactions-no-select {
       }
     }
 
-    &:not(.your-post) {
+    &:not(.my-post) {
       .discourse-reactions-reaction-button {
         cursor: not-allowed;
 
@@ -329,4 +329,19 @@ nav.post-controls .actions {
 nav.post-controls .actions button {
   display: inline-flex;
   align-items: center;
+}
+
+.post-controls .actions {
+  width: 100%;
+}
+
+.discourse-reactions-my-reaction {
+  margin-top: 8px;
+  display: inline-flex;
+  align-items: center;
+
+  .reaction-emoji {
+    margin-right: 5px;
+    height: 15px;
+  }
 }
