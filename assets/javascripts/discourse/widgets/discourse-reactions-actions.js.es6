@@ -57,11 +57,11 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "12px", complete);
+  moveReactionAnimation(list, reactionId, "-50px", "8px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, 0, "50px", complete);
+  moveReactionAnimation(list, reactionId, "8px", "42px", complete);
 }
 
 function scaleReactionAnimation(mainReaction, start, end, complete) {

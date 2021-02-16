@@ -9,8 +9,8 @@
 enabled_site_setting :discourse_reactions_enabled
 
 register_asset 'stylesheets/common/discourse-reactions.scss'
-register_asset 'stylesheets/desktop/discourse-reactions.scss'
-register_asset 'stylesheets/mobile/discourse-reactions.scss'
+register_asset 'stylesheets/desktop/discourse-reactions.scss', :desktop
+register_asset 'stylesheets/mobile/discourse-reactions.scss', :mobile
 
 register_svg_icon 'fas fa-star'
 register_svg_icon 'far fa-star'
