@@ -17,7 +17,7 @@ export default createWidget("discourse-reactions-counter", {
     this._cancelHoverHandler();
 
     if (!this.capabilities.touch) {
-      this.callWidgetFunction("toggleStatePanel", event);
+      this.toggleStatePanel(event);
     }
   },
 
@@ -29,7 +29,7 @@ export default createWidget("discourse-reactions-counter", {
 
   touchStart(event) {
     if (this.capabilities.touch) {
-      this.callWidgetFunction("toggleStatePanel", event);
+      this.toggleStatePanel(event);
       event.preventDefault();
       event.stopPropagation();
     }
@@ -52,7 +52,7 @@ export default createWidget("discourse-reactions-counter", {
     this._cancelHoverHandler();
 
     if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse");
+      this.scheduleCollapse();
     }
   },
 
@@ -90,16 +90,14 @@ export default createWidget("discourse-reactions-counter", {
         return;
       }
 
-      if (!attrs.post.site.mobileView) {
-        items.push(
-          this.attach(
-            "discourse-reactions-state-panel",
-            Object.assign({}, attrs, {
-              statePanelExpanded: this.state.statePanelExpanded
-            })
-          )
-        );
-      }
+      items.push(
+        this.attach(
+          "discourse-reactions-state-panel",
+          Object.assign({}, attrs, {
+            statePanelExpanded: this.state.statePanelExpanded
+          })
+        )
+      );
 
       if (
         !(
@@ -122,13 +120,12 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   _hoverHandler(event) {
-    this.callWidgetFunction("cancelCollapse");
-    this.callWidgetFunction("toggleStatePanel", event);
+    this.cancelCollapse();
+    this.toggleStatePanel(event);
   },
 
   collapsePanels() {
     this.cancelCollapse();
-
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
 
@@ -162,19 +159,29 @@ export default createWidget("discourse-reactions-counter", {
     this.state.reactionsPickerExpanded = false;
     this.state.statePanelExpanded = true;
     this.scheduleRerender();
-    this._setupPopper(this.attrs.post.id, "_popperStatePanel", [
+    this._setupPopper(
+      this.attrs.post.id,
+      "_popperStatePanel",
       ".discourse-reactions-state-panel"
-    ]);
+    );
   },
 
-  _setupPopper(postId, popper, selectors) {
+  _setupPopper(postId, popper, selector) {
     next(() => {
+      let popperElement;
       const trigger = document.querySelector(
         `#discourse-reactions-counter-${postId}`
       );
-      const popperElement = document.querySelector(
-        `#discourse-reactions-counter-${postId} ${selectors[0]}`
-      );
+
+      if (this.site.mobileView) {
+        popperElement = document.querySelector(
+          `[data-post-id="${postId}"] ${selector}`
+        );
+      } else {
+        popperElement = document.querySelector(
+          `#discourse-reactions-counter-${postId} ${selector}`
+        );
+      }
 
       if (popperElement) {
         popperElement.classList.add("is-expanded");

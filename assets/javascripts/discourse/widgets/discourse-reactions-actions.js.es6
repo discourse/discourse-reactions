@@ -57,11 +57,11 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "17px", complete);
+  moveReactionAnimation(list, reactionId, "-50px", "8px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, 0, "50px", complete);
+  moveReactionAnimation(list, reactionId, "8px", "42px", complete);
 }
 
 function scaleReactionAnimation(mainReaction, start, end, complete) {
@@ -130,10 +130,6 @@ export default createWidget("discourse-reactions-actions", {
       (post.likeAction.canToggle || post.likeAction.can_undo)
     ) {
       classes.push("can-toggle-main-reaction");
-    }
-
-    if (post.reactions.length === 1 && post.reactions[0].id === mainReaction) {
-      classes.push("justify-left");
     }
 
     return classes;
@@ -211,9 +207,16 @@ export default createWidget("discourse-reactions-actions", {
       } else {
         if (
           event.target &&
-          event.target.classList.contains("discourse-reactions-reaction-button")
+          (event.target.classList.contains(
+            "discourse-reactions-reaction-button"
+          ) ||
+            event.target.classList.contains("reaction-button"))
         ) {
-          this.toggleReactionFromButton();
+          this.toggleReactionFromButton({
+            reaction: this.attrs.post.current_user_reaction
+              ? this.attrs.post.current_user_reaction.id
+              : null
+          });
         }
       }
     }
@@ -280,7 +283,7 @@ export default createWidget("discourse-reactions-actions", {
 
                 if (
                   post.current_user_reaction &&
-                  post.current_user_reaction.id ==
+                  post.current_user_reaction.id ===
                     this.siteSettings.discourse_reactions_like_icon
                 ) {
                   post.current_user_used_main_reaction = true;
@@ -313,6 +316,7 @@ export default createWidget("discourse-reactions-actions", {
   toggleReactionFromButton(attrs) {
     this.collapsePanels();
 
+    let selector;
     const mainReactionName = this.siteSettings
       .discourse_reactions_reaction_for_like;
     const post = this.attrs.post;
@@ -333,10 +337,19 @@ export default createWidget("discourse-reactions-actions", {
       return;
     }
 
-    const selector =
-      !attrs.reaction || attrs.reaction === mainReactionName
-        ? `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
-        : `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+    if (
+      post.reactions &&
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReactionName
+    ) {
+      selector = `[data-post-id="${this.attrs.post.id}"] .double-button .discourse-reactions-reaction-button .d-icon`;
+    } else {
+      if (!attrs.reaction || attrs.reaction === mainReactionName) {
+        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`;
+      } else {
+        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+      }
+    }
 
     const mainReaction = document.querySelector(selector);
 
@@ -433,10 +446,13 @@ export default createWidget("discourse-reactions-actions", {
     const post = this.attrs.post;
 
     post.reactions.every((reaction, index) => {
-      if (reaction.count <= 1 && reaction.id == post.current_user_reaction.id) {
+      if (
+        reaction.count <= 1 &&
+        reaction.id === post.current_user_reaction.id
+      ) {
         post.reactions.splice(index, 1);
         return false;
-      } else if (reaction.id == post.current_user_reaction) {
+      } else if (reaction.id === post.current_user_reaction) {
         post.reactions[index].count -= 1;
         return false;
       }
@@ -452,7 +468,7 @@ export default createWidget("discourse-reactions-actions", {
     let isAvailable = false;
 
     post.reactions.every((reaction, index) => {
-      if (reaction.id == reactionId) {
+      if (reaction.id === reactionId) {
         post.reactions[index].count += 1;
         post.reactions[index].users.push({
           username: this.currentUser.username,
@@ -542,17 +558,6 @@ export default createWidget("discourse-reactions-actions", {
     const mainReaction = this.siteSettings
       .discourse_reactions_reaction_for_like;
 
-    if (post.site.mobileView) {
-      items.push(
-        this.attach(
-          "discourse-reactions-state-panel",
-          Object.assign({}, attrs, {
-            statePanelExpanded: this.state.statePanelExpanded
-          })
-        )
-      );
-    }
-
     if (this.currentUser && post.user_id !== this.currentUser.id) {
       items.push(
         this.attach(
@@ -566,8 +571,8 @@ export default createWidget("discourse-reactions-actions", {
 
     if (
       post.reactions &&
-      post.reactions.length == 1 &&
-      post.reactions[0].id == mainReaction
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
     ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
     } else if (post.site.mobileView) {

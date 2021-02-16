@@ -8,7 +8,6 @@ export default createWidget("discourse-reactions-list", {
 
   html(attrs) {
     const reactions = attrs.post.reactions;
-    const currentUserReaction = attrs.post.current_user_reaction;
 
     if (attrs.post.reaction_users_count <= 0) {
       return;

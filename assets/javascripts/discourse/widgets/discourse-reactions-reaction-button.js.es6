@@ -14,9 +14,7 @@ export default createWidget("discourse-reactions-reaction-button", {
 
   click() {
     this._cancelHoverHandler();
-    const hasUsedMainReaction = this.attrs.post.current_user_used_main_reaction;
     const currentUserReaction = this.attrs.post.current_user_reaction;
-
     if (!this.capabilities.touch) {
       this.callWidgetFunction("toggleReactionFromButton", {
         reaction: currentUserReaction ? currentUserReaction.id : null
