@@ -4,7 +4,9 @@
     left: 8px;
   }
 
-  .post-controls .actions {
-    width: 100%;
+  .discourse-reactions-counter {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }

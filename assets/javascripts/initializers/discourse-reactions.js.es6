@@ -40,8 +40,8 @@ function initializeDiscourseReactions(api) {
 
     if (
       post.reactions &&
-      post.reactions.length == 1 &&
-      post.reactions[0].id == mainReaction
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
     ) {
       return;
     }

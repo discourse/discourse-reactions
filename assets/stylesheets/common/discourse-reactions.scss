@@ -188,8 +188,7 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-actions {
   display: inline-flex;
-  justify-content: space-between;
-  width: 100%;
+  justify-content: flex-end;
 
   &:not(.has-reacted) {
     .discourse-reactions-reaction-button {
@@ -260,10 +259,6 @@ html.discourse-reactions-no-select {
     }
   }
 
-  &.justify-left {
-    justify-content: flex-end;
-  }
-
   .double-button {
     &:hover {
       background: $primary-low;
@@ -329,10 +324,6 @@ nav.post-controls .actions {
 nav.post-controls .actions button {
   display: inline-flex;
   align-items: center;
-}
-
-.post-controls .actions {
-  width: 100%;
 }
 
 .discourse-reactions-my-reaction {
