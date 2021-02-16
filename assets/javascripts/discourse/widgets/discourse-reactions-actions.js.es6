@@ -57,7 +57,7 @@ function moveReactionAnimation(
 }
 
 function addReaction(list, reactionId, complete) {
-  moveReactionAnimation(list, reactionId, "-50px", "17px", complete);
+  moveReactionAnimation(list, reactionId, "-50px", "12px", complete);
 }
 
 function dropReaction(list, reactionId, complete) {
@@ -130,10 +130,6 @@ export default createWidget("discourse-reactions-actions", {
       (post.likeAction.canToggle || post.likeAction.can_undo)
     ) {
       classes.push("can-toggle-main-reaction");
-    }
-
-    if (post.reactions.length !== 1 || post.reactions[0].id === mainReaction) {
-      classes.push("show-panel");
     }
 
     return classes;
@@ -449,7 +445,10 @@ export default createWidget("discourse-reactions-actions", {
     const post = this.attrs.post;
 
     post.reactions.every((reaction, index) => {
-      if (reaction.count <= 1 && reaction.id === post.current_user_reaction.id) {
+      if (
+        reaction.count <= 1 &&
+        reaction.id === post.current_user_reaction.id
+      ) {
         post.reactions.splice(index, 1);
         return false;
       } else if (reaction.id === post.current_user_reaction) {
