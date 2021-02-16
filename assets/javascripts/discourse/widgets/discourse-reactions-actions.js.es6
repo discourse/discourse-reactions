@@ -344,10 +344,11 @@ export default createWidget("discourse-reactions-actions", {
     ) {
       selector = `[data-post-id="${this.attrs.post.id}"] .double-button .discourse-reactions-reaction-button .d-icon`;
     } else {
-      selector =
-        !attrs.reaction || attrs.reaction === mainReactionName
-          ? `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`
-          : `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+      if (!attrs.reaction || attrs.reaction === mainReactionName) {
+        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`;
+      } else {
+        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+      }
     }
 
     const mainReaction = document.querySelector(selector);
