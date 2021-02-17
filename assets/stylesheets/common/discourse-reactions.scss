@@ -18,11 +18,11 @@ html.discourse-reactions-no-select {
 
     .reaction {
       border-radius: 100px;
-      border: 2px solid $primary-low-mid;
+      border: 2px solid $secondary;
       display: flex;
-      background-color: $primary-low-mid;
+      background-color: $secondary;
       align-items: center;
-      margin: 0 0 0 -0.5em;
+      margin-left: -0.5em;
 
       &:nth-of-type(1n + 4) {
         display: none;
@@ -295,6 +295,7 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   position: relative;
   min-width: 1em;
+  margin-left: 0.5em;
 
   .reactions-counter {
     color: $primary-low-mid;
