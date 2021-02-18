@@ -6,6 +6,8 @@ import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import { later, cancel } from "@ember/runloop";
+import I18n from "I18n";
+import bootbox from "bootbox";
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
@@ -126,8 +128,8 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (
-      post.likeAction &&
-      (post.likeAction.canToggle || post.likeAction.can_undo)
+      !post.current_user_reaction ||
+      (post.current_user_reaction.can_undo && post.likeAction.canToggle)
     ) {
       classes.push("can-toggle-main-reaction");
     }
@@ -223,7 +225,11 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleReaction(params) {
-    if (params.canUndo) {
+    if (
+      !this.attrs.post.current_user_reaction ||
+      (this.attrs.post.current_user_reaction.can_undo &&
+        this.attrs.post.likeAction.canToggle)
+    ) {
       const pickedReaction = document.querySelector(
         `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${params.reaction} .emoji`
       );
@@ -258,7 +264,7 @@ export default createWidget("discourse-reactions-actions", {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
                     .catch(e => {
-                      bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
+                      bootbox.alert(this.extractErrors(e));
 
                       post.current_user_reaction = current_user_reaction;
                       post.current_user_used_main_reaction = current_user_used_main_reaction;
@@ -294,7 +300,7 @@ export default createWidget("discourse-reactions-actions", {
                 CustomReaction.toggle(params.postId, params.reaction)
                   .then(resolve)
                   .catch(e => {
-                    bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
+                    bootbox.alert(this.extractErrors(e));
 
                     post.current_user_reaction = current_user_reaction;
                     post.current_user_used_main_reaction = current_user_used_main_reaction;
@@ -329,6 +335,13 @@ export default createWidget("discourse-reactions-actions", {
     if (
       post.likeAction &&
       !(post.likeAction.canToggle || post.likeAction.can_undo)
+    ) {
+      return;
+    }
+
+    if (
+      this.attrs.post.current_user_reaction &&
+      !this.attrs.post.current_user_reaction.can_undo
     ) {
       return;
     }
@@ -402,7 +415,7 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(this.attrs.post.id, toggleReaction)
             .then(resolve)
             .catch(e => {
-              bootbox.alert(`${e.jqXHR.status} ${e.errorThrown}`);
+              bootbox.alert(this.extractErrors(e));
 
               const template = document.createElement("template");
 
@@ -410,7 +423,7 @@ export default createWidget("discourse-reactions-actions", {
 
               const mainReaction = template.content.firstChild;
 
-              icon.parentNode.replaceChild(mainReaction, icon);
+              icon.replaceWith(mainReaction);
 
               post.current_user_reaction = current_user_reaction;
               post.current_user_used_main_reaction = current_user_used_main_reaction;
@@ -421,6 +434,28 @@ export default createWidget("discourse-reactions-actions", {
         });
       });
     });
+  },
+
+  extractErrors(e) {
+    const xhr = e.xhr;
+
+    if (!e.jqXHR || !e.jqXHR.status) {
+      return I18n.t("errors.desc.network");
+    }
+
+    if (
+      e.jqXHR &&
+      e.jqXHR.status === 429 &&
+      xhr.responseJSON &&
+      xhr.responseJSON.extras &&
+      xhr.responseJSON.extras.wait_seconds
+    ) {
+      return I18n.t("discourse_reactions.reaction.too_many_request");
+    } else if (e.jqXHR.status === 403) {
+      return I18n.t("discourse_reactions.reaction.forbidden");
+    } else {
+      return I18n.t("errors.desc.unknown");
+    }
   },
 
   setCurrentUserReaction(reactionId) {

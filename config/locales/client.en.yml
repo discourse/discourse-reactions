@@ -8,7 +8,8 @@ en:
     discourse_reactions:
       reactions_title: "Reactions"
       reaction:
-        error: "There was an error reacting to this post. press OK to reload the page."
+        too_many_request: "You have been reacting a bit too fast, try again in %{time_left} seconds."
+        forbidden: "You acted on this post a long time ago so you are not allowed to remove your reaction now."
       picker:
         react_with: "React to this post with: %{reaction}"
         cant_remove_reaction: "You can’t remove this reaction"

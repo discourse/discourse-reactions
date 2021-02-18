@@ -250,6 +250,10 @@ html.discourse-reactions-no-select {
           background: $primary-low;
         }
       }
+
+      .reaction-button {
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -268,7 +272,6 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-reaction-button {
   position: relative;
-  cursor: default;
   display: flex;
   touch-action: none;
 
