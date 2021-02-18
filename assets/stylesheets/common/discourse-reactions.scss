@@ -250,6 +250,10 @@ html.discourse-reactions-no-select {
           background: $primary-low;
         }
       }
+
+      .reaction-button {
+        cursor: not-allowed;
+      }
     }
   }
 
