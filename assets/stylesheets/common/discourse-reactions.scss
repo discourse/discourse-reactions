@@ -190,123 +190,77 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   justify-content: flex-end;
 
-  &:not(.has-reacted) {
-    &:not(.my-post) {
-      .discourse-reactions-reaction-button {
-        &:hover {
-          .reaction-button {
-            .d-icon {
-              color: $love;
-            }
-
-            background: $love-low;
-          }
-        }
-      }
-
-      .double-button {
-        &:hover {
-          .discourse-reactions-reaction-button {
-            .reaction-button {
-              .d-icon {
-                color: $love;
-              }
-
-              background: $love-low;
-            }
-          }
-          background: $love-low;
-        }
-      }
-    }
-  }
-
   &.has-reacted {
-    .discourse-reactions-reaction-button {
-      .reaction-button {
+    .discourse-reactions-double-button:hover {
+      background: $primary-low;
+    }
+
+    &.has-used-main-reaction {
+      .discourse-reactions-reaction-button .reaction-button .d-icon {
+        color: $love;
+      }
+    }
+
+    &.can-toggle-reaction {
+      .discourse-reactions-reaction-button:hover .reaction-button {
         .d-icon {
-          color: $love;
+          color: $primary-low-mid;
         }
+
+        background: $primary-low;
       }
 
-      &:hover {
-        .reaction-button {
-          background: $primary-low;
-        }
-      }
-    }
-  }
-
-  &.has-used-main-reaction {
-    .d-icon {
-      color: $love;
-    }
-
-    &.can-toggle-main-reaction {
       .discourse-reactions-reaction-button {
-        &:hover {
-          .reaction-button {
-
-            .d-icon {
-              color: $primary-low-mid;
-            }
-
-            background: $primary-low;
-          }
-        }
-      }
-    }
-  }
-
-  &:not(.can-toggle-main-reaction) {
-    &.my-post {
-      .double-button {
-        &:hover {
-          .discourse-reactions-reaction-button {
-            .reaction-button {
-              .d-icon {
-                color: $primary-low-mid;
-              }
-            }
-          }
-
-          background: $primary-low;
-        }
+        cursor: pointer;
       }
     }
 
-    &:not(.my-post) {
-      .discourse-reactions-reaction-button {
-        &:hover {
-          .reaction-button {
-            background: $primary-low;
-          }
-        }
+    &:not(.can-toggle-reaction) {
+      .discourse-reactions-reaction-button:hover .reaction-button {
+        background: $primary-low;
       }
 
+      .discourse-reactions-reaction-button button,
       .discourse-reactions-reaction-button {
         cursor: not-allowed;
       }
+    }
+  }
+
+  &:not(.has-reacted) {
+    &.my-post {
+      .discourse-reactions-double-button:hover {
+        .d-icon {
+          color: $primary-low-mid;
+        }
+
+        background: $primary-low;
+      }
 
       .discourse-reactions-reaction-button {
-        .reaction-button {
-          cursor: not-allowed;
+        cursor: default;
+      }
+    }
+
+    &:not(.my-post) {
+      .discourse-reactions-double-button:hover,
+      .discourse-reactions-reaction-button:hover .reaction-button {
+        .d-icon {
+          color: $love;
         }
+
+        background: $love-low;
+      }
+
+      .discourse-reactions-reaction-button {
+        cursor: pointer;
       }
     }
   }
+}
 
-  &.can-toggle-main-reaction {
-    .discourse-reactions-reaction-button {
-      cursor: pointer;
-    }
-  }
-
-  .double-button {
-    &:hover {
-      background: $primary-low;
-    }
-  }
+.discourse-reactions-double-button {
+  display: inline-flex;
 }
 
 .discourse-reactions-reaction-button {
@@ -327,20 +281,13 @@ html.discourse-reactions-no-select {
     width: 1em;
     height: 1em;
   }
-
-  &:hover {
-    .discourse-reactions-reaction-button {
-      .reaction-button {
-        background: $primary-low;
-      }
-    }
-  }
 }
 
 .discourse-reactions-counter {
   display: inline-flex;
   position: relative;
   margin-left: 0.5em;
+  cursor: pointer;
 
   .reactions-counter {
     color: $primary-low-mid;
@@ -356,10 +303,6 @@ html.discourse-reactions-no-select {
     .reactions-counter {
       margin-right: 0px;
     }
-  }
-
-  &:hover {
-    cursor: pointer;
   }
 }
 

@@ -131,7 +131,7 @@ export default createWidget("discourse-reactions-actions", {
       !post.current_user_reaction ||
       (post.current_user_reaction.can_undo && post.likeAction.canToggle)
     ) {
-      classes.push("can-toggle-main-reaction");
+      classes.push("can-toggle-reaction");
     }
 
     return classes;
@@ -355,7 +355,7 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.length === 1 &&
       post.reactions[0].id === mainReactionName
     ) {
-      selector = `[data-post-id="${this.attrs.post.id}"] .double-button .discourse-reactions-reaction-button .d-icon`;
+      selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-double-button .discourse-reactions-reaction-button .d-icon`;
     } else {
       if (!attrs.reaction || attrs.reaction === mainReactionName) {
         selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`;

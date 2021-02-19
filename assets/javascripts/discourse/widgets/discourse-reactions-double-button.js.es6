@@ -3,9 +3,9 @@ import { h } from "virtual-dom";
 import { iconNode } from "discourse-common/lib/icon-library";
 
 export default createWidget("discourse-reactions-double-button", {
-  tagName: "div.double-button",
+  tagName: "div.discourse-reactions-double-button",
 
-  buildKey: attrs => `double-button-${attrs.post.id}`,
+  buildKey: attrs => `discourse-reactions-double-button-${attrs.post.id}`,
 
   buildClasses(attrs) {
     const classes = [];
