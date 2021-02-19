@@ -206,6 +206,15 @@ html.discourse-reactions-no-select {
 
       .double-button {
         &:hover {
+          .discourse-reactions-reaction-button {
+            .reaction-button {
+              .d-icon {
+                color: $love;
+              }
+
+              background: $love-low;
+            }
+          }
           background: $love-low;
         }
       }
@@ -276,6 +285,10 @@ html.discourse-reactions-no-select {
       }
 
       .discourse-reactions-reaction-button {
+        cursor: not-allowed;
+      }
+
+      .discourse-reactions-reaction-button {
         .reaction-button {
           cursor: not-allowed;
         }
@@ -285,9 +298,7 @@ html.discourse-reactions-no-select {
 
   &.can-toggle-main-reaction {
     .discourse-reactions-reaction-button {
-      .reaction-button {
-        cursor: pointer;
-      }
+      cursor: pointer;
     }
   }
 
