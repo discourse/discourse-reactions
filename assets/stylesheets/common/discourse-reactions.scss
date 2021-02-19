@@ -191,7 +191,7 @@ html.discourse-reactions-no-select {
   justify-content: flex-end;
 
   &:not(.has-reacted) {
-    .discourse-reactions-reaction-button {
+    .reaction-button {
       &:hover {
         .d-icon {
           color: $love;
@@ -200,10 +200,14 @@ html.discourse-reactions-no-select {
         background: $love-low;
       }
     }
+
+    nav.post-controls .actions .double-button:hover button {
+      background: $love-low;
+    }
   }
 
   &.has-reacted {
-    .discourse-reactions-reaction-button {
+    .reaction-button {
       .d-icon {
         color: $love;
       }
@@ -216,7 +220,7 @@ html.discourse-reactions-no-select {
     }
 
     &.can-toggle-main-reaction {
-      .discourse-reactions-reaction-button {
+      .reaction-button {
         &:hover {
           .d-icon {
             color: $primary-low-mid;
@@ -232,7 +236,7 @@ html.discourse-reactions-no-select {
     &.my-post {
       .double-button {
         &:hover {
-          .discourse-reactions-reaction-button {
+          .reaction-button {
             .d-icon {
               color: $primary-low-mid;
             }
@@ -243,15 +247,13 @@ html.discourse-reactions-no-select {
     }
 
     &:not(.my-post) {
-      .discourse-reactions-reaction-button {
-        cursor: not-allowed;
-
+      .reaction-button {
         &:hover {
           background: $primary-low;
         }
       }
 
-      .reaction-button {
+      .discourse-reactions-reaction-button {
         cursor: not-allowed;
       }
     }
@@ -278,26 +280,27 @@ html.discourse-reactions-no-select {
   .btn-toggle-reaction-like {
     outline: none;
     pointer-events: none;
-    background: none !important;
+    background: none;
   }
 
   .btn-toggle-reaction-emoji {
     outline: none;
     pointer-events: none;
-    background: none !important;
+    background: none;
     width: 1em;
     height: 1em;
   }
 
   &:hover {
-    background: $primary-low;
+    .reaction-button {
+      background: $primary-low;
+    }
   }
 }
 
 .discourse-reactions-counter {
   display: inline-flex;
   position: relative;
-  min-width: 1em;
   margin-left: 0.5em;
 
   .reactions-counter {
@@ -339,4 +342,9 @@ nav.post-controls .actions button {
     margin-right: 5px;
     height: 15px;
   }
+}
+
+nav.post-controls .actions button:focus {
+  background: transparent;
+  color: $primary-low-mid;
 }
