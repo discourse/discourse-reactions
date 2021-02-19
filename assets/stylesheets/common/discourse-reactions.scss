@@ -191,25 +191,39 @@ html.discourse-reactions-no-select {
   justify-content: flex-end;
 
   &:not(.has-reacted) {
-    .reaction-button {
-      &:hover {
-        .d-icon {
-          color: $love;
+    &:not(.my-post) {
+      .discourse-reactions-reaction-button {
+        &:hover {
+          .reaction-button {
+            .d-icon {
+              color: $love;
+            }
+
+            background: $love-low;
+          }
         }
-
-        background: $love-low;
       }
-    }
 
-    nav.post-controls .actions .double-button:hover button {
-      background: $love-low;
+      .double-button {
+        &:hover {
+          background: $love-low;
+        }
+      }
     }
   }
 
   &.has-reacted {
-    .reaction-button {
-      .d-icon {
-        color: $love;
+    .discourse-reactions-reaction-button {
+      .reaction-button {
+        .d-icon {
+          color: $love;
+        }
+      }
+
+      &:hover {
+        .reaction-button {
+          background: $primary-low;
+        }
       }
     }
   }
@@ -220,13 +234,16 @@ html.discourse-reactions-no-select {
     }
 
     &.can-toggle-main-reaction {
-      .reaction-button {
+      .discourse-reactions-reaction-button {
         &:hover {
-          .d-icon {
-            color: $primary-low-mid;
-          }
+          .reaction-button {
 
-          background: $primary-low;
+            .d-icon {
+              color: $primary-low-mid;
+            }
+
+            background: $primary-low;
+          }
         }
       }
     }
@@ -236,32 +253,41 @@ html.discourse-reactions-no-select {
     &.my-post {
       .double-button {
         &:hover {
-          .reaction-button {
-            .d-icon {
-              color: $primary-low-mid;
+          .discourse-reactions-reaction-button {
+            .reaction-button {
+              .d-icon {
+                color: $primary-low-mid;
+              }
             }
-            background: $primary-low;
           }
+
+          background: $primary-low;
         }
       }
     }
 
     &:not(.my-post) {
-      .reaction-button {
+      .discourse-reactions-reaction-button {
         &:hover {
-          background: $primary-low;
+          .reaction-button {
+            background: $primary-low;
+          }
         }
       }
 
       .discourse-reactions-reaction-button {
-        cursor: not-allowed;
+        .reaction-button {
+          cursor: not-allowed;
+        }
       }
     }
   }
 
   &.can-toggle-main-reaction {
     .discourse-reactions-reaction-button {
-      cursor: pointer;
+      .reaction-button {
+        cursor: pointer;
+      }
     }
   }
 
@@ -292,8 +318,10 @@ html.discourse-reactions-no-select {
   }
 
   &:hover {
-    .reaction-button {
-      background: $primary-low;
+    .discourse-reactions-reaction-button {
+      .reaction-button {
+        background: $primary-low;
+      }
     }
   }
 }
