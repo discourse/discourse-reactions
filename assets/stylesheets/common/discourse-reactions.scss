@@ -190,84 +190,77 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   justify-content: flex-end;
 
+  &.has-reacted {
+    .discourse-reactions-double-button:hover {
+      background: $primary-low;
+    }
+
+    &.has-used-main-reaction {
+      .discourse-reactions-reaction-button .reaction-button .d-icon {
+        color: $love;
+      }
+    }
+
+    &.can-toggle-reaction {
+      .discourse-reactions-reaction-button:hover .reaction-button {
+        .d-icon {
+          color: $primary-low-mid;
+        }
+
+        background: $primary-low;
+      }
+
+      .discourse-reactions-reaction-button {
+        cursor: pointer;
+      }
+    }
+
+    &:not(.can-toggle-reaction) {
+      .discourse-reactions-reaction-button:hover .reaction-button {
+        background: $primary-low;
+      }
+
+      .discourse-reactions-reaction-button .reaction-button,
+      .discourse-reactions-reaction-button {
+        cursor: not-allowed;
+      }
+    }
+  }
+
   &:not(.has-reacted) {
-    .discourse-reactions-reaction-button {
-      &:hover {
+    &.my-post {
+      .discourse-reactions-double-button:hover {
+        .d-icon {
+          color: $primary-low-mid;
+        }
+
+        background: $primary-low;
+      }
+
+      .discourse-reactions-reaction-button {
+        cursor: default;
+      }
+    }
+
+    &:not(.my-post) {
+      .discourse-reactions-double-button:hover,
+      .discourse-reactions-reaction-button:hover .reaction-button {
         .d-icon {
           color: $love;
         }
 
         background: $love-low;
       }
-    }
-  }
 
-  &.has-reacted {
-    .discourse-reactions-reaction-button {
-      .d-icon {
-        color: $love;
-      }
-    }
-  }
-
-  &.has-used-main-reaction {
-    .d-icon {
-      color: $love;
-    }
-
-    &.can-toggle-main-reaction {
       .discourse-reactions-reaction-button {
-        &:hover {
-          .d-icon {
-            color: $primary-low-mid;
-          }
-
-          background: $primary-low;
-        }
+        cursor: pointer;
       }
     }
   }
+}
 
-  &:not(.can-toggle-main-reaction) {
-    &.my-post {
-      .double-button {
-        &:hover {
-          .discourse-reactions-reaction-button {
-            .d-icon {
-              color: $primary-low-mid;
-            }
-            background: $primary-low;
-          }
-        }
-      }
-    }
-
-    &:not(.my-post) {
-      .discourse-reactions-reaction-button {
-        cursor: not-allowed;
-
-        &:hover {
-          background: $primary-low;
-        }
-      }
-
-      .reaction-button {
-        cursor: not-allowed;
-      }
-    }
-  }
-
-  &.can-toggle-main-reaction {
-    .discourse-reactions-reaction-button {
-      cursor: pointer;
-    }
-  }
-
-  .double-button {
-    &:hover {
-      background: $primary-low;
-    }
-  }
+.discourse-reactions-double-button {
+  display: inline-flex;
 }
 
 .discourse-reactions-reaction-button {
@@ -278,27 +271,23 @@ html.discourse-reactions-no-select {
   .btn-toggle-reaction-like {
     outline: none;
     pointer-events: none;
-    background: none !important;
+    background: none;
   }
 
   .btn-toggle-reaction-emoji {
     outline: none;
     pointer-events: none;
-    background: none !important;
+    background: none;
     width: 1em;
     height: 1em;
-  }
-
-  &:hover {
-    background: $primary-low;
   }
 }
 
 .discourse-reactions-counter {
   display: inline-flex;
   position: relative;
-  min-width: 1em;
   margin-left: 0.5em;
+  cursor: pointer;
 
   .reactions-counter {
     color: $primary-low-mid;
@@ -314,10 +303,6 @@ html.discourse-reactions-no-select {
     .reactions-counter {
       margin-right: 0px;
     }
-  }
-
-  &:hover {
-    cursor: pointer;
   }
 }
 
@@ -339,4 +324,9 @@ nav.post-controls .actions button {
     margin-right: 5px;
     height: 15px;
   }
+}
+
+nav.post-controls .actions .reaction-button:focus {
+  background: transparent;
+  color: $primary-low-mid;
 }
