@@ -326,7 +326,7 @@ nav.post-controls .actions button {
   }
 }
 
-nav.post-controls .actions button:focus {
+nav.post-controls .actions .discourse-reactions-actions button:focus {
   background: transparent;
   color: $primary-low-mid;
 }
