@@ -220,7 +220,7 @@ html.discourse-reactions-no-select {
         background: $primary-low;
       }
 
-      .discourse-reactions-reaction-button button,
+      .discourse-reactions-reaction-button .reaction-button,
       .discourse-reactions-reaction-button {
         cursor: not-allowed;
       }
