@@ -68,7 +68,6 @@ export default createWidget("discourse-reactions-counter", {
     const classes = [];
     const mainReaction = this.siteSettings
       .discourse_reactions_reaction_for_like;
-    const count = attrs.post.reaction_users_count;
 
     if (
       attrs.post.reactions.length === 1 &&
