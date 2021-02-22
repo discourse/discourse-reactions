@@ -1,3 +1,4 @@
+import { isBlank } from "@ember/utils";
 import I18n from "I18n";
 import { iconNode } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -44,16 +45,16 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   buildAttributes(attrs) {
-    let title;
-    let options;
     const likeAction = attrs.post.likeAction;
-    const currentUserReaction = this.attrs.post.current_user_reaction;
-
     if (!likeAction) {
       return;
     }
 
-    if (likeAction.canToggle && !likeAction.hasOwnProperty("can_undo")) {
+    let title;
+    let options;
+    const currentUserReaction = this.attrs.post.current_user_reaction;
+
+    if (likeAction.canToggle && isBlank(likeAction.can_undo)) {
       title = "discourse_reactions.main_reaction.add";
     }
 
@@ -65,13 +66,10 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.main_reaction.cant_remove";
     }
 
-    // used !likeAction.hasOwnProperty("can_undo") rather than !likeAction.can_undo
-    // to check whether can_undo property is present or not irrsepective of its value
-
     if (
       currentUserReaction &&
       currentUserReaction.can_undo &&
-      !likeAction.hasOwnProperty("can_undo")
+      isBlank(likeAction.can_undo)
     ) {
       title = "discourse_reactions.picker.remove_reaction";
       options = { reaction: currentUserReaction.id };
@@ -80,7 +78,7 @@ export default createWidget("discourse-reactions-reaction-button", {
     if (
       currentUserReaction &&
       !currentUserReaction.can_undo &&
-      !likeAction.hasOwnProperty("can_undo")
+      isBlank(likeAction.can_undo)
     ) {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }

@@ -259,7 +259,7 @@ export default createWidget("discourse-reactions-actions", {
               post.reaction_users_count -= 1;
               post.current_user_used_main_reaction = false;
               this.setCurrentUserReaction(null);
-              let dropReactionAnimation = later(() => {
+              later(() => {
                 dropReaction(postContainer, params.reaction, () => {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
@@ -417,13 +417,9 @@ export default createWidget("discourse-reactions-actions", {
             .catch(e => {
               bootbox.alert(this.extractErrors(e));
 
-              const template = document.createElement("template");
-
-              template.innerHTML = iconHTML(replaceIcon).trim();
-
-              const mainReaction = template.content.firstChild;
-
-              icon.replaceWith(mainReaction);
+              const iconTemplate = document.createElement("template");
+              iconTemplate.innerHTML = iconHTML(replaceIcon).trim();
+              icon.replaceWith(iconTemplate.content.firstChild);
 
               post.current_user_reaction = current_user_reaction;
               post.current_user_used_main_reaction = current_user_used_main_reaction;
