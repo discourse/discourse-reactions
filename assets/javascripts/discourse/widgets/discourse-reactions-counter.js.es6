@@ -29,9 +29,8 @@ export default createWidget("discourse-reactions-counter", {
 
   touchStart(event) {
     if (this.capabilities.touch) {
-      this.toggleStatePanel(event);
-      event.preventDefault();
       event.stopPropagation();
+      this.toggleStatePanel(event);
     }
   },
 
@@ -156,6 +155,8 @@ export default createWidget("discourse-reactions-counter", {
   toggleStatePanel(event) {
     if (!this.state.statePanelExpanded) {
       this.expandStatePanel(event);
+    } else {
+      this.scheduleCollapse();
     }
   },
 
