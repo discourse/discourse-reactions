@@ -608,7 +608,7 @@ export default createWidget("discourse-reactions-actions", {
       if (!post.yours) {
         items.push(this.attach("discourse-reactions-counter", attrs));
         items.push(this.attach("discourse-reactions-reaction-button", attrs));
-      } else if (post.yours && attrs.reactions && post.reactions.length) {
+      } else if (post.yours && post.reactions && post.reactions.length) {
         items.push(this.attach("discourse-reactions-counter", attrs));
       }
     } else {
