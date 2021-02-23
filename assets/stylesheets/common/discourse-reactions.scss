@@ -93,11 +93,12 @@ html.discourse-reactions-no-select {
 
     &.can-undo {
       cursor: pointer;
-
-      &:hover {
-        background: none !important;
-        border-color: transparent !important;
-        transform: scale(1.5);
+      .discourse-no-touch & {
+        &:hover {
+          background: none !important;
+          border-color: transparent !important;
+          transform: scale(1.5);
+        }
       }
     }
 
@@ -175,8 +176,10 @@ html.discourse-reactions-no-select {
   &:not(.is-displayed) {
     filter: grayscale(1);
 
-    &:hover {
-      filter: grayscale(0);
+    .discourse-no-touch & {
+      &:hover {
+        filter: grayscale(0);
+      }
     }
   }
 
@@ -201,8 +204,10 @@ html.discourse-reactions-no-select {
   }
 
   &.has-reacted {
-    .discourse-reactions-double-button:hover {
-      background: var(--primary-low);
+    .discourse-no-touch & {
+      .discourse-reactions-double-button:hover {
+        background: var(--primary-low);
+      }
     }
 
     &.has-used-main-reaction {
@@ -212,12 +217,14 @@ html.discourse-reactions-no-select {
     }
 
     &.can-toggle-reaction {
-      .discourse-reactions-reaction-button:hover .reaction-button {
-        .d-icon {
-          color: var(--primary-low-mid);
-        }
+      .discourse-no-touch & {
+        .discourse-reactions-reaction-button:hover .reaction-button {
+          .d-icon {
+            color: var(--primary-low-mid);
+          }
 
-        background: var(--primary-low);
+          background: var(--primary-low);
+        }
       }
 
       .discourse-reactions-reaction-button {
@@ -226,8 +233,10 @@ html.discourse-reactions-no-select {
     }
 
     &:not(.can-toggle-reaction) {
-      .discourse-reactions-reaction-button:hover .reaction-button {
-        background: var(--primary-low);
+      .discourse-no-touch & {
+        .discourse-reactions-reaction-button:hover .reaction-button {
+          background: var(--primary-low);
+        }
       }
 
       .discourse-reactions-reaction-button .reaction-button,
@@ -239,12 +248,14 @@ html.discourse-reactions-no-select {
 
   &:not(.has-reacted) {
     &.my-post {
-      .discourse-reactions-double-button:hover {
-        .d-icon {
-          color: var(--primary-low-mid);
-        }
+      .discourse-no-touch & {
+        .discourse-reactions-double-button:hover {
+          .d-icon {
+            color: var(--primary-low-mid);
+          }
 
-        background: var(--primary-low);
+          background: var(--primary-low);
+        }
       }
 
       .discourse-reactions-reaction-button {
@@ -253,13 +264,15 @@ html.discourse-reactions-no-select {
     }
 
     &:not(.my-post) {
-      .discourse-reactions-double-button:hover,
-      .discourse-reactions-reaction-button:hover .reaction-button {
-        .d-icon {
-          color: var(--love);
-        }
+      .discourse-no-touch & {
+        .discourse-reactions-double-button:hover,
+        .discourse-reactions-reaction-button:hover .reaction-button {
+          .d-icon {
+            color: var(--love);
+          }
 
-        background: var(--love-low);
+          background: var(--love-low);
+        }
       }
 
       .discourse-reactions-reaction-button {
