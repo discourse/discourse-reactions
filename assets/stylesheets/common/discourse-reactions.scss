@@ -4,6 +4,11 @@ html.discourse-reactions-no-select {
   user-select: none; /* Disable text selection (standard syntax) */
 }
 
+.fake-reaction {
+  position: absolute;
+  left: 5px;
+}
+
 .discourse-reactions-list {
   display: flex;
   align-items: center;
