@@ -1,4 +1,9 @@
 .desktop-view {
+  .fake-reaction {
+    position: absolute;
+    left: 10px;
+  }
+
   nav.post-controls .show-replies {
     position: relative;
   }
