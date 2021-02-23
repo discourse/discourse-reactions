@@ -431,21 +431,22 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   extractErrors(e) {
-    const xhr = e.xhr;
+    const xhr = e.xhr || e.jqXHR;
 
-    if (!e.jqXHR || !e.jqXHR.status) {
+    if (!xhr || !xhr.status) {
       return I18n.t("errors.desc.network");
     }
 
     if (
-      e.jqXHR &&
-      e.jqXHR.status === 429 &&
+      xhr.status === 429 &&
       xhr.responseJSON &&
       xhr.responseJSON.extras &&
       xhr.responseJSON.extras.wait_seconds
     ) {
-      return I18n.t("discourse_reactions.reaction.too_many_request");
-    } else if (e.jqXHR.status === 403) {
+      return I18n.t("discourse_reactions.reaction.too_many_request", {
+        time_left: xhr.responseJSON.extras.wait_seconds
+      });
+    } else if (xhr.status === 403) {
       return I18n.t("discourse_reactions.reaction.forbidden");
     } else {
       return I18n.t("errors.desc.unknown");
