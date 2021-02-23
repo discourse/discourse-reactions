@@ -25,7 +25,7 @@ export default createWidget("discourse-reactions-double-button", {
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
     const count = attrs.post.reaction_users_count;
 
-    if(count > 0) {
+    if (count > 0) {
       items.push(this.attach("discourse-reactions-counter", attrs));
     }
 
