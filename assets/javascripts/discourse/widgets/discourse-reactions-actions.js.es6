@@ -105,8 +105,6 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     const post = attrs.post;
-    const mainReaction = this.siteSettings
-      .discourse_reactions_reaction_for_like;
     const hasReactions = post.reactions.length;
     const hasReacted = post.current_user_reaction;
     const classes = [];

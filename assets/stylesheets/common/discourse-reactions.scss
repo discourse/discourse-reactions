@@ -18,9 +18,9 @@ html.discourse-reactions-no-select {
 
     .reaction {
       border-radius: 100px;
-      border: 2px solid $secondary;
+      border: 2px solid var(--secondary);
       display: flex;
-      background-color: $secondary;
+      background-color: var(--secondary);
       align-items: center;
       margin-left: -0.5em;
 
@@ -37,7 +37,7 @@ html.discourse-reactions-no-select {
 
   .users {
     font-size: $font-down-1;
-    color: $primary-medium;
+    color: var(--primary-medium);
     margin-left: 0.5em;
   }
 }
@@ -68,7 +68,7 @@ html.discourse-reactions-no-select {
   .container {
     margin: 0.25em;
     box-shadow: shadow("card");
-    background-color: $secondary;
+    background-color: var(--secondary);
     z-index: 1;
     border-radius: 2em;
   }
@@ -88,7 +88,7 @@ html.discourse-reactions-no-select {
     }
 
     &:not(.can-undo) {
-      background: $primary-very-low;
+      background: var(--primary-very-low);
     }
 
     &.can-undo {
@@ -124,14 +124,14 @@ html.discourse-reactions-no-select {
 
   .container {
     box-shadow: shadow("card");
-    background-color: $secondary;
+    background-color: var(--secondary);
     display: flex;
     flex-direction: column;
     z-index: 1;
   }
 
   .counters {
-    border-top: 1px solid $primary-low;
+    border-top: 1px solid var(--primary-low);
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-column-gap: 0.5em;
@@ -168,7 +168,7 @@ html.discourse-reactions-no-select {
   &.is-displayed {
     .count {
       font-weight: bold;
-      color: $primary-high;
+      color: var(--primary-high);
     }
   }
 
@@ -182,7 +182,7 @@ html.discourse-reactions-no-select {
 
   .count {
     margin-right: 0.5em;
-    color: $primary-medium;
+    color: var(--primary-medium);
   }
 }
 
@@ -192,22 +192,22 @@ html.discourse-reactions-no-select {
 
   &.has-reacted {
     .discourse-reactions-double-button:hover {
-      background: $primary-low;
+      background: var(--primary-low);
     }
 
     &.has-used-main-reaction {
       .discourse-reactions-reaction-button .reaction-button .d-icon {
-        color: $love;
+        color: var(--love);
       }
     }
 
     &.can-toggle-reaction {
       .discourse-reactions-reaction-button:hover .reaction-button {
         .d-icon {
-          color: $primary-low-mid;
+          color: var(--primary-low-mid);
         }
 
-        background: $primary-low;
+        background: var(--primary-low);
       }
 
       .discourse-reactions-reaction-button {
@@ -217,7 +217,7 @@ html.discourse-reactions-no-select {
 
     &:not(.can-toggle-reaction) {
       .discourse-reactions-reaction-button:hover .reaction-button {
-        background: $primary-low;
+        background: var(--primary-low);
       }
 
       .discourse-reactions-reaction-button .reaction-button,
@@ -231,10 +231,10 @@ html.discourse-reactions-no-select {
     &.my-post {
       .discourse-reactions-double-button:hover {
         .d-icon {
-          color: $primary-low-mid;
+          color: var(--primary-low-mid);
         }
 
-        background: $primary-low;
+        background: var(--primary-low);
       }
 
       .discourse-reactions-reaction-button {
@@ -246,10 +246,10 @@ html.discourse-reactions-no-select {
       .discourse-reactions-double-button:hover,
       .discourse-reactions-reaction-button:hover .reaction-button {
         .d-icon {
-          color: $love;
+          color: var(--love);
         }
 
-        background: $love-low;
+        background: var(--love-low);
       }
 
       .discourse-reactions-reaction-button {
@@ -286,12 +286,12 @@ html.discourse-reactions-no-select {
 .discourse-reactions-counter {
   display: inline-flex;
   position: relative;
-  margin-left: 0.5em;
+  padding-left: 0.5em;
   cursor: pointer;
 
   .reactions-counter {
     font-size: $font-up-1;
-    color: $primary-low-mid;
+    color: var(--primary-low-mid);
     display: flex;
     align-items: center;
     margin-left: 0.25em;
@@ -329,7 +329,7 @@ nav.post-controls .actions button {
 
 nav.post-controls .actions .reaction-button:focus {
   background: transparent;
-  color: $primary-low-mid;
+  color: var(--primary-low-mid);
 }
 
 nav.post-controls .actions .reaction-button {

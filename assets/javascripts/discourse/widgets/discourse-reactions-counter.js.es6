@@ -7,7 +7,7 @@ import { later, cancel } from "@ember/runloop";
 let _laterHoverHandlers = {};
 
 export default createWidget("discourse-reactions-counter", {
-  tagName: "div.discourse-reactions-counter",
+  tagName: "div",
 
   buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
@@ -29,9 +29,8 @@ export default createWidget("discourse-reactions-counter", {
 
   touchStart(event) {
     if (this.capabilities.touch) {
-      this.toggleStatePanel(event);
-      event.preventDefault();
       event.stopPropagation();
+      this.toggleStatePanel(event);
     }
   },
 
@@ -74,6 +73,10 @@ export default createWidget("discourse-reactions-counter", {
       attrs.post.reactions[0].id === mainReaction
     ) {
       classes.push("only-like");
+    }
+
+    if (attrs.post.reaction_users_count > 0) {
+      classes.push("discourse-reactions-counter");
     }
 
     return classes;
@@ -152,6 +155,8 @@ export default createWidget("discourse-reactions-counter", {
   toggleStatePanel(event) {
     if (!this.state.statePanelExpanded) {
       this.expandStatePanel(event);
+    } else {
+      this.scheduleCollapse();
     }
   },
 
