@@ -9,6 +9,7 @@ export default createWidget("discourse-reactions-double-button", {
 
   buildClasses(attrs) {
     const classes = [];
+
     if (
       attrs.post.likeAction &&
       (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
@@ -22,9 +23,13 @@ export default createWidget("discourse-reactions-double-button", {
   html(attrs) {
     const items = [];
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
+    const count = attrs.post.reaction_users_count;
+
+    if(count > 0) {
+      items.push(this.attach("discourse-reactions-counter", attrs));
+    }
 
     if (attrs.post.yours) {
-      items.push(this.attach("discourse-reactions-counter", attrs));
       items.push(
         h(
           "div.discourse-reactions-reaction-button.my-likes",
@@ -35,7 +40,6 @@ export default createWidget("discourse-reactions-double-button", {
         )
       );
     } else {
-      items.push(this.attach("discourse-reactions-counter", attrs));
       items.push(this.attach("discourse-reactions-reaction-button", attrs));
     }
 

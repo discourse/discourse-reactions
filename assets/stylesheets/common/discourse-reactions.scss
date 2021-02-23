@@ -290,6 +290,7 @@ html.discourse-reactions-no-select {
   cursor: pointer;
 
   .reactions-counter {
+    font-size: $font-up-1;
     color: var(--primary-low-mid);
     display: flex;
     align-items: center;
@@ -329,4 +330,8 @@ nav.post-controls .actions button {
 nav.post-controls .actions .reaction-button:focus {
   background: transparent;
   color: var(--primary-low-mid);
+}
+
+nav.post-controls .actions .reaction-button {
+  margin: 0;
 }
