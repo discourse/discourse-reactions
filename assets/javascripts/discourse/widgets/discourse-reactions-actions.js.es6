@@ -391,7 +391,7 @@ export default createWidget("discourse-reactions-actions", {
 
         mainReaction.parentNode.replaceChild(icon, mainReaction);
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
-          this._heartAnimationHandler =  later(() => {
+          this._heartAnimationHandler = later(() => {
             this.dropUserReaction();
 
             if (this.capabilities.canVibrate) {
