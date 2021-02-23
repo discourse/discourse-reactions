@@ -9,6 +9,8 @@ import { later, cancel } from "@ember/runloop";
 import I18n from "I18n";
 import bootbox from "bootbox";
 
+const VIBRATE_DURATION = 5;
+
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
   img.src = emojiUrlFor(reactionId);
@@ -385,6 +387,11 @@ export default createWidget("discourse-reactions-actions", {
         mainReaction.parentNode.replaceChild(icon, mainReaction);
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
           this.dropUserReaction();
+
+          if (this.capabilities.canVibrate) {
+            navigator.vibrate(VIBRATE_DURATION);
+          }
+
           if (attrs.reaction && attrs.reaction !== mainReactionName) {
             this.addUserReaction(attrs.reaction);
           } else {
