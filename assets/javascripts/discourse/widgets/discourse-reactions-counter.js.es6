@@ -7,7 +7,7 @@ import { later, cancel } from "@ember/runloop";
 let _laterHoverHandlers = {};
 
 export default createWidget("discourse-reactions-counter", {
-  tagName: "div.discourse-reactions-counter",
+  tagName: "div",
 
   buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
@@ -74,6 +74,10 @@ export default createWidget("discourse-reactions-counter", {
       attrs.post.reactions[0].id === mainReaction
     ) {
       classes.push("only-like");
+    }
+
+    if (attrs.post.reaction_users_count > 0) {
+      classes.push("discourse-reactions-counter");
     }
 
     return classes;
