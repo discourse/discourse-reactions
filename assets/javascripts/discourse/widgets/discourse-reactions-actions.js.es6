@@ -324,7 +324,6 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleReactionFromButton(attrs) {
-    this._heartAnimationHandler && cancel(this._heartAnimationHandler);
     this.collapsePanels();
 
     let selector;
@@ -391,54 +390,52 @@ export default createWidget("discourse-reactions-actions", {
 
         mainReaction.parentNode.replaceChild(icon, mainReaction);
         scaleReactionAnimation(icon, scales[1], scales[0], () => {
-          this._heartAnimationHandler = later(() => {
-            this.dropUserReaction();
+          this.dropUserReaction();
 
-            if (this.capabilities.canVibrate) {
-              navigator.vibrate(VIBRATE_DURATION);
-            }
+          if (this.capabilities.canVibrate) {
+            navigator.vibrate(VIBRATE_DURATION);
+          }
 
-            if (attrs.reaction && attrs.reaction !== mainReactionName) {
-              this.addUserReaction(attrs.reaction);
-            } else {
-              this.addUserReaction(
-                this.siteSettings.discourse_reactions_like_icon
-              );
-            }
+          if (attrs.reaction && attrs.reaction !== mainReactionName) {
+            this.addUserReaction(attrs.reaction);
+          } else {
+            this.addUserReaction(
+              this.siteSettings.discourse_reactions_like_icon
+            );
+          }
 
-            if (post.current_user_reaction) {
-              post.reaction_users_count -= 1;
-              this.setCurrentUserReaction(null);
-              post.current_user_used_main_reaction = false;
-            } else {
-              post.reaction_users_count += 1;
-              this.setCurrentUserReaction(
-                this.siteSettings.discourse_reactions_like_icon
-              );
-              post.current_user_used_main_reaction = true;
-            }
+          if (post.current_user_reaction) {
+            post.reaction_users_count -= 1;
+            this.setCurrentUserReaction(null);
+            post.current_user_used_main_reaction = false;
+          } else {
+            post.reaction_users_count += 1;
+            this.setCurrentUserReaction(
+              this.siteSettings.discourse_reactions_like_icon
+            );
+            post.current_user_used_main_reaction = true;
+          }
 
-            let toggleReaction =
-              attrs.reaction && attrs.reaction !== mainReactionName
-                ? attrs.reaction
-                : this.siteSettings.discourse_reactions_reaction_for_like;
+          let toggleReaction =
+            attrs.reaction && attrs.reaction !== mainReactionName
+              ? attrs.reaction
+              : this.siteSettings.discourse_reactions_reaction_for_like;
 
-            CustomReaction.toggle(this.attrs.post.id, toggleReaction)
-              .then(resolve)
-              .catch(e => {
-                bootbox.alert(this.extractErrors(e));
+          CustomReaction.toggle(this.attrs.post.id, toggleReaction)
+            .then(resolve)
+            .catch(e => {
+              bootbox.alert(this.extractErrors(e));
 
-                const iconTemplate = document.createElement("template");
-                iconTemplate.innerHTML = iconHTML(replaceIcon).trim();
-                icon.replaceWith(iconTemplate.content.firstChild);
+              const iconTemplate = document.createElement("template");
+              iconTemplate.innerHTML = iconHTML(replaceIcon).trim();
+              icon.replaceWith(iconTemplate.content.firstChild);
 
-                post.current_user_reaction = current_user_reaction;
-                post.current_user_used_main_reaction = current_user_used_main_reaction;
-                post.reactions = reactions;
-                post.reaction_users_count = reaction_users_count;
-                this.scheduleRerender();
-              });
-          }, 150);
+              post.current_user_reaction = current_user_reaction;
+              post.current_user_used_main_reaction = current_user_used_main_reaction;
+              post.reactions = reactions;
+              post.reaction_users_count = reaction_users_count;
+              this.scheduleRerender();
+            });
         });
       });
     });
