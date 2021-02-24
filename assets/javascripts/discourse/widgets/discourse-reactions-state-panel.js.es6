@@ -1,6 +1,5 @@
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { avatarFor } from "discourse/widgets/post";
 
 export default createWidget("discourse-reactions-state-panel", {
   tagName: "div.discourse-reactions-state-panel",
@@ -19,57 +18,53 @@ export default createWidget("discourse-reactions-state-panel", {
     }
   },
 
-  onChangeDisplayedReaction(reactionId) {
-    this.state.displayedReactionId = reactionId;
+  showUsers(attrs) {
+    this.state.displayedReactionId = attrs.reaction.id;
   },
 
-  defaultState(attrs) {
+  hideUsers() {
+    this.state.displayedReactionId = null;
+  },
+
+  defaultState() {
     return {
-      displayedReactionId:
-        attrs.post.reactions && attrs.post.reactions.length
-          ? attrs.post.reactions.sortBy("count").reverse().firstObject.id
-          : null
+      displayedReactionId: null
     };
   },
 
   html(attrs) {
-    if (!attrs.statePanelExpanded) return;
-    if (!attrs.post.reactions.length) return;
+    if (!attrs.statePanelExpanded || !attrs.post.reactions.length) {
+      return;
+    }
+
+    if (this.state.displayedReactionId) {
+      const displayedReaction = attrs.post.reactions.findBy(
+        "id",
+        this.state.displayedReactionId
+      );
+
+      return this.attach("discourse-reactions-state-panel-reaction-users", {
+        displayedReaction,
+        post: attrs.post
+      });
+    }
 
     const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
 
-    const displayedReaction =
-      attrs.post.reactions.findBy("id", this.state.displayedReactionId) ||
-      sortedReactions.firstObject;
-
-    const elements = [];
-
-    if (displayedReaction.users.length > 0) {
-      elements.push(
+    return [
+      ,
+      h(
+        "div.container",
         h(
-          "div.users",
-          displayedReaction.users.map(user =>
-            avatarFor("tiny", {
-              username: user.username,
-              template: user.avatar_template
+          "div.counters",
+          sortedReactions.map(reaction =>
+            this.attach("discourse-reactions-state-panel-reaction", {
+              reaction,
+              isDisplayed: reaction.id === this.state.displayedReactionId
             })
           )
         )
-      );
-    }
-
-    elements.push(
-      h(
-        "div.counters",
-        sortedReactions.map(reaction =>
-          this.attach("discourse-reactions-state-panel-reaction", {
-            reaction,
-            isDisplayed: reaction.id === this.state.displayedReactionId
-          })
-        )
       )
-    );
-
-    return [, h("div.container", elements)];
+    ];
   }
 });
