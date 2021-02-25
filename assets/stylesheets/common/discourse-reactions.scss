@@ -154,19 +154,24 @@ html.discourse-reactions-no-select {
 
   .list {
     display: grid;
-    grid-template-columns: repeat(9, max-content);
+    grid-template: 25px;
+    grid-template-columns: repeat(9, 22.5px);
     grid-column-gap: 0.25em;
     grid-row-gap: 0.25em;
     padding-top: 0.25em;
+    grid-template-rows: 22.5px;
   }
 
   .users {
     display: flex;
     flex-direction: column;
 
-    .avatar {
+    .trigger-user-card {
       width: 22.5px;
       height: 22.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 
@@ -201,8 +206,8 @@ html.discourse-reactions-no-select {
   }
 
   .show-users {
-    padding: 0.25em;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
     background: none !important;
     border-color: transparent !important;
     color: var(--primary-medium) !important;
