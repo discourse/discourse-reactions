@@ -19,7 +19,13 @@ export default createWidget("discourse-reactions-state-panel", {
   },
 
   showUsers(attrs) {
-    this.state.displayedReactionId = attrs.reaction.id;
+    if (!this.state.displayedReactionId) {
+      this.state.displayedReactionId = attrs.reaction.id;
+    } else if (this.state.displayedReactionId === attrs.reaction.id) {
+      this.hideUsers();
+    } else if (this.state.displayedReactionId !== attrs.reaction.id) {
+      this.state.displayedReactionId = attrs.reaction.id;
+    }
   },
 
   hideUsers() {
@@ -37,18 +43,6 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    if (this.state.displayedReactionId) {
-      const displayedReaction = attrs.post.reactions.findBy(
-        "id",
-        this.state.displayedReactionId
-      );
-
-      return this.attach("discourse-reactions-state-panel-reaction-users", {
-        displayedReaction,
-        post: attrs.post
-      });
-    }
-
     const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
 
     return [
@@ -60,6 +54,7 @@ export default createWidget("discourse-reactions-state-panel", {
           sortedReactions.map(reaction =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
+              post: attrs.post,
               isDisplayed: reaction.id === this.state.displayedReactionId
             })
           )

@@ -127,7 +127,7 @@ html.discourse-reactions-no-select {
     display: flex;
     flex-direction: column;
     z-index: 1;
-    padding: 0.5em;
+    padding: 0.25em;
   }
 
   .counters {
@@ -136,72 +136,12 @@ html.discourse-reactions-no-select {
   }
 }
 
-.discourse-reactions-state-panel-reaction-users {
-  .user-container {
-    box-shadow: shadow("card");
-    background-color: var(--secondary);
-    display: flex;
-    flex-direction: column;
-    padding: 0.5em;
-    z-index: 1;
-  }
-
-  .users {
-    cursor: pointer;
-    align-items: center;
-    display: grid;
-    grid-template-columns: repeat(12, 20px);
-    grid-column-gap: 0.5em;
-    grid-row-gap: 0.5em;
-    padding: 0.5em;
-    margin-bottom: auto;
-  }
-
-  .header-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .count {
-    color: var(--primary);
-    font-size: $font-up-1;
-    margin-left: 0.5em;
-  }
-
-  .hide-users {
-    background: none !important;
-    border-color: transparent !important;
-    padding-right: 0;
-
-    .d-icon {
-      color: var(--primary-medium) !important;
-    }
-  }
-
-  .selected-reaction {
-    padding: 0.5em;
-    display: flex;
-    align-items: center;
-
-    .count {
-      font-size: $font-down-1;
-      color: var(--primary-medium);
-    }
-  }
-
-  .other-users {
-    padding: 0.5em;
-    color: var(--primary-medium);
-  }
-}
-
 .discourse-reactions-state-panel-reaction {
   border-bottom: 1px solid var(--primary-low);
   cursor: pointer;
-  align-items: center;
   display: flex;
-  padding: 0.25em;
+  justify-content: flex-start;
+  align-items: flex-start;
 
   &:first-child {
     padding-top: 0;
@@ -212,17 +152,42 @@ html.discourse-reactions-no-select {
     padding-bottom: 0;
   }
 
+  .list {
+    display: grid;
+    grid-template-columns: repeat(9, max-content);
+    grid-column-gap: 0.25em;
+    grid-row-gap: 0.25em;
+    padding-top: 0.25em;
+  }
+
+  .users {
+    display: flex;
+    flex-direction: column;
+
+    .avatar {
+      width: 22.5px;
+      height: 22.5px;
+    }
+  }
+
+  .more {
+    color: var(--primary-medium);
+    font-size: $font-down-1;
+    padding-top: 0.5em;
+  }
+
   .reaction-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding-top: 0.25em;
 
     .count {
       font-size: $font-down-1;
       color: var(--primary-medium);
       text-align: left;
       padding-right: 0.5em;
-      width: 25px;
+      width: 30px;
       @include ellipsis;
     }
 
@@ -235,30 +200,11 @@ html.discourse-reactions-no-select {
     }
   }
 
-  .users {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-
-    .trigger-user-card {
-      padding: 0 0.1em;
-
-      &:first-child {
-        padding-left: 0;
-      }
-
-      &:last-child {
-        padding-right: 0;
-      }
-    }
-  }
-
   .show-users {
-    padding: 0;
+    padding: 0.25em;
     margin: 0;
     background: none !important;
     border-color: transparent !important;
-    margin-left: 0.5em;
     color: var(--primary-medium) !important;
 
     .d-icon {

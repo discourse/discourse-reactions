@@ -1,3 +1,4 @@
+import I18n from "I18n";
 import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
 import { h } from "virtual-dom";
@@ -15,8 +16,6 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
   },
 
   html(attrs) {
-    const displayUsers = attrs.reaction.users.slice(0, 8);
-
     const elements = [];
 
     elements.push(
@@ -30,29 +29,46 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       ])
     );
 
-    elements.push(
-      h(
-        "div.users",
-        displayUsers.map(user =>
-          avatarFor("tiny", {
-            username: user.username,
-            template: user.avatar_template
-          })
-        )
-      )
+    const list = attrs.reaction.users.slice(0, 8).map(user =>
+      avatarFor("tiny", {
+        username: user.username,
+        template: user.avatar_template
+      })
     );
 
     if (attrs.reaction.users.length > 8) {
-      elements.push(
+      list.push(
         this.attach("button", {
           action: "showUsers",
-          contents: [iconNode("chevron-right")],
+          contents: [
+            iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down")
+          ],
           actionParam: attrs,
           className: "show-users",
           title: ""
         })
       );
     }
+
+    if (attrs.isDisplayed) {
+      list.push(
+        attrs.reaction.users.slice(8, 26).map(user =>
+          avatarFor("tiny", {
+            username: user.username,
+            template: user.avatar_template
+          })
+        )
+      );
+    }
+
+    let more;
+    if (attrs.isDisplayed && attrs.reaction.users.length > 26) {
+      more = I18n.t("discourse_reactions.state_panel.more_users", {
+        count: attrs.reaction.users.length - 26
+      });
+    }
+
+    elements.push(h("div.users", [h("div.list", list), h("span.more", more)]));
 
     return elements;
   }
