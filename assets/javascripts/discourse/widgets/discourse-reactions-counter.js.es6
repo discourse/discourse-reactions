@@ -28,6 +28,10 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   touchStart(event) {
+    if (this.state.statePanelExpanded) {
+      return;
+    }
+
     if (this.capabilities.touch) {
       event.stopPropagation();
       this.toggleStatePanel(event);

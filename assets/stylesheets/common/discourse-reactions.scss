@@ -193,8 +193,7 @@ html.discourse-reactions-no-select {
   display: grid;
   grid-template-columns: repeat(12, 20px);
   grid-column-gap: 0.5em;
-  grid-row-gap: 0.5em;
-  padding: 0.5em;
+  padding: 0.2em;
   margin-bottom: auto;
 
   &:last-child {
@@ -208,6 +207,7 @@ html.discourse-reactions-no-select {
   }
 
   .show-users {
+    height: 10px;
     background: none !important;
     border-color: transparent !important;
     margin-left: 0.5em;
