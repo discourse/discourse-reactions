@@ -17,8 +17,10 @@ export default createWidget("discourse-reactions-reaction-button", {
     this._cancelHoverHandler();
     const currentUserReaction = this.attrs.post.current_user_reaction;
     if (!this.capabilities.touch) {
-      this.callWidgetFunction("toggleReactionFromButton", {
-        reaction: currentUserReaction ? currentUserReaction.id : null
+      this.callWidgetFunction("toggleFromButton", {
+        reaction: currentUserReaction
+          ? currentUserReaction.id
+          : this.siteSettings.discourse_reactions_reaction_for_like
       });
     }
   },

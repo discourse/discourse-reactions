@@ -58,7 +58,7 @@ export default createWidget("discourse-reactions-picker", {
             }
 
             return this.attach("button", {
-              action: "toggleReaction",
+              action: "toggle",
               data: { reaction },
               actionParam: { reaction, postId: post.id, canUndo },
               className: `pickable-reaction ${reaction} ${
