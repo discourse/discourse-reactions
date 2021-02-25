@@ -21,19 +21,24 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
     elements.push(
       h("div.reaction-wrapper", [
-        new RawHtml({
-          html: emojiUnescape(`:${attrs.reaction.id}:`)
-        }),
+        h("div.emoji-wrapper", [
+          new RawHtml({
+            html: emojiUnescape(`:${attrs.reaction.id}:`)
+          })
+        ]),
         h("div.count", attrs.reaction.count.toString())
       ])
     );
 
-    displayUsers.map(user =>
-      elements.push(
-        avatarFor("tiny", {
-          username: user.username,
-          template: user.avatar_template
-        })
+    elements.push(
+      h(
+        "div.users",
+        displayUsers.map(user =>
+          avatarFor("tiny", {
+            username: user.username,
+            template: user.avatar_template
+          })
+        )
       )
     );
 
@@ -42,7 +47,6 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
         this.attach("button", {
           action: "showUsers",
           contents: [iconNode("chevron-right")],
-          data: attrs.reaction,
           actionParam: attrs,
           className: "show-users",
           title: ""

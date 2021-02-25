@@ -127,15 +127,12 @@ html.discourse-reactions-no-select {
     display: flex;
     flex-direction: column;
     z-index: 1;
+    padding: 0.5em;
   }
 
   .counters {
-    display: grid;
-    grid-template-columns: repeat(1, 1fr);
-    grid-column-gap: 0.5em;
-    grid-row-gap: 0.5em;
-    padding: 0.5em;
-    margin-bottom: auto;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -161,8 +158,9 @@ html.discourse-reactions-no-select {
   }
 
   .header-buttons {
-    display: inline-flex;
+    display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .count {
@@ -174,6 +172,7 @@ html.discourse-reactions-no-select {
   .hide-users {
     background: none !important;
     border-color: transparent !important;
+    padding-right: 0;
 
     .d-icon {
       color: var(--primary-medium) !important;
@@ -182,12 +181,18 @@ html.discourse-reactions-no-select {
 
   .selected-reaction {
     padding: 0.5em;
-    display: inline-flex;
+    display: flex;
+    align-items: center;
+
+    .count {
+      font-size: $font-down-1;
+      color: var(--primary-medium);
+    }
   }
 
   .other-users {
     padding: 0.5em;
-    color: var(--primary);
+    color: var(--primary-medium);
   }
 }
 
@@ -195,24 +200,62 @@ html.discourse-reactions-no-select {
   border-bottom: 1px solid var(--primary-low);
   cursor: pointer;
   align-items: center;
-  display: grid;
-  grid-template-columns: repeat(12, 20px);
-  grid-column-gap: 0.5em;
-  padding: 0.2em;
-  margin-bottom: auto;
+  display: flex;
+  padding: 0.25em;
+
+  &:first-child {
+    padding-top: 0;
+  }
 
   &:last-child {
-    margin: 0;
     border: none;
+    padding-bottom: 0;
   }
 
   .reaction-wrapper {
     display: flex;
-    grid-column: 1 / 4;
+    align-items: center;
+    justify-content: center;
+
+    .count {
+      font-size: $font-down-1;
+      color: var(--primary-medium);
+      text-align: left;
+      padding-right: 0.5em;
+      width: 25px;
+      @include ellipsis;
+    }
+
+    .emoji-wrapper {
+      width: 25px;
+      height: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .users {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+
+    .trigger-user-card {
+      padding: 0 0.1em;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
   }
 
   .show-users {
-    height: 10px;
+    padding: 0;
+    margin: 0;
     background: none !important;
     border-color: transparent !important;
     margin-left: 0.5em;
@@ -220,6 +263,7 @@ html.discourse-reactions-no-select {
 
     .d-icon {
       color: var(--primary-medium) !important;
+      margin: 0;
     }
   }
 
