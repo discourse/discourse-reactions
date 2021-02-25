@@ -7,6 +7,8 @@ en:
   js:
     discourse_reactions:
       reactions_title: "Reactions"
+      state_panel:
+        more_users: "and %{count} others..."
       reaction:
         too_many_request: "You have been reacting a bit too fast, try again in %{time_left} seconds."
         forbidden: "You acted on this post a long time ago so you are not allowed to remove your reaction now."

@@ -184,6 +184,11 @@ html.discourse-reactions-no-select {
     padding: 0.5em;
     display: inline-flex;
   }
+
+  .other-users {
+    padding: 0.5em;
+    color: var(--primary);
+  }
 }
 
 .discourse-reactions-state-panel-reaction {
