@@ -21,7 +21,7 @@ def create_user(user_email)
 end
 
 desc "create users and generate random reactions on a post"
-task "reactions:generate", [:post_id, :reactions_count] => [:environment] do |_, args|
+task "reactions:generate", [:post_id, :reactions_count, :reaction] => [:environment] do |_, args|
   post_id = args[:post_id]
 
   if !post_id
@@ -37,7 +37,7 @@ task "reactions:generate", [:post_id, :reactions_count] => [:environment] do |_,
   reactions_count = args[:reactions_count] ? args[:reactions_count].to_i : 10
 
   reactions_count.times do
-    reaction = DiscourseReactions::Reaction.valid_reactions.to_a.sample
+    reaction = args[:reaction] || DiscourseReactions::Reaction.valid_reactions.to_a.sample
     user = create_user(generate_email)
 
     puts "Reaction to post #{post.id} with reaction: #{reaction}"
