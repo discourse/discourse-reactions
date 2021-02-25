@@ -420,7 +420,7 @@ export default createWidget("discourse-reactions-actions", {
       navigator.vibrate(VIBRATE_DURATION);
     }
 
-    if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
+    if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       return this.toggleReaction(attrs);
     }
 
