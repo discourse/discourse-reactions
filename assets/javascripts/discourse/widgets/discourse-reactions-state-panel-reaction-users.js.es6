@@ -13,6 +13,10 @@ export default createWidget("discourse-reactions-state-panel-reaction-users", {
     `discourse-reactions-state-panel-reaction-users-${attrs.post.id}`,
 
   html(attrs) {
+    if(!attrs.displayedReaction || !attrs.displayedReaction.users || !attrs.displayedReaction.users.length){
+      return;
+    }
+
     const elements = [];
     const displayedUsers = attrs.displayedReaction.users.slice(0,48);
 
