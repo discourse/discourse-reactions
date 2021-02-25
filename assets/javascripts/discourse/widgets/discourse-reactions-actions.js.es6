@@ -211,8 +211,7 @@ export default createWidget("discourse-reactions-actions", {
           this.toggleFromButton({
             reaction: this.attrs.post.current_user_reaction
               ? this.attrs.post.current_user_reaction.id
-              : this.siteSettings
-              .discourse_reactions_reaction_for_like
+              : this.siteSettings.discourse_reactions_reaction_for_like
           });
         }
       }
@@ -298,9 +297,11 @@ export default createWidget("discourse-reactions-actions", {
   toggleReaction(attrs) {
     this.collapsePanels();
 
-    if (this.attrs.post.current_user_reaction &&
+    if (
+      this.attrs.post.current_user_reaction &&
       !this.attrs.post.current_user_reaction.can_undo &&
-      !this.attrs.post.likeAction.canToggle) {
+      !this.attrs.post.likeAction.canToggle
+    ) {
       return;
     }
 
@@ -323,7 +324,11 @@ export default createWidget("discourse-reactions-actions", {
       });
     }
 
-    if (attrs.reaction && (!post.current_user_reaction || attrs.reaction !== post.current_user_reaction.id)) {
+    if (
+      attrs.reaction &&
+      (!post.current_user_reaction ||
+        attrs.reaction !== post.current_user_reaction.id)
+    ) {
       let isAvailable = false;
 
       post.reactions.every((reaction, index) => {
