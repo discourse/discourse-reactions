@@ -22,7 +22,7 @@ export default createWidget("discourse-reactions-state-panel-reaction-users", {
     }
 
     const elements = [];
-    const displayedUsers = attrs.displayedReaction.users.slice(0, 48);
+    const displayedUsers = attrs.displayedReaction.users.slice(0, 20);
 
     elements.push(
       h("div.header-buttons", [
@@ -53,12 +53,12 @@ export default createWidget("discourse-reactions-state-panel-reaction-users", {
       )
     );
 
-    if (attrs.displayedReaction.users.length > 48) {
+    if (attrs.displayedReaction.users.length > 20) {
       elements.push(
         h(
           "div.other-users",
           I18n.t("discourse_reactions.state_panel.more_users", {
-            count: attrs.displayedReaction.users.length - 48
+            count: attrs.displayedReaction.users.length - 20
           })
         )
       );
