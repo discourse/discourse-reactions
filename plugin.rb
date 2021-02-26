@@ -15,6 +15,8 @@ register_asset 'stylesheets/mobile/discourse-reactions.scss', :mobile
 register_svg_icon 'fas fa-star'
 register_svg_icon 'far fa-star'
 
+MAX_USERS_COUNT = 26
+
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
 
@@ -62,8 +64,6 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    MAX_USERS_COUNT = 26
-
     reactions = object.reactions.select { |reaction| reaction[:reaction_users_count] }.map do |reaction|
       {
         id: reaction.reaction_value,

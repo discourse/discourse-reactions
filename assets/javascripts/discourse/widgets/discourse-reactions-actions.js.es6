@@ -318,10 +318,9 @@ export default createWidget("discourse-reactions-actions", {
         } else if (reaction.id === post.current_user_reaction.id) {
           post.reactions[index].count -= 1;
           const users = post.reactions[index].users;
-          users.splice(
-            users.indexOf(users.findBy("username", "ahmedgagan6")),
-            1
-          );
+          const userIndex = users.indexOf(users.findBy("username", this.currentUser.username));
+          users.splice(userIndex, 1);
+
           return false;
         }
 
@@ -428,7 +427,6 @@ export default createWidget("discourse-reactions-actions", {
     if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
       this.toggleReaction(attrs);
       return CustomReaction.toggle(this.attrs.post.id, attrs.reaction)
-        .then(resolve)
         .catch(e => {
           bootbox.alert(this.extractErrors(e));
 

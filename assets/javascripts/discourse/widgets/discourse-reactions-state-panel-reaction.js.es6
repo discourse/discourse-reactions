@@ -6,6 +6,9 @@ import { createWidget } from "discourse/widgets/widget";
 import { avatarFor } from "discourse/widgets/post";
 import { iconNode } from "discourse-common/lib/icon-library";
 
+const MAX_USERS_COUNT = 26;
+const MIN_USERS_COUNT = 8;
+
 export default createWidget("discourse-reactions-state-panel-reaction", {
   tagName: "div.discourse-reactions-state-panel-reaction",
 
@@ -17,8 +20,6 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
   html(attrs) {
     const elements = [];
-    const MAX_USERS_COUNT = 26;
-    const MIN_USERS_COUNT = 8;
 
     elements.push(
       h("div.reaction-wrapper", [
