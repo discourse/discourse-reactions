@@ -428,7 +428,7 @@ export default createWidget("discourse-reactions-actions", {
       navigator.vibrate(VIBRATE_DURATION);
     }
 
-    if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
+    if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       this.toggleReaction(attrs);
       return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
         e => {
