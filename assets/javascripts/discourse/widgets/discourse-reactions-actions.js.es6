@@ -317,6 +317,10 @@ export default createWidget("discourse-reactions-actions", {
           return false;
         } else if (reaction.id === post.current_user_reaction.id) {
           post.reactions[index].count -= 1;
+          const users = post.reactions[index].users;
+          const userIndex = users.indexOf(users.findBy("username", this.currentUser.username));
+          users.splice(userIndex, 1);
+
           return false;
         }
 
@@ -334,7 +338,7 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.every((reaction, index) => {
         if (reaction.id === attrs.reaction) {
           post.reactions[index].count += 1;
-          post.reactions[index].users.push({
+          post.reactions[index].users.unshift({
             username: this.currentUser.username,
             avatar_template: this.currentUser.avatar_template,
             can_undo: true
@@ -420,8 +424,18 @@ export default createWidget("discourse-reactions-actions", {
       navigator.vibrate(VIBRATE_DURATION);
     }
 
-    if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
-      return this.toggleReaction(attrs);
+    if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
+      this.toggleReaction(attrs);
+      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction)
+        .catch(e => {
+          bootbox.alert(this.extractErrors(e));
+
+          post.current_user_reaction = current_user_reaction;
+          post.current_user_used_main_reaction = current_user_used_main_reaction;
+          post.reactions = reactions;
+          post.reaction_users_count = reaction_users_count;
+          this.scheduleRerender();
+        });
     }
 
     if (

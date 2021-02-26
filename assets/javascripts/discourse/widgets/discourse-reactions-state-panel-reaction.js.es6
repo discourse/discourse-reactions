@@ -6,6 +6,9 @@ import { createWidget } from "discourse/widgets/widget";
 import { avatarFor } from "discourse/widgets/post";
 import { iconNode } from "discourse-common/lib/icon-library";
 
+const MAX_USERS_COUNT = 26;
+const MIN_USERS_COUNT = 8;
+
 export default createWidget("discourse-reactions-state-panel-reaction", {
   tagName: "div.discourse-reactions-state-panel-reaction",
 
@@ -29,14 +32,14 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       ])
     );
 
-    const list = attrs.reaction.users.slice(0, 8).map(user =>
+    const list = attrs.reaction.users.slice(0, MIN_USERS_COUNT).map(user =>
       avatarFor("tiny", {
         username: user.username,
         template: user.avatar_template
       })
     );
 
-    if (attrs.reaction.users.length > 8) {
+    if (attrs.reaction.users.length > MIN_USERS_COUNT) {
       list.push(
         this.attach("button", {
           action: "showUsers",
@@ -52,7 +55,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
     if (attrs.isDisplayed) {
       list.push(
-        attrs.reaction.users.slice(8, 26).map(user =>
+        attrs.reaction.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map(user =>
           avatarFor("tiny", {
             username: user.username,
             template: user.avatar_template
@@ -62,9 +65,9 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     }
 
     let more;
-    if (attrs.isDisplayed && attrs.reaction.users.length > 26) {
+    if (attrs.isDisplayed && attrs.reaction.count > MAX_USERS_COUNT) {
       more = I18n.t("discourse_reactions.state_panel.more_users", {
-        count: attrs.reaction.users.length - 26
+        count: attrs.reaction.count - MAX_USERS_COUNT
       });
     }
 
