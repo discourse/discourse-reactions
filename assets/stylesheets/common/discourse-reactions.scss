@@ -155,12 +155,16 @@ html.discourse-reactions-no-select {
 
   .list {
     display: grid;
-    grid-template: 25px;
-    grid-template-columns: repeat(9, 22.5px);
     grid-column-gap: 0.25em;
     grid-row-gap: 0.25em;
     padding-top: 0.25em;
     grid-template-rows: 22.5px;
+  }
+
+  @for $i from 1 through 9 {
+    .list-columns-#{$i} {
+      grid-template-columns: repeat($i, 22.5px);
+    }
   }
 
   .users {

@@ -32,7 +32,8 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       ])
     );
 
-    const list = attrs.reaction.users.slice(0, MIN_USERS_COUNT).map(user =>
+    const firsLineUsers = attrs.reaction.users.slice(0, MIN_USERS_COUNT);
+    const list = firsLineUsers.map(user =>
       avatarFor("tiny", {
         username: user.username,
         template: user.avatar_template
@@ -71,7 +72,17 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       });
     }
 
-    elements.push(h("div.users", [h("div.list", list), h("span.more", more)]));
+    const columnsCount =
+      attrs.reaction.users.length > MIN_USERS_COUNT
+        ? firsLineUsers.length + 1
+        : firsLineUsers.length;
+
+    elements.push(
+      h("div.users", [
+        h(`div.list.list-columns-${columnsCount}`, list),
+        h("span.more", more)
+      ])
+    );
 
     return elements;
   }
