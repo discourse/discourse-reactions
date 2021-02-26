@@ -426,7 +426,18 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
-      return this.toggleReaction(attrs);
+      this.toggleReaction(attrs);
+      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction)
+        .then(resolve)
+        .catch(e => {
+          bootbox.alert(this.extractErrors(e));
+
+          post.current_user_reaction = current_user_reaction;
+          post.current_user_used_main_reaction = current_user_used_main_reaction;
+          post.reactions = reactions;
+          post.reaction_users_count = reaction_users_count;
+          this.scheduleRerender();
+        });
     }
 
     if (
