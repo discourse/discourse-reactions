@@ -81,7 +81,10 @@ function scaleReactionAnimation(mainReaction, start, end, complete) {
       {
         complete,
         step(now) {
-          $(this).css("transform", `scale(${now})`);
+          $(this)
+            .css("transform", `scale(${now})`)
+            .addClass("far-heart")
+            .removeClass("heart");
         },
         duration: 150
       },
@@ -457,23 +460,7 @@ export default createWidget("discourse-reactions-actions", {
     const scales = [1.0, 1.5];
     return new Promise(resolve => {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
-        const mainReactionIcon = this.siteSettings
-          .discourse_reactions_like_icon;
-        const hasUsedMainReaction = post.current_user_used_main_reaction;
-        const template = document.createElement("template");
-
-        const replaceIcon =
-          hasUsedMainReaction ||
-          (attrs.reaction && attrs.reaction !== mainReactionName)
-            ? `far-${mainReactionIcon}`
-            : mainReactionIcon;
-
-        template.innerHTML = iconHTML(replaceIcon).trim();
-        const icon = template.content.firstChild;
-        icon.style.transform = `scale(${scales[1]})`;
-
-        mainReaction.parentNode.replaceChild(icon, mainReaction);
-        scaleReactionAnimation(icon, scales[1], scales[0], () => {
+        scaleReactionAnimation(mainReaction, scales[1], scales[0], () => {
           this.toggleReaction(attrs);
 
           let toggleReaction =
@@ -485,10 +472,6 @@ export default createWidget("discourse-reactions-actions", {
             .then(resolve)
             .catch(e => {
               bootbox.alert(this.extractErrors(e));
-
-              const iconTemplate = document.createElement("template");
-              iconTemplate.innerHTML = iconHTML(replaceIcon).trim();
-              icon.replaceWith(iconTemplate.content.firstChild);
 
               post.current_user_reaction = current_user_reaction;
               post.current_user_used_main_reaction = current_user_used_main_reaction;
