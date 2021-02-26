@@ -62,12 +62,13 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
+    MAX_USERS_COUNT = 26
 
     reactions = object.reactions.select { |reaction| reaction[:reaction_users_count] }.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
-        users: reaction.reaction_users.map { |reaction_user| { username: reaction_user.username, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
+        users: reaction.reaction_users.order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT).map { |reaction_user| { username: reaction_user.username, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
         count: reaction.reaction_users_count
       }
     end

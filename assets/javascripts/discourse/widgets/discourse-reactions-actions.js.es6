@@ -317,6 +317,11 @@ export default createWidget("discourse-reactions-actions", {
           return false;
         } else if (reaction.id === post.current_user_reaction.id) {
           post.reactions[index].count -= 1;
+          const users = post.reactions[index].users;
+          users.splice(
+            users.indexOf(users.findBy("username", "ahmedgagan6")),
+            1
+          );
           return false;
         }
 
@@ -334,7 +339,7 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.every((reaction, index) => {
         if (reaction.id === attrs.reaction) {
           post.reactions[index].count += 1;
-          post.reactions[index].users.push({
+          post.reactions[index].users.unshift({
             username: this.currentUser.username,
             avatar_template: this.currentUser.avatar_template,
             can_undo: true
