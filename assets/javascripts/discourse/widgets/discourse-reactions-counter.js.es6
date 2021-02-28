@@ -59,14 +59,6 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  buildAttributes(attrs) {
-    return {
-      title: I18n.t("discourse_reactions.users_reacted", {
-        count: attrs.post.reaction_users_count
-      })
-    };
-  },
-
   buildClasses(attrs) {
     const classes = [];
     const mainReaction = this.siteSettings
@@ -116,7 +108,7 @@ export default createWidget("discourse-reactions-counter", {
         items.push(this.attach("discourse-reactions-list", attrs));
       }
 
-      items.push(h("div.reactions-counter", count.toString()));
+      items.push(h("span.reactions-counter", count.toString()));
 
       return items;
     }

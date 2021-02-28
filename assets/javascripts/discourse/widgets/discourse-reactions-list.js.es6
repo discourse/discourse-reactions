@@ -20,12 +20,7 @@ export default createWidget("discourse-reactions-list", {
           .sortBy("count")
           .reverse()
           .map(reaction =>
-            h(
-              `span.reaction.${reaction.id}`,
-              new RawHtml({
-                html: emojiUnescape(`:${reaction.id}:`)
-              })
-            )
+            this.attach("discourse-reactions-list-emoji", { reaction })
           )
       )
     ];
