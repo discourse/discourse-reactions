@@ -38,19 +38,6 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  mouseOver(event) {
-    this._cancelHoverHandler();
-
-    if (!window.matchMedia("(hover: none)").matches) {
-      _laterHoverHandlers[this.attrs.post.id] = later(
-        this,
-        this._hoverHandler,
-        event,
-        500
-      );
-    }
-  },
-
   mouseOut() {
     this._cancelHoverHandler();
 

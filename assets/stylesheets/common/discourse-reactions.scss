@@ -15,6 +15,8 @@ html.discourse-reactions-no-select {
     position: relative;
 
     .reaction {
+      position: relative;
+      display: inline-block;
       border-radius: 100px;
       border: 2px solid var(--secondary);
       display: flex;
@@ -29,6 +31,39 @@ html.discourse-reactions-no-select {
         width: 1.1em;
         height: 1.1em;
       }
+    }
+
+    .reaction .user-list {
+      visibility: hidden;
+      display: none;
+      width: 11em;
+      font-size: 12px;
+      background-color: var(--primary);
+      color: var(--secondary-very-high);
+      border: 1px solid var(--secondary-high);
+      text-align: left;
+      border-radius: 3px;
+      padding: 0 1em;
+      position: absolute;
+      z-index: 1;
+      top: 125%;
+      left: 50%;
+      margin-left: -7em;
+      opacity: 0;
+      line-height: 0.3em;
+      transition: opacity 0.33s;
+
+      .heading {
+        font-weight: bold;
+        font-size: 14px;
+        margin-bottom: 1.5em;
+      }
+    }
+
+    .reaction:hover .user-list {
+      visibility: visible;
+      display: block;
+      opacity: 0.9;
     }
   }
 
