@@ -30,7 +30,7 @@ export default createWidget("discourse-reactions-list-emoji", {
         this,
         this._hoverHandler,
         event,
-        500
+        50
       );
     }
   },
@@ -55,7 +55,7 @@ export default createWidget("discourse-reactions-list-emoji", {
 
   scheduleCollapse() {
     this._collapseHandler && cancel(this._collapseHandler);
-    this._collapseHandler = later(this, this.collapsePanels, 500);
+    this._collapseHandler = later(this, this.collapsePanels, 50);
   },
 
   cancelCollapse() {
