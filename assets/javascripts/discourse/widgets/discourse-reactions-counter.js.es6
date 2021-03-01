@@ -1,6 +1,5 @@
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import I18n from "I18n";
 import { next } from "@ember/runloop";
 import { later, cancel } from "@ember/runloop";
 

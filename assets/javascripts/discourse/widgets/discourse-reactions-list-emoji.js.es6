@@ -4,6 +4,7 @@ import { emojiUnescape } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
 import { later, cancel } from "@ember/runloop";
 import { next } from "@ember/runloop";
+import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
 let _laterHoverHandlers = {};
@@ -39,7 +40,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     this.toggleReactionUserPanel(event);
   },
 
-  mouseOut(event) {
+  mouseOut() {
     this._cancelHoverHandler();
 
     if (!window.matchMedia("(hover: none)").matches) {
