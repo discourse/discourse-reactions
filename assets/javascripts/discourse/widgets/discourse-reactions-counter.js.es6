@@ -4,8 +4,6 @@ import I18n from "I18n";
 import { next } from "@ember/runloop";
 import { later, cancel } from "@ember/runloop";
 
-let _laterHoverHandlers = {};
-
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
 
@@ -20,8 +18,6 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   click(event) {
-    this._cancelHoverHandler();
-
     if (!this.capabilities.touch) {
       this.toggleStatePanel(event);
     }
@@ -41,14 +37,6 @@ export default createWidget("discourse-reactions-counter", {
     if (this.capabilities.touch) {
       event.stopPropagation();
       this.toggleStatePanel(event);
-    }
-  },
-
-  mouseOut() {
-    this._cancelHoverHandler();
-
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.scheduleCollapse();
     }
   },
 
@@ -105,16 +93,6 @@ export default createWidget("discourse-reactions-counter", {
 
       return items;
     }
-  },
-
-  _cancelHoverHandler() {
-    const handler = _laterHoverHandlers[this.attrs.post.id];
-    handler && cancel(handler);
-  },
-
-  _hoverHandler(event) {
-    this.cancelCollapse();
-    this.toggleStatePanel(event);
   },
 
   collapsePanels() {

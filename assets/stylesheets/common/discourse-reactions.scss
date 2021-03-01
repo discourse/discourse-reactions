@@ -58,6 +58,10 @@ html.discourse-reactions-no-select {
           font-size: $font-up-1;
           margin-bottom: 1.5em;
         }
+
+        .other-users {
+          line-height: 0.8;
+        }
       }
 
       &.is-expanded {

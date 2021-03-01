@@ -173,7 +173,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (attrs.reaction.count > DISPLAY_MAX_USERS) {
       displayUsers.push(
         h(
-          "p.other_users",
+          "p.other-users",
           I18n.t("discourse_reactions.state_panel.more_users", {
             count: attrs.reaction.count - DISPLAY_MAX_USERS
           })
