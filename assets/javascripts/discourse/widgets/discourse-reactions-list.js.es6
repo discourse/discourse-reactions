@@ -20,7 +20,10 @@ export default createWidget("discourse-reactions-list", {
           .sortBy("count")
           .reverse()
           .map(reaction =>
-            this.attach("discourse-reactions-list-emoji", { reaction })
+            this.attach("discourse-reactions-list-emoji", {
+              reaction,
+              post: attrs.post
+            })
           )
       )
     ];

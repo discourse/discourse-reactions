@@ -33,37 +33,38 @@ html.discourse-reactions-no-select {
       }
     }
 
-    .reaction .user-list {
+    .user-list {
+      position: relative;
       visibility: hidden;
       display: none;
-      width: 11em;
-      font-size: 12px;
-      background-color: var(--primary);
-      color: var(--secondary-very-high);
-      border: 1px solid var(--secondary-high);
-      text-align: left;
-      border-radius: 3px;
-      padding: 0 1em;
-      position: absolute;
-      z-index: 1;
-      top: 125%;
-      left: 50%;
-      margin-left: -7em;
-      opacity: 0;
-      line-height: 0.3em;
+      z-index: z("usercard") - 2;
       transition: opacity 0.33s;
+      opacity: 0;
+      padding: 0.5em 0;
 
-      .heading {
-        font-weight: bold;
-        font-size: 14px;
-        margin-bottom: 1.5em;
+      .container {
+        font-size: $font-down-2;
+        background-color: var(--primary);
+        color: var(--secondary-very-high);
+        border: 1px solid var(--secondary-high);
+        text-align: left;
+        border-radius: 3px;
+        padding: 0 1em;
+        z-index: 1;
+        line-height: 0.3em;
+
+        .heading {
+          font-weight: bold;
+          font-size: $font-up-1;
+          margin-bottom: 1.5em;
+        }
       }
-    }
 
-    .reaction:hover .user-list {
-      visibility: visible;
-      display: block;
-      opacity: 0.9;
+      &.is-expanded {
+        visibility: visible;
+        display: block;
+        opacity: 0.9;
+      }
     }
   }
 
@@ -87,7 +88,7 @@ html.discourse-reactions-no-select {
 .discourse-reactions-picker {
   visibility: hidden;
   display: none;
-  padding-bottom: 15px;
+  padding: 15px 0;
   z-index: z("usercard") - 2;
   position: relative;
 
@@ -145,7 +146,7 @@ html.discourse-reactions-no-select {
   max-width: 275px;
   visibility: hidden;
   display: none;
-  padding-bottom: 15px;
+  padding: 15px 0;
   z-index: z("usercard") - 2;
   position: relative;
 

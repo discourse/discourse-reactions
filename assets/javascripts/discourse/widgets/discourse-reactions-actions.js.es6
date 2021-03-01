@@ -97,8 +97,7 @@ export default createWidget("discourse-reactions-actions", {
 
   defaultState() {
     return {
-      reactionsPickerExpanded: false,
-      statePanelExpanded: false
+      reactionsPickerExpanded: false
     };
   },
 
@@ -321,7 +320,9 @@ export default createWidget("discourse-reactions-actions", {
         } else if (reaction.id === post.current_user_reaction.id) {
           post.reactions[index].count -= 1;
           const users = post.reactions[index].users;
-          const userIndex = users.indexOf(users.findBy("username", this.currentUser.username));
+          const userIndex = users.indexOf(
+            users.findBy("username", this.currentUser.username)
+          );
           users.splice(userIndex, 1);
 
           return false;
@@ -429,8 +430,8 @@ export default createWidget("discourse-reactions-actions", {
 
     if (current_user_reaction && current_user_reaction.id == attrs.reaction) {
       this.toggleReaction(attrs);
-      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction)
-        .catch(e => {
+      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
+        e => {
           bootbox.alert(this.extractErrors(e));
 
           post.current_user_reaction = current_user_reaction;
@@ -438,7 +439,8 @@ export default createWidget("discourse-reactions-actions", {
           post.reactions = reactions;
           post.reaction_users_count = reaction_users_count;
           this.scheduleRerender();
-        });
+        }
+      );
     }
 
     if (
@@ -545,7 +547,7 @@ export default createWidget("discourse-reactions-actions", {
     container &&
       container
         .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
         )
         .forEach(popper => popper.classList.remove("is-expanded"));
 

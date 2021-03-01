@@ -13,6 +13,12 @@ export default createWidget("discourse-reactions-counter", {
 
   buildId: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
+  defaultState() {
+    return {
+      statePanelExpanded: false
+    };
+  },
+
   click(event) {
     this._cancelHoverHandler();
 
@@ -120,7 +126,7 @@ export default createWidget("discourse-reactions-counter", {
     container &&
       container
         .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
         )
         .forEach(popper => popper.classList.remove("is-expanded"));
 
