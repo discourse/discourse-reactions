@@ -2,102 +2,19 @@ import { h } from "virtual-dom";
 import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
-import { later, cancel } from "@ember/runloop";
 import { next } from "@ember/runloop";
 import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
-let _laterHoverHandlers = {};
 
 export default createWidget("discourse-reactions-list-emoji", {
   tagName: "div",
+
   buildId: attrs =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
+
   buildKey: attrs =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
-
-  defaultState() {
-    return {
-      reactionUserPanelExpanded: false
-    };
-  },
-
-  mouseOver(event) {
-    this._cancelHoverHandler();
-
-    if (!window.matchMedia("(hover: none)").matches) {
-      _laterHoverHandlers[this.attrs.post.id] = later(
-        this,
-        this._hoverHandler,
-        event,
-        5
-      );
-    }
-  },
-
-  _hoverHandler(event) {
-    this.cancelCollapse();
-    this.toggleReactionUserPanel(event);
-  },
-
-  mouseOut() {
-    this._cancelHoverHandler();
-
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.scheduleCollapse();
-    }
-  },
-
-  _cancelHoverHandler() {
-    const handler = _laterHoverHandlers[this.attrs.post.id];
-    handler && cancel(handler);
-  },
-
-  scheduleCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
-    this._collapseHandler = later(this, this.collapsePanels, 5);
-  },
-
-  cancelCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
-  },
-
-  collapsePanels() {
-    this.cancelCollapse();
-    this.state.reactionUserPanelExpanded = false;
-
-    const container = document.getElementById(this.buildId(this.attrs));
-
-    container &&
-      container
-        .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
-        )
-        .forEach(popper => popper.classList.remove("is-expanded"));
-
-    this.scheduleRerender();
-  },
-
-  toggleReactionUserPanel(event) {
-    if (!this.state.reactionUserPanelExpanded) {
-      this.expandReactionUserPanel(event);
-    } else {
-      this.scheduleCollapse();
-    }
-  },
-
-  expandReactionUserPanel() {
-    this.state.reactionsPickerExpanded = false;
-    this.state.statePanelExpanded = false;
-    this.state.reactionUserPanelExpanded = true;
-    this.scheduleRerender();
-    this._setupPopper(
-      this.attrs.post.id,
-      this.attrs.reaction.id,
-      "_popperReactionUserPanel",
-      `.user-list-${this.attrs.reaction.id}`
-    );
-  },
 
   buildClasses(attrs) {
     const classes = [];
@@ -160,30 +77,28 @@ export default createWidget("discourse-reactions-list-emoji", {
     }
 
     const reaction = attrs.reaction;
-    const users = attrs.reaction.users;
+    const users = attrs.reaction.users || [];
     const displayUsers = [];
-    let i = 0;
 
-    displayUsers.push(h("p.heading", attrs.reaction.id));
+    displayUsers.push(h("span.heading", attrs.reaction.id));
 
-    while (i <= DISPLAY_MAX_USERS && i < users.length) {
+    users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
       let displayName;
       if (this.siteSettings.prioritize_username_in_ux) {
-        displayName = users[i].username;
-      } else if (!users[i].name) {
-        displayName = users[i].username;
+        displayName = user.username;
+      } else if (!user.name) {
+        displayName = user.username;
       } else {
-        displayName = users[i].name;
+        displayName = user.name;
       }
 
-      displayUsers.push(h("p.username", displayName));
-      i++;
-    }
+      displayUsers.push(h("span.username", displayName));
+    });
 
     if (attrs.reaction.count > DISPLAY_MAX_USERS) {
       displayUsers.push(
         h(
-          "p.other-users",
+          "span.other-users",
           I18n.t("discourse_reactions.state_panel.more_users", {
             count: attrs.reaction.count - DISPLAY_MAX_USERS
           })
@@ -191,16 +106,23 @@ export default createWidget("discourse-reactions-list-emoji", {
       );
     }
 
+    this.scheduleRerender();
+
+    this._setupPopper(
+      this.attrs.post.id,
+      this.attrs.reaction.id,
+      "_popperReactionUserPanel",
+      `.user-list-${this.attrs.reaction.id}`
+    );
+
     return [
-      h(`div.reaction.${attrs.reaction.id}`, [
-        new RawHtml({
-          html: emojiUnescape(`:${reaction.id}:`, { skipTitle: true })
-        }),
-        h(
-          `div.user-list.user-list-${reaction.id}`,
-          h("div.container", displayUsers)
-        )
-      ])
+      new RawHtml({
+        html: emojiUnescape(`:${reaction.id}:`, { skipTitle: true })
+      }),
+      h(
+        `div.user-list.user-list-${reaction.id}`,
+        h("div.container", displayUsers)
+      )
     ];
   }
 });

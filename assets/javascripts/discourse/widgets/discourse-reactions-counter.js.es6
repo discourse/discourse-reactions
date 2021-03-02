@@ -17,7 +17,7 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   click(event) {
-    if (!this.capabilities.touch) {
+    if (!this.capabilities.touch || !this.site.mobileView) {
       this.toggleStatePanel(event);
     }
   },

@@ -12,16 +12,11 @@ html.discourse-reactions-no-select {
   .reactions {
     display: flex;
     align-items: center;
-    position: relative;
 
     .reaction {
-      position: relative;
-      display: inline-block;
       border-radius: 100px;
       border: 2px solid var(--secondary);
-      display: flex;
       background-color: var(--secondary);
-      align-items: center;
 
       &:nth-of-type(1n + 4) {
         display: none;
@@ -31,43 +26,43 @@ html.discourse-reactions-no-select {
         width: 1.1em;
         height: 1.1em;
       }
+
+      &:hover {
+        .user-list {
+          visibility: visible;
+          opacity: 0.9;
+        }
+      }
     }
 
     .user-list {
-      position: relative;
       visibility: hidden;
-      display: none;
       z-index: z("usercard") - 2;
       transition: opacity 0.33s;
       opacity: 0;
       padding: 0.5em 0;
 
       .container {
+        margin-top: 0.5em;
         font-size: $font-down-2;
         background-color: var(--primary);
         color: var(--secondary-very-high);
-        border: 1px solid var(--secondary-high);
-        text-align: left;
         border-radius: 3px;
-        padding: 0 1em;
-        z-index: 1;
-        line-height: 0.3em;
+        padding: 1em;
+        display: flex;
+        flex-direction: column;
 
         .heading {
-          font-weight: bold;
+          font-weight: 700;
           font-size: $font-up-1;
-          margin-bottom: 1.5em;
+          padding-bottom: 0.5em;
         }
 
         .other-users {
-          line-height: 0.8;
+          padding-top: 0.25em;
+          color: var(--secondary-high);
+          white-space: nowrap;
         }
-      }
-
-      &.is-expanded {
-        visibility: visible;
-        display: block;
-        opacity: 0.9;
       }
     }
   }
