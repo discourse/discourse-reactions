@@ -96,8 +96,7 @@ export default createWidget("discourse-reactions-actions", {
 
   defaultState() {
     return {
-      reactionsPickerExpanded: false,
-      statePanelExpanded: false
+      reactionsPickerExpanded: false
     };
   },
 
@@ -547,7 +546,7 @@ export default createWidget("discourse-reactions-actions", {
     container &&
       container
         .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
         )
         .forEach(popper => popper.classList.remove("is-expanded"));
 

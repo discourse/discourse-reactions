@@ -1,6 +1,4 @@
 import { h } from "virtual-dom";
-import RawHtml from "discourse/widgets/raw-html";
-import { emojiUnescape } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
 
 export default createWidget("discourse-reactions-list", {
@@ -20,12 +18,10 @@ export default createWidget("discourse-reactions-list", {
           .sortBy("count")
           .reverse()
           .map(reaction =>
-            h(
-              `span.reaction.${reaction.id}`,
-              new RawHtml({
-                html: emojiUnescape(`:${reaction.id}:`)
-              })
-            )
+            this.attach("discourse-reactions-list-emoji", {
+              reaction,
+              post: attrs.post
+            })
           )
       )
     ];

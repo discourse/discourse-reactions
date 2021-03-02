@@ -68,7 +68,7 @@ after_initialize do
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
-        users: reaction.reaction_users.order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.username, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
+        users: reaction.reaction_users.order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.username, name: reaction_user.user.name, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
         count: reaction.reaction_users_count
       }
     end
