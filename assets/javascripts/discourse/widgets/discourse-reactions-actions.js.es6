@@ -343,6 +343,7 @@ export default createWidget("discourse-reactions-actions", {
           post.reactions[index].count += 1;
           post.reactions[index].users.unshift({
             username: this.currentUser.username,
+            name: this.currentUser.name,
             avatar_template: this.currentUser.avatar_template,
             can_undo: true
           });
@@ -360,6 +361,7 @@ export default createWidget("discourse-reactions-actions", {
           users: [
             {
               username: this.currentUser.username,
+              name: this.currentUser.name,
               avatar_template: this.currentUser.avatar_template,
               can_undo: true
             }
