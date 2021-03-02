@@ -167,7 +167,16 @@ export default createWidget("discourse-reactions-list-emoji", {
     displayUsers.push(h("p.heading", attrs.reaction.id));
 
     while (i <= DISPLAY_MAX_USERS && i < users.length) {
-      displayUsers.push(h("p.username", users[i].username));
+      let displayName;
+      if (this.siteSettings.prioritize_username_in_ux) {
+        displayName = users[i].username;
+      } else if (!users[i].name) {
+        displayName = users[i].username;
+      } else {
+        displayName = users[i].name;
+      }
+
+      displayUsers.push(h("p.username", displayName));
       i++;
     }
 
