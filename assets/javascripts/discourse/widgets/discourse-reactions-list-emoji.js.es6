@@ -115,14 +115,21 @@ export default createWidget("discourse-reactions-list-emoji", {
       `.user-list-${this.attrs.reaction.id}`
     );
 
-    return [
+    const elements = [
       new RawHtml({
         html: emojiUnescape(`:${reaction.id}:`, { skipTitle: true })
-      }),
-      h(
-        `div.user-list.user-list-${reaction.id}`,
-        h("div.container", displayUsers)
-      )
+      })
     ];
+
+    if (!this.site.mobileView) {
+      elements.push(
+        h(
+          `div.user-list.user-list-${reaction.id}`,
+          h("div.container", displayUsers)
+        )
+      );
+    }
+
+    return elements;
   }
 });
