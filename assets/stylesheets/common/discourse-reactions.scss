@@ -63,10 +63,14 @@ html.discourse-reactions-no-select {
           padding-bottom: 0.5em;
         }
 
+        .username,
+        .other-users {
+          white-space: nowrap;
+        }
+
         .other-users {
           padding-top: 0.25em;
           color: var(--secondary-high);
-          white-space: nowrap;
         }
       }
     }
