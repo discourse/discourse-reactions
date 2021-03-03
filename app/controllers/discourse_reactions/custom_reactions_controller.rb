@@ -56,7 +56,7 @@ module DiscourseReactions
 
         if !likes.blank?
           reaction_users[DiscourseReactions::Reaction.main_reaction_id] = {
-            users: likes.includes([:user]).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
+            users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
           }
         end
       elsif reaction_value
@@ -76,7 +76,7 @@ module DiscourseReactions
 
         if !likes.blank?
           reaction_users[DiscourseReactions::Reaction.main_reaction_id] = {
-            users: likes.includes([:user]).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
+            users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
           }
         end
       end
