@@ -8,24 +8,10 @@ import I18n from "I18n";
 const DISPLAY_MAX_USERS = 19;
 
 export default createWidget("discourse-reactions-list-emoji", {
-  tagName: "div",
+  tagName: "div.reaction",
 
   buildId: attrs =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
-
-  buildKey: attrs =>
-    `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
-
-  buildClasses(attrs) {
-    const classes = [];
-    classes.push(`discourse-reactions-list-emoji-${attrs.reaction.id}`);
-
-    classes.push("reaction");
-
-    classes.push(attrs.reaction.id.toString());
-
-    return classes;
-  },
 
   _setupPopper(postId, reactionId, popper, selector) {
     next(() => {
@@ -39,7 +25,6 @@ export default createWidget("discourse-reactions-list-emoji", {
       );
 
       if (popperElement) {
-        popperElement.classList.add("is-expanded");
 
         if (this[popper]) {
           return;
@@ -112,7 +97,7 @@ export default createWidget("discourse-reactions-list-emoji", {
       this.attrs.post.id,
       this.attrs.reaction.id,
       "_popperReactionUserPanel",
-      `.user-list-${this.attrs.reaction.id}`
+      `.user-list`
     );
 
     const elements = [
@@ -124,7 +109,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (!this.site.mobileView) {
       elements.push(
         h(
-          `div.user-list.user-list-${reaction.id}`,
+          `div.user-list`,
           h("div.container", displayUsers)
         )
       );
