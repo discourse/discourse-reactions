@@ -7,19 +7,6 @@ export default createWidget("discourse-reactions-double-button", {
 
   buildKey: attrs => `discourse-reactions-double-button-${attrs.post.id}`,
 
-  buildClasses(attrs) {
-    const classes = [];
-
-    if (
-      attrs.post.likeAction &&
-      (attrs.post.likeAction.canToggle || attrs.post.likeAction.can_undo)
-    ) {
-      classes.push("can-toggle-main-reaction");
-    }
-
-    return classes;
-  },
-
   html(attrs) {
     const items = [];
     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
