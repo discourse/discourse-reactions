@@ -13,15 +13,15 @@ export default createWidget("discourse-reactions-list-emoji", {
   buildId: attrs =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
-  _setupPopper(postId, reactionId, popper, selector) {
+  _setupPopper(popper, selector) {
     next(() => {
       let popperElement;
       const trigger = document.querySelector(
-        `#discourse-reactions-list-emoji-${postId}-${reactionId}`
+        `#${this.buildId(this.attrs)}`
       );
 
       popperElement = document.querySelector(
-        `#discourse-reactions-list-emoji-${postId}-${reactionId} ${selector}`
+        `#${this.buildId(this.attrs)} ${selector}`
       );
 
       if (popperElement) {
@@ -94,8 +94,6 @@ export default createWidget("discourse-reactions-list-emoji", {
     this.scheduleRerender();
 
     this._setupPopper(
-      this.attrs.post.id,
-      this.attrs.reaction.id,
       "_popperReactionUserPanel",
       `.user-list`
     );
