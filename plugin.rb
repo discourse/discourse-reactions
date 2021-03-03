@@ -73,17 +73,16 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.select do |l|
-      l.post_action_type_id == PostActionType.types[:like] &&
-      l.deleted_at.blank?
-    end
+    likes = object.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like])
+
+    object.post_actions
 
     return reactions if likes.blank?
 
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
-      users: likes.map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
+      users: likes.includes([:user]).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
       count: likes.length
     }
 
@@ -92,7 +91,7 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_reaction) do
     return nil unless scope.user.present?
-    object.reactions.each do |reaction|
+    object.reactions.includes([:reaction_users]).each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
       next unless reaction_user
