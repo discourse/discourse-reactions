@@ -11,6 +11,7 @@ module DiscourseReactions
       DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: @post).toggle!
 
       @post.publish_change_to_clients! :acted
+      publish_change_to_clients!
 
       render_json_dump(post_serializer.as_json)
     end
@@ -93,6 +94,14 @@ module DiscourseReactions
     def fetch_post_from_params
       @post = Post.find(params[:post_id])
       guardian.ensure_can_see!(@post)
+    end
+
+    def publish_change_to_clients!
+      message = {
+        id: @post.id,
+        type: params[:reaction]
+      }
+      MessageBus.publish("/post/#{@post.id}", message)
     end
   end
 end
