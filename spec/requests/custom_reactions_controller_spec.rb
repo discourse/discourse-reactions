@@ -6,9 +6,16 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:post_1) { Fabricate(:post) }
   fab!(:user_1) { Fabricate(:user) }
   fab!(:user_2) { Fabricate(:user) }
+  fab!(:user_3) { Fabricate(:user) }
+  fab!(:user_4) { Fabricate(:user) }
   fab!(:post_2) { Fabricate(:post, user: user_1) }
   fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
+  fab!(:reaction_2) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
+  fab!(:reaction_3) { Fabricate(:reaction, post: post_2, reaction_value: "thumbsup") }
   fab!(:reaction_user_1) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_2) }
+  fab!(:reaction_user_2) { Fabricate(:reaction_user, reaction: reaction_1, user: user_1, post: post_2) }
+  fab!(:reaction_user_3) { Fabricate(:reaction_user, reaction: reaction_3, user: user_4, post: post_2) }
+  fab!(:reaction_user_4) { Fabricate(:reaction_user, reaction: reaction_2, user: user_3, post: post_2) }
 
   before do
     SiteSetting.discourse_reactions_like_icon = 'heart'
@@ -21,7 +28,7 @@ describe DiscourseReactions::CustomReactionsController do
           'id' => 'thumbsup',
           'type' => 'emoji',
           'users' => [
-            { 'username' => user_1.username, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
+            { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
           ],
           'count' => 1
         }
@@ -35,7 +42,7 @@ describe DiscourseReactions::CustomReactionsController do
           'id' => 'thumbsup',
           'type' => 'emoji',
           'users' => [
-            { 'username' => user_1.username, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
+            { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
           ],
           'count' => 1
         }
@@ -58,8 +65,8 @@ describe DiscourseReactions::CustomReactionsController do
       expect(reaction.reaction_value).to eq('thumbsup')
       expect(reaction.reaction_users_count).to eq(2)
       expect(response.parsed_body['reactions'][0]['users']).to eq([
-        { 'username' => user_1.username, 'avatar_template' => user_1.avatar_template, 'can_undo' => true },
-        { 'username' => user_2.username, 'avatar_template' => user_2.avatar_template, 'can_undo' => true }
+        { 'username' => user_2.username, 'name' => user_2.name, 'avatar_template' => user_2.avatar_template, 'can_undo' => true },
+        { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
       ])
 
       expect do
@@ -121,10 +128,10 @@ describe DiscourseReactions::CustomReactionsController do
       get "/discourse-reactions/posts/reactions-received.json"
       parsed = response.parsed_body
 
-      expect(parsed[0]['user']['id']).to eq(user_2.id)
+      expect(parsed[0]['user']['id']).to eq(user_3.id)
       expect(parsed[0]['post_id']).to eq(post_2.id)
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
-      expect(parsed[0]['reaction']['id']).to eq(reaction_1.id)
+      expect(parsed[0]['reaction']['id']).to eq(reaction_2.id)
     end
   end
 
@@ -134,9 +141,25 @@ describe DiscourseReactions::CustomReactionsController do
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["username"]).to eq(user_2.username)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["name"]).to eq(user_2.name)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["avatar_template"]).to eq(user_2.avatar_template)
+      expect(parsed["reaction_users"][0]["users"][0]["username"]).to eq(user_1.username)
+      expect(parsed["reaction_users"][0]["users"][0]["name"]).to eq(user_1.name)
+      expect(parsed["reaction_users"][0]["users"][0]["avatar_template"]).to eq(user_1.avatar_template)
+    end
+
+    it 'return reaction_users sorted by count' do
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(parsed["reaction_users"].map { |reaction_user| reaction_user["count"] }).to match_array([2,1,1])
+    end
+
+    it 'return reaction_users when count is same, its sorted alphabetically' do
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(parsed["reaction_users"].map { |reaction_user| reaction_user["id"] }).to match_array([reaction_1.reaction_value, reaction_2.reaction_value, reaction_3.reaction_value])
     end
 
     it 'return reaction_users of reaction when there are parameters' do
@@ -144,9 +167,9 @@ describe DiscourseReactions::CustomReactionsController do
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["username"]).to eq(user_2.username)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["name"]).to eq(user_2.name)
-      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["avatar_template"]).to eq(user_2.avatar_template)
+      expect(parsed["reaction_users"][0]["users"][0]["username"]).to eq(user_1.username)
+      expect(parsed["reaction_users"][0]["users"][0]["name"]).to eq(user_1.name)
+      expect(parsed["reaction_users"][0]["users"][0]["avatar_template"]).to eq(user_1.avatar_template)
     end
 
     it "gives 400 ERROR when the post_id OR reaction_value is invalid" do
