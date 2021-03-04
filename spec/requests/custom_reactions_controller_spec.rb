@@ -7,7 +7,7 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:user_1) { Fabricate(:user) }
   fab!(:user_2) { Fabricate(:user) }
   fab!(:post_2) { Fabricate(:post, user: user_1) }
-  fab!(:reaction_1) { Fabricate(:reaction, post: post_2) }
+  fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
   fab!(:reaction_user_1) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_2) }
 
   before do
@@ -125,6 +125,36 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post_id']).to eq(post_2.id)
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_1.id)
+    end
+  end
+
+  context '#post_reactions_users' do
+    it 'return reaction_users of post when theres no parameters' do
+      get "/discourse-reactions/#{post_2.id}/reactions-users.json"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["username"]).to eq(user_2.username)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["name"]).to eq(user_2.name)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["avatar_template"]).to eq(user_2.avatar_template)
+    end
+
+    it 'return reaction_users of reaction when there are parameters' do
+      get "/discourse-reactions/#{post_2.id}/reactions-users.json?reaction_value=#{reaction_1.reaction_value}"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["username"]).to eq(user_2.username)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["name"]).to eq(user_2.name)
+      expect(parsed["reaction_users"][reaction_1.reaction_value]["users"][0]["avatar_template"]).to eq(user_2.avatar_template)
+    end
+
+    it "gives 400 ERROR when the post_id OR reaction_value is invalid" do
+      get "/discourse-reactions/1000000/reactions-users.json"
+      expect(response.status).to eq(400)
+
+      get "/discourse-reactions/1000000/reactions-users.json?reaction_value=test"
+      expect(response.status).to eq(400)
     end
   end
 
