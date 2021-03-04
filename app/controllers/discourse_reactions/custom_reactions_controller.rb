@@ -52,32 +52,24 @@ module DiscourseReactions
 
       reaction_users = {}
 
-      if reaction_value && reaction_value == DiscourseReactions::Reaction.main_reaction_id
-        likes = post.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like])
+      likes = post.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like]) if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
 
-        if !likes.blank?
-          reaction_users[DiscourseReactions::Reaction.main_reaction_id] = {
-            users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
-          }
-        end
-      elsif reaction_value
-        post.reactions.where(reaction_value: reaction_value).select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
-          reaction_users[reaction.reaction_value] = {
-            users: reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.user.username, name: reaction_user.user.name, avatar_template: reaction_user.user.avatar_template, can_undo: reaction_user.can_undo? } }
-          }
-        end
-      else
+      like_users = {
+        users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
+      } if !likes.blank?
+
+      reaction_users[DiscourseReactions::Reaction.main_reaction_id] = like_users if like_users
+
+      if !reaction_value
         post.reactions.select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
           reaction_users[reaction.reaction_value] = {
             users: reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.user.username, name: reaction_user.user.name, avatar_template: reaction_user.user.avatar_template, can_undo: reaction_user.can_undo? } }
           }
         end
-
-        likes = post.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like])
-
-        if !likes.blank?
-          reaction_users[DiscourseReactions::Reaction.main_reaction_id] = {
-            users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
+      elsif reaction_value && reaction_value != DiscourseReactions::Reaction.main_reaction_id
+        post.reactions.where(reaction_value: reaction_value).select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
+          reaction_users[reaction.reaction_value] = {
+            users: reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.user.username, name: reaction_user.user.name, avatar_template: reaction_user.user.avatar_template, can_undo: reaction_user.can_undo? } }
           }
         end
       end
