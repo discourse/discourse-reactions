@@ -61,7 +61,7 @@ after_initialize do
     put "/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle" => "custom_reactions#toggle", constraints: { format: :json }
     get "/discourse-reactions/posts/my-reactions" => "custom_reactions#my_reactions", as: "my_reactions"
     get "/discourse-reactions/posts/reactions-received" => "custom_reactions#reactions_received", as: "reactions_received"
-    get "/discourse-reactions/:post_id/reactions-users" => "custom_reactions#post_reactions_users", as: "post_reactions_users"
+    get "/discourse-reactions/posts/:id/reactions-users" => "custom_reactions#post_reactions_users", as: "post_reactions_users"
   end
 
   add_to_serializer(:post, :reactions) do

@@ -43,41 +43,60 @@ module DiscourseReactions
     end
 
     def post_reactions_users
-      post_id = params.require(:post_id).to_i
+      id = params.require(:id).to_i
       reaction_value = params[:reaction_value]
 
-      post = Post.find_by(id: post_id)
+      post = Post.find_by(id: id)
 
       raise Discourse::InvalidParameters if !post || (reaction_value && !DiscourseReactions::Reaction.valid_reactions.include?(reaction_value))
 
-      reaction_users = {}
+      reaction_users = []
 
       likes = post.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like]) if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
 
       like_users = {
-        users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } },
+        id: DiscourseReactions::Reaction.main_reaction_id,
+        count: likes.length.to_i,
+        users: likes.includes([:user]).limit(MAX_USERS_COUNT + 1).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: guardian.can_delete_post_action?(like) } }
       } if !likes.blank?
 
-      reaction_users[DiscourseReactions::Reaction.main_reaction_id] = like_users if like_users
+      reaction_users << like_users if like_users
 
       if !reaction_value
         post.reactions.select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
-          reaction_users[reaction.reaction_value] = {
-            users: reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.user.username, name: reaction_user.user.name, avatar_template: reaction_user.user.avatar_template, can_undo: reaction_user.can_undo? } }
+          reaction_users << {
+            id: reaction.reaction_value,
+            count: reaction.reaction_users_count.to_i,
+            users: get_users(reaction)
           }
         end
-      elsif reaction_value && reaction_value != DiscourseReactions::Reaction.main_reaction_id
+      elsif reaction_value != DiscourseReactions::Reaction.main_reaction_id
         post.reactions.where(reaction_value: reaction_value).select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
-          reaction_users[reaction.reaction_value] = {
-            users: reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.user.username, name: reaction_user.user.name, avatar_template: reaction_user.user.avatar_template, can_undo: reaction_user.can_undo? } }
+          reaction_users << {
+            id: reaction.reaction_value,
+            count: reaction.reaction_users_count.to_i,
+            users: get_users(reaction)
           }
         end
       end
+
+      reaction_users = reaction_users.sort_by { |reaction| [-reaction[:count], reaction[:id]] }
 
       render_json_dump(reaction_users: reaction_users)
     end
 
     private
+
+    def get_users(reaction)
+      reaction.reaction_users.includes(:user).order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user|
+        {
+          username: reaction_user.user.username,
+          name: reaction_user.user.name,
+          avatar_template: reaction_user.user.avatar_template,
+          can_undo: reaction_user.can_undo?
+        }
+      }
+    end
 
     def post_serializer
       PostSerializer.new(@post, scope: guardian, root: false)

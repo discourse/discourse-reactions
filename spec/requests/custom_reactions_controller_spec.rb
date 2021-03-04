@@ -130,7 +130,7 @@ describe DiscourseReactions::CustomReactionsController do
 
   context '#post_reactions_users' do
     it 'return reaction_users of post when theres no parameters' do
-      get "/discourse-reactions/#{post_2.id}/reactions-users.json"
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
@@ -140,7 +140,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
 
     it 'return reaction_users of reaction when there are parameters' do
-      get "/discourse-reactions/#{post_2.id}/reactions-users.json?reaction_value=#{reaction_1.reaction_value}"
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{reaction_1.reaction_value}"
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
@@ -150,10 +150,10 @@ describe DiscourseReactions::CustomReactionsController do
     end
 
     it "gives 400 ERROR when the post_id OR reaction_value is invalid" do
-      get "/discourse-reactions/1000000/reactions-users.json"
+      get "/discourse-reactions/posts/1000000/reactions-users.json"
       expect(response.status).to eq(400)
 
-      get "/discourse-reactions/1000000/reactions-users.json?reaction_value=test"
+      get "/discourse-reactions/posts/1000000/reactions-users.json?reaction_value=test"
       expect(response.status).to eq(400)
     end
   end
