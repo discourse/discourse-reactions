@@ -88,6 +88,8 @@ after_initialize do
     }
 
     reactions << like_reaction
+
+    reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
   end
 
   add_to_serializer(:post, :current_user_reaction) do

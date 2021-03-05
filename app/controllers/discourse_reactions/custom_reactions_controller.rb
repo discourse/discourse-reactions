@@ -7,11 +7,11 @@ module DiscourseReactions
     def toggle
       fetch_post_from_params
       return render_json_error(@post) unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
+      publish_change_to_clients!
 
       DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: @post).toggle!
 
       @post.publish_change_to_clients! :acted
-      publish_change_to_clients!
 
       render_json_dump(post_serializer.as_json)
     end

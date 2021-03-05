@@ -15,8 +15,6 @@ html.discourse-reactions-no-select {
 
     .reaction {
       border-radius: 100px;
-      border: 2px solid var(--secondary);
-      background-color: var(--secondary);
       width: 20px;
       height: 20px;
       display: flex;
@@ -65,11 +63,13 @@ html.discourse-reactions-no-select {
           font-weight: 700;
           font-size: $font-up-1;
           padding-bottom: 0.5em;
+          text-align: left;
         }
 
         .username,
         .other-users {
           white-space: nowrap;
+          text-align: left;
         }
 
         .other-users {
@@ -154,13 +154,25 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-state-panel {
-  min-width: 235px;
+  min-width: 80px;
   max-width: 275px;
   visibility: hidden;
   display: none;
   padding: 15px 0;
   z-index: z("usercard") - 2;
   position: relative;
+
+  .discourse-reactions-state-panel-reaction .count {
+    padding-right: 0.25em;
+  }
+
+  @for $i from 1 through 5 {
+    &.max-length-#{$i} {
+      .discourse-reactions-state-panel-reaction .count {
+        width: #{$i * 10}px;
+      }
+    }
+  }
 
   &.is-expanded {
     animation: 0.33s fadeIn;
@@ -243,8 +255,6 @@ html.discourse-reactions-no-select {
       font-size: $font-down-1;
       color: var(--primary-medium);
       text-align: left;
-      padding-right: 0.5em;
-      width: 30px;
       @include ellipsis;
     }
 
@@ -395,23 +405,23 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-counter {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  padding-left: 0.5em;
+  text-align: center;
   cursor: pointer;
+  padding: 0 10px;
 
   .reactions-counter {
     font-size: $font-up-1;
     color: var(--primary-low-mid);
     display: flex;
-    margin: 0 0.25em;
     pointer-events: none;
+    margin-left: 0.5em;
   }
 
   &.only-like {
-    padding-right: 0;
     .reactions-counter {
-      margin-right: 0;
+      margin: 0;
     }
   }
 }

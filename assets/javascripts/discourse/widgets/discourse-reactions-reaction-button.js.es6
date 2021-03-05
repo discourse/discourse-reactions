@@ -126,5 +126,6 @@ export default createWidget("discourse-reactions-reaction-button", {
   _hoverHandler(event) {
     this.callWidgetFunction("cancelCollapse");
     this.callWidgetFunction("toggleReactions", event);
+    this.callWidgetFunction("collapseStatePanel");
   }
 });

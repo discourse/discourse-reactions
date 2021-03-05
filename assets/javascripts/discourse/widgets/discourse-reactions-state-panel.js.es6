@@ -6,6 +6,18 @@ export default createWidget("discourse-reactions-state-panel", {
 
   buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
 
+  buildClasses(attrs) {
+    const classes = [];
+
+    if (attrs.post && attrs.post.reactions) {
+      const maxCount = Math.max(...attrs.post.reactions.mapBy("count"));
+      const charsCount = maxCount.toString().length;
+      classes.push(`max-length-${charsCount}`);
+    }
+
+    return classes;
+  },
+
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
       this.callWidgetFunction("scheduleCollapse");
@@ -43,18 +55,18 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
-    const divContainer = this.attrs.state.postIds.includes(this.attrs.post.id) ? h(
+    const divContainer = attrs.state.postIds.includes(attrs.post.id) ? h(
       "div.counters",
-      sortedReactions.map(reaction =>
+      attrs.post.reactions.map(reaction =>
         this.attach("discourse-reactions-state-panel-reaction", {
           reaction,
-          users: this.attrs.state[reaction.id],
+          users: attrs.state[reaction.id],
           post: attrs.post,
           isDisplayed: reaction.id === this.state.displayedReactionId
         })
       )
     ) : h('div.center', h('div.spinner'));
+
     return [
       ,
       h(
