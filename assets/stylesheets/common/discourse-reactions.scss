@@ -156,6 +156,18 @@ html.discourse-reactions-no-select {
   z-index: z("usercard") - 2;
   position: relative;
 
+  .discourse-reactions-state-panel-reaction .count {
+    padding-right: 0.25em;
+  }
+
+  @for $i from 1 through 5 {
+    &.max-length-#{$i} {
+      .discourse-reactions-state-panel-reaction .count {
+        width: #{$i * 10}px;
+      }
+    }
+  }
+
   &.is-expanded {
     animation: 0.33s fadeIn;
     animation-fill-mode: forwards;
@@ -237,8 +249,6 @@ html.discourse-reactions-no-select {
       font-size: $font-down-1;
       color: var(--primary-medium);
       text-align: left;
-      padding-right: 0.5em;
-      width: 30px;
       @include ellipsis;
     }
 

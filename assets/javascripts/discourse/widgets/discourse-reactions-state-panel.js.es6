@@ -6,6 +6,18 @@ export default createWidget("discourse-reactions-state-panel", {
 
   buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
 
+  buildClasses(attrs) {
+    const classes = [];
+
+    if (attrs.post && attrs.post.reactions) {
+      const maxCount = Math.max(...attrs.post.reactions.mapBy("count"));
+      const charsCount = maxCount.toString().length;
+      classes.push(`max-length-${charsCount}`);
+    }
+
+    return classes;
+  },
+
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
       this.callWidgetFunction("scheduleCollapse");
