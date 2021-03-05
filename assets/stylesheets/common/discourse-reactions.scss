@@ -411,11 +411,12 @@ html.discourse-reactions-no-select {
     color: var(--primary-low-mid);
     display: flex;
     pointer-events: none;
+    margin-left: 0.5em;
   }
 
   &.only-like {
     .reactions-counter {
-      margin-right: 0;
+      margin: 0;
     }
   }
 }
