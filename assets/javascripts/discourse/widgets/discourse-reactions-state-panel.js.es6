@@ -43,15 +43,13 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
-
     return [
       ,
       h(
         "div.container",
         h(
           "div.counters",
-          sortedReactions.map(reaction =>
+          attrs.post.reactions.map(reaction =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
               post: attrs.post,
