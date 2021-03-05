@@ -538,21 +538,29 @@ export default createWidget("discourse-reactions-actions", {
     ]);
   },
 
+  collapseStatePanel() {
+    this.state.statePanelExpanded = false;
+    this._resetPopper();
+    this.scheduleRerender();
+  },
+
   collapsePanels() {
     this.cancelCollapse();
 
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
+    this._resetPopper();
+    this.scheduleRerender();
+  },
 
+  _resetPopper() {
     const container = document.getElementById(this.buildId(this.attrs));
     container &&
       container
         .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
         )
         .forEach(popper => popper.classList.remove("is-expanded"));
-
-    this.scheduleRerender();
   },
 
   html(attrs) {
