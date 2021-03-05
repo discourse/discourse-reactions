@@ -399,20 +399,20 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-counter {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  text-align: center;
   cursor: pointer;
+  padding: 0 10px;
 
   .reactions-counter {
     font-size: $font-up-1;
     color: var(--primary-low-mid);
     display: flex;
-    margin: 0 0.25em;
     pointer-events: none;
   }
 
   &.only-like {
-    padding-right: 0;
     .reactions-counter {
       margin-right: 0;
     }
