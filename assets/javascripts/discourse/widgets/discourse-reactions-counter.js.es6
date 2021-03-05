@@ -2,6 +2,8 @@ import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
 import { next } from "@ember/runloop";
 import { later, cancel } from "@ember/runloop";
+import CustomReaction from "../models/discourse-reactions-custom-reaction";
+import MessageBus from "message-bus-client";
 
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
@@ -10,14 +12,77 @@ export default createWidget("discourse-reactions-counter", {
 
   buildId: attrs => `discourse-reactions-counter-${attrs.post.id}`,
 
+  init() {
+    this.subscribe();
+  },
+
+  unsubscribe() {
+    if (!this.attrs.post.id) {
+      return;
+    }
+    MessageBus.unsubscribe(`/post/${this.attrs.post.id}`);
+  },
+
+  subscribe() {
+    this.unsubscribe();
+
+    MessageBus.subscribe(
+      `/post/${this.attrs.post.id}`,
+      (data) => {
+        if(this.state[data.type].length) {
+          this.getUsers(data.type);
+        }
+      }
+    );
+  },
+
   defaultState() {
-    return {
-      statePanelExpanded: false
-    };
+    const state = {};
+
+    this.siteSettings.discourse_reactions_enabled_reactions.split('|').forEach((item) => {
+      state[item] = [];
+    });
+
+    state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
+    state.statePanelExpanded = false;
+    state.postId = null;
+    state.reactionValue = null;
+    state.postIds = [];
+
+    return state;
+  },
+
+  getUsers(reactionValue = null) {
+    if(reactionValue && this.state.reactionValue) {
+      return;
+    }
+
+    if(this.state.postId) {
+      return;
+    }
+
+    if(!reactionValue && !this.state.postIds.includes(this.attrs.postId)) {
+      this.state.postIds.push(this.attrs.post.id);
+    }
+
+    this.state.postId = this.attrs.post.id;
+    this.state.reactionValue = reactionValue;
+
+    CustomReaction.findReactionUsers(this.attrs.post.id, { reactionValue }).then((reactions) => {
+      reactions.reaction_users.forEach((reactionUser) => {
+        this.state[reactionUser.id] = reactionUser.users;
+      });
+      this.state.postId = null;
+      this.state.reactionValue = null;
+      this.scheduleRerender();
+    });
   },
 
   click(event) {
     if (!this.capabilities.touch || !this.site.mobileView) {
+      if(!this.state.statePanelExpanded) {
+        this.getUsers();
+      }
       this.toggleStatePanel(event);
     }
   },
@@ -74,7 +139,8 @@ export default createWidget("discourse-reactions-counter", {
         this.attach(
           "discourse-reactions-state-panel",
           Object.assign({}, attrs, {
-            statePanelExpanded: this.state.statePanelExpanded
+            statePanelExpanded: this.state.statePanelExpanded,
+            state: this.state
           })
         )
       );
@@ -85,6 +151,7 @@ export default createWidget("discourse-reactions-counter", {
           attrs.post.reactions[0].id === mainReaction
         )
       ) {
+        attrs.state = this.state;
         items.push(this.attach("discourse-reactions-list", attrs));
       }
 

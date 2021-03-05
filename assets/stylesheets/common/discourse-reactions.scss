@@ -57,6 +57,10 @@ html.discourse-reactions-no-select {
         display: flex;
         flex-direction: column;
 
+        .center {
+          align-self: center;
+        }
+
         .heading {
           font-weight: 700;
           font-size: $font-up-1;

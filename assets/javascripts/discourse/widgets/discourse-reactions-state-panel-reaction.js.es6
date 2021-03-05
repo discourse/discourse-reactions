@@ -32,7 +32,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       ])
     );
 
-    const firsLineUsers = attrs.reaction.users.slice(0, MIN_USERS_COUNT);
+    const firsLineUsers = attrs.users.slice(0, MIN_USERS_COUNT);
     const list = firsLineUsers.map(user =>
       avatarFor("tiny", {
         username: user.username,
@@ -40,7 +40,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       })
     );
 
-    if (attrs.reaction.users.length > MIN_USERS_COUNT) {
+    if (attrs.users.length > MIN_USERS_COUNT) {
       list.push(
         this.attach("button", {
           action: "showUsers",
@@ -56,7 +56,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
     if (attrs.isDisplayed) {
       list.push(
-        attrs.reaction.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map(user =>
+        attrs.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map(user =>
           avatarFor("tiny", {
             username: user.username,
             template: user.avatar_template
@@ -73,7 +73,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     }
 
     const columnsCount =
-      attrs.reaction.users.length > MIN_USERS_COUNT
+      attrs.users.length > MIN_USERS_COUNT
         ? firsLineUsers.length + 1
         : firsLineUsers.length;
 

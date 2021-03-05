@@ -44,21 +44,22 @@ export default createWidget("discourse-reactions-state-panel", {
     }
 
     const sortedReactions = attrs.post.reactions.sortBy("count").reverse();
-
+    const divContainer = this.attrs.state.postIds.includes(this.attrs.post.id) ? h(
+      "div.counters",
+      sortedReactions.map(reaction =>
+        this.attach("discourse-reactions-state-panel-reaction", {
+          reaction,
+          users: this.attrs.state[reaction.id],
+          post: attrs.post,
+          isDisplayed: reaction.id === this.state.displayedReactionId
+        })
+      )
+    ) : h('div.center', h('div.spinner'));
     return [
       ,
       h(
         "div.container",
-        h(
-          "div.counters",
-          sortedReactions.map(reaction =>
-            this.attach("discourse-reactions-state-panel-reaction", {
-              reaction,
-              post: attrs.post,
-              isDisplayed: reaction.id === this.state.displayedReactionId
-            })
-          )
-        )
+        divContainer
       )
     ];
   }
