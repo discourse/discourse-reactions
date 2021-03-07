@@ -80,8 +80,6 @@ module DiscourseReactions
         end
       end
 
-      reaction_users = reaction_users.sort_by { |reaction| [-reaction[:count], reaction[:id]] }
-
       render_json_dump(reaction_users: reaction_users)
     end
 
