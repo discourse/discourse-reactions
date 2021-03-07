@@ -15,8 +15,6 @@ export default createWidget("discourse-reactions-list", {
       h(
         "div.reactions",
         reactions
-          .sortBy("count")
-          .reverse()
           .map(reaction =>
             this.attach("discourse-reactions-list-emoji", {
               reaction,

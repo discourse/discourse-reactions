@@ -78,7 +78,7 @@ after_initialize do
 
     object.post_actions
 
-    return reactions if likes.blank?
+    return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
 
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
