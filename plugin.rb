@@ -69,7 +69,6 @@ after_initialize do
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
-        users: reaction.reaction_users.order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.username, name: reaction_user.name, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
         count: reaction.reaction_users_count
       }
     end
@@ -83,7 +82,6 @@ after_initialize do
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
-      users: likes.includes([:user]).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
       count: likes.length
     }
 
