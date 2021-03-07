@@ -14,6 +14,10 @@ export default createWidget("discourse-reactions-list-emoji", {
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
   mouseOver() {
+    if (this.site.mobileView) {
+      return;
+    }
+
     if (!window.matchMedia("(hover: none)").matches && !this.attrs.users.length) {
       this.callWidgetFunction("getUsers", this.attrs.reaction.id);
     }
