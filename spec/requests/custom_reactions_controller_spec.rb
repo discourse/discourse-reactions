@@ -27,9 +27,6 @@ describe DiscourseReactions::CustomReactionsController do
         {
           'id' => 'thumbsup',
           'type' => 'emoji',
-          'users' => [
-            { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
-          ],
           'count' => 1
         }
       ]
@@ -41,9 +38,6 @@ describe DiscourseReactions::CustomReactionsController do
         {
           'id' => 'thumbsup',
           'type' => 'emoji',
-          'users' => [
-            { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
-          ],
           'count' => 1
         }
       ]
@@ -64,10 +58,6 @@ describe DiscourseReactions::CustomReactionsController do
       reaction = DiscourseReactions::Reaction.last
       expect(reaction.reaction_value).to eq('thumbsup')
       expect(reaction.reaction_users_count).to eq(2)
-      expect(response.parsed_body['reactions'][0]['users']).to eq([
-        { 'username' => user_2.username, 'name' => user_2.name, 'avatar_template' => user_2.avatar_template, 'can_undo' => true },
-        { 'username' => user_1.username, 'name' => user_1.name, 'avatar_template' => user_1.avatar_template, 'can_undo' => true }
-      ])
 
       expect do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/thumbsup/toggle.json"
@@ -144,22 +134,6 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed["reaction_users"][0]["users"][0]["username"]).to eq(user_1.username)
       expect(parsed["reaction_users"][0]["users"][0]["name"]).to eq(user_1.name)
       expect(parsed["reaction_users"][0]["users"][0]["avatar_template"]).to eq(user_1.avatar_template)
-    end
-
-    it 'return reaction_users sorted by count' do
-      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
-      parsed = response.parsed_body
-
-      expect(response.status).to eq(200)
-      expect(parsed["reaction_users"].map { |reaction_user| reaction_user["count"] }).to match_array([2,1,1])
-    end
-
-    it 'return reaction_users when count is same, its sorted alphabetically' do
-      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
-      parsed = response.parsed_body
-
-      expect(response.status).to eq(200)
-      expect(parsed["reaction_users"].map { |reaction_user| reaction_user["id"] }).to match_array([reaction_1.reaction_value, reaction_2.reaction_value, reaction_3.reaction_value])
     end
 
     it 'return reaction_users of reaction when there are parameters' do

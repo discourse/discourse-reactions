@@ -26,21 +26,13 @@ describe TopicViewSerializer do
       expect(json[:post_stream][:posts][0][:reactions]).to eq(
         [
           {
-            id: "otter",
+            id: "heart",
             type: :emoji,
-            users: [
-              { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
-              { username: user_2.username, avatar_template: user_2.avatar_template, can_undo: true }
-            ],
             count: 2
           },
           {
-            id: "heart",
+            id: "otter",
             type: :emoji,
-            users: [
-              { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
-              { username: user_2.username, avatar_template: user_2.avatar_template, can_undo: false }
-            ],
             count: 2
           }
         ]
@@ -83,9 +75,6 @@ describe TopicViewSerializer do
           {
             id: "heart",
             type: :emoji,
-            users: [
-              { username: user_1.username, avatar_template: user_1.avatar_template, can_undo: true },
-            ],
             count: 1
           }
         ]
