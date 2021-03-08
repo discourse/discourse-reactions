@@ -287,17 +287,21 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   justify-content: flex-end;
 
-  &.has-reacted {
-    &:not(.has-reactions) {
-      .discourse-reactions-reaction-button .reaction-button {
-        padding-left: 5px;
-      }
-
-      .discourse-reactions-counter {
-        padding-right: 5px;
-      }
+  &:not(.custom-reaction-used) {
+    .discourse-reactions-counter {
+      padding-right: 5px;
+      padding-left: 15px;
     }
 
+    .discourse-reactions-reaction-button {
+      .reaction-button {
+        padding-left: 5px;
+        padding-right: 15px;
+      }
+    }
+  }
+
+  &.has-reacted {
     .discourse-no-touch & {
       .discourse-reactions-double-button:hover {
         background: var(--primary-low);

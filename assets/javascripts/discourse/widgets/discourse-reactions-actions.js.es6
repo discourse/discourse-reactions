@@ -110,7 +110,18 @@ export default createWidget("discourse-reactions-actions", {
     const post = attrs.post;
     const hasReactions = post.reactions.length;
     const hasReacted = post.current_user_reaction;
+    const customReactionUsed =
+      post.reactions.length &&
+      post.reactions.filter(
+        reaction =>
+          reaction.id !==
+          this.siteSettings.discourse_reactions_reaction_for_like
+      ).length;
     const classes = [];
+
+    if (customReactionUsed) {
+      classes.push("custom-reaction-used");
+    }
 
     if (post.yours) {
       classes.push("my-post");
