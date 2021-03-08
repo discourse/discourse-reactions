@@ -55,7 +55,7 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    const divContainer = attrs.state.postIds.includes(attrs.post.id) ? h(
+    const reactions = attrs.state.postIds.includes(attrs.post.id) ? h(
       "div.counters",
       attrs.post.reactions.map(reaction =>
         this.attach("discourse-reactions-state-panel-reaction", {
@@ -65,13 +65,13 @@ export default createWidget("discourse-reactions-state-panel", {
           isDisplayed: reaction.id === this.state.displayedReactionId
         })
       )
-    ) : h('div.center', h('div.spinner'));
+    ) : h('div.spinner-container', h('div.spinner'));
 
     return [
       ,
       h(
         "div.container",
-        divContainer
+        reactions
       )
     ];
   }

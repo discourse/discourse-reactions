@@ -52,16 +52,16 @@ export default createWidget("discourse-reactions-counter", {
     return state;
   },
 
-  getUsers(reactionValue = null) {
+  getUsers(reactionValue) {
     if(reactionValue && this.state.reactionValue) {
       return;
     }
 
-    if(this.state.postId) {
+    if(!reactionValue && (this.state.postId || this.state.postIds.includes(this.attrs.post.id))) {
       return;
     }
 
-    if(!reactionValue && !this.state.postIds.includes(this.attrs.postId)) {
+    if(!reactionValue && !this.state.postIds.includes(this.attrs.post.id)) {
       this.state.postIds.push(this.attrs.post.id);
     }
 
