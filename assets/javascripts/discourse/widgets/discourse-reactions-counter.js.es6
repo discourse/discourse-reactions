@@ -26,22 +26,21 @@ export default createWidget("discourse-reactions-counter", {
   subscribe() {
     this.unsubscribe();
 
-    MessageBus.subscribe(
-      `/post/${this.attrs.post.id}`,
-      (data) => {
-        if(this.state[data.type].length) {
-          this.getUsers(data.type);
-        }
+    MessageBus.subscribe(`/post/${this.attrs.post.id}`, data => {
+      if (this.state[data.type].length) {
+        this.getUsers(data.type);
       }
-    );
+    });
   },
 
   defaultState() {
     const state = {};
 
-    this.siteSettings.discourse_reactions_enabled_reactions.split('|').forEach((item) => {
-      state[item] = [];
-    });
+    this.siteSettings.discourse_reactions_enabled_reactions
+      .split("|")
+      .forEach(item => {
+        state[item] = [];
+      });
 
     state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
     state.statePanelExpanded = false;
@@ -53,23 +52,28 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   getUsers(reactionValue) {
-    if(reactionValue && this.state.reactionValue) {
+    if (reactionValue && this.state.reactionValue) {
       return;
     }
 
-    if(!reactionValue && (this.state.postId || this.state.postIds.includes(this.attrs.post.id))) {
+    if (
+      !reactionValue &&
+      (this.state.postId || this.state.postIds.includes(this.attrs.post.id))
+    ) {
       return;
     }
 
-    if(!reactionValue && !this.state.postIds.includes(this.attrs.post.id)) {
+    if (!reactionValue && !this.state.postIds.includes(this.attrs.post.id)) {
       this.state.postIds.push(this.attrs.post.id);
     }
 
     this.state.postId = this.attrs.post.id;
     this.state.reactionValue = reactionValue;
 
-    CustomReaction.findReactionUsers(this.attrs.post.id, { reactionValue }).then((reactions) => {
-      reactions.reaction_users.forEach((reactionUser) => {
+    CustomReaction.findReactionUsers(this.attrs.post.id, {
+      reactionValue
+    }).then(reactions => {
+      reactions.reaction_users.forEach(reactionUser => {
         this.state[reactionUser.id] = reactionUser.users;
       });
       this.state.postId = null;
@@ -80,7 +84,7 @@ export default createWidget("discourse-reactions-counter", {
 
   click(event) {
     if (!this.capabilities.touch || !this.site.mobileView) {
-      if(!this.state.statePanelExpanded) {
+      if (!this.state.statePanelExpanded) {
         this.getUsers();
       }
       this.toggleStatePanel(event);

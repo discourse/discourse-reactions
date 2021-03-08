@@ -18,7 +18,10 @@ export default createWidget("discourse-reactions-list-emoji", {
       return;
     }
 
-    if (!window.matchMedia("(hover: none)").matches && !this.attrs.users.length) {
+    if (
+      !window.matchMedia("(hover: none)").matches &&
+      !this.attrs.users.length
+    ) {
       this.callWidgetFunction("getUsers", this.attrs.reaction.id);
     }
   },
@@ -26,16 +29,13 @@ export default createWidget("discourse-reactions-list-emoji", {
   _setupPopper(popper, selector) {
     next(() => {
       let popperElement;
-      const trigger = document.querySelector(
-        `#${this.buildId(this.attrs)}`
-      );
+      const trigger = document.querySelector(`#${this.buildId(this.attrs)}`);
 
       popperElement = document.querySelector(
         `#${this.buildId(this.attrs)} ${selector}`
       );
 
       if (popperElement) {
-
         if (this[popper]) {
           return;
         }
@@ -77,8 +77,8 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     displayUsers.push(h("span.heading", attrs.reaction.id));
 
-    if(!users.length) {
-      displayUsers.push(h('div.center', h('div.spinner.small')));
+    if (!users.length) {
+      displayUsers.push(h("div.center", h("div.spinner.small")));
     }
 
     users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
@@ -107,10 +107,7 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     this.scheduleRerender();
 
-    this._setupPopper(
-      "_popperReactionUserPanel",
-      `.user-list`
-    );
+    this._setupPopper("_popperReactionUserPanel", `.user-list`);
 
     const elements = [
       new RawHtml({
@@ -119,12 +116,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     ];
 
     if (!this.site.mobileView) {
-      elements.push(
-        h(
-          `div.user-list`,
-          h("div.container", displayUsers)
-        )
-      );
+      elements.push(h(`div.user-list`, h("div.container", displayUsers)));
     }
 
     return elements;

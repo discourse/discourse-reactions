@@ -14,14 +14,13 @@ export default createWidget("discourse-reactions-list", {
     return [
       h(
         "div.reactions",
-        reactions
-          .map(reaction =>
-            this.attach("discourse-reactions-list-emoji", {
-              reaction,
-              users: attrs.state[reaction.id],
-              post: attrs.post
-            })
-          )
+        reactions.map(reaction =>
+          this.attach("discourse-reactions-list-emoji", {
+            reaction,
+            users: attrs.state[reaction.id],
+            post: attrs.post
+          })
+        )
       )
     ];
   }
