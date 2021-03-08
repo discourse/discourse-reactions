@@ -287,6 +287,11 @@ html.discourse-reactions-no-select {
   display: inline-flex;
   justify-content: flex-end;
 
+  // manually account for emoji not being a perfect square
+  .reactions-counter {
+    padding-top: 2px;
+  }
+
   &:not(.custom-reaction-used) {
     .discourse-reactions-counter {
       padding-right: 5px;
