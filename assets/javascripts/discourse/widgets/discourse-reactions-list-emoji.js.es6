@@ -29,7 +29,7 @@ export default createWidget("discourse-reactions-list-emoji", {
   },
 
   didRenderWidget() {
-    if (!this[POPPER_NAME]) {
+    if (!window.matchMedia("(hover: none)").matches && !this[POPPER_NAME]) {
       this._setupPopper(POPPER_NAME, ".user-list");
     }
   },
