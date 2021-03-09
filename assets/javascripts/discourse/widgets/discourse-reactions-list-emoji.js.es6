@@ -107,7 +107,9 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     this.scheduleRerender();
 
-    this._setupPopper("_popperReactionUserPanel", `.user-list`);
+    if (!this._popperReactionUserPanel) {
+      this._setupPopper("_popperReactionUserPanel", ".user-list");
+    }
 
     const elements = [
       new RawHtml({
