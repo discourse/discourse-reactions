@@ -44,6 +44,8 @@ html.discourse-reactions-no-select {
       transition: opacity 0.33s;
       opacity: 0;
       padding: 0.5em 0;
+      width: 120px;
+      min-height: 80px;
 
       .container {
         margin-top: 0.5em;
@@ -64,6 +66,10 @@ html.discourse-reactions-no-select {
           font-size: $font-up-1;
           padding-bottom: 0.5em;
           text-align: left;
+        }
+
+        .username {
+          @include ellipsis;
         }
 
         .username,
