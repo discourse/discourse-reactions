@@ -79,30 +79,30 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     if (!users.length) {
       displayUsers.push(h("div.center", h("div.spinner.small")));
-    }
+    } else {
+      users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
+        let displayName;
+        if (this.siteSettings.prioritize_username_in_ux) {
+          displayName = user.username;
+        } else if (!user.name) {
+          displayName = user.username;
+        } else {
+          displayName = user.name;
+        }
 
-    users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
-      let displayName;
-      if (this.siteSettings.prioritize_username_in_ux) {
-        displayName = user.username;
-      } else if (!user.name) {
-        displayName = user.username;
-      } else {
-        displayName = user.name;
+        displayUsers.push(h("span.username", displayName));
+      });
+
+      if (attrs.reaction.count > DISPLAY_MAX_USERS) {
+        displayUsers.push(
+          h(
+            "span.other-users",
+            I18n.t("discourse_reactions.state_panel.more_users", {
+              count: attrs.reaction.count - DISPLAY_MAX_USERS
+            })
+          )
+        );
       }
-
-      displayUsers.push(h("span.username", displayName));
-    });
-
-    if (users.length && attrs.reaction.count > DISPLAY_MAX_USERS) {
-      displayUsers.push(
-        h(
-          "span.other-users",
-          I18n.t("discourse_reactions.state_panel.more_users", {
-            count: attrs.reaction.count - DISPLAY_MAX_USERS
-          })
-        )
-      );
     }
 
     this.scheduleRerender();
