@@ -104,6 +104,7 @@ export default createWidget("discourse-reactions-counter", {
 
     if (this.capabilities.touch) {
       event.stopPropagation();
+      this.getUsers();
       this.toggleStatePanel(event);
     }
   },
