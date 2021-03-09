@@ -45,20 +45,21 @@ export default createWidget("discourse-reactions-counter", {
     state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
     state.statePanelExpanded = false;
     state.postId = null;
-    state.reactionValue = null;
+    state.reactionValues = [];
     state.postIds = [];
 
     return state;
   },
 
   getUsers(reactionValue) {
-    if (reactionValue && this.state.reactionValue) {
+    if (reactionValue && this.state.reactionValues.includes(reactionValue)) {
       return;
     }
 
     if (
       !reactionValue &&
-      (this.state.postId || this.state.postIds.includes(this.attrs.post.id))
+      (this.state.postId === this.attrs.post.id ||
+        this.state.postIds.includes(this.attrs.post.id))
     ) {
       return;
     }
@@ -67,8 +68,11 @@ export default createWidget("discourse-reactions-counter", {
       this.state.postIds.push(this.attrs.post.id);
     }
 
-    this.state.postId = this.attrs.post.id;
-    this.state.reactionValue = reactionValue;
+    if (reactionValue) {
+      this.state.reactionValues.push(reactionValue);
+    } else {
+      this.state.postId = this.attrs.post.id;
+    }
 
     CustomReaction.findReactionUsers(this.attrs.post.id, {
       reactionValue
@@ -76,8 +80,12 @@ export default createWidget("discourse-reactions-counter", {
       reactions.reaction_users.forEach(reactionUser => {
         this.state[reactionUser.id] = reactionUser.users;
       });
-      this.state.postId = null;
-      this.state.reactionValue = null;
+      if (reactionValue) {
+        const index = this.state.reactionValues.indexOf(reactionValue);
+        this.state.reactionValues.splice(index, 1);
+      } else {
+        this.state.postId = null;
+      }
       this.scheduleRerender();
     });
   },
