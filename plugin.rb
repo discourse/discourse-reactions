@@ -61,6 +61,7 @@ after_initialize do
     put "/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle" => "custom_reactions#toggle", constraints: { format: :json }
     get "/discourse-reactions/posts/my-reactions" => "custom_reactions#my_reactions", as: "my_reactions"
     get "/discourse-reactions/posts/reactions-received" => "custom_reactions#reactions_received", as: "reactions_received"
+    get "/discourse-reactions/posts/:id/reactions-users" => "custom_reactions#post_reactions_users", as: "post_reactions_users"
   end
 
   add_to_serializer(:post, :reactions) do
@@ -68,7 +69,6 @@ after_initialize do
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
-        users: reaction.reaction_users.order("discourse_reactions_reaction_users.created_at desc").limit(MAX_USERS_COUNT + 1).map { |reaction_user| { username: reaction_user.username, name: reaction_user.name, avatar_template: reaction_user.avatar_template, can_undo: reaction_user.can_undo? } },
         count: reaction.reaction_users_count
       }
     end
@@ -77,12 +77,11 @@ after_initialize do
 
     object.post_actions
 
-    return reactions if likes.blank?
+    return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
 
     like_reaction = {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
-      users: likes.includes([:user]).map { |like| { username: like.user.username, name: like.user.name, avatar_template: like.user.avatar_template, can_undo: scope.can_delete_post_action?(like) } },
       count: likes.length
     }
 

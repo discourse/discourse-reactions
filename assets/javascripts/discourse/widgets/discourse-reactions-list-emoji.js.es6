@@ -13,19 +13,29 @@ export default createWidget("discourse-reactions-list-emoji", {
   buildId: attrs =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
+  mouseOver() {
+    if (this.site.mobileView) {
+      return;
+    }
+
+    if (
+      !window.matchMedia("(hover: none)").matches &&
+      !this.attrs.users.length
+    ) {
+      this.callWidgetFunction("getUsers", this.attrs.reaction.id);
+    }
+  },
+
   _setupPopper(popper, selector) {
     next(() => {
       let popperElement;
-      const trigger = document.querySelector(
-        `#${this.buildId(this.attrs)}`
-      );
+      const trigger = document.querySelector(`#${this.buildId(this.attrs)}`);
 
       popperElement = document.querySelector(
         `#${this.buildId(this.attrs)} ${selector}`
       );
 
       if (popperElement) {
-
         if (this[popper]) {
           return;
         }
@@ -62,10 +72,14 @@ export default createWidget("discourse-reactions-list-emoji", {
     }
 
     const reaction = attrs.reaction;
-    const users = attrs.reaction.users || [];
+    const users = attrs.users || [];
     const displayUsers = [];
 
     displayUsers.push(h("span.heading", attrs.reaction.id));
+
+    if (!users.length) {
+      displayUsers.push(h("div.center", h("div.spinner.small")));
+    }
 
     users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
       let displayName;
@@ -80,7 +94,7 @@ export default createWidget("discourse-reactions-list-emoji", {
       displayUsers.push(h("span.username", displayName));
     });
 
-    if (attrs.reaction.count > DISPLAY_MAX_USERS) {
+    if (users.length && attrs.reaction.count > DISPLAY_MAX_USERS) {
       displayUsers.push(
         h(
           "span.other-users",
@@ -93,10 +107,7 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     this.scheduleRerender();
 
-    this._setupPopper(
-      "_popperReactionUserPanel",
-      `.user-list`
-    );
+    this._setupPopper("_popperReactionUserPanel", `.user-list`);
 
     const elements = [
       new RawHtml({
@@ -105,12 +116,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     ];
 
     if (!this.site.mobileView) {
-      elements.push(
-        h(
-          `div.user-list`,
-          h("div.container", displayUsers)
-        )
-      );
+      elements.push(h(`div.user-list`, h("div.container", displayUsers)));
     }
 
     return elements;

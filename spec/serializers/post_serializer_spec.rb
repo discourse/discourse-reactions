@@ -30,26 +30,16 @@ describe PostSerializer do
       {
         id: 'otter',
         type: :emoji,
-        users: [
-          { username: user_2.username, name: user_2.name, avatar_template: user_2.avatar_template, can_undo: true },
-          { username: user_1.username, name: user_1.name, avatar_template: user_1.avatar_template, can_undo: true }
-        ],
         count: 2
       },
       {
         id: 'heart',
         type: :emoji,
-        users: [
-          { username: user_4.username, name: user_4.name, avatar_template: user_4.avatar_template, can_undo: false }
-        ],
         count: 1
       },
       {
         id: 'thumbsup',
         type: :emoji,
-        users: [
-          { username: user_3.username, name: user_3.name, avatar_template: user_3.avatar_template, can_undo: false }
-        ],
         count: 1
       }
     ])
@@ -68,26 +58,16 @@ describe PostSerializer do
       {
         id: 'otter',
         type: :emoji,
-        users: [
-          { username: user_2.username, name: user_2.name, avatar_template: user_2.avatar_template, can_undo: true },
-          { username: user_1.username, name: user_1.name, avatar_template: user_1.avatar_template, can_undo: true }
-        ],
         count: 2
       },
       {
         id: 'heart',
         type: :emoji,
-        users: [
-          { username: user_4.username, name: user_4.name, avatar_template: user_4.avatar_template, can_undo: false }
-        ],
         count: 1
       },
       {
         id: 'thumbsup',
         type: :emoji,
-        users: [
-          { username: user_3.username, name: user_3.name, avatar_template: user_3.avatar_template, can_undo: false }
-        ],
         count: 1
       }
     ])

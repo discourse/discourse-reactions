@@ -329,11 +329,6 @@ export default createWidget("discourse-reactions-actions", {
           return false;
         } else if (reaction.id === post.current_user_reaction.id) {
           post.reactions[index].count -= 1;
-          const users = post.reactions[index].users;
-          const userIndex = users.indexOf(
-            users.findBy("username", this.currentUser.username)
-          );
-          users.splice(userIndex, 1);
 
           return false;
         }
@@ -352,12 +347,6 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.every((reaction, index) => {
         if (reaction.id === attrs.reaction) {
           post.reactions[index].count += 1;
-          post.reactions[index].users.unshift({
-            username: this.currentUser.username,
-            name: this.currentUser.name,
-            avatar_template: this.currentUser.avatar_template,
-            can_undo: true
-          });
           isAvailable = true;
           return false;
         }
@@ -368,15 +357,7 @@ export default createWidget("discourse-reactions-actions", {
         post.reactions.push({
           id: attrs.reaction,
           type: "emoji",
-          count: 1,
-          users: [
-            {
-              username: this.currentUser.username,
-              name: this.currentUser.name,
-              avatar_template: this.currentUser.avatar_template,
-              can_undo: true
-            }
-          ]
+          count: 1
         });
       }
 

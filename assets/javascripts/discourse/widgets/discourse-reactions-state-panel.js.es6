@@ -55,21 +55,20 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    return [
-      ,
-      h(
-        "div.container",
-        h(
+    const reactions = attrs.state.postIds.includes(attrs.post.id)
+      ? h(
           "div.counters",
           attrs.post.reactions.map(reaction =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
+              users: attrs.state[reaction.id],
               post: attrs.post,
               isDisplayed: reaction.id === this.state.displayedReactionId
             })
           )
         )
-      )
-    ];
+      : h("div.spinner-container", h("div.spinner"));
+
+    return [, h("div.container", reactions)];
   }
 });

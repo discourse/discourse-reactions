@@ -41,6 +41,19 @@ CustomReaction.reopenClass({
         return EmberObject.create(reaction);
       });
     });
+  },
+
+  findReactionUsers(postId, opts) {
+    opts = opts || {};
+    const data = {};
+
+    if (opts.reactionValue) {
+      data.reaction_value = opts.reactionValue;
+    }
+
+    return ajax(`/discourse-reactions/posts/${postId}/reactions-users.json`, {
+      data
+    });
   }
 });
 
