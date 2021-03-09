@@ -1,3 +1,4 @@
+import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
@@ -6,6 +7,7 @@ import { next } from "@ember/runloop";
 import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
+const POPPER_NAME = "_popperReactionUserPanel";
 
 export default createWidget("discourse-reactions-list-emoji", {
   tagName: "div.reaction",
@@ -26,44 +28,10 @@ export default createWidget("discourse-reactions-list-emoji", {
     }
   },
 
-  _setupPopper(popper, selector) {
-    next(() => {
-      let popperElement;
-      const trigger = document.querySelector(`#${this.buildId(this.attrs)}`);
-
-      popperElement = document.querySelector(
-        `#${this.buildId(this.attrs)} ${selector}`
-      );
-
-      if (popperElement) {
-        if (this[popper]) {
-          return;
-        }
-
-        this[popper] = this._applyPopper(trigger, popperElement);
-      }
-    });
-  },
-
-  _applyPopper(button, picker) {
-    // eslint-disable-next-line
-    Popper.createPopper(button, picker, {
-      placement: "bottom",
-      modifiers: [
-        {
-          name: "offset",
-          options: {
-            offset: [0, -5]
-          }
-        },
-        {
-          name: "preventOverflow",
-          options: {
-            padding: 5
-          }
-        }
-      ]
-    });
+  didRenderWidget() {
+    if (!window.matchMedia("(hover: none)").matches && !this[POPPER_NAME]) {
+      this._setupPopper(POPPER_NAME, ".user-list");
+    }
   },
 
   html(attrs) {
@@ -105,22 +73,55 @@ export default createWidget("discourse-reactions-list-emoji", {
       }
     }
 
-    this.scheduleRerender();
-
-    if (!this._popperReactionUserPanel) {
-      this._setupPopper("_popperReactionUserPanel", ".user-list");
-    }
-
     const elements = [
       new RawHtml({
         html: emojiUnescape(`:${reaction.id}:`, { skipTitle: true })
       })
     ];
 
-    if (!this.site.mobileView) {
+    if (!window.matchMedia("(hover: none)").matches) {
       elements.push(h(`div.user-list`, h("div.container", displayUsers)));
     }
 
     return elements;
+  },
+
+  _setupPopper(popper, selector) {
+    next(() => {
+      let popperElement;
+      const trigger = document.querySelector(`#${this.buildId(this.attrs)}`);
+
+      popperElement = document.querySelector(
+        `#${this.buildId(this.attrs)} ${selector}`
+      );
+
+      if (popperElement) {
+        if (this[popper]) {
+          return;
+        }
+
+        this[popper] = this._applyPopper(trigger, popperElement);
+      }
+    });
+  },
+
+  _applyPopper(button, picker) {
+    createPopper(button, picker, {
+      placement: "bottom",
+      modifiers: [
+        {
+          name: "offset",
+          options: {
+            offset: [0, -5]
+          }
+        },
+        {
+          name: "preventOverflow",
+          options: {
+            padding: 5
+          }
+        }
+      ]
+    });
   }
 });
