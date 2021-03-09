@@ -1,3 +1,4 @@
+import { createPopper } from "@popperjs/core";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
 import { next, run } from "@ember/runloop";
@@ -616,8 +617,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   _applyPopper(button, picker) {
-    // eslint-disable-next-line
-    Popper.createPopper(button, picker, {
+    createPopper(button, picker, {
       placement: "top",
       modifiers: [
         {
