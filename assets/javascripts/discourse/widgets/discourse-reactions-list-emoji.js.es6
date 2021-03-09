@@ -7,6 +7,7 @@ import { next } from "@ember/runloop";
 import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
+const POPPER_NAME = "_popperReactionUserPanel";
 
 export default createWidget("discourse-reactions-list-emoji", {
   tagName: "div.reaction",
@@ -28,8 +29,8 @@ export default createWidget("discourse-reactions-list-emoji", {
   },
 
   didRenderWidget() {
-    if (!this._popperReactionUserPanel) {
-      this._setupPopper("_popperReactionUserPanel", ".user-list");
+    if (!this[POPPER_NAME]) {
+      this._setupPopper(POPPER_NAME, ".user-list");
     }
   },
 
