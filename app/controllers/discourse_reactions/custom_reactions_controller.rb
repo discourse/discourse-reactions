@@ -70,9 +70,7 @@ module DiscourseReactions
       reaction_value = params[:reaction_value]
       post = Post.find_by(id: id)
 
-      if !post || (reaction_value && !DiscourseReactions::Reaction.valid_reactions.include?(reaction_value))
-        raise Discourse::InvalidParameters
-      end
+      raise Discourse::InvalidParameters if !post
 
       reaction_users = []
 

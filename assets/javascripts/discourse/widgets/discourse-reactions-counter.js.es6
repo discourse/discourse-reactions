@@ -34,14 +34,12 @@ export default createWidget("discourse-reactions-counter", {
     });
   },
 
-  defaultState() {
+  defaultState(attrs) {
     const state = {};
 
-    this.siteSettings.discourse_reactions_enabled_reactions
-      .split("|")
-      .forEach(item => {
-        state[item] = [];
-      });
+    attrs.post.reactions.forEach(reaction => {
+      state[reaction.id] = [];
+    });
 
     state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
     state.statePanelExpanded = false;
