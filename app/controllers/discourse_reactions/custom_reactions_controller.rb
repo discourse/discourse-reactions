@@ -12,7 +12,12 @@ module DiscourseReactions
       end
 
       publish_change_to_clients!(post)
-      DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post).toggle!
+      begin
+        DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post).toggle!
+      rescue ActiveRecord::RecordNotUnique
+        # If the user already performed this action, it's proably due to a different browser tab
+        # or non-debounced clicking. We can ignore.
+      end
       post.publish_change_to_clients!(:acted)
 
       render_json_dump(post_serializer(post).as_json)
