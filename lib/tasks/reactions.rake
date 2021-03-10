@@ -22,7 +22,10 @@ end
 
 desc "create users and generate random reactions on a post"
 task "reactions:generate", [:post_id, :reactions_count, :reaction] => [:environment] do |_, args|
-  Rails.env = "development"
+  if !Rails.env.development?
+    raise "rake reactions:generate should only be run in RAILS_ENV=development, as you are creating fake reactions to posts"
+  end
+
   post_id = args[:post_id]
 
   if !post_id
