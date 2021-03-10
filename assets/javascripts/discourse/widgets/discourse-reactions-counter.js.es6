@@ -1,3 +1,4 @@
+import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
 import { next } from "@ember/runloop";
@@ -248,8 +249,7 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   _applyPopper(button, picker) {
-    // eslint-disable-next-line
-    Popper.createPopper(button, picker, {
+    createPopper(button, picker, {
       placement: "top",
       modifiers: [
         {
