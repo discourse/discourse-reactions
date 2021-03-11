@@ -34,7 +34,7 @@ export default createWidget("discourse-reactions-counter", {
     });
   },
 
-  defaultState() {
+  defaultState(attrs) {
     const state = {};
 
     this.siteSettings.discourse_reactions_enabled_reactions
@@ -42,6 +42,12 @@ export default createWidget("discourse-reactions-counter", {
       .forEach(item => {
         state[item] = [];
       });
+
+    attrs.post.reactions.forEach(reaction => {
+      if(!state[reaction.id]) {
+        state[reaction.id] = [];
+      }
+    });
 
     state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
     state.statePanelExpanded = false;
