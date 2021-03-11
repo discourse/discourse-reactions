@@ -232,6 +232,10 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggle(params) {
+    if (!this.currentUser) {
+      return this.sendWidgetAction("showLogin");
+    }
+
     if (
       !this.attrs.post.current_user_reaction ||
       (this.attrs.post.current_user_reaction.can_undo &&
@@ -388,6 +392,10 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   toggleFromButton(attrs) {
+    if (!this.currentUser) {
+      return this.sendWidgetAction("showLogin");
+    }
+
     this.collapsePanels();
 
     let selector;
