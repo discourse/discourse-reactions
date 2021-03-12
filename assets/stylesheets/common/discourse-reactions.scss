@@ -28,6 +28,14 @@ html.discourse-reactions-no-select {
       .emoji {
         width: 1.1em;
         height: 1.1em;
+
+        &.desaturated {
+          filter: grayscale(100%);
+
+          &:hover {
+            filter: grayscale(0%);
+          }
+        }
       }
 
       &:hover {
