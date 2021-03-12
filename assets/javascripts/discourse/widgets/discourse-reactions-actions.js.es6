@@ -565,6 +565,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   html(attrs) {
+    console.log(this.siteSettings);
     const post = attrs.post;
     const items = [];
     const mainReaction = this.siteSettings

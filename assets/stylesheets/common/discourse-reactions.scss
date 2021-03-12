@@ -455,6 +455,10 @@ nav.post-controls .actions button {
   }
 }
 
+.d-emoji-picker-imput {
+  width: 100%;
+}
+
 nav.post-controls .actions .reaction-button:focus {
   background: transparent;
   color: var(--primary-low-mid);
