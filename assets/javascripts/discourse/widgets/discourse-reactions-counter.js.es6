@@ -39,12 +39,13 @@ export default createWidget("discourse-reactions-counter", {
 
     this.siteSettings.discourse_reactions_enabled_reactions
       .split("|")
+      .filter(Boolean)
       .forEach(item => {
         state[item] = [];
       });
 
-    attrs.post.reactions.forEach(reaction => {
-      if(!state[reaction.id]) {
+    (attrs.post.reactions || []).forEach(reaction => {
+      if (!state[reaction.id]) {
         state[reaction.id] = [];
       }
     });
