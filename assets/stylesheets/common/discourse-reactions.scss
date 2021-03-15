@@ -463,3 +463,27 @@ nav.post-controls .actions .reaction-button:focus {
 nav.post-controls .actions .reaction-button {
   margin: 0;
 }
+
+.emoji-details {
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  line-height: 1;
+  color: var(--primary);
+  border: 1px solid var(--primary-low);
+
+  .emoji-name {
+    margin-right: 0.25em;
+  }
+}
+
+.edit-value-btn {
+  margin-right: 0.25em;
+}
+
+.shift-up-value-btn,
+.shift-down-value-btn,
+.add-value-btn {
+  margin-left: 0.25em;
+}

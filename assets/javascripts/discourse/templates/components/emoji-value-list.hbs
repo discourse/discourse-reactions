@@ -1,22 +1,41 @@
 {{#if collection}}
   <div class="values">
-    {{#each collection as |value index|}}
+    {{#each collection as |data index|}}
       <div class="value" data-index={{index}}>
         {{d-button action=(action "removeValue")
-                   actionParam=value
+                   actionParam=data
                    icon="times"
                    class="remove-value-btn btn-small"}}
-        {{input value=value class="value-input" focus-out=(action "changeValue" index)}}
+
+        {{#if data.isEditable}}
+          {{d-button action=(action "editValue")
+                   actionParam=index
+                   icon="pencil-alt"
+                   class="edit-value-btn btn-small"}}
+        {{/if}}
+
+        {{#if data.isEditing}}
+          {{input value=data.value class="value-input" focus-out=(action "changeValue" index)}}
+        {{else}}
+          <div class="value-input emoji-details">
+            <span class="emoji-name">{{data.value}}</span>
+            <img height="15px" width="15px" src={{data.emojiUrl}} class="emoji-list-emoji" alt={{i18n "admin.badges.badge_intro.emoji"}}>
+          </div>
+        {{/if}}
+
         {{#if index}}
           {{d-button action=(action "shiftUp")
                    actionParam=index
                    icon="arrow-up"
-                   class="remove-value-btn btn-small"}}
+                   class="shift-up-value-btn btn-small"}}
         {{/if}}
-        {{d-button action=(action "shiftDown")
+
+        {{#unless data.isLast}}
+          {{d-button action=(action "shiftDown")
                    actionParam=index
                    icon="arrow-down"
-                   class="remove-value-btn btn-small"}}
+                   class="shift-down-value-btn btn-small"}}
+        {{/unless}}
       </div>
     {{/each}}
   </div>
