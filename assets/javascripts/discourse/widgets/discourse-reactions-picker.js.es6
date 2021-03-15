@@ -23,10 +23,20 @@ export default createWidget("discourse-reactions-picker", {
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
       const post = attrs.post;
+      const reactions = this.siteSettings.discourse_reactions_enabled_reactions.split(
+        "|"
+      );
+
+      if (
+        !reactions.includes(this.siteSettings.discourse_reactions_like_icon)
+      ) {
+        reactions.unshift(this.siteSettings.discourse_reactions_like_icon);
+      }
+
       return [
         h(
           "div.container",
-          post.topic.valid_reactions.map(reaction => {
+          reactions.map(reaction => {
             let isUsed;
             let canUndo;
             if (

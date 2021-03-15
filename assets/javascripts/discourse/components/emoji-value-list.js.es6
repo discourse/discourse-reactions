@@ -3,7 +3,8 @@ import I18n from "I18n";
 import { isEmpty } from "@ember/utils";
 import { on } from "discourse-common/utils/decorators";
 import { emojiUrlFor } from "discourse/lib/text";
-import { set } from "@ember/object";
+import { set, action } from "@ember/object";
+import { later } from "@ember/runloop";
 
 export default Component.extend({
   classNameBindings: [":value-list"],
@@ -73,17 +74,31 @@ export default Component.extend({
     }
   },
 
-  actions: {
-    editValue(index) {
-      let item = this.collection[index];
+  @action
+  editValue(index) {
+    let item = this.collection[index];
+    if (item.isEditable) {
       set(item, "isEditing", !item.isEditing);
-    },
+      later(() => {
+        const textbox = document.querySelector(
+          `[data-index="${index}"] .value-input`
+        );
+        if (textbox) {
+          textbox.focus();
+        }
+      }, 100);
+    }
+  },
 
+  actions: {
     changeValue(index, newValue) {
+      let item = this.collection[index];
       if (this._checkInvalidInput(newValue)) {
         return;
       }
       this._replaceValue(index, newValue);
+
+      set(item, "isEditing", !item.isEditing);
     },
 
     addValue() {
