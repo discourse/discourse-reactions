@@ -75,7 +75,13 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     const elements = [
       new RawHtml({
-        html: emojiUnescape(`:${reaction.id}:`, { skipTitle: true })
+        html: emojiUnescape(`:${reaction.id}:`, {
+          skipTitle: true,
+          class: this.siteSettings
+            .discourse_reactions_desaturated_reaction_panel
+            ? "desaturated"
+            : ""
+        })
       })
     ];
 

@@ -7,6 +7,7 @@ en:
     placeholder:
       discourse_reactions_test:
         newEmoji: "Emoji Value"
+    discourse_reactions_desaturated_reaction_panel: "Reduces visual noise of reactions by display them desaturated until hover."
   badges:
     first_reaction:
       name: First Reaction
