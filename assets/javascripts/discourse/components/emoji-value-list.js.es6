@@ -16,22 +16,29 @@ export default Component.extend({
   _setupCollection() {
     let object;
     const values = this.values;
-    let defaultValue = values.split("|").find(element => element === this.siteSettings.discourse_reactions_like_icon);
+    let defaultValue = values
+      .split("|")
+      .find(
+        element => element === this.siteSettings.discourse_reactions_like_icon
+      );
 
-    if(!defaultValue) {
-      object = { value: this.siteSettings.discourse_reactions_like_icon, emojiUrl: emojiUrlFor(this.siteSettings.discourse_reactions_like_icon), isLast: false, isEditable: false, isEditing: false};
+    if (!defaultValue) {
+      object = {
+        value: this.siteSettings.discourse_reactions_like_icon,
+        emojiUrl: emojiUrlFor(this.siteSettings.discourse_reactions_like_icon),
+        isLast: false,
+        isEditable: false,
+        isEditing: false
+      };
     }
 
-    let collectionValues = this._splitValues(values)
+    let collectionValues = this._splitValues(values);
 
-    if(object) {
+    if (object) {
       collectionValues.unshift(object);
     }
 
-    this.set(
-      "collection",
-      collectionValues
-    );
+    this.set("collection", collectionValues);
   },
 
   _splitValues(values) {
@@ -43,8 +50,10 @@ export default Component.extend({
         let object = {};
         object.value = str;
 
-        if(str === this.siteSettings.discourse_reactions_like_icon) {
-          object.emojiUrl = emojiUrlFor(this.siteSettings.discourse_reactions_like_icon);
+        if (str === this.siteSettings.discourse_reactions_like_icon) {
+          object.emojiUrl = emojiUrlFor(
+            this.siteSettings.discourse_reactions_like_icon
+          );
           object.isEditable = false;
         } else {
           object.emojiUrl = emojiUrlFor(str);
@@ -90,7 +99,7 @@ export default Component.extend({
     },
 
     shiftUp(index) {
-      if(!index) {
+      if (!index) {
         return;
       }
       let temp = this.collection[index];
@@ -100,7 +109,7 @@ export default Component.extend({
     },
 
     shiftDown(index) {
-      if(!this.collection[index + 1]) {
+      if (!this.collection[index + 1]) {
         return;
       }
       let temp = this.collection[index];
@@ -124,7 +133,13 @@ export default Component.extend({
   },
 
   _addValue(value) {
-    let object = { value: value, emojiUrl: emojiUrlFor(value), isLast: true, isEditable: true, isEditing: false};
+    let object = {
+      value: value,
+      emojiUrl: emojiUrlFor(value),
+      isLast: true,
+      isEditable: true,
+      isEditing: false
+    };
     this.collection.addObject(object);
     this._saveValues();
   },
@@ -145,7 +160,7 @@ export default Component.extend({
     this.set(
       "values",
       this.collection
-        .map(function (elem) {
+        .map(function(elem) {
           return elem.value;
         })
         .join("|")
