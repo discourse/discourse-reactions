@@ -14,16 +14,24 @@ export default Component.extend({
 
   @on("didReceiveAttrs")
   _setupCollection() {
+    let object;
     const values = this.values;
+    let defaultValue = values.split("|").find(element => element === this.siteSettings.discourse_reactions_like_icon);
 
-    if (values && values.length) {
-      this.set(
-        "collection",
-        this._splitValues(values)
-      );
-    } else {
-      this.collection.push("mainReaction");
+    if(!defaultValue) {
+      object = { value: this.siteSettings.discourse_reactions_like_icon, emojiUrl: emojiUrlFor(this.siteSettings.discourse_reactions_like_icon), isLast: false, isEditable: false, isEditing: false};
     }
+
+    let collectionValues = this._splitValues(values)
+
+    if(object) {
+      collectionValues.unshift(object);
+    }
+
+    this.set(
+      "collection",
+      collectionValues
+    );
   },
 
   _splitValues(values) {
@@ -35,7 +43,7 @@ export default Component.extend({
         let object = {};
         object.value = str;
 
-        if(str === "mainReaction") {
+        if(str === this.siteSettings.discourse_reactions_like_icon) {
           object.emojiUrl = emojiUrlFor(this.siteSettings.discourse_reactions_like_icon);
           object.isEditable = false;
         } else {

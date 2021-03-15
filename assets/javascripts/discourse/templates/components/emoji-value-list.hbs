@@ -2,12 +2,11 @@
   <div class="values">
     {{#each collection as |data index|}}
       <div class="value" data-index={{index}}>
+        {{#if data.isEditable}}
         {{d-button action=(action "removeValue")
                    actionParam=data
                    icon="times"
                    class="remove-value-btn btn-small"}}
-
-        {{#if data.isEditable}}
           {{d-button action=(action "editValue")
                    actionParam=index
                    icon="pencil-alt"
@@ -19,7 +18,7 @@
         {{else}}
           <div class="value-input emoji-details">
             <span class="emoji-name">{{data.value}}</span>
-            <img height="15px" width="15px" src={{data.emojiUrl}} class="emoji-list-emoji" alt={{i18n "admin.badges.badge_intro.emoji"}}>
+            <img height="15px" width="15px" src={{data.emojiUrl}} class="emoji-list-emoji">
           </div>
         {{/if}}
 

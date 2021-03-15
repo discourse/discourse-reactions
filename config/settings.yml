@@ -14,5 +14,5 @@ discourse_reactions:
     client: true
   discourse_reactions_test:
     type: emoji_list
-    default: ""
+    default: laughing|open_mouth|cry|angry|thumbsup|thumbsdown
     client: true
