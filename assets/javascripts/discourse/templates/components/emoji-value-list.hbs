@@ -1,0 +1,32 @@
+{{#if collection}}
+  <div class="values">
+    {{#each collection as |value index|}}
+      <div class="value" data-index={{index}}>
+        {{d-button action=(action "removeValue")
+                   actionParam=value
+                   icon="times"
+                   class="remove-value-btn btn-small"}}
+        {{input value=value class="value-input" focus-out=(action "changeValue" index)}}
+        {{#if index}}
+          {{d-button action=(action "shiftUp")
+                   actionParam=index
+                   icon="arrow-up"
+                   class="remove-value-btn btn-small"}}
+        {{/if}}
+        {{d-button action=(action "shiftDown")
+                   actionParam=index
+                   icon="arrow-down"
+                   class="remove-value-btn btn-small"}}
+      </div>
+    {{/each}}
+  </div>
+{{/if}}
+
+<div class="value">
+  {{text-field value=emojiName class="new-value-input key" placeholder=setting.placeholder.newEmoji}}
+  {{d-button action=(action "addValue")
+             icon="plus"
+             class="add-value-btn btn-small"}}
+</div>
+
+{{setting-validation-message message=validationMessage}}
