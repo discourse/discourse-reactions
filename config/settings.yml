@@ -12,3 +12,6 @@ discourse_reactions:
     type: list
     default: laughing|open_mouth|cry|angry|thumbsup|thumbsdown
     client: true
+  discourse_reactions_desaturated_reaction_panel:
+    default: false
+    client: true
