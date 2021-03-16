@@ -12,12 +12,34 @@ export default Component.extend({
   collection: [],
   values: null,
   validationMessage: null,
+  emojiPickerIsActive: false,
+  isEditorFocused: false,
+
+  @action
+  emojiSelected(code) {
+    this.set("emojiName", code);
+    this.set("emojiPickerIsActive", !this.emojiPickerIsActive);
+    this.set("isEditorFocused", !this.isEditorFocused);
+  },
+
+  @action
+  openEmojiPicker() {
+    this.set("isEditorFocused", !this.isEditorFocused);
+    later(() => {
+      this.set("emojiPickerIsActive", !this.emojiPickerIsActive);
+    }, 100);
+  },
+
+  @action
+  clearInput() {
+    this.set("emojiName", "");
+  },
 
   @on("didReceiveAttrs")
   _setupCollection() {
     let object;
     const values = this.values;
-    let defaultValue = values
+    const defaultValue = values
       .split("|")
       .find(
         element => element === this.siteSettings.discourse_reactions_like_icon
@@ -33,7 +55,7 @@ export default Component.extend({
       };
     }
 
-    let collectionValues = this._splitValues(values);
+    const collectionValues = this._splitValues(values);
 
     if (object) {
       collectionValues.unshift(object);
@@ -45,10 +67,10 @@ export default Component.extend({
   _splitValues(values) {
     if (values && values.length) {
       const keys = ["value", "emojiUrl", "isLast"];
-      let res = [];
-      let emojis = values.split("|");
+      const res = [];
+      const emojis = values.split("|");
       emojis.forEach((str, index) => {
-        let object = {};
+        const object = {};
         object.value = str;
 
         if (str === this.siteSettings.discourse_reactions_like_icon) {
@@ -76,7 +98,7 @@ export default Component.extend({
 
   @action
   editValue(index) {
-    let item = this.collection[index];
+    const item = this.collection[index];
     if (item.isEditable) {
       set(item, "isEditing", !item.isEditing);
       later(() => {
@@ -92,10 +114,23 @@ export default Component.extend({
 
   actions: {
     changeValue(index, newValue) {
-      let item = this.collection[index];
+      const item = this.collection[index];
+
       if (this._checkInvalidInput(newValue)) {
+        const oldValues = this.setting.value.split("|");
+
+        if (
+          oldValues.includes(this.siteSettings.discourse_reactions_like_icon)
+        ) {
+          set(item, "value", oldValues[index]);
+        } else {
+          set(item, "value", oldValues[index - 1]);
+        }
+        set(item, "isEditing", !item.isEditing);
+
         return;
       }
+
       this._replaceValue(index, newValue);
 
       set(item, "isEditing", !item.isEditing);
@@ -117,7 +152,7 @@ export default Component.extend({
       if (!index) {
         return;
       }
-      let temp = this.collection[index];
+      const temp = this.collection[index];
       this.collection[index] = this.collection[index - 1];
       this.collection[index - 1] = temp;
       this._saveValues();
@@ -127,28 +162,29 @@ export default Component.extend({
       if (!this.collection[index + 1]) {
         return;
       }
-      let temp = this.collection[index];
+      const temp = this.collection[index];
       this.collection[index] = this.collection[index + 1];
       this.collection[index + 1] = temp;
       this._saveValues();
     }
   },
 
-  _checkInvalidInput(inputs) {
+  _checkInvalidInput(input) {
     this.set("validationMessage", null);
-    for (let input of inputs) {
-      if (isEmpty(input) || input.includes("|")) {
-        this.set(
-          "validationMessage",
-          I18n.t("admin.site_settings.secret_list.invalid_input")
-        );
-        return true;
-      }
+
+    if (isEmpty(input) || input.includes("|") || !emojiUrlFor(input)) {
+      this.set(
+        "validationMessage",
+        I18n.t("admin.site_settings.emoji_list.invalid_input")
+      );
+      return true;
     }
+
+    return false;
   },
 
   _addValue(value) {
-    let object = {
+    const object = {
       value: value,
       emojiUrl: emojiUrlFor(value),
       isLast: true,
@@ -166,7 +202,10 @@ export default Component.extend({
   },
 
   _replaceValue(index, newValue) {
-    let item = this.collection[index];
+    const item = this.collection[index];
+    if (item.value === newValue) {
+      return;
+    }
     set(item, "value", newValue);
     this._saveValues();
   },

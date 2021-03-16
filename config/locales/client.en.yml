@@ -4,6 +4,8 @@ en:
       site_settings:
         categories:
           discourse_reactions: "Discourse Reactions"
+        emoji_list:
+          invalid_input: "Input fields cannot contain invalid emoji name or be empty or contain vertical bar character."
   js:
     discourse_reactions:
       reactions_title: "Reactions"

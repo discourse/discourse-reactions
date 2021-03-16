@@ -37,10 +37,24 @@
 {{/if}}
 
 <div class="value">
-  {{text-field value=emojiName class="value-input emoji-name" placeholder=setting.placeholder.newEmoji}}
+  {{#if emojiName}}
+    {{d-button action=(action "clearInput")
+                   actionParam=data
+                   icon="times"
+                   class="remove-value-btn btn-small"}}
+  {{/if}}
+
+  {{input value=emojiName class="value-input emoji-name d-editor-textarea-wrapper" placeholder=setting.placeholder.newEmoji focus-in=(action "openEmojiPicker") readonly=true}}
   {{d-button action=(action "addValue")
              icon="plus"
              class="add-value-btn btn-small"}}
 </div>
+
+{{emoji-picker
+  isActive=emojiPickerIsActive
+  isEditorFocused=isEditorFocused
+  emojiSelected=(action "emojiSelected")
+  onEmojiPickerClose=(action (mut emojiPickerIsActive) false)
+}}
 
 {{setting-validation-message message=validationMessage}}
