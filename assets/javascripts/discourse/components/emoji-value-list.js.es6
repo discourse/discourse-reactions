@@ -119,7 +119,7 @@ export default Component.extend({
     const item = this.collection[index];
 
     if (this._checkInvalidInput(newValue)) {
-      const oldValues = this.setting.value.split("|");
+      const oldValues = this.values.split("|");
 
       if (oldValues.includes(this.siteSettings.discourse_reactions_like_icon)) {
         set(item, "value", oldValues[index]);
