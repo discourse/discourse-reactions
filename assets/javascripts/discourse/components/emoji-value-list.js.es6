@@ -4,16 +4,21 @@ import { isEmpty } from "@ember/utils";
 import { on } from "discourse-common/utils/decorators";
 import { emojiUrlFor } from "discourse/lib/text";
 import { set, action } from "@ember/object";
-import { later } from "@ember/runloop";
+import { schedule, later } from "@ember/runloop";
 
 export default Component.extend({
   classNameBindings: [":value-list"],
-  inputDelimiter: null,
-  collection: [],
+  collection: null,
   values: null,
   validationMessage: null,
   emojiPickerIsActive: false,
   isEditorFocused: false,
+  emojiName: null,
+
+  init() {
+    this._super(...arguments);
+    this.set("collection", []);
+  },
 
   @action
   emojiSelected(code) {
@@ -38,12 +43,9 @@ export default Component.extend({
   @on("didReceiveAttrs")
   _setupCollection() {
     let object;
-    const values = this.values;
-    const defaultValue = values
-      .split("|")
-      .find(
-        element => element === this.siteSettings.discourse_reactions_like_icon
-      );
+    const defaultValue = this.values.includes(
+      this.siteSettings.discourse_reactions_like_icon
+    );
 
     if (!defaultValue) {
       object = {
@@ -55,7 +57,7 @@ export default Component.extend({
       };
     }
 
-    const collectionValues = this._splitValues(values);
+    const collectionValues = this._splitValues(this.values);
 
     if (object) {
       collectionValues.unshift(object);
@@ -69,17 +71,17 @@ export default Component.extend({
       const keys = ["value", "emojiUrl", "isLast"];
       const res = [];
       const emojis = values.split("|");
-      emojis.forEach((str, index) => {
+      emojis.forEach((emoji, index) => {
         const object = {};
-        object.value = str;
+        object.value = emoji;
 
-        if (str === this.siteSettings.discourse_reactions_like_icon) {
+        if (emoji === this.siteSettings.discourse_reactions_like_icon) {
           object.emojiUrl = emojiUrlFor(
             this.siteSettings.discourse_reactions_like_icon
           );
           object.isEditable = false;
         } else {
-          object.emojiUrl = emojiUrlFor(str);
+          object.emojiUrl = emojiUrlFor(emoji);
           object.isEditable = true;
         }
 
@@ -101,72 +103,73 @@ export default Component.extend({
     const item = this.collection[index];
     if (item.isEditable) {
       set(item, "isEditing", !item.isEditing);
-      later(() => {
+      schedule("afterRender", () => {
         const textbox = document.querySelector(
           `[data-index="${index}"] .value-input`
         );
         if (textbox) {
           textbox.focus();
         }
-      }, 100);
+      });
     }
   },
 
-  actions: {
-    changeValue(index, newValue) {
-      const item = this.collection[index];
+  @action
+  changeValue(index, newValue) {
+    const item = this.collection[index];
 
-      if (this._checkInvalidInput(newValue)) {
-        const oldValues = this.setting.value.split("|");
+    if (this._checkInvalidInput(newValue)) {
+      const oldValues = this.setting.value.split("|");
 
-        if (
-          oldValues.includes(this.siteSettings.discourse_reactions_like_icon)
-        ) {
-          set(item, "value", oldValues[index]);
-        } else {
-          set(item, "value", oldValues[index - 1]);
-        }
-        set(item, "isEditing", !item.isEditing);
-
-        return;
+      if (oldValues.includes(this.siteSettings.discourse_reactions_like_icon)) {
+        set(item, "value", oldValues[index]);
+      } else {
+        set(item, "value", oldValues[index - 1]);
       }
-
-      this._replaceValue(index, newValue);
-
       set(item, "isEditing", !item.isEditing);
-    },
 
-    addValue() {
-      if (this._checkInvalidInput([this.emojiName])) {
-        return;
-      }
-      this._addValue(this.emojiName);
-      this.set("emojiName", "");
-    },
-
-    removeValue(value) {
-      this._removeValue(value);
-    },
-
-    shiftUp(index) {
-      if (!index) {
-        return;
-      }
-      const temp = this.collection[index];
-      this.collection[index] = this.collection[index - 1];
-      this.collection[index - 1] = temp;
-      this._saveValues();
-    },
-
-    shiftDown(index) {
-      if (!this.collection[index + 1]) {
-        return;
-      }
-      const temp = this.collection[index];
-      this.collection[index] = this.collection[index + 1];
-      this.collection[index + 1] = temp;
-      this._saveValues();
+      return;
     }
+
+    this._replaceValue(index, newValue);
+
+    set(item, "isEditing", !item.isEditing);
+  },
+
+  @action
+  addValue() {
+    if (this._checkInvalidInput([this.emojiName])) {
+      return;
+    }
+    this._addValue(this.emojiName);
+    this.set("emojiName", "");
+  },
+
+  @action
+  removeValue(value) {
+    this._removeValue(value);
+  },
+
+  @action
+  shiftUp(index) {
+    if (!index) {
+      return;
+    }
+    const temp = this.collection[index];
+    this.collection[index] = this.collection[index - 1];
+    this.collection[index - 1] = temp;
+    this._saveValues();
+  },
+
+  @action
+  shiftDown(index) {
+    if (index === this.collection.length) {
+      return;
+    }
+    const temp = this.collection[index];
+    this.collection[index] = this.collection[index + 1];
+    this.collection[index + 1] = temp;
+    this._saveValues();
   },
 
   _checkInvalidInput(input) {
@@ -211,13 +214,6 @@ export default Component.extend({
   },
 
   _saveValues() {
-    this.set(
-      "values",
-      this.collection
-        .map(function(elem) {
-          return elem.value;
-        })
-        .join("|")
-    );
+    this.set("values", this.collection.mapBy("value").join("|"));
   }
 });
