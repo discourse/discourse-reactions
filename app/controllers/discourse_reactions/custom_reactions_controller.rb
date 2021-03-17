@@ -11,8 +11,6 @@ module DiscourseReactions
         return render_json_error(post)
       end
 
-      publish_change_to_clients!(post)
-
       begin
         DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post).toggle!
       rescue ActiveRecord::RecordNotUnique
@@ -20,6 +18,7 @@ module DiscourseReactions
         # or non-debounced clicking. We can ignore.
       end
 
+      publish_change_to_clients!(post)
       post.publish_change_to_clients!(:acted)
 
       render_json_dump(post_serializer(post).as_json)
