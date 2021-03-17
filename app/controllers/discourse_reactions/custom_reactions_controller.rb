@@ -16,7 +16,7 @@ module DiscourseReactions
       begin
         DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post).toggle!
       rescue ActiveRecord::RecordNotUnique
-        # If the user already performed this action, it's proably due to a different browser tab
+        # If the user already performed this action, it's probably due to a different browser tab
         # or non-debounced clicking. We can ignore.
       end
 
