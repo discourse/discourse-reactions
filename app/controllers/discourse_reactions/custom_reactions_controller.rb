@@ -122,8 +122,6 @@ module DiscourseReactions
       MessageBus.publish("/post/#{post.id}", message)
     end
 
-    private
-
     def format_reaction_user(reaction)
       {
         id: reaction.reaction_value,
