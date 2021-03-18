@@ -502,7 +502,7 @@ export default createWidget("discourse-reactions-actions", {
       xhr.responseJSON.extras.wait_seconds
     ) {
       return I18n.t("discourse_reactions.reaction.too_many_request", {
-        time_left: xhr.responseJSON.extras.wait_seconds
+        count: xhr.responseJSON.extras.wait_seconds
       });
     } else if (xhr.status === 403) {
       return I18n.t("discourse_reactions.reaction.forbidden");

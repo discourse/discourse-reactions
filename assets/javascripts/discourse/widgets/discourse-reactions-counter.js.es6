@@ -28,9 +28,11 @@ export default createWidget("discourse-reactions-counter", {
     this.unsubscribe();
 
     MessageBus.subscribe(`/post/${this.attrs.post.id}`, data => {
-      if (this.state[data.type].length) {
-        this.getUsers(data.type);
-      }
+      data.type.forEach(reaction => {
+        if (this.state[reaction].length) {
+          this.getUsers(reaction);
+        }
+      });
     });
   },
 

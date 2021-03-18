@@ -12,7 +12,9 @@ en:
       state_panel:
         more_users: "and %{count} more..."
       reaction:
-        too_many_request: "You have been reacting a bit too fast, try again in %{time_left} seconds."
+        too_many_request:
+          one: "You have been reacting a bit too fast, try again in %{count} second."
+          other: "You have been reacting a bit too fast, try again in %{count} seconds."
         forbidden: "You acted on this post a long time ago so you are not allowed to remove your reaction now."
       picker:
         react_with: "React to this post with: %{reaction}"
@@ -22,10 +24,6 @@ en:
         add: "Like this post"
         remove: "Remove this like"
         cant_remove: "You can’t remove this like"
-      users_reacted:
-        zero: "No one has reacted yet"
-        one: "One user reacted"
-        other: "%{count} users reacted"
     notifications:
       reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"

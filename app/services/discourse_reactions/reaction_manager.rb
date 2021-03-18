@@ -12,7 +12,10 @@ module DiscourseReactions
 
     def toggle!
       ActiveRecord::Base.transaction do
-        raise Discourse::InvalidAccess if (@like && !@guardian.can_delete_post_action?(@like)) || (is_reacted_by_user && !@guardian.can_delete_reaction_user?(is_reacted_by_user))
+        if (@like && !@guardian.can_delete_post_action?(@like)) || (reaction_user && !@guardian.can_delete_reaction_user?(reaction_user))
+          raise Discourse::InvalidAccess
+        end
+
         @reaction = reaction_scope&.first_or_create
         @reaction_user = reaction_user_scope
         @reaction_value == DiscourseReactions::Reaction.main_reaction_id ? toggle_like : toggle_reaction
@@ -23,16 +26,16 @@ module DiscourseReactions
 
     def toggle_like
       remove_shadow_like if @like
-      remove_reaction if is_reacted_by_user
+      remove_reaction if reaction_user
       add_shadow_like unless @like
     end
 
     def toggle_reaction
-      previous_reaction = old_reaction(is_reacted_by_user) if is_reacted_by_user
-      remove_reaction if is_reacted_by_user
+      previous_reaction = old_reaction(reaction_user) if reaction_user
+      remove_reaction if reaction_user
       return if previous_reaction && previous_reaction.reaction_value == @reaction_value
       remove_shadow_like if @like
-      add_reaction unless is_reacted_by_user
+      add_reaction unless reaction_user
     end
 
     def post_action_like_type
@@ -60,13 +63,13 @@ module DiscourseReactions
       search_reaction_user.length > 0 ? search_reaction_user.first : create_reaction_user
     end
 
-    def is_reacted_by_user
+    def reaction_user
       DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
     end
 
-    def old_reaction(is_reacted_by_user)
-      return unless is_reacted_by_user
-      DiscourseReactions::Reaction.where(id: is_reacted_by_user.reaction_id).first
+    def old_reaction(reaction_user)
+      return unless reaction_user
+      DiscourseReactions::Reaction.where(id: reaction_user.reaction_id).first
     end
 
     def add_shadow_like
@@ -83,7 +86,7 @@ module DiscourseReactions
     end
 
     def add_reaction
-      @reaction_user = reaction_user_scope unless is_reacted_by_user
+      @reaction_user = reaction_user_scope unless reaction_user
       @reaction_user.save!
       add_reaction_notification
     end
