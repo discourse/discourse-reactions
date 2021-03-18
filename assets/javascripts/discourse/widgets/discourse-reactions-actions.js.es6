@@ -246,7 +246,11 @@ export default createWidget("discourse-reactions-actions", {
       }
 
       const pickedReaction = document.querySelector(
-        `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${CSS.escape(params.reaction)} .emoji`
+        `[data-post-id="${
+          params.postId
+        }"] .discourse-reactions-picker .pickable-reaction.${CSS.escape(
+          params.reaction
+        )} .emoji`
       );
 
       const scales = [1.0, 1.75];
@@ -359,11 +363,27 @@ export default createWidget("discourse-reactions-actions", {
       });
 
       if (!isAvailable) {
-        post.reactions.push({
+        const newReaction = {
           id: attrs.reaction,
           type: "emoji",
           count: 1
-        });
+        };
+
+        const tempReactions = Object.assign([], post.reactions,);
+
+        tempReactions.push(newReaction);
+
+        tempReactions.sort((reaction1, reaction2) =>
+          reaction2.count - reaction1.count || reaction1.id > reaction2.id
+            ? 1
+            : reaction2.id > reaction1.id
+            ? -1
+            : 0
+        );
+
+        const newReactionIndex = tempReactions.indexOf(newReaction);
+
+        post.reactions.splice(newReactionIndex, 0, newReaction);
       }
 
       if (!post.current_user_reaction) {
