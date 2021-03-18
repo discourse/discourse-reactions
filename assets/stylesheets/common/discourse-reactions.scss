@@ -471,27 +471,3 @@ nav.post-controls .actions .reaction-button:focus {
 nav.post-controls .actions .reaction-button {
   margin: 0;
 }
-
-.emoji-details {
-  display: flex;
-  align-items: center;
-  min-height: 30px;
-  padding: 4px 10px;
-  line-height: 1;
-  color: var(--primary);
-  border: 1px solid var(--primary-low);
-
-  .emoji-name {
-    margin-left: 0.5em;
-  }
-}
-
-.emoji-list-values {
-  margin-left: 0;
-}
-
-.shift-up-value-btn,
-.shift-down-value-btn,
-.add-value-btn {
-  margin-left: 0.25em;
-}
