@@ -95,11 +95,9 @@ export default createWidget("discourse-reactions-list-emoji", {
   _setupPopper(popper, selector) {
     next(() => {
       let popperElement;
-      const trigger = document.querySelector(`#${this.buildId(this.attrs)}`);
-
-      popperElement = document.querySelector(
-        `#${this.buildId(this.attrs)} ${selector}`
-      );
+      const elementId = CSS.escape(this.buildId(this.attrs));
+      const trigger = document.querySelector(`#${elementId}`);
+      popperElement = document.querySelector(`#${elementId} ${selector}`);
 
       if (popperElement) {
         if (this[popper]) {
