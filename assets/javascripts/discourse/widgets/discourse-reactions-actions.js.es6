@@ -246,7 +246,7 @@ export default createWidget("discourse-reactions-actions", {
       }
 
       const pickedReaction = document.querySelector(
-        `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${params.reaction} .emoji`
+        `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${CSS.escape(params.reaction)} .emoji`
       );
 
       const scales = [1.0, 1.75];
