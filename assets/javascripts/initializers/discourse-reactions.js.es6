@@ -1,5 +1,7 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
+import { emojiUrlFor } from "discourse/lib/text";
+import { on } from "discourse-common/utils/decorators";
 
 replaceIcon("notification.reaction", "bell");
 
@@ -50,6 +52,29 @@ function initializeDiscourseReactions(api) {
       post
     });
   });
+
+  api.modifyClass(
+    "component:emoji-value-list", {
+      didReceiveAttrs() {
+        this._super(...arguments);
+        if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
+          return;
+        }
+
+        let defaultValue = this.values.includes(this.siteSettings.discourse_reactions_like_icon);
+
+        if (!defaultValue) {
+          this.collection.unshift({
+            emojiUrl: emojiUrlFor(this.siteSettings.discourse_reactions_like_icon),
+            isEditable: false,
+            isEditing: false,
+            isLast: false,
+            value: this.siteSettings.discourse_reactions_like_icon
+          });
+        }
+      },
+    }
+  );
 }
 
 export default {
