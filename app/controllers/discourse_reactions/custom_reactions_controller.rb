@@ -115,10 +115,19 @@ module DiscourseReactions
     end
 
     def publish_change_to_clients!(post)
+      reactions = [params[:reaction]]
+      reaction_user = DiscourseReactions::ReactionUser.find_by(user_id: current_user.id, post_id: post.id)
+
+      if reaction_user
+        reaction = DiscourseReactions::Reaction.find(reaction_user.reaction_id)
+        reactions.push(reaction.reaction_value)
+      end
+
       message = {
         id: post.id,
-        type: params[:reaction]
+        type: reactions
       }
+
       MessageBus.publish("/post/#{post.id}", message)
     end
 
