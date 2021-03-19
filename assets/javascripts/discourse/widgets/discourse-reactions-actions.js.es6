@@ -373,14 +373,16 @@ export default createWidget("discourse-reactions-actions", {
 
         tempReactions.push(newReaction);
 
+        //sorts reactions and get index of new reaction
         const newReactionIndex = tempReactions
-          .sort((reaction1, reaction2) =>
-            reaction2.count - reaction1.count || reaction1.id > reaction2.id
-              ? 1
-              : reaction2.id > reaction1.id
-              ? -1
-              : 0
-          )
+          .sort((reaction1, reaction2) => {
+            if (reaction1.count > reaction2.count) return -1;
+            if (reaction1.count < reaction2.count) return 1;
+
+            //if count is same, sort it by id
+            if (reaction1.id > reaction2.id) return 1;
+            if (reaction1.id < reaction2.id) return -1;
+          })
           .indexOf(newReaction);
 
         post.reactions.splice(newReactionIndex, 0, newReaction);
