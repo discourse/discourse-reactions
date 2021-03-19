@@ -373,15 +373,13 @@ export default createWidget("discourse-reactions-actions", {
 
         tempReactions.push(newReaction);
 
-        tempReactions.sort((reaction1, reaction2) =>
+        const newReactionIndex = tempReactions.sort((reaction1, reaction2) =>
           reaction2.count - reaction1.count || reaction1.id > reaction2.id
             ? 1
             : reaction2.id > reaction1.id
             ? -1
             : 0
-        );
-
-        const newReactionIndex = tempReactions.indexOf(newReaction);
+        ).indexOf(newReaction);
 
         post.reactions.splice(newReactionIndex, 0, newReaction);
       }
