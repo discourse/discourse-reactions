@@ -1,7 +1,6 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
-import { on } from "discourse-common/utils/decorators";
 
 replaceIcon("notification.reaction", "bell");
 
