@@ -53,28 +53,30 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.modifyClass(
-    "component:emoji-value-list", {
-      didReceiveAttrs() {
-        this._super(...arguments);
-        if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
-          return;
-        }
+  api.modifyClass("component:emoji-value-list", {
+    didReceiveAttrs() {
+      this._super(...arguments);
+      if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
+        return;
+      }
 
-        let defaultValue = this.values.includes(this.siteSettings.discourse_reactions_like_icon);
+      let defaultValue = this.values.includes(
+        this.siteSettings.discourse_reactions_like_icon
+      );
 
-        if (!defaultValue) {
-          this.collection.unshift({
-            emojiUrl: emojiUrlFor(this.siteSettings.discourse_reactions_like_icon),
-            isEditable: false,
-            isEditing: false,
-            isLast: false,
-            value: this.siteSettings.discourse_reactions_like_icon
-          });
-        }
-      },
+      if (!defaultValue) {
+        this.collection.unshift({
+          emojiUrl: emojiUrlFor(
+            this.siteSettings.discourse_reactions_like_icon
+          ),
+          isEditable: false,
+          isEditing: false,
+          isLast: false,
+          value: this.siteSettings.discourse_reactions_like_icon
+        });
+      }
     }
-  );
+  });
 }
 
 export default {
