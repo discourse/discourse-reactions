@@ -55,6 +55,7 @@ function initializeDiscourseReactions(api) {
   api.modifyClass("component:emoji-value-list", {
     didReceiveAttrs() {
       this._super(...arguments);
+
       if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
         return;
       }
@@ -72,6 +73,15 @@ function initializeDiscourseReactions(api) {
           isEditing: false,
           isLast: false,
           value: this.siteSettings.discourse_reactions_like_icon
+        });
+      } else {
+        this.collection.every(emoji => {
+          if (emoji.value === this.siteSettings.discourse_reactions_like_icon) {
+            emoji.isEditable = false;
+
+            return false;
+          }
+          return true;
         });
       }
     }
