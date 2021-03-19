@@ -50,3 +50,32 @@ task "reactions:generate", [:post_id, :reactions_count, :reaction] => [:environm
       .toggle!
   end
 end
+
+desc "Converts reactions to like"
+task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args|
+  puts "Disabling the discourse_reactions plugin"
+  SiteSetting.discourse_reactions_enabled = false
+  reactions = []
+
+  if args[:reaction_list_to_convert]
+    reaction_list_to_convert = args[:reaction_list_to_convert].split('|')
+    reactions = DiscourseReactions::Reaction.where("reaction_value != ? AND reaction_value IN (?)", DiscourseReactions::Reaction.main_reaction_id, reaction_list_to_convert)
+  else
+    reactions = DiscourseReactions::Reaction.where("reaction_value != ? ", DiscourseReactions::Reaction.main_reaction_id)
+  end
+
+  reactions.each do |reaction|
+    puts "Converting '#{reaction.reaction_value}' of post_id: #{reaction.post_id} to like..."
+
+    reaction.reaction_users.each do |reaction_user|
+      post = Post.find_by(id: reaction_user.post_id)
+      user = User.find_by(id: reaction_user.user_id)
+
+      next unless post && user
+
+      DiscourseReactions::ReactionManager
+        .new(reaction_value: DiscourseReactions::Reaction.main_reaction_id, user: user, guardian: Guardian.new(user), post: post)
+        .toggle!
+    end
+  end
+end
