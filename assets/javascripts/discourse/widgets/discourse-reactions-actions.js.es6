@@ -369,17 +369,19 @@ export default createWidget("discourse-reactions-actions", {
           count: 1
         };
 
-        const tempReactions = Object.assign([], post.reactions,);
+        const tempReactions = Object.assign([], post.reactions);
 
         tempReactions.push(newReaction);
 
-        const newReactionIndex = tempReactions.sort((reaction1, reaction2) =>
-          reaction2.count - reaction1.count || reaction1.id > reaction2.id
-            ? 1
-            : reaction2.id > reaction1.id
-            ? -1
-            : 0
-        ).indexOf(newReaction);
+        const newReactionIndex = tempReactions
+          .sort((reaction1, reaction2) =>
+            reaction2.count - reaction1.count || reaction1.id > reaction2.id
+              ? 1
+              : reaction2.id > reaction1.id
+              ? -1
+              : 0
+          )
+          .indexOf(newReaction);
 
         post.reactions.splice(newReactionIndex, 0, newReaction);
       }
