@@ -47,6 +47,7 @@ html.discourse-reactions-no-select {
     }
 
     .user-list {
+      position: absolute;
       visibility: hidden;
       z-index: z("usercard") - 2;
       transition: opacity 0.33s;

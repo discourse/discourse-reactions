@@ -3,11 +3,11 @@ import { h } from "virtual-dom";
 import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
-import { next } from "@ember/runloop";
+import { schedule } from "@ember/runloop";
 import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
-const POPPER_NAME = "_popperReactionUserPanel";
+let _popperReactionUserPanel;
 
 export default createWidget("discourse-reactions-list-emoji", {
   tagName: "div.reaction",
@@ -16,21 +16,12 @@ export default createWidget("discourse-reactions-list-emoji", {
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
   mouseOver() {
-    if (this.site.mobileView) {
-      return;
-    }
+    if (!window.matchMedia("(hover: none)").matches) {
+      this._setupPopper(".user-list");
 
-    if (
-      !window.matchMedia("(hover: none)").matches &&
-      !this.attrs.users.length
-    ) {
-      this.callWidgetFunction("getUsers", this.attrs.reaction.id);
-    }
-  },
-
-  didRenderWidget() {
-    if (!window.matchMedia("(hover: none)").matches && !this[POPPER_NAME]) {
-      this._setupPopper(POPPER_NAME, ".user-list");
+      if (!this.attrs.users.length) {
+        this.callWidgetFunction("getUsers", this.attrs.reaction.id);
+      }
     }
   },
 
@@ -92,25 +83,22 @@ export default createWidget("discourse-reactions-list-emoji", {
     return elements;
   },
 
-  _setupPopper(popper, selector) {
-    next(() => {
+  _setupPopper(selector) {
+    schedule("afterRender", () => {
       let popperElement;
       const elementId = CSS.escape(this.buildId(this.attrs));
       const trigger = document.querySelector(`#${elementId}`);
       popperElement = document.querySelector(`#${elementId} ${selector}`);
 
       if (popperElement) {
-        if (this[popper]) {
-          return;
-        }
-
-        this[popper] = this._applyPopper(trigger, popperElement);
+        _popperReactionUserPanel && _popperReactionUserPanel.destroy();
+        _popperReactionUserPanel = this._applyPopper(trigger, popperElement);
       }
     });
   },
 
   _applyPopper(button, picker) {
-    createPopper(button, picker, {
+    return createPopper(button, picker, {
       placement: "bottom",
       modifiers: [
         {
