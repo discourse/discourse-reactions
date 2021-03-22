@@ -66,9 +66,12 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
     reactions = DiscourseReactions::Reaction.where("reaction_value != ? ", DiscourseReactions::Reaction.main_reaction_id)
   end
 
+  raise "invalid input list OR there are no reactions made" if reactions.length == 0
+
   reactions.each do |reaction|
     puts "Converting '#{reaction.reaction_value}' of post_id: #{reaction.post_id} to like..."
 
+    raise "No reaction users found for #{reaction.reaction_value} reaction..." if reaction.reaction_users.count == 0
     reaction.reaction_users.each do |reaction_user|
       post = Post.find_by(id: reaction_user.post_id)
       user = User.find_by(id: reaction_user.user_id)
