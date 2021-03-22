@@ -55,6 +55,8 @@ desc "Converts reactions to like"
 task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args|
   puts "Disabling the discourse_reactions plugin"
   SiteSetting.discourse_reactions_enabled = false
+  POST_UNDO_ACTION_WINDOW_MINS = SiteSetting.post_undo_action_window_mins
+  SiteSetting.post_undo_action_window_mins = 2000000000
   reactions = []
 
   if args[:reaction_list_to_convert]
@@ -71,11 +73,30 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
       post = Post.find_by(id: reaction_user.post_id)
       user = User.find_by(id: reaction_user.user_id)
 
+      puts "Couldn’t find user with id: #{reaction_user.user_id}, continuing to next reaction..." if !user
+      puts "Couldn’t find post with id: #{reaction_user.post_id}, continuing to next reaction..." if !post
+
       next unless post && user
 
-      DiscourseReactions::ReactionManager
+      result = DiscourseReactions::ReactionManager
         .new(reaction_value: DiscourseReactions::Reaction.main_reaction_id, user: user, guardian: Guardian.new(user), post: post)
         .toggle!
+
+      puts "Unexpected error in converting reaction to like..." if !result.success
+
+      return unless result && result.success
     end
   end
+
+  SiteSetting.post_undo_action_window_mins = POST_UNDO_ACTION_WINDOW_MINS
+
+  puts "Revoking #{I18n.t("badges.first_reaction.name")} badge from all users..."
+  badge = Badge.find_by(name: I18n.t("badges.first_reaction.name"))
+  BadgeGranter.revoke_all(badge) if badge
+
+  puts "Deleting all remaining reactions and reaction_users..."
+  DiscourseReactions::Reaction.all.delete_all
+  DiscourseReactions::ReactionUser.all.delete_all
+
+  puts "Hurray! you have successfully converted reactions to like."
 end
