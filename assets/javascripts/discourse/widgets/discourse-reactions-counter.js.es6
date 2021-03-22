@@ -1,10 +1,12 @@
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { next } from "@ember/runloop";
+import { schedule } from "@ember/runloop";
 import { later, cancel } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import MessageBus from "message-bus-client";
+
+let _popperStatePanel;
 
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
@@ -221,15 +223,11 @@ export default createWidget("discourse-reactions-counter", {
     this.state.reactionsPickerExpanded = false;
     this.state.statePanelExpanded = true;
     this.scheduleRerender();
-    this._setupPopper(
-      this.attrs.post.id,
-      "_popperStatePanel",
-      ".discourse-reactions-state-panel"
-    );
+    this._setupPopper(this.attrs.post.id, ".discourse-reactions-state-panel");
   },
 
-  _setupPopper(postId, popper, selector) {
-    next(() => {
+  _setupPopper(postId, selector) {
+    schedule("afterRender", () => {
       let popperElement;
       const trigger = document.querySelector(
         `#discourse-reactions-counter-${postId}`
@@ -248,17 +246,14 @@ export default createWidget("discourse-reactions-counter", {
       if (popperElement) {
         popperElement.classList.add("is-expanded");
 
-        if (this[popper]) {
-          return;
-        }
-
-        this[popper] = this._applyPopper(trigger, popperElement);
+        _popperStatePanel && _popperStatePanel.destroy();
+        _popperStatePanel = this._applyPopper(trigger, popperElement);
       }
     });
   },
 
   _applyPopper(button, picker) {
-    createPopper(button, picker, {
+    return createPopper(button, picker, {
       placement: "top",
       modifiers: [
         {
