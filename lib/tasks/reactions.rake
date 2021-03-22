@@ -82,16 +82,14 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
         .new(reaction_value: DiscourseReactions::Reaction.main_reaction_id, user: user, guardian: Guardian.new(user), post: post)
         .toggle!
 
-      puts "Unexpected error in converting reaction to like..." if !result.success
-
-      return unless result && result.success
+      raise "Unexpected error in converting reaction to like..." unless result && result.success
     end
   end
 
   SiteSetting.post_undo_action_window_mins = POST_UNDO_ACTION_WINDOW_MINS
 
-  puts "Revoking #{I18n.t("badges.first_reaction.name")} badge from all users..."
   badge = Badge.find_by(name: I18n.t("badges.first_reaction.name"))
+  puts "Revoking '#{I18n.t("badges.first_reaction.name")}' badge from all users..." if badge
   BadgeGranter.revoke_all(badge) if badge
 
   puts "Deleting all remaining reactions and reaction_users..."
