@@ -365,11 +365,29 @@ export default createWidget("discourse-reactions-actions", {
       });
 
       if (!isAvailable) {
-        post.reactions.push({
+        const newReaction = {
           id: attrs.reaction,
           type: "emoji",
           count: 1
-        });
+        };
+
+        const tempReactions = Object.assign([], post.reactions);
+
+        tempReactions.push(newReaction);
+
+        //sorts reactions and get index of new reaction
+        const newReactionIndex = tempReactions
+          .sort((reaction1, reaction2) => {
+            if (reaction1.count > reaction2.count) return -1;
+            if (reaction1.count < reaction2.count) return 1;
+
+            //if count is same, sort it by id
+            if (reaction1.id > reaction2.id) return 1;
+            if (reaction1.id < reaction2.id) return -1;
+          })
+          .indexOf(newReaction);
+
+        post.reactions.splice(newReactionIndex, 0, newReaction);
       }
 
       if (!post.current_user_reaction) {
