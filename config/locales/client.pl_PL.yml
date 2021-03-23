@@ -1,0 +1,36 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+pl_PL:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Reakcje Discourse"
+  js:
+    discourse_reactions:
+      reactions_title: "Reakcje"
+      state_panel:
+        more_users: "i %{count} więcej..."
+      reaction:
+        too_many_request:
+          one: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekundę."
+          few: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekundy."
+          many: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekund."
+          other: "Odpowiadasz trochę za szybko, spróbuj ponownie za %{count} sekund."
+      picker:
+        react_with: "Zareaguj na ten post z: %{reaction}"
+        cant_remove_reaction: "Nie można usunąć tej reakcji"
+        remove_reaction: "Usuń reakcję %{reaction}"
+      main_reaction:
+        add: "Polub ten post"
+        remove: "Usuń to polubienie"
+        cant_remove: "Nie możesz usunąć tego polubienia"
+    notifications:
+      reaction: "<span>%{username}</span> %{description}"
+      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      titles:
+        reaction: "nowa reakcja"
