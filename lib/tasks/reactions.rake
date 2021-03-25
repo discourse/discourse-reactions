@@ -53,6 +53,13 @@ end
 
 desc "Converts reactions to like"
 task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args|
+  require 'highline/import'
+  destroy = ask("You are about to destroy all reactions from database, are you sure ? y/n  ")
+
+  if destroy != "y"
+    raise "You are not sure about the task, aborting the task"
+  end
+
   puts "Disabling the discourse_reactions plugin"
   SiteSetting.discourse_reactions_enabled = false
   POST_UNDO_ACTION_WINDOW_MINS = SiteSetting.post_undo_action_window_mins
