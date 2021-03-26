@@ -22,6 +22,8 @@ function initializeDiscourseReactions(api) {
     });
   });
 
+  api.replaceIcon("notification.reaction", "custom-reaction-icon");
+
   api.decorateWidget("post-menu:extra-post-controls", dec => {
     if (dec.widget.site.mobileView) {
       return;
