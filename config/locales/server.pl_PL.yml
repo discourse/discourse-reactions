@@ -1,0 +1,17 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+pl_PL:
+  site_settings:
+    discourse_reactions_like_icon: "Definiuje ikonę używaną dla głównego przycisku reakcji."
+    discourse_reactions_reaction_for_like: "Określa reakcję związaną ze zwykłym polubieniem."
+    discourse_reactions_enabled: "Włącz wtyczkę discourse-reactions."
+    discourse_reactions_enabled_reactions: "Definiuje listę włączonych reakcji, wszystkie emoji są tutaj dozwolone."
+  badges:
+    first_reaction:
+      name: Pierwsza reakcja
+      long_description: |
+        Ta odznaka jest przyznawana po raz pierwszy przy reagowaniu na wpis. Reagowanie na posty to świetny sposób na to, by członkowie społeczności wiedzieli, że to, co opublikowali, było interesujące, przydatne, fajne lub zabawne. Podziel się swoją reakcją!

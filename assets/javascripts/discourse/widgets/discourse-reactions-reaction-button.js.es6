@@ -28,6 +28,16 @@ export default createWidget("discourse-reactions-reaction-button", {
   mouseOver(event) {
     this._cancelHoverHandler();
 
+    const likeAction = this.attrs.post.likeAction;
+    const currentUserReaction = this.attrs.post.current_user_reaction;
+    if (
+      currentUserReaction &&
+      !currentUserReaction.can_undo &&
+      (!likeAction || isBlank(likeAction.can_undo))
+    ) {
+      return;
+    }
+
     if (!window.matchMedia("(hover: none)").matches) {
       _laterHoverHandlers[this.attrs.post.id] = later(
         this,

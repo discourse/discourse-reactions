@@ -7,11 +7,8 @@ replaceIcon("notification.reaction", "bell");
 function initializeDiscourseReactions(api) {
   api.removePostMenuButton("like");
 
-  api.addKeyboardShortcut("l", () => {
-    const button = document.querySelector(
-      ".topic-post.selected .discourse-reactions-reaction-button"
-    );
-    button && button.click();
+  api.addKeyboardShortcut("l", null, {
+    click: ".topic-post.selected .discourse-reactions-reaction-button"
   });
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
@@ -25,6 +22,8 @@ function initializeDiscourseReactions(api) {
       post
     });
   });
+
+  api.replaceIcon("notification.reaction", "custom-reaction-icon");
 
   api.decorateWidget("post-menu:extra-post-controls", dec => {
     if (dec.widget.site.mobileView) {

@@ -1,0 +1,11 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+zh_TW:
+  badges:
+    first_reaction:
+      long_description: |
+        這個徽章是在您第一次對一個帖子做出反應時授予的。對帖子作出反應是一個很好的方式，讓您的社區成員知道他們發布的帖子是有趣的、有用的、酷的或吸引的。分享您的反應吧！

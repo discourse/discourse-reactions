@@ -1,7 +1,7 @@
 import { createPopper } from "@popperjs/core";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
-import { next, run } from "@ember/runloop";
+import { schedule, run } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
@@ -10,6 +10,8 @@ import I18n from "I18n";
 import bootbox from "bootbox";
 
 const VIBRATE_DURATION = 5;
+
+let _popperPicker;
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
@@ -246,7 +248,11 @@ export default createWidget("discourse-reactions-actions", {
       }
 
       const pickedReaction = document.querySelector(
-        `[data-post-id="${params.postId}"] .discourse-reactions-picker .pickable-reaction.${params.reaction} .emoji`
+        `[data-post-id="${
+          params.postId
+        }"] .discourse-reactions-picker .pickable-reaction.${CSS.escape(
+          params.reaction
+        )} .emoji`
       );
 
       const scales = [1.0, 1.75];
@@ -359,11 +365,29 @@ export default createWidget("discourse-reactions-actions", {
       });
 
       if (!isAvailable) {
-        post.reactions.push({
+        const newReaction = {
           id: attrs.reaction,
           type: "emoji",
           count: 1
-        });
+        };
+
+        const tempReactions = Object.assign([], post.reactions);
+
+        tempReactions.push(newReaction);
+
+        //sorts reactions and get index of new reaction
+        const newReactionIndex = tempReactions
+          .sort((reaction1, reaction2) => {
+            if (reaction1.count > reaction2.count) return -1;
+            if (reaction1.count < reaction2.count) return 1;
+
+            //if count is same, sort it by id
+            if (reaction1.id > reaction2.id) return 1;
+            if (reaction1.id < reaction2.id) return -1;
+          })
+          .indexOf(newReaction);
+
+        post.reactions.splice(newReactionIndex, 0, newReaction);
       }
 
       if (!post.current_user_reaction) {
@@ -533,7 +557,7 @@ export default createWidget("discourse-reactions-actions", {
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
 
-    this._setupPopper(this.attrs.post.id, "_popperPicker", [
+    this._setupPopper(this.attrs.post.id, [
       ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker"
     ]);
@@ -603,8 +627,8 @@ export default createWidget("discourse-reactions-actions", {
     return items;
   },
 
-  _setupPopper(postId, popper, selectors) {
-    next(() => {
+  _setupPopper(postId, selectors) {
+    schedule("afterRender", () => {
       const trigger = document.querySelector(
         `#discourse-reactions-actions-${postId} ${selectors[0]}`
       );
@@ -615,17 +639,14 @@ export default createWidget("discourse-reactions-actions", {
       if (popperElement) {
         popperElement.classList.add("is-expanded");
 
-        if (this[popper]) {
-          return;
-        }
-
-        this[popper] = this._applyPopper(trigger, popperElement);
+        _popperPicker && _popperPicker.destroy();
+        _popperPicker = this._applyPopper(trigger, popperElement);
       }
     });
   },
 
   _applyPopper(button, picker) {
-    createPopper(button, picker, {
+    return createPopper(button, picker, {
       placement: "top",
       modifiers: [
         {

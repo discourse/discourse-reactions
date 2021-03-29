@@ -9,13 +9,21 @@ module DiscourseReactions
     end
 
     def create
-      return if !enabled_reaction_notifications? ||
-          DiscourseReactions::Reaction
-            .where(post_id: @post.id)
-            .by_user(@user)
-            .where('discourse_reactions_reactions.created_at >= ?', 1.day.ago)
-            .count != 1
-      PostAlerter.new.create_notification(@post.user, Notification.types[:reaction], @post, user_id: @user.id, display_username: @user.username)
+      post_user = @post.user
+
+      return if post_user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:never]
+
+      last_notification = post_user.notifications
+        .order("notifications.id DESC")
+        .find_by(
+          topic_id: @post.topic_id,
+          post_number: @post.post_number,
+          notification_type: Notification.types[:reaction]
+        )
+
+      return if (last_notification && !enabled_reaction_notifications?(post_user, last_notification))
+
+      PostAlerter.new.create_notification(post_user, Notification.types[:reaction], @post, user_id: @user.id, display_username: @user.username)
     end
 
     def delete
@@ -35,8 +43,11 @@ module DiscourseReactions
 
     private
 
-    def enabled_reaction_notifications?
-      @post.user.user_option.like_notification_frequency != UserOption.like_notification_frequency_type[:never]
+    def enabled_reaction_notifications?(user, notification)
+      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:always]
+      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:first_time_and_daily] && notification.created_at < 1.day.ago
+      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:first_time] && notification
+      false
     end
 
     def reaction_usernames

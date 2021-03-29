@@ -3,7 +3,7 @@
 # name: discourse-reactions
 # about: Allows users to react with emojis to a post
 # version: 0.1
-# author: Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
+# author: Ahmed Gagan, Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
 # url: https://github.com/discourse/discourse-reactions
 
 enabled_site_setting :discourse_reactions_enabled
