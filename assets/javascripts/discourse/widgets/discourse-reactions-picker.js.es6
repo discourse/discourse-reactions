@@ -23,9 +23,9 @@ export default createWidget("discourse-reactions-picker", {
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
       const post = attrs.post;
-      const reactions = this.siteSettings.discourse_reactions_enabled_reactions.split(
-        "|"
-      );
+      const reactions = this.siteSettings.discourse_reactions_enabled_reactions
+        .split("|")
+        .filter(Boolean);
 
       if (
         !reactions.includes(this.siteSettings.discourse_reactions_like_icon)

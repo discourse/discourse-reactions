@@ -70,7 +70,7 @@ function initializeDiscourseReactions(api) {
           ),
           isEditable: false,
           isEditing: false,
-          isLast: false,
+          showUpDownButtons: this.collection.length - 1 ? true : false,
           value: this.siteSettings.discourse_reactions_like_icon
         });
       } else {
