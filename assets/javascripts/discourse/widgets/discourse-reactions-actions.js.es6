@@ -583,7 +583,7 @@ export default createWidget("discourse-reactions-actions", {
     container &&
       container
         .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded"
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-picker.is-expanded"
         )
         .forEach(popper => popper.classList.remove("is-expanded"));
   },
