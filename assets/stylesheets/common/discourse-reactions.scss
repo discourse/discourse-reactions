@@ -123,6 +123,7 @@ html.discourse-reactions-no-select {
     animation: 0.33s fadeIn;
     animation-fill-mode: forwards;
     display: flex;
+    visibility: visible;
   }
 
   .container {
