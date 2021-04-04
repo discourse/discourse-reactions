@@ -56,7 +56,7 @@ after_initialize do
     mount ::DiscourseReactions::Engine, at: '/'
   end
 
-  ::EmbedController.prepend_view_path File.expand_path('../app/views', __FILE__)
+  ::ActionController::Base.prepend_view_path File.expand_path('../app/views', __FILE__)
 
   DiscourseReactions::Engine.routes.draw do
     get "/discourse-reactions/custom-reactions" => "custom_reactions#index", constraints: { format: :json }

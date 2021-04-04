@@ -1,0 +1,6 @@
+<%- if object.first_post.reactions_user.length > 0 %>
+  <div class='topic-reactions-count'>
+    &nbsp;
+    <%= I18n.t('embed.reaction', count: object.first_post.reactions_user.length) %>
+  </div>
+<%- end %>
