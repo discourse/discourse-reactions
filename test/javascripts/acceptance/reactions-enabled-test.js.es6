@@ -16,7 +16,7 @@ acceptance("Reactions enabled", {
   }
 });
 
-QUnit.test("It displays reaction-actions", async (assert) => {
+QUnit.test("It displays reaction-actions", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.ok(exists(".discourse-reactions-actions"), "has reaction-actions");

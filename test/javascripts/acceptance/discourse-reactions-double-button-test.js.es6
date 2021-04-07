@@ -16,14 +16,26 @@ acceptance("Discourse reactions double button", {
   }
 });
 
-QUnit.test("It displays double-button when only likes on post", async (assert) => {
-  await visit("/t/-/topic_with_reactions_and_likes");
+QUnit.test(
+  "It displays double-button when only likes on post",
+  async assert => {
+    await visit("/t/-/topic_with_reactions_and_likes");
 
-  assert.ok(exists('[id="post_3"] .discourse-reactions-double-button'), "Has double button");
-});
+    assert.ok(
+      exists('[id="post_3"] .discourse-reactions-double-button'),
+      "Has double button"
+    );
+  }
+);
 
-QUnit.test("Doesn't displays double-button when likes and reactions both are present", async (assert) => {
-  await visit("/t/-/topic_with_reactions_and_likes");
+QUnit.test(
+  "Doesn't displays double-button when likes and reactions both are present",
+  async assert => {
+    await visit("/t/-/topic_with_reactions_and_likes");
 
-  assert.notOk(exists('[id="post_1"] .discourse-reactions-double-button'), "does not has double button");
-});
+    assert.notOk(
+      exists('[id="post_1"] .discourse-reactions-double-button'),
+      "does not has double button"
+    );
+  }
+);

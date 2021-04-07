@@ -4,7 +4,7 @@ import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtues"
 acceptance("Reactions disabled", {
   loggedIn: true,
   settings: {
-    discourse_reactions_enabled: false,
+    discourse_reactions_enabled: false
   },
 
   pretend(server, helper) {
@@ -13,8 +13,11 @@ acceptance("Reactions disabled", {
   }
 });
 
-QUnit.test("Doesn't displays reaction-actions", async (assert) => {
+QUnit.test("Doesn't displays reaction-actions", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
-  assert.notOk(exists(".discourse-reactions-actions"), "Does not have reaction-actions");
+  assert.notOk(
+    exists(".discourse-reactions-actions"),
+    "Does not have reaction-actions"
+  );
 });
