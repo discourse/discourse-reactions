@@ -18,6 +18,6 @@ test("Does not show reactions controls", async assert => {
 
   assert.notOk(
     exists(".discourse-reactions-actions"),
-    "Does not have reaction-actions"
+    "reactions controls are not available"
   );
 });

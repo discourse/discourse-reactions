@@ -21,15 +21,15 @@ test("It displays reaction-count besides reaction button when there are only lik
 
   assert.ok(
     exists('[id="post_3"] .discourse-reactions-double-button'),
-    "Has double button"
+    "reaction-count is displayed beside reaction-button"
   );
 });
 
-test("displays reaction-count besides reaction button when likes and reactions both are present", async assert => {
+test("doesn't display reaction-count besides reaction button when likes and reactions both are present", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.notOk(
     exists('[id="post_1"] .discourse-reactions-double-button'),
-    "does not has double button"
+    "reaction-count is not displayed beside reaction-button"
   );
 });

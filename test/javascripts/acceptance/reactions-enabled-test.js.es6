@@ -19,5 +19,8 @@ acceptance("Reactions enabled", {
 test("It shows reactions controls", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
-  assert.ok(exists(".discourse-reactions-actions"), "has reaction-actions");
+  assert.ok(
+    exists(".discourse-reactions-actions"),
+    "reaction controls are available"
+  );
 });
