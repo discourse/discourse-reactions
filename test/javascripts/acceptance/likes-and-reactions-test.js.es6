@@ -16,7 +16,7 @@ acceptance("Likes and Reactions", {
   }
 });
 
-QUnit.test("Displays correct reactions count", async assert => {
+test("Displays correct reactions count", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.equal(
@@ -27,7 +27,7 @@ QUnit.test("Displays correct reactions count", async assert => {
   );
 });
 
-QUnit.test(
+test(
   "Reactions list contains reactions sorted by count",
   async assert => {
     await visit("/t/-/topic_with_reactions_and_likes");

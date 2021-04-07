@@ -1,7 +1,7 @@
 import { acceptance } from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtues";
 
-acceptance("Discourse reactions reaction button", {
+acceptance("Display reaction button", {
   loggedIn: true,
   settings: {
     discourse_reactions_enabled: true,
@@ -16,7 +16,7 @@ acceptance("Discourse reactions reaction button", {
   }
 });
 
-QUnit.test(
+test(
   "It displays reaction-button when post is not yours",
   async assert => {
     await visit("/t/-/topic_with_reactions_and_likes");
@@ -28,7 +28,7 @@ QUnit.test(
   }
 );
 
-QUnit.test(
+test(
   "Doesn't displays reaction-button when post is yours",
   async assert => {
     await visit("/t/-/topic_with_reactions_and_likes");

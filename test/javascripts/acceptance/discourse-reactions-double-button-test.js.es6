@@ -1,7 +1,7 @@
 import { acceptance } from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtues";
 
-acceptance("Discourse reactions double button", {
+acceptance("Display reaction-count beside reaction-button", {
   loggedIn: true,
   settings: {
     discourse_reactions_enabled: true,
@@ -16,8 +16,8 @@ acceptance("Discourse reactions double button", {
   }
 });
 
-QUnit.test(
-  "It displays double-button when only likes on post",
+test(
+  "It displays reaction-count besides reaction button when there are only likes on post",
   async assert => {
     await visit("/t/-/topic_with_reactions_and_likes");
 
@@ -28,8 +28,8 @@ QUnit.test(
   }
 );
 
-QUnit.test(
-  "Doesn't displays double-button when likes and reactions both are present",
+test(
+  "displays reaction-count besides reaction button when likes and reactions both are present",
   async assert => {
     await visit("/t/-/topic_with_reactions_and_likes");
 

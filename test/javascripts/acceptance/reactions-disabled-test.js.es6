@@ -13,7 +13,7 @@ acceptance("Reactions disabled", {
   }
 });
 
-QUnit.test("Doesn't displays reaction-actions", async assert => {
+test("Does not show reactions controls", async assert => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.notOk(
