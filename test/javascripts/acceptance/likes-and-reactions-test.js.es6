@@ -27,16 +27,18 @@ test("Displays correct reactions count", async assert => {
   );
 });
 
-test(
-  "Reactions list contains reactions sorted by count",
-  async assert => {
-    await visit("/t/-/topic_with_reactions_and_likes");
-    const expectedSequence =
-      "heartangrylaughingopen_mouthcrythumbsdownnose:t2thumbsup";
+test("Reactions list contains reactions sorted by count", async assert => {
+  const reactions = [];
+  const expectedSequence =
+    "heart|angry|laughing|open_mouth|cry|thumbsdown|nose:t2|thumbsup";
 
-    const reactions = find(
-      '[id="post_1"] .discourse-reactions-counter .discourse-reactions-list .reactions .reaction'
-    ).text();
-    assert.equal(reactions, expectedSequence);
-  }
-);
+  await visit("/t/-/topic_with_reactions_and_likes");
+
+  find(
+    '[id="post_1"] .discourse-reactions-counter .discourse-reactions-list .reactions .reaction'
+  ).map((index, currentValue) => {
+    reactions.push(currentValue.innerText);
+  });
+
+  assert.equal(reactions.join("|"), expectedSequence);
+});

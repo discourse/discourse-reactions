@@ -16,26 +16,20 @@ acceptance("Display reaction button", {
   }
 });
 
-test(
-  "It displays reaction-button when post is not yours",
-  async assert => {
-    await visit("/t/-/topic_with_reactions_and_likes");
+test("It displays reaction-button when post is not yours", async assert => {
+  await visit("/t/-/topic_with_reactions_and_likes");
 
-    assert.ok(
-      exists('[id="post_2"] .discourse-reactions-reaction-button'),
-      "Has reaction-button"
-    );
-  }
-);
+  assert.ok(
+    exists('[id="post_2"] .discourse-reactions-reaction-button'),
+    "Has reaction-button"
+  );
+});
 
-test(
-  "Doesn't displays reaction-button when post is yours",
-  async assert => {
-    await visit("/t/-/topic_with_reactions_and_likes");
+test("Doesn't displays reaction-button when post is yours", async assert => {
+  await visit("/t/-/topic_with_reactions_and_likes");
 
-    assert.notOk(
-      exists('[id="post_1"] .discourse-reactions-reaction-button'),
-      "Does not has reaction-button"
-    );
-  }
-);
+  assert.notOk(
+    exists('[id="post_1"] .discourse-reactions-reaction-button'),
+    "Does not has reaction-button"
+  );
+});

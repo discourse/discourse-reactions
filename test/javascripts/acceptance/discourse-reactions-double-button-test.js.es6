@@ -16,26 +16,20 @@ acceptance("Display reaction-count beside reaction-button", {
   }
 });
 
-test(
-  "It displays reaction-count besides reaction button when there are only likes on post",
-  async assert => {
-    await visit("/t/-/topic_with_reactions_and_likes");
+test("It displays reaction-count besides reaction button when there are only likes on post", async assert => {
+  await visit("/t/-/topic_with_reactions_and_likes");
 
-    assert.ok(
-      exists('[id="post_3"] .discourse-reactions-double-button'),
-      "Has double button"
-    );
-  }
-);
+  assert.ok(
+    exists('[id="post_3"] .discourse-reactions-double-button'),
+    "Has double button"
+  );
+});
 
-test(
-  "displays reaction-count besides reaction button when likes and reactions both are present",
-  async assert => {
-    await visit("/t/-/topic_with_reactions_and_likes");
+test("displays reaction-count besides reaction button when likes and reactions both are present", async assert => {
+  await visit("/t/-/topic_with_reactions_and_likes");
 
-    assert.notOk(
-      exists('[id="post_1"] .discourse-reactions-double-button'),
-      "does not has double button"
-    );
-  }
-);
+  assert.notOk(
+    exists('[id="post_1"] .discourse-reactions-double-button'),
+    "does not has double button"
+  );
+});
