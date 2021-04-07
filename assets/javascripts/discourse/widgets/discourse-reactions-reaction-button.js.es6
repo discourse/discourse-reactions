@@ -107,8 +107,9 @@ export default createWidget("discourse-reactions-reaction-button", {
 
     if (hasUsedMainReaction) {
       return h(
-        "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button", {
-          title: this.buildAttributes(attrs).title,
+        "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+        {
+          title: this.buildAttributes(attrs).title
         },
         [iconNode(mainReactionIcon)]
       );
@@ -116,8 +117,9 @@ export default createWidget("discourse-reactions-reaction-button", {
 
     if (currentUserReaction) {
       return h(
-        "button.btn-icon.no-text.reaction-button",{
-          title: this.buildAttributes(attrs).title,
+        "button.btn-icon.no-text.reaction-button",
+        {
+          title: this.buildAttributes(attrs).title
         },
         h("img.btn-toggle-reaction-emoji.reaction-button", {
           src: emojiUrlFor(currentUserReaction.id),
@@ -127,8 +129,9 @@ export default createWidget("discourse-reactions-reaction-button", {
     }
 
     return h(
-      "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",{
-        title: this.buildAttributes(attrs).title,
+      "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+      {
+        title: this.buildAttributes(attrs).title
       },
       [iconNode(`far-${mainReactionIcon}`)]
     );
