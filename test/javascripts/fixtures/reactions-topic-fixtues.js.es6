@@ -337,7 +337,7 @@ export default {
           avatar_template: "/user_avatar/localhost/david/{size}/7_2.png",
           created_at: "2021-03-10T21:54:50.134Z",
           cooked:
-            '<p>Really liking this plugin <img src="//localhost:3000/images/emoji/twitter/open_hands.png?v=9" title=":open_hands:" class="emoji" alt=":open_hands:"></p>',
+            '\u003cp\u003eReally liking this plugin \u003cimg src="//localhost:3000/images/emoji/twitter/open_hands.png?v=9" title=":open_hands:" class="emoji" alt=":open_hands:"\u003e\u003c/p\u003e',
           post_number: 4,
           post_type: 1,
           updated_at: "2021-03-10T21:54:50.134Z",
@@ -359,68 +359,44 @@ export default {
           version: 1,
           can_edit: true,
           can_delete: true,
-          can_recover: false,
+          can_recover: true,
           can_wiki: true,
           read: true,
           user_title: "team",
           title_is_group: false,
           bookmarked: false,
           actions_summary: [
-            {
-              id: 2,
-              count: 2,
-              acted: true,
-              can_undo: true
-            },
-            {
-              id: 3,
-              can_act: true
-            },
-            {
-              id: 4,
-              can_act: true
-            },
-            {
-              id: 8,
-              can_act: true
-            },
-            {
-              id: 6,
-              can_act: true
-            },
-            {
-              id: 7,
-              can_act: true
-            }
+            { id: 3, can_act: true },
+            { id: 4, can_act: true },
+            { id: 8, can_act: true },
+            { id: 6, can_act: true },
+            { id: 7, can_act: true }
           ],
-          moderator: false,
+          moderator: true,
           admin: false,
-          staff: false,
+          staff: true,
           user_id: 2,
           hidden: false,
           trust_level: 0,
-          deleted_at: null,
+          deleted_at: "2021-04-08T07:51:23.620Z",
+          deleted_by: {
+            id: 1,
+            username: "ahmedgagan6",
+            name: "Ahmed Gagan",
+            avatar_template: "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
+          },
           user_deleted: false,
           edit_reason: null,
           can_view_edit_history: true,
           wiki: false,
+          user_custom_fields: { user_notes_count: "1" },
           reviewable_id: 0,
           reviewable_score_count: 0,
           reviewable_score_pending_count: 0,
-          reactions: [
-            {
-              id: "heart",
-              type: "emoji",
-              count: 2
-            }
-          ],
-          current_user_reaction: {
-            id: "heart",
-            type: "emoji",
-            can_undo: true
-          },
-          reaction_users_count: 2,
-          current_user_used_main_reaction: true
+          reactions: [],
+          current_user_reaction: null,
+          reaction_users_count: 0,
+          current_user_used_main_reaction: false
         }
       ],
       stream: [854, 1076, 1078, 1079]
