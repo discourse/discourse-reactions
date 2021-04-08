@@ -10,5 +10,5 @@ export default DiscourseReactionsAdapter.extend({
 
   apiNameFor() {
     return "custom-reaction";
-  }
+  },
 });

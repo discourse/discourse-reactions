@@ -52,11 +52,11 @@ function moveReactionAnimation(
   $(fakeReaction).animate(
     {
       top: endPosition,
-      opacity: 1
+      opacity: 1,
     },
     {
       duration: 350,
-      complete: done
+      complete: done,
     },
     "swing"
   );
@@ -88,7 +88,7 @@ function scaleReactionAnimation(mainReaction, start, end, complete) {
             .addClass("far-heart")
             .removeClass("heart");
         },
-        duration: 150
+        duration: 150,
       },
       "linear"
     );
@@ -99,11 +99,11 @@ export default createWidget("discourse-reactions-actions", {
 
   defaultState() {
     return {
-      reactionsPickerExpanded: false
+      reactionsPickerExpanded: false,
     };
   },
 
-  buildKey: attrs => `discourse-reactions-actions-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-actions-${attrs.post.id}`,
 
   buildClasses(attrs) {
     if (!attrs.post.reactions) {
@@ -116,7 +116,7 @@ export default createWidget("discourse-reactions-actions", {
     const customReactionUsed =
       post.reactions.length &&
       post.reactions.filter(
-        reaction =>
+        (reaction) =>
           reaction.id !==
           this.siteSettings.discourse_reactions_reaction_for_like
       ).length;
@@ -226,7 +226,7 @@ export default createWidget("discourse-reactions-actions", {
           this.toggleFromButton({
             reaction: this.attrs.post.current_user_reaction
               ? this.attrs.post.current_user_reaction.id
-              : this.siteSettings.discourse_reactions_reaction_for_like
+              : this.siteSettings.discourse_reactions_reaction_for_like,
           });
         }
       }
@@ -256,7 +256,7 @@ export default createWidget("discourse-reactions-actions", {
       );
 
       const scales = [1.0, 1.75];
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         scaleReactionAnimation(pickedReaction, scales[0], scales[1], () => {
           scaleReactionAnimation(pickedReaction, scales[1], scales[0], () => {
             const post = this.attrs.post;
@@ -279,7 +279,7 @@ export default createWidget("discourse-reactions-actions", {
                 dropReaction(postContainer, params.reaction, () => {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
-                    .catch(e => {
+                    .catch((e) => {
                       bootbox.alert(this.extractErrors(e));
 
                       post.current_user_reaction = current_user_reaction;
@@ -297,7 +297,7 @@ export default createWidget("discourse-reactions-actions", {
 
                 CustomReaction.toggle(params.postId, params.reaction)
                   .then(resolve)
-                  .catch(e => {
+                  .catch((e) => {
                     bootbox.alert(this.extractErrors(e));
 
                     post.current_user_reaction = current_user_reaction;
@@ -368,7 +368,7 @@ export default createWidget("discourse-reactions-actions", {
         const newReaction = {
           id: attrs.reaction,
           type: "emoji",
-          count: 1
+          count: 1,
         };
 
         const tempReactions = Object.assign([], post.reactions);
@@ -397,7 +397,7 @@ export default createWidget("discourse-reactions-actions", {
       post.current_user_reaction = {
         id: attrs.reaction,
         type: "emoji",
-        can_undo: true
+        can_undo: true,
       };
     } else {
       post.reaction_users_count -= 1;
@@ -457,7 +457,7 @@ export default createWidget("discourse-reactions-actions", {
     if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       this.toggleReaction(attrs);
       return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
-        e => {
+        (e) => {
           bootbox.alert(this.extractErrors(e));
 
           post.current_user_reaction = current_user_reaction;
@@ -486,7 +486,7 @@ export default createWidget("discourse-reactions-actions", {
     const mainReaction = document.querySelector(selector);
 
     const scales = [1.0, 1.5];
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       scaleReactionAnimation(mainReaction, scales[0], scales[1], () => {
         scaleReactionAnimation(mainReaction, scales[1], scales[0], () => {
           this.toggleReaction(attrs);
@@ -498,7 +498,7 @@ export default createWidget("discourse-reactions-actions", {
 
           CustomReaction.toggle(this.attrs.post.id, toggleReaction)
             .then(resolve)
-            .catch(e => {
+            .catch((e) => {
               bootbox.alert(this.extractErrors(e));
 
               post.current_user_reaction = current_user_reaction;
@@ -526,7 +526,7 @@ export default createWidget("discourse-reactions-actions", {
       xhr.responseJSON.extras.wait_seconds
     ) {
       return I18n.t("discourse_reactions.reaction.too_many_request", {
-        count: xhr.responseJSON.extras.wait_seconds
+        count: xhr.responseJSON.extras.wait_seconds,
       });
     } else if (xhr.status === 403) {
       return I18n.t("discourse_reactions.reaction.forbidden");
@@ -544,7 +544,7 @@ export default createWidget("discourse-reactions-actions", {
     this._collapseHandler = later(this, this.collapsePanels, 500);
   },
 
-  buildId: attrs => `discourse-reactions-actions-${attrs.post.id}`,
+  buildId: (attrs) => `discourse-reactions-actions-${attrs.post.id}`,
 
   clickOutside() {
     if (this.state.reactionsPickerExpanded || this.state.statePanelExpanded) {
@@ -559,7 +559,7 @@ export default createWidget("discourse-reactions-actions", {
 
     this._setupPopper(this.attrs.post.id, [
       ".discourse-reactions-reaction-button",
-      ".discourse-reactions-picker"
+      ".discourse-reactions-picker",
     ]);
   },
 
@@ -585,7 +585,7 @@ export default createWidget("discourse-reactions-actions", {
         .querySelectorAll(
           ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-picker.is-expanded"
         )
-        .forEach(popper => popper.classList.remove("is-expanded"));
+        .forEach((popper) => popper.classList.remove("is-expanded"));
   },
 
   html(attrs) {
@@ -599,7 +599,7 @@ export default createWidget("discourse-reactions-actions", {
         this.attach(
           "discourse-reactions-picker",
           Object.assign({}, attrs, {
-            reactionsPickerExpanded: this.state.reactionsPickerExpanded
+            reactionsPickerExpanded: this.state.reactionsPickerExpanded,
           })
         )
       );
@@ -652,16 +652,16 @@ export default createWidget("discourse-reactions-actions", {
         {
           name: "offset",
           options: {
-            offset: [0, -5]
-          }
+            offset: [0, -5],
+          },
         },
         {
           name: "preventOverflow",
           options: {
-            padding: 5
-          }
-        }
-      ]
+            padding: 5,
+          },
+        },
+      ],
     });
-  }
+  },
 });

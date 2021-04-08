@@ -11,12 +11,12 @@ export default DiscourseRoute.extend({
     this.controllerFor("user-activity-my-reactions").setProperties({
       model,
       canLoadMore: !loadedAll,
-      reactionsUrl: "reactions-received"
+      reactionsUrl: "reactions-received",
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },
 
   renderTemplate() {
     this.render("user-activity-my-reactions");
-  }
+  },
 });

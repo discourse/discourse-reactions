@@ -11,9 +11,9 @@ let _popperStatePanel;
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
 
-  buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
-  buildId: attrs => `discourse-reactions-counter-${attrs.post.id}`,
+  buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
   init() {
     this.subscribe();
@@ -29,8 +29,8 @@ export default createWidget("discourse-reactions-counter", {
   subscribe() {
     this.unsubscribe();
 
-    MessageBus.subscribe(`/post/${this.attrs.post.id}`, data => {
-      data.type.forEach(reaction => {
+    MessageBus.subscribe(`/post/${this.attrs.post.id}`, (data) => {
+      data.type.forEach((reaction) => {
         if (this.state[reaction].length) {
           this.getUsers(reaction);
         }
@@ -44,11 +44,11 @@ export default createWidget("discourse-reactions-counter", {
     this.siteSettings.discourse_reactions_enabled_reactions
       .split("|")
       .filter(Boolean)
-      .forEach(item => {
+      .forEach((item) => {
         state[item] = [];
       });
 
-    (attrs.post.reactions || []).forEach(reaction => {
+    (attrs.post.reactions || []).forEach((reaction) => {
       if (!state[reaction.id]) {
         state[reaction.id] = [];
       }
@@ -87,9 +87,9 @@ export default createWidget("discourse-reactions-counter", {
     }
 
     CustomReaction.findReactionUsers(this.attrs.post.id, {
-      reactionValue
-    }).then(reactions => {
-      reactions.reaction_users.forEach(reactionUser => {
+      reactionValue,
+    }).then((reactions) => {
+      reactions.reaction_users.forEach((reactionUser) => {
         this.state[reactionUser.id] = reactionUser.users;
       });
       if (reactionValue) {
@@ -165,7 +165,7 @@ export default createWidget("discourse-reactions-counter", {
           "discourse-reactions-state-panel",
           Object.assign({}, attrs, {
             statePanelExpanded: this.state.statePanelExpanded,
-            state: this.state
+            state: this.state,
           })
         )
       );
@@ -197,7 +197,7 @@ export default createWidget("discourse-reactions-counter", {
         .querySelectorAll(
           ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
         )
-        .forEach(popper => popper.classList.remove("is-expanded"));
+        .forEach((popper) => popper.classList.remove("is-expanded"));
 
     this.scheduleRerender();
   },
@@ -259,16 +259,16 @@ export default createWidget("discourse-reactions-counter", {
         {
           name: "offset",
           options: {
-            offset: [0, -5]
-          }
+            offset: [0, -5],
+          },
         },
         {
           name: "preventOverflow",
           options: {
-            padding: 5
-          }
-        }
-      ]
+            padding: 5,
+          },
+        },
+      ],
     });
-  }
+  },
 });
