@@ -59,7 +59,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   buildAttributes(attrs) {
     const likeAction = attrs.post.likeAction;
     if (!likeAction) {
-      return;
+      return {};
     }
 
     let title;
