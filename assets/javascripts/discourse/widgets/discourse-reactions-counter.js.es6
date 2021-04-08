@@ -1,8 +1,7 @@
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { schedule } from "@ember/runloop";
-import { later, cancel } from "@ember/runloop";
+import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import MessageBus from "message-bus-client";
 
