@@ -70,18 +70,17 @@ function initializeDiscourseReactions(api) {
           ),
           isEditable: false,
           isEditing: false,
-          showUpDownButtons: this.collection.length - 1 ? true : false,
           value: this.siteSettings.discourse_reactions_like_icon
         });
       } else {
-        this.collection.every(emoji => {
-          if (emoji.value === this.siteSettings.discourse_reactions_like_icon) {
-            emoji.isEditable = false;
+        const mainEmoji = this.collection.findBy(
+          "value",
+          this.siteSettings.discourse_reactions_like_icon
+        );
 
-            return false;
-          }
-          return true;
-        });
+        if (mainEmoji) {
+          mainEmoji.isEditable = false;
+        }
       }
     }
   });
