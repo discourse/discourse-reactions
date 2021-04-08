@@ -64,7 +64,7 @@ function initializeDiscourseReactions(api) {
       );
 
       if (!defaultValue) {
-        this.collection.unshift({
+        this.collection.unshiftObject({
           emojiUrl: emojiUrlFor(
             this.siteSettings.discourse_reactions_like_icon
           ),
