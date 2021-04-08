@@ -13,8 +13,7 @@ function initializeDiscourseReactions(api) {
 
   api.decorateWidget("post-menu:before-extra-controls", dec => {
     const post = dec.getModel();
-
-    if (!post || !post.likeAction) {
+    if (!post || post.deleted_at) {
       return;
     }
 
@@ -34,7 +33,7 @@ function initializeDiscourseReactions(api) {
       dec.widget.siteSettings.discourse_reactions_reaction_for_like;
     const post = dec.getModel();
 
-    if (!post || !post.likeAction) {
+    if (!post || post.deleted_at) {
       return;
     }
 
