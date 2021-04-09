@@ -73,19 +73,19 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like])
+    likes = object.post_actions.where('deleted_at IS NULL AND post_action_type_id = ?', PostActionType.types[:like])
 
-    object.post_actions
+    if likes.blank?
+      return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
+    end
 
-    return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
+    reaction_likes, reactions = reactions.partition { |r| r[:id] == DiscourseReactions::Reaction.main_reaction_id }
 
-    like_reaction = {
+    reactions << {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
-      count: likes.length
+      count: likes.size + reaction_likes.sum { |r| r[:count] }
     }
-
-    reactions << like_reaction
 
     reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
   end

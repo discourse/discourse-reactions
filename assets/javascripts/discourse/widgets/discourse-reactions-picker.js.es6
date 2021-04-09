@@ -43,13 +43,11 @@ export default createWidget("discourse-reactions-picker", {
           reactions.map((reaction) => {
             let isUsed;
             let canUndo;
-            let emoji = reaction;
 
             if (
               reaction ===
               this.siteSettings.discourse_reactions_reaction_for_like
             ) {
-              emoji = this.siteSettings.discourse_reactions_like_icon;
               isUsed = post.current_user_used_main_reaction;
             } else {
               isUsed =
@@ -85,7 +83,7 @@ export default createWidget("discourse-reactions-picker", {
               titleOptions,
               contents: [
                 new RawHtml({
-                  html: emojiUnescape(`:${emoji}:`),
+                  html: emojiUnescape(`:${reaction}:`),
                 }),
               ],
             });

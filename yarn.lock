@@ -534,7 +534,7 @@ escape-string-regexp@^1.0.5:
   resolved "https://registry.yarnpkg.com/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz#1b61c0562190a8dff6ae3bb2cf0200ca130b86d4"
   integrity sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
 
-eslint-config-discourse@latest:
+eslint-config-discourse@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/eslint-config-discourse/-/eslint-config-discourse-1.1.8.tgz#c297831876811ea08203aa348d1ba2a963b2ae78"
   integrity sha512-ZSQfhliiO5Cfa7WcKoMkN4wW/1rBJpecpMJpfjiFsElfgPj4EV4Pzksi5CvFnRbJDoZh6DYYrQfO+tW062VOUA==

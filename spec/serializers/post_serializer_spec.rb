@@ -80,4 +80,27 @@ describe PostSerializer do
       expect(json[:reactions]).to be nil
     end
   end
+
+  context 'changing discourse_reactions_like_icon' do
+    before do
+      SiteSetting.discourse_reactions_reaction_for_like = 'otter'
+    end
+
+    it 'merges identic custom reaction into likes' do
+      json = PostSerializer.new(post_1, scope: Guardian.new(user_1), root: false).as_json
+
+      expect(json[:reactions]).to eq([
+        {
+          id: 'otter',
+          type: :emoji,
+          count: 3
+        },
+        {
+          id: 'thumbsup',
+          type: :emoji,
+          count: 1
+        }
+      ])
+    end
+  end
 end
