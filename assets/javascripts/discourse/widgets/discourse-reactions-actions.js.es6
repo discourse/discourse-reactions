@@ -275,16 +275,7 @@ export default createWidget("discourse-reactions-actions", {
               this.toggleReaction(params);
 
               later(() => {
-                let newReaction = params.reaction;
-
-                if (
-                  newReaction ===
-                  this.siteSettings.discourse_reactions_reaction_for_like
-                ) {
-                  newReaction = this.siteSettings.discourse_reactions_like_icon;
-                }
-
-                dropReaction(postContainer, newReaction, () => {
+                dropReaction(postContainer, params.reaction, () => {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
                     .catch((e) => {
@@ -300,16 +291,7 @@ export default createWidget("discourse-reactions-actions", {
                 });
               }, 100);
             } else {
-              let newReaction = params.reaction;
-
-              if (
-                newReaction ===
-                this.siteSettings.discourse_reactions_reaction_for_like
-              ) {
-                newReaction = this.siteSettings.discourse_reactions_like_icon;
-              }
-
-              addReaction(postContainer, newReaction, () => {
+              addReaction(postContainer, params.reaction, () => {
                 this.toggleReaction(params);
 
                 CustomReaction.toggle(params.postId, params.reaction)
