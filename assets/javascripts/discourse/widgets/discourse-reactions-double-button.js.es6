@@ -5,7 +5,7 @@ import { iconNode } from "discourse-common/lib/icon-library";
 export default createWidget("discourse-reactions-double-button", {
   tagName: "div.discourse-reactions-double-button",
 
-  buildKey: attrs => `discourse-reactions-double-button-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-double-button-${attrs.post.id}`,
 
   html(attrs) {
     const items = [];
@@ -31,5 +31,5 @@ export default createWidget("discourse-reactions-double-button", {
     }
 
     return items;
-  }
+  },
 });

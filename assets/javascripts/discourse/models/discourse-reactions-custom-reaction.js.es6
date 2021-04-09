@@ -10,7 +10,7 @@ const CustomReaction = RestModel.extend({
     this._super(...arguments);
 
     this.__type = "discourse-reactions-custom-reaction";
-  }
+  },
 });
 
 CustomReaction.reopenClass({
@@ -31,9 +31,9 @@ CustomReaction.reopenClass({
     }
 
     return ajax(`/discourse-reactions/posts/${url}.json`, {
-      data
-    }).then(reactions => {
-      return reactions.map(reaction => {
+      data,
+    }).then((reactions) => {
+      return reactions.map((reaction) => {
         reaction.user = User.create(reaction.user);
         reaction.topic = Topic.create(reaction.post.topic);
         reaction.post_user = User.create(reaction.post.user);
@@ -52,9 +52,9 @@ CustomReaction.reopenClass({
     }
 
     return ajax(`/discourse-reactions/posts/${postId}/reactions-users.json`, {
-      data
+      data,
     });
-  }
+  },
 });
 
 export default CustomReaction;

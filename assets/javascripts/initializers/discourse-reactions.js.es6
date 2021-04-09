@@ -8,23 +8,23 @@ function initializeDiscourseReactions(api) {
   api.removePostMenuButton("like");
 
   api.addKeyboardShortcut("l", null, {
-    click: ".topic-post.selected .discourse-reactions-reaction-button"
+    click: ".topic-post.selected .discourse-reactions-reaction-button",
   });
 
-  api.decorateWidget("post-menu:before-extra-controls", dec => {
+  api.decorateWidget("post-menu:before-extra-controls", (dec) => {
     const post = dec.getModel();
     if (!post || post.deleted_at) {
       return;
     }
 
     return dec.attach("discourse-reactions-actions", {
-      post
+      post,
     });
   });
 
   api.replaceIcon("notification.reaction", "custom-reaction-icon");
 
-  api.decorateWidget("post-menu:extra-post-controls", dec => {
+  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
     if (dec.widget.site.mobileView) {
       return;
     }
@@ -46,7 +46,7 @@ function initializeDiscourseReactions(api) {
     }
 
     return dec.attach("discourse-reactions-counter", {
-      post
+      post,
     });
   });
 
@@ -59,7 +59,7 @@ function initializeDiscourseReactions(api) {
       }
 
       let defaultValue = this.values.includes(
-        this.siteSettings.discourse_reactions_like_icon
+        this.siteSettings.discourse_reactions_reaction_for_like
       );
 
       if (!defaultValue) {
@@ -69,19 +69,22 @@ function initializeDiscourseReactions(api) {
           ),
           isEditable: false,
           isEditing: false,
-          value: this.siteSettings.discourse_reactions_like_icon
+          value: this.siteSettings.discourse_reactions_reaction_for_like,
         });
       } else {
         const mainEmoji = this.collection.findBy(
           "value",
-          this.siteSettings.discourse_reactions_like_icon
+          this.siteSettings.discourse_reactions_reaction_for_like
         );
 
         if (mainEmoji) {
+          mainEmoji.emojiUrl = emojiUrlFor(
+            this.siteSettings.discourse_reactions_like_icon
+          );
           mainEmoji.isEditable = false;
         }
       }
-    }
+    },
   });
 }
 
@@ -93,5 +96,5 @@ export default {
     if (siteSettings.discourse_reactions_enabled) {
       withPluginApi("0.10.1", initializeDiscourseReactions);
     }
-  }
+  },
 };

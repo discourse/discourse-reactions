@@ -24,7 +24,7 @@ export default Controller.extend({
     const opts = { beforeReactionUserId };
 
     CustomReaction.findReactions(this.reactionsUrl, opts)
-      .then(newReactionUsers => {
+      .then((newReactionUsers) => {
         reactionUsers.addObjects(newReactionUsers);
         if (newReactionUsers.length === 0) {
           this.set("canLoadMore", false);
@@ -38,5 +38,5 @@ export default Controller.extend({
   @observes("canLoadMore")
   _showFooter() {
     this.set("application.showFooter", !this.canLoadMore);
-  }
+  },
 });
