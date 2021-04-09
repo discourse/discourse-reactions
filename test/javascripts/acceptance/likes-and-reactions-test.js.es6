@@ -7,16 +7,16 @@ acceptance("Likes and Reactions", {
     discourse_reactions_enabled: true,
     discourse_reactions_enabled_reactions: "otter|open_mouth",
     discourse_reactions_reaction_for_like: "heart",
-    discourse_reactions_like_icon: "heart"
+    discourse_reactions_like_icon: "heart",
   },
 
   pretend(server, helper) {
     const topicPath = "/t/topic_with_reactions_and_likes.json";
     server.get(topicPath, () => helper.response(ReactionsTopics[topicPath]));
-  }
+  },
 });
 
-test("Displays correct reactions count", async assert => {
+test("Displays correct reactions count", async (assert) => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.equal(
@@ -27,7 +27,7 @@ test("Displays correct reactions count", async assert => {
   );
 });
 
-test("Reactions list contains reactions sorted by count", async assert => {
+test("Reactions list contains reactions sorted by count", async (assert) => {
   const reactions = [];
   const expectedSequence =
     "heart|angry|laughing|open_mouth|cry|thumbsdown|nose:t2|thumbsup";

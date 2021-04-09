@@ -8,8 +8,7 @@ export default {
           username: "ahmedgagan6",
           avatar_template: "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
           created_at: "2021-03-10T20:35:28.721Z",
-          cooked:
-            '<p>This is a test topic</p>',
+          cooked: "<p>This is a test topic</p>",
           post_number: 1,
           post_type: 1,
           updated_at: "2021-03-10T21:16:11.840Z",
@@ -38,7 +37,7 @@ export default {
               url: "/groups/team",
               internal: true,
               reflection: false,
-              clicks: 0
+              clicks: 0,
             },
             {
               url:
@@ -46,15 +45,15 @@ export default {
               internal: false,
               reflection: false,
               title: "Install Plugins in Discourse - admins - Discourse Meta",
-              clicks: 0
+              clicks: 0,
             },
             {
               url: "https://github.com/discourse/discourse-reactions",
               internal: false,
               reflection: false,
               title: "GitHub - discourse/discourse-reactions",
-              clicks: 0
-            }
+              clicks: 0,
+            },
           ],
           read: true,
           user_title: "team",
@@ -63,24 +62,24 @@ export default {
           actions_summary: [
             {
               id: 2,
-              count: 190
+              count: 190,
             },
             {
               id: 3,
-              can_act: true
+              can_act: true,
             },
             {
               id: 4,
-              can_act: true
+              can_act: true,
             },
             {
               id: 8,
-              can_act: true
+              can_act: true,
             },
             {
               id: 7,
-              can_act: true
-            }
+              can_act: true,
+            },
           ],
           moderator: false,
           admin: true,
@@ -100,47 +99,47 @@ export default {
             {
               id: "heart",
               type: "emoji",
-              count: 190
+              count: 190,
             },
             {
               id: "angry",
               type: "emoji",
-              count: 5
+              count: 5,
             },
             {
               id: "laughing",
               type: "emoji",
-              count: 5
+              count: 5,
             },
             {
               id: "open_mouth",
               type: "emoji",
-              count: 3
+              count: 3,
             },
             {
               id: "cry",
               type: "emoji",
-              count: 2
+              count: 2,
             },
             {
               id: "thumbsdown",
               type: "emoji",
-              count: 2
+              count: 2,
             },
             {
               id: "nose:t2",
               type: "emoji",
-              count: 1
+              count: 1,
             },
             {
               id: "thumbsup",
               type: "emoji",
-              count: 1
-            }
+              count: 1,
+            },
           ],
           current_user_reaction: null,
           reaction_users_count: 209,
-          current_user_used_main_reaction: false
+          current_user_used_main_reaction: false,
         },
         {
           id: 1076,
@@ -181,28 +180,28 @@ export default {
             {
               id: 2,
               count: 1,
-              can_act: true
+              can_act: true,
             },
             {
               id: 3,
-              can_act: true
+              can_act: true,
             },
             {
               id: 4,
-              can_act: true
+              can_act: true,
             },
             {
               id: 8,
-              can_act: true
+              can_act: true,
             },
             {
               id: 6,
-              can_act: true
+              can_act: true,
             },
             {
               id: 7,
-              can_act: true
-            }
+              can_act: true,
+            },
           ],
           moderator: false,
           admin: false,
@@ -217,7 +216,7 @@ export default {
           wiki: false,
           notice: {
             type: "returning_user",
-            last_posted_at: "2020-09-14T19:49:25Z"
+            last_posted_at: "2020-09-14T19:49:25Z",
           },
           reviewable_id: 0,
           reviewable_score_count: 0,
@@ -226,12 +225,12 @@ export default {
             {
               id: "heart",
               type: "emoji",
-              count: 1
-            }
+              count: 1,
+            },
           ],
           current_user_reaction: null,
           reaction_users_count: 1,
-          current_user_used_main_reaction: false
+          current_user_used_main_reaction: false,
         },
         {
           id: 1078,
@@ -274,28 +273,28 @@ export default {
               id: 2,
               count: 2,
               acted: true,
-              can_undo: true
+              can_undo: true,
             },
             {
               id: 3,
-              can_act: true
+              can_act: true,
             },
             {
               id: 4,
-              can_act: true
+              can_act: true,
             },
             {
               id: 8,
-              can_act: true
+              can_act: true,
             },
             {
               id: 6,
-              can_act: true
+              can_act: true,
             },
             {
               id: 7,
-              can_act: true
-            }
+              can_act: true,
+            },
           ],
           moderator: false,
           admin: false,
@@ -310,7 +309,7 @@ export default {
           wiki: false,
           notice: {
             type: "returning_user",
-            last_posted_at: "2020-05-03T22:26:04Z"
+            last_posted_at: "2020-05-03T22:26:04Z",
           },
           reviewable_id: 0,
           reviewable_score_count: 0,
@@ -319,16 +318,16 @@ export default {
             {
               id: "heart",
               type: "emoji",
-              count: 2
-            }
+              count: 2,
+            },
           ],
           current_user_reaction: {
             id: "heart",
             type: "emoji",
-            can_undo: true
+            can_undo: true,
           },
           reaction_users_count: 2,
-          current_user_used_main_reaction: true
+          current_user_used_main_reaction: true,
         },
         {
           id: 1079,
@@ -370,7 +369,7 @@ export default {
             { id: 4, can_act: true },
             { id: 8, can_act: true },
             { id: 6, can_act: true },
-            { id: 7, can_act: true }
+            { id: 7, can_act: true },
           ],
           moderator: true,
           admin: false,
@@ -383,7 +382,8 @@ export default {
             id: 1,
             username: "ahmedgagan6",
             name: "Ahmed Gagan",
-            avatar_template: "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
+            avatar_template:
+              "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
           },
           user_deleted: false,
           edit_reason: null,
@@ -396,10 +396,10 @@ export default {
           reactions: [],
           current_user_reaction: null,
           reaction_users_count: 0,
-          current_user_used_main_reaction: false
-        }
+          current_user_used_main_reaction: false,
+        },
       ],
-      stream: [854, 1076, 1078, 1079]
+      stream: [854, 1076, 1078, 1079],
     },
     timeline_lookup: [[1, 26]],
     suggested_topics: [
@@ -443,10 +443,10 @@ export default {
               username: "ahmedgagan6",
               name: "Ahmed Gagan",
               avatar_template:
-                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
-            }
-          }
-        ]
+                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
+            },
+          },
+        ],
       },
       {
         id: 74,
@@ -488,10 +488,10 @@ export default {
               username: "ahmedgagan6",
               name: "Ahmed Gagan",
               avatar_template:
-                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
-            }
-          }
-        ]
+                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
+            },
+          },
+        ],
       },
       {
         id: 100,
@@ -532,8 +532,8 @@ export default {
               id: -1,
               username: "system",
               name: "system",
-              avatar_template: "/images/discourse-logo-sketch-small.png"
-            }
+              avatar_template: "/images/discourse-logo-sketch-small.png",
+            },
           },
           {
             extras: "latest",
@@ -543,10 +543,10 @@ export default {
               username: "ahmedgagan6",
               name: "Ahmed Gagan",
               avatar_template:
-                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
-            }
-          }
-        ]
+                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
+            },
+          },
+        ],
       },
       {
         id: 115,
@@ -587,8 +587,8 @@ export default {
               id: -1,
               username: "system",
               name: "system",
-              avatar_template: "/images/discourse-logo-sketch-small.png"
-            }
+              avatar_template: "/images/discourse-logo-sketch-small.png",
+            },
           },
           {
             extras: "latest",
@@ -598,10 +598,10 @@ export default {
               username: "ahmedgagan6",
               name: "Ahmed Gagan",
               avatar_template:
-                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
-            }
-          }
-        ]
+                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
+            },
+          },
+        ],
       },
       {
         id: 122,
@@ -642,8 +642,8 @@ export default {
               id: -1,
               username: "system",
               name: "system",
-              avatar_template: "/images/discourse-logo-sketch-small.png"
-            }
+              avatar_template: "/images/discourse-logo-sketch-small.png",
+            },
           },
           {
             extras: "latest",
@@ -653,11 +653,11 @@ export default {
               username: "ahmedgagan6",
               name: "Ahmed Gagan",
               avatar_template:
-                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
-            }
-          }
-        ]
-      }
+                "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
+            },
+          },
+        ],
+      },
     ],
     tags: [],
     id: 374,
@@ -702,20 +702,20 @@ export default {
         id: 4,
         count: 0,
         hidden: false,
-        can_act: true
+        can_act: true,
       },
       {
         id: 8,
         count: 0,
         hidden: false,
-        can_act: true
+        can_act: true,
       },
       {
         id: 7,
         count: 0,
         hidden: false,
-        can_act: true
-      }
+        can_act: true,
+      },
     ],
     chunk_size: 20,
     bookmarked: false,
@@ -732,7 +732,7 @@ export default {
       "angry",
       "thumbsup",
       "thumbsdown",
-      "nose:t2"
+      "nose:t2",
     ],
     details: {
       can_edit: true,
@@ -766,7 +766,7 @@ export default {
           primary_group_name: null,
           primary_group_flair_url: null,
           primary_group_flair_color: null,
-          primary_group_flair_bg_color: null
+          primary_group_flair_bg_color: null,
         },
         {
           id: 2,
@@ -777,7 +777,7 @@ export default {
           primary_group_name: null,
           primary_group_flair_url: null,
           primary_group_flair_color: null,
-          primary_group_flair_bg_color: null
+          primary_group_flair_bg_color: null,
         },
         {
           id: 3,
@@ -788,7 +788,7 @@ export default {
           primary_group_name: null,
           primary_group_flair_url: null,
           primary_group_flair_color: null,
-          primary_group_flair_bg_color: null
+          primary_group_flair_bg_color: null,
         },
         {
           id: 4,
@@ -800,21 +800,21 @@ export default {
           primary_group_name: null,
           primary_group_flair_url: null,
           primary_group_flair_color: null,
-          primary_group_flair_bg_color: null
-        }
+          primary_group_flair_bg_color: null,
+        },
       ],
       created_by: {
         id: 1,
         username: "ahmedgagan6",
         name: "Ahmed Gagan",
-        avatar_template: "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png"
+        avatar_template: "/user_avatar/localhost/ahmedgagan6/{size}/4_2.png",
       },
       last_poster: {
         id: 2,
         username: "david",
         name: "David Tylor",
-        avatar_template: "/user_avatar/localhost/david/{size}/7_2.png"
-      }
-    }
-  }
+        avatar_template: "/user_avatar/localhost/david/{size}/7_2.png",
+      },
+    },
+  },
 };
