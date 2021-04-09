@@ -4,7 +4,7 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { later, cancel } from "@ember/runloop";
+import { cancel, later } from "@ember/runloop";
 
 let _laterHoverHandlers = {};
 

@@ -1,11 +1,10 @@
 import { createPopper } from "@popperjs/core";
 import { emojiUrlFor } from "discourse/lib/text";
 import { Promise } from "rsvp";
-import { schedule, run } from "@ember/runloop";
+import { cancel, later, run, schedule } from "@ember/runloop";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
-import { later, cancel } from "@ember/runloop";
 import I18n from "I18n";
 import bootbox from "bootbox";
 
@@ -396,12 +395,20 @@ export default createWidget("discourse-reactions-actions", {
         //sorts reactions and get index of new reaction
         const newReactionIndex = tempReactions
           .sort((reaction1, reaction2) => {
-            if (reaction1.count > reaction2.count) return -1;
-            if (reaction1.count < reaction2.count) return 1;
+            if (reaction1.count > reaction2.count) {
+              return -1;
+            }
+            if (reaction1.count < reaction2.count) {
+              return 1;
+            }
 
             //if count is same, sort it by id
-            if (reaction1.id > reaction2.id) return 1;
-            if (reaction1.id < reaction2.id) return -1;
+            if (reaction1.id > reaction2.id) {
+              return 1;
+            }
+            if (reaction1.id < reaction2.id) {
+              return -1;
+            }
           })
           .indexOf(newReaction);
 
