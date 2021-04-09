@@ -22,7 +22,9 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     const elements = [];
     let displayEmoji = attrs.reaction.id;
 
-    if(displayEmoji === this.siteSettings.discourse_reactions_reaction_for_like) {
+    if (
+      displayEmoji === this.siteSettings.discourse_reactions_reaction_for_like
+    ) {
       displayEmoji = this.siteSettings.discourse_reactions_like_icon;
     }
 
