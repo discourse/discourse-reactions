@@ -6,7 +6,7 @@ import { createWidget } from "discourse/widgets/widget";
 export default createWidget("discourse-reactions-picker", {
   tagName: "div.discourse-reactions-picker",
 
-  buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-picker-${attrs.post.id}`,
 
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
@@ -36,7 +36,7 @@ export default createWidget("discourse-reactions-picker", {
       return [
         h(
           "div.container",
-          reactions.map(reaction => {
+          reactions.map((reaction) => {
             let isUsed;
             let canUndo;
             if (
@@ -78,13 +78,13 @@ export default createWidget("discourse-reactions-picker", {
               titleOptions,
               contents: [
                 new RawHtml({
-                  html: emojiUnescape(`:${reaction}:`)
-                })
-              ]
+                  html: emojiUnescape(`:${reaction}:`),
+                }),
+              ],
             });
           })
-        )
+        ),
       ];
     }
-  }
+  },
 });

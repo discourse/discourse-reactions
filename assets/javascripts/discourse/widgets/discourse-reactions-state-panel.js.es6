@@ -4,7 +4,7 @@ import { createWidget } from "discourse/widgets/widget";
 export default createWidget("discourse-reactions-state-panel", {
   tagName: "div.discourse-reactions-state-panel",
 
-  buildKey: attrs => `discourse-reactions-state-panel-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-state-panel-${attrs.post.id}`,
 
   buildClasses(attrs) {
     const classes = [];
@@ -46,7 +46,7 @@ export default createWidget("discourse-reactions-state-panel", {
 
   defaultState() {
     return {
-      displayedReactionId: null
+      displayedReactionId: null,
     };
   },
 
@@ -58,17 +58,17 @@ export default createWidget("discourse-reactions-state-panel", {
     const reactions = attrs.state.postIds.includes(attrs.post.id)
       ? h(
           "div.counters",
-          attrs.post.reactions.map(reaction =>
+          attrs.post.reactions.map((reaction) =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
               users: attrs.state[reaction.id],
               post: attrs.post,
-              isDisplayed: reaction.id === this.state.displayedReactionId
+              isDisplayed: reaction.id === this.state.displayedReactionId,
             })
           )
         )
       : h("div.spinner-container", h("div.spinner"));
 
     return [, h("div.container", reactions)];
-  }
+  },
 });

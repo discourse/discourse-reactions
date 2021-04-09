@@ -25,18 +25,18 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
       h("div.reaction-wrapper", [
         h("div.emoji-wrapper", [
           new RawHtml({
-            html: emojiUnescape(`:${attrs.reaction.id}:`)
-          })
+            html: emojiUnescape(`:${attrs.reaction.id}:`),
+          }),
         ]),
-        h("div.count", attrs.reaction.count.toString())
+        h("div.count", attrs.reaction.count.toString()),
       ])
     );
 
     const firsLineUsers = attrs.users.slice(0, MIN_USERS_COUNT);
-    const list = firsLineUsers.map(user =>
+    const list = firsLineUsers.map((user) =>
       avatarFor("tiny", {
         username: user.username,
-        template: user.avatar_template
+        template: user.avatar_template,
       })
     );
 
@@ -45,21 +45,21 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
         this.attach("button", {
           action: "showUsers",
           contents: [
-            iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down")
+            iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down"),
           ],
           actionParam: attrs,
           className: "show-users",
-          title: ""
+          title: "",
         })
       );
     }
 
     if (attrs.isDisplayed) {
       list.push(
-        attrs.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map(user =>
+        attrs.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map((user) =>
           avatarFor("tiny", {
             username: user.username,
-            template: user.avatar_template
+            template: user.avatar_template,
           })
         )
       );
@@ -68,7 +68,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     let more;
     if (attrs.isDisplayed && attrs.reaction.count > MAX_USERS_COUNT) {
       more = I18n.t("discourse_reactions.state_panel.more_users", {
-        count: attrs.reaction.count - MAX_USERS_COUNT
+        count: attrs.reaction.count - MAX_USERS_COUNT,
       });
     }
 
@@ -80,10 +80,10 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     elements.push(
       h("div.users", [
         h(`div.list.list-columns-${columnsCount}`, list),
-        h("span.more", more)
+        h("span.more", more),
       ])
     );
 
     return elements;
-  }
+  },
 });
