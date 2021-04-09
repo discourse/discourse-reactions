@@ -7,7 +7,9 @@ discourse_reactions:
     default: "heart"
   discourse_reactions_reaction_for_like:
     client: true
+    type: enum
     default: "heart"
+    enum: ReactionForLikeSiteSettingEnum
   discourse_reactions_enabled_reactions:
     type: emoji_list
     default: laughing|open_mouth|cry|angry|hugs

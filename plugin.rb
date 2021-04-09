@@ -17,6 +17,8 @@ register_svg_icon 'far fa-star'
 
 MAX_USERS_COUNT = 26
 
+require_relative 'lib/reaction_for_like_site_setting_enum'
+
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
 
