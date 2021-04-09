@@ -59,7 +59,7 @@ function initializeDiscourseReactions(api) {
       }
 
       let defaultValue = this.values.includes(
-        this.siteSettings.discourse_reactions_like_icon
+        this.siteSettings.discourse_reactions_reaction_for_like
       );
 
       if (!defaultValue) {
@@ -69,15 +69,18 @@ function initializeDiscourseReactions(api) {
           ),
           isEditable: false,
           isEditing: false,
-          value: this.siteSettings.discourse_reactions_like_icon,
+          value: this.siteSettings.discourse_reactions_reaction_for_like,
         });
       } else {
         const mainEmoji = this.collection.findBy(
           "value",
-          this.siteSettings.discourse_reactions_like_icon
+          this.siteSettings.discourse_reactions_reaction_for_like
         );
 
         if (mainEmoji) {
+          mainEmoji.emojiUrl = emojiUrlFor(
+            this.siteSettings.discourse_reactions_like_icon
+          );
           mainEmoji.isEditable = false;
         }
       }

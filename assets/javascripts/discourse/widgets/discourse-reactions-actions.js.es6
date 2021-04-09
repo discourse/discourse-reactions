@@ -275,7 +275,16 @@ export default createWidget("discourse-reactions-actions", {
               this.toggleReaction(params);
 
               later(() => {
-                dropReaction(postContainer, params.reaction, () => {
+                let newReaction = params.reaction;
+
+                if (
+                  newReaction ===
+                  this.siteSettings.discourse_reactions_reaction_for_like
+                ) {
+                  newReaction = this.siteSettings.discourse_reactions_like_icon;
+                }
+
+                dropReaction(postContainer, newReaction, () => {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
                     .catch((e) => {
@@ -291,7 +300,16 @@ export default createWidget("discourse-reactions-actions", {
                 });
               }, 100);
             } else {
-              addReaction(postContainer, params.reaction, () => {
+              let newReaction = params.reaction;
+
+              if (
+                newReaction ===
+                this.siteSettings.discourse_reactions_reaction_for_like
+              ) {
+                newReaction = this.siteSettings.discourse_reactions_like_icon;
+              }
+
+              addReaction(postContainer, newReaction, () => {
                 this.toggleReaction(params);
 
                 CustomReaction.toggle(params.postId, params.reaction)
@@ -414,7 +432,7 @@ export default createWidget("discourse-reactions-actions", {
     if (
       post.current_user_reaction &&
       post.current_user_reaction.id ===
-        this.siteSettings.discourse_reactions_like_icon
+        this.siteSettings.discourse_reactions_reaction_for_like
     ) {
       post.current_user_used_main_reaction = true;
     } else {
