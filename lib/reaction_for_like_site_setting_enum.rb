@@ -10,8 +10,8 @@ class ReactionForLikeSiteSettingEnum < EnumSiteSetting
   end
 
   def self.values
-    @values ||= begin
-      reactions = SiteSetting.discourse_reactions_enabled_reactions.split('|').map do |reaction|
+    @values = begin
+      reactions = DiscourseReactions::Reaction.valid_reactions.map do |reaction|
         { name: reaction, value: reaction }
       end
 

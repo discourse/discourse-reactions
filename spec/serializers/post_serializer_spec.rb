@@ -19,7 +19,7 @@ describe PostSerializer do
 
   before do
     SiteSetting.post_undo_action_window_mins = 10
-    SiteSetting.discourse_reactions_enabled_reactions = '-otter|thumbsup'
+    SiteSetting.discourse_reactions_enabled_reactions = 'otter|thumbsup'
     SiteSetting.discourse_reactions_like_icon = 'heart'
   end
 
