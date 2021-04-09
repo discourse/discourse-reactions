@@ -12,7 +12,7 @@ let _popperReactionUserPanel;
 export default createWidget("discourse-reactions-list-emoji", {
   tagName: "div.reaction",
 
-  buildId: attrs =>
+  buildId: (attrs) =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
   mouseOver() {
@@ -39,7 +39,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (!users.length) {
       displayUsers.push(h("div.center", h("div.spinner.small")));
     } else {
-      users.slice(0, DISPLAY_MAX_USERS).forEach(user => {
+      users.slice(0, DISPLAY_MAX_USERS).forEach((user) => {
         let displayName;
         if (this.siteSettings.prioritize_username_in_ux) {
           displayName = user.username;
@@ -57,7 +57,7 @@ export default createWidget("discourse-reactions-list-emoji", {
           h(
             "span.other-users",
             I18n.t("discourse_reactions.state_panel.more_users", {
-              count: attrs.reaction.count - DISPLAY_MAX_USERS
+              count: attrs.reaction.count - DISPLAY_MAX_USERS,
             })
           )
         );
@@ -71,9 +71,9 @@ export default createWidget("discourse-reactions-list-emoji", {
           class: this.siteSettings
             .discourse_reactions_desaturated_reaction_panel
             ? "desaturated"
-            : ""
-        })
-      })
+            : "",
+        }),
+      }),
     ];
 
     if (!window.matchMedia("(hover: none)").matches) {
@@ -104,16 +104,16 @@ export default createWidget("discourse-reactions-list-emoji", {
         {
           name: "offset",
           options: {
-            offset: [0, -5]
-          }
+            offset: [0, -5],
+          },
         },
         {
           name: "preventOverflow",
           options: {
-            padding: 5
-          }
-        }
-      ]
+            padding: 5,
+          },
+        },
+      ],
     });
-  }
+  },
 });

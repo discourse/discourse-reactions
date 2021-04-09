@@ -23,5 +23,5 @@ export default Component.extend({
   moderatorAction: propertyEqual(
     "reaction.post.post_type",
     "site.post_types.moderator_action"
-  )
+  ),
 });
