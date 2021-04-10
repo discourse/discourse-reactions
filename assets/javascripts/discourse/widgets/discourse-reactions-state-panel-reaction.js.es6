@@ -20,19 +20,12 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
   html(attrs) {
     const elements = [];
-    let displayEmoji = attrs.reaction.id;
-
-    if (
-      displayEmoji === this.siteSettings.discourse_reactions_reaction_for_like
-    ) {
-      displayEmoji = this.siteSettings.discourse_reactions_like_icon;
-    }
 
     elements.push(
       h("div.reaction-wrapper", [
         h("div.emoji-wrapper", [
           new RawHtml({
-            html: emojiUnescape(`:${displayEmoji}:`),
+            html: emojiUnescape(`:${attrs.reaction.id}:`),
           }),
         ]),
         h("div.count", attrs.reaction.count.toString()),

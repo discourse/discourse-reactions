@@ -65,7 +65,7 @@ function initializeDiscourseReactions(api) {
       if (!defaultValue) {
         this.collection.unshiftObject({
           emojiUrl: emojiUrlFor(
-            this.siteSettings.discourse_reactions_like_icon
+            this.siteSettings.discourse_reactions_reaction_for_like
           ),
           isEditable: false,
           isEditing: false,
@@ -78,9 +78,6 @@ function initializeDiscourseReactions(api) {
         );
 
         if (mainEmoji) {
-          mainEmoji.emojiUrl = emojiUrlFor(
-            this.siteSettings.discourse_reactions_like_icon
-          );
           mainEmoji.isEditable = false;
         }
       }
