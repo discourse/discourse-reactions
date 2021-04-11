@@ -155,6 +155,21 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
+  context 'changing discourse_reactions_like_icon' do
+    before do
+      SiteSetting.discourse_reactions_reaction_for_like = 'laughing'
+    end
+
+    it 'merges identic custom reaction into likes' do
+      user_5 = Fabricate(:user)
+      like = Fabricate(:post_action, post: post_2, user: user_5, post_action_type_id: PostActionType.types[:like])
+
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=laughing"
+      parsed = response.parsed_body
+      expect(parsed["reaction_users"][0]["count"]).to eq(3)
+    end
+  end
+
   context 'positive notifications' do
     before do
       PostActionNotifier.enable
