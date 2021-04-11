@@ -20,7 +20,7 @@ test("Deleted posts doesn't shows reaction controls", async (assert) => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   assert.notOk(
-    exists('[id="post_4"].discourse-reactions-actions'),
+    exists('#post_4 .discourse-reactions-actions'),
     "reaction controls are not available"
   );
 });

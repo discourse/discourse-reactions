@@ -21,7 +21,7 @@ test("Displays correct reactions count", async (assert) => {
 
   assert.equal(
     find(
-      '[id="post_1"] .discourse-reactions-counter .reactions-counter'
+      '#post_1 .discourse-reactions-counter .reactions-counter'
     ).text(),
     209
   );
@@ -35,7 +35,7 @@ test("Reactions list contains reactions sorted by count", async (assert) => {
   await visit("/t/-/topic_with_reactions_and_likes");
 
   find(
-    '[id="post_1"] .discourse-reactions-counter .discourse-reactions-list .reactions .reaction'
+    '#post_1 .discourse-reactions-counter .discourse-reactions-list .reactions .reaction'
   ).map((index, currentValue) => {
     reactions.push(currentValue.innerText);
   });
