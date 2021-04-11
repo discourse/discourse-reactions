@@ -78,7 +78,7 @@ module DiscourseReactions
 
       if likes.present?
         main_reaction = DiscourseReactions::Reaction.find_by(reaction_value: DiscourseReactions::Reaction.main_reaction_id, post_id: post.id)
-        count = likes.length.to_i
+        count = likes.length
         users = format_likes_users(likes)
 
         if main_reaction[:reaction_users_count]
