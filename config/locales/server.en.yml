@@ -11,3 +11,10 @@ en:
       description: Reacted to the post
       long_description: |
         This badge is granted the first time you react to a post. Reacting to the posts is a great way to let your fellow community members know that what they posted was interesting, useful, cool, or fun. Share your reaction!
+  reports:
+    discourse_reactions:
+      title: "Reactions"
+      description: "List most recent reactions."
+      labels:
+          likes: "Likes"
+          date: "Date"

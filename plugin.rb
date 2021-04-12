@@ -143,4 +143,74 @@ after_initialize do
   add_model_callback(User, :before_destroy) do
     DiscourseReactions::ReactionUser.where(user_id: self.id).delete_all
   end
+
+  add_report('discourse_reactions') do |report|
+    report.modes = [:table]
+
+    report.data = []
+
+    report.labels = [
+      {
+        type: :text,
+        property: :date,
+        title: I18n.t("reports.discourse_reactions.labels.date")
+      },
+      {
+        type: :integer,
+        property: :like_count,
+        title: I18n.t("reports.discourse_reactions.labels.likes")
+      }
+    ]
+
+    titles = DiscourseReactions::Reaction.where("reaction_users_count IS NOT NULL AND reaction_value!=?", DiscourseReactions::Reaction.main_reaction_id).pluck(:reaction_value).uniq
+
+    titles.each { |title|
+      report.labels << {
+        type: :integer,
+        property: "#{title}_count",
+        title: title
+      }
+    }
+
+    start_date = report.start_date
+    end_date = report.end_date
+
+    while (start_date < end_date) do
+      data = {
+        "date" => start_date.to_date.to_s
+      }
+
+      like_count = PostAction
+        .where(post_action_type_id: PostActionType.types[:like])
+        .where("created_at>=?", start_date)
+        .where("created_at<=?", start_date + 1.day)
+        .count
+
+      like_reactions = DiscourseReactions::Reaction.where(reaction_value: DiscourseReactions::Reaction.main_reaction_id)
+      like_reaction_count = 0
+      like_reactions.each { |reaction|
+        like_reaction_count += reaction.reaction_users
+          .where("created_at>=?", start_date)
+          .where("created_at<=?", start_date + 1.day)
+          .count
+      }
+      data["like_count"] = like_reaction_count + like_count
+
+      titles.each do |title|
+        reactions = DiscourseReactions::Reaction.where(reaction_value: title)
+        reaction_count = 0
+        reactions.each { |reaction|
+          reaction_count += reaction.reaction_users
+            .where("created_at>=?", start_date)
+            .where("created_at<=?", start_date + 1.day)
+            .count
+        }
+
+        data["#{title}_count"] = reaction_count
+      end
+
+      report.data << data
+      start_date += 1.day
+    end
+  end
 end
