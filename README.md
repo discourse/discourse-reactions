@@ -1,11 +1,7 @@
-# discourse-reactions
+## Documentation
 
-ALPHA don't use yet unless you know what you are doing.
+Discourse-reactions is a plugin that allows user to add their reactions to the post.
 
-## API
+Official documentation is at:
 
-### Toggle a reaction
-
-```
-PUT /discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle
-```
+https://meta.discourse.org/t/discourse-reactions-beyond-likes/183261
