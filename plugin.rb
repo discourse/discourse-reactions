@@ -162,6 +162,7 @@ after_initialize do
             {
               type: :integer,
               property: :like_count,
+              emoji: DiscourseReactions::Reaction.main_reaction_id,
               title: DiscourseReactions::Reaction.main_reaction_id
             }
           ]
@@ -172,6 +173,7 @@ after_initialize do
             report.labels << {
               type: :integer,
               property: "#{title}_count",
+              emoji: title,
               title: title
             }
           }
