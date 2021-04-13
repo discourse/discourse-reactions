@@ -10,7 +10,6 @@ pt:
     discourse_reactions_reaction_for_like: "Define a reação associada à ação de gostar."
     discourse_reactions_enabled: "Ativar o plugin de reações discourse."
     discourse_reactions_enabled_reactions: "Define uma lista de reações ativadas, qualquer emoji é permitido aqui."
-    discourse_reactions_desaturated_reaction_panel: "Reduz o ruído visual das reações ao exibi-las descoloradas até passar por cima."
   badges:
     first_reaction:
       name: Primeira Reação

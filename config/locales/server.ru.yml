@@ -10,7 +10,6 @@ ru:
     discourse_reactions_reaction_for_like: "Указание реакции, отображаемой при нажатии на значок основной реакции."
     discourse_reactions_enabled: "Включить плагин 'discourse-reactions'."
     discourse_reactions_enabled_reactions: "Определение списка доступных реакций. Разрешены любые эмодзи."
-    discourse_reactions_desaturated_reaction_panel: "Уменьшение визуального шума. Значки реакций отображаются обесцвеченными до наведения на них курсора."
   badges:
     first_reaction:
       name: Первая реакция
