@@ -162,7 +162,7 @@ after_initialize do
             {
               type: :integer,
               property: :like_count,
-              title: I18n.t("reports.likes.labels.likes")
+              title: DiscourseReactions::Reaction.main_reaction_id
             }
           ]
 
