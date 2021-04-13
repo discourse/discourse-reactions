@@ -5,3 +5,28 @@
 # https://translate.discourse.org/
 
 fr:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Reactions"
+  js:
+    discourse_reactions:
+      reactions_title: "Réactions"
+      state_panel:
+        more_users: "et %{count} de plus..."
+      reaction:
+        forbidden: "Vous avez agi sur ce message il y a longtemps, vous n'êtes donc pas autorisé à supprimer votre réaction."
+      picker:
+        react_with: "Réagissir à ce message avec: %{reaction}"
+        cant_remove_reaction: "Vous ne pouvez pas supprimer cette réaction"
+        remove_reaction: "Supprimer la réaction %{reaction}"
+      main_reaction:
+        add: "Aimer ce message"
+        remove: "Supprimer ce j'aime"
+        cant_remove: "Vous ne pouvez pas supprimer ce j'aime"
+    notifications:
+      reaction: "<span>%{username}</span> %{description}"
+      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      titles:
+        reaction: "nouvelle réaction"

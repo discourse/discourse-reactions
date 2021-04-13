@@ -10,7 +10,6 @@ sv:
     discourse_reactions_reaction_for_like: "Definierar reaktionen som är kopplad till gillningsåtgärden."
     discourse_reactions_enabled: "Aktivera tillägget discourse-reactions."
     discourse_reactions_enabled_reactions: "Definierar en lista över aktiverade reaktioner. Alla emojier tillåts här."
-    discourse_reactions_desaturated_reaction_panel: "Minskar reaktioners visuella inverkan genom att visa dem omättade tills du håller pekaren över dem."
   badges:
     first_reaction:
       name: Första reaktionen
