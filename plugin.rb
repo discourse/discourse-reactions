@@ -160,7 +160,7 @@ after_initialize do
               title: I18n.t("reports.likes.labels.date")
             },
             {
-              type: :integer,
+              type: :number,
               property: :like_count,
               emoji: DiscourseReactions::Reaction.main_reaction_id,
               title: DiscourseReactions::Reaction.main_reaction_id
@@ -171,7 +171,7 @@ after_initialize do
 
           titles.each { |title|
             report.labels << {
-              type: :integer,
+              type: :number,
               property: "#{title}_count",
               emoji: title,
               title: title
