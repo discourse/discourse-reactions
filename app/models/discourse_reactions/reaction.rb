@@ -17,7 +17,7 @@ module DiscourseReactions
     def self.valid_reactions
       Set[
         DiscourseReactions::Reaction.main_reaction_id,
-        *SiteSetting.discourse_reactions_enabled_reactions.split(/\|-?/)
+        *SiteSetting.discourse_reactions_enabled_reactions.split("|")
       ]
     end
 
