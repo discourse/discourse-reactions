@@ -81,12 +81,11 @@ module DiscourseReactions
         count = likes.length
         users = format_likes_users(likes)
 
-        if main_reaction[:reaction_users_count]
+        if main_reaction && main_reaction[:reaction_users_count]
           (users << get_users(main_reaction)).flatten!
+          users.sort_by! { |user| user[:created_at] }
           count += main_reaction.reaction_users_count.to_i
         end
-
-        users.sort_by! { |user| user[:created_at] }
 
         reaction_users << {
           id: DiscourseReactions::Reaction.main_reaction_id,
