@@ -16,5 +16,4 @@ en:
       title: "Reactions"
       description: "List most recent reactions."
       labels:
-          likes: "Likes"
           day: "Day"
