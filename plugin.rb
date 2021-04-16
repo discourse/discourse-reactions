@@ -155,9 +155,9 @@ after_initialize do
 
           report.labels = [
             {
-              type: :text,
-              property: :date,
-              title: I18n.t("reports.likes.labels.date")
+              type: :date,
+              property: :day,
+              title: I18n.t("reports.likes.labels.day")
             },
             {
               type: :number,
@@ -183,7 +183,7 @@ after_initialize do
 
           while (start_date < end_date) do
             data = {
-              "date" => start_date.to_date.to_s
+              "day" => start_date.to_date
             }
 
             like_count = PostAction

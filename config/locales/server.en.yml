@@ -17,4 +17,4 @@ en:
       description: "List most recent reactions."
       labels:
           likes: "Likes"
-          date: "Date"
+          day: "Day"
