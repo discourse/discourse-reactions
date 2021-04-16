@@ -218,6 +218,8 @@ after_initialize do
             report.data << data
             start_date += 1.day
           end
+
+          report.data = report.data.select { |report_data| report_data.values[1..].any? { |value| value > 0 } }
         end
       end
     end
