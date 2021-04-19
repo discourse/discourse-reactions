@@ -1,5 +1,6 @@
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
+import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
 import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
@@ -150,9 +151,11 @@ export default createWidget("discourse-reactions-counter", {
 
   html(attrs) {
     if (attrs.post.reaction_users_count) {
-      const count = attrs.post.reaction_users_count;
+      const post = attrs.post;
+      const count = post.reaction_users_count;
       const mainReaction = this.siteSettings
         .discourse_reactions_reaction_for_like;
+      const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
       const items = [];
 
       if (count <= 0) {
@@ -171,8 +174,8 @@ export default createWidget("discourse-reactions-counter", {
 
       if (
         !(
-          attrs.post.reactions.length === 1 &&
-          attrs.post.reactions[0].id === mainReaction
+          post.reactions.length === 1 &&
+          post.reactions[0].id === mainReaction
         )
       ) {
         attrs.state = this.state;
@@ -180,6 +183,23 @@ export default createWidget("discourse-reactions-counter", {
       }
 
       items.push(h("span.reactions-counter", count.toString()));
+
+      if (
+        post.yours &&
+        post.reactions &&
+        post.reactions.length === 1 &&
+        post.reactions[0].id === mainReaction
+      ) {
+        items.push(
+          h(
+            "div.discourse-reactions-reaction-button.my-likes",
+            h(
+              "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+              [iconNode(`${mainReactionIcon}`)]
+            )
+          )
+        );
+      }
 
       return items;
     }
