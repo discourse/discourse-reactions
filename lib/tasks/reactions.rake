@@ -54,9 +54,9 @@ end
 desc "Converts reactions to like"
 task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args|
   require 'highline/import'
-  destroy = ask("You are about to destroy all reactions from database, are you sure ? y/n  ")
+  destroy = ask("You are about to destroy all reactions from database and convert some/all of them to likes, are you sure ? y/n  ")
 
-  if destroy != "y"
+  if destroy.downcase != "y"
     raise "You are not sure about the task, aborting the task"
   end
 
@@ -68,9 +68,9 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
 
   if args[:reaction_list_to_convert]
     reaction_list_to_convert = args[:reaction_list_to_convert].split('|')
-    reactions = DiscourseReactions::Reaction.where("reaction_value != ? AND reaction_value IN (?)", DiscourseReactions::Reaction.main_reaction_id, reaction_list_to_convert)
+    reactions = DiscourseReactions::Reaction.where("reaction_value IN (?)", reaction_list_to_convert)
   else
-    reactions = DiscourseReactions::Reaction.where("reaction_value != ? ", DiscourseReactions::Reaction.main_reaction_id)
+    reactions = DiscourseReactions::Reaction.all
   end
 
   raise "invalid input list OR there are no reactions made" if reactions.length == 0
@@ -78,7 +78,12 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
   reactions.each do |reaction|
     puts "Converting '#{reaction.reaction_value}' of post_id: #{reaction.post_id} to like..."
 
-    raise "No reaction users found for #{reaction.reaction_value} reaction..." if reaction.reaction_users.count == 0
+    if reaction.reaction_users.count == 0
+      puts "No reaction users found for #{reaction.reaction_value} reaction..."
+
+      next
+    end
+
     reaction.reaction_users.each do |reaction_user|
       post = Post.find_by(id: reaction_user.post_id)
       user = User.find_by(id: reaction_user.user_id)
@@ -99,8 +104,11 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
   SiteSetting.post_undo_action_window_mins = POST_UNDO_ACTION_WINDOW_MINS
 
   badge = Badge.find_by(name: I18n.t("badges.first_reaction.name"))
-  puts "Revoking '#{I18n.t("badges.first_reaction.name")}' badge from all users..." if badge
-  BadgeGranter.revoke_all(badge) if badge
+
+  if badge
+    puts "Revoking '#{I18n.t("badges.first_reaction.name")}' badge from all users..."
+    BadgeGranter.revoke_all(badge)
+  end
 
   puts "Deleting all remaining reactions and reaction_users..."
   DiscourseReactions::Reaction.all.delete_all
