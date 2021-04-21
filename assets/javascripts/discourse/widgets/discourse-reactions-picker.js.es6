@@ -6,7 +6,7 @@ import { createWidget } from "discourse/widgets/widget";
 export default createWidget("discourse-reactions-picker", {
   tagName: "div.discourse-reactions-picker",
 
-  buildKey: attrs => `discourse-reactions-picker-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-picker-${attrs.post.id}`,
 
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
@@ -23,12 +23,27 @@ export default createWidget("discourse-reactions-picker", {
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
       const post = attrs.post;
+      const reactions = this.siteSettings.discourse_reactions_enabled_reactions
+        .split("|")
+        .filter(Boolean);
+
+      if (
+        !reactions.includes(
+          this.siteSettings.discourse_reactions_reaction_for_like
+        )
+      ) {
+        reactions.unshift(
+          this.siteSettings.discourse_reactions_reaction_for_like
+        );
+      }
+
       return [
         h(
           "div.container",
-          post.topic.valid_reactions.map(reaction => {
+          reactions.map((reaction) => {
             let isUsed;
             let canUndo;
+
             if (
               reaction ===
               this.siteSettings.discourse_reactions_reaction_for_like
@@ -68,13 +83,13 @@ export default createWidget("discourse-reactions-picker", {
               titleOptions,
               contents: [
                 new RawHtml({
-                  html: emojiUnescape(`:${reaction}:`)
-                })
-              ]
+                  html: emojiUnescape(`:${reaction}:`),
+                }),
+              ],
             });
           })
-        )
+        ),
       ];
     }
-  }
+  },
 });

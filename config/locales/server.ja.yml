@@ -1,0 +1,11 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+ja:
+  badges:
+    first_reaction:
+      long_description: |
+        このバッジは、初めて投稿にリアクションしたときに付与されます。投稿へのリアクションは、コミュニティメンバーが投稿した内容が面白い、役に立つ、かっこいい、楽しいなどの感想を仲間に伝えるのに最適な方法です。あなたのリアクションを共有しましょう～！

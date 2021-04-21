@@ -3,7 +3,7 @@
 # name: discourse-reactions
 # about: Allows users to react with emojis to a post
 # version: 0.1
-# author: Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
+# author: Ahmed Gagan, Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
 # url: https://github.com/discourse/discourse-reactions
 
 enabled_site_setting :discourse_reactions_enabled
@@ -16,6 +16,8 @@ register_svg_icon 'fas fa-star'
 register_svg_icon 'far fa-star'
 
 MAX_USERS_COUNT = 26
+
+require_relative 'lib/reaction_for_like_site_setting_enum'
 
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
@@ -73,19 +75,19 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.where("deleted_at IS NULL AND post_action_type_id = ?", PostActionType.types[:like])
+    likes = object.post_actions.where('deleted_at IS NULL AND post_action_type_id = ?', PostActionType.types[:like])
 
-    object.post_actions
+    if likes.blank?
+      return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
+    end
 
-    return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
+    reaction_likes, reactions = reactions.partition { |r| r[:id] == DiscourseReactions::Reaction.main_reaction_id }
 
-    like_reaction = {
+    reactions << {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
-      count: likes.length
+      count: likes.size + reaction_likes.sum { |r| r[:count] }
     }
-
-    reactions << like_reaction
 
     reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
   end

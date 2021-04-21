@@ -13,7 +13,7 @@ en:
         too_many_request:
           one: "You have been reacting a bit too fast, try again in %{count} second."
           other: "You have been reacting a bit too fast, try again in %{count} seconds."
-        forbidden: "You acted on this post a long time ago so you are not allowed to remove your reaction now."
+        forbidden: "That reaction was created too long ago. It can no longer be modified or removed."
       picker:
         react_with: "React to this post with: %{reaction}"
         cant_remove_reaction: "You can’t remove this reaction"

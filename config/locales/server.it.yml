@@ -1,0 +1,17 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+it:
+  site_settings:
+    discourse_reactions_like_icon: "Definisce l'icona usata per il pulsante di reazione principale."
+    discourse_reactions_reaction_for_like: "Definisce la reazione associata all'azione \"Mi piace\"."
+    discourse_reactions_enabled: "Abilita il plugin discourse-reactions."
+  badges:
+    first_reaction:
+      name: Prima Reazione
+      description: Reagito al post
+      long_description: |
+        Questo distintivo è assegnato la prima volta che reagisci a un messaggio. Reagire ai messaggi è un ottimo modo per far sapere ai tuoi colleghi membri della comunità che quello che hanno pubblicato era interessante, utile, fico o divertente. Condividi la tua reazione!

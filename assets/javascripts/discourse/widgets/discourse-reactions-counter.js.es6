@@ -1,17 +1,19 @@
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
+import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
-import { next } from "@ember/runloop";
-import { later, cancel } from "@ember/runloop";
+import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import MessageBus from "message-bus-client";
+
+let _popperStatePanel;
 
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
 
-  buildKey: attrs => `discourse-reactions-counter-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
-  buildId: attrs => `discourse-reactions-counter-${attrs.post.id}`,
+  buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
   init() {
     this.subscribe();
@@ -27,8 +29,8 @@ export default createWidget("discourse-reactions-counter", {
   subscribe() {
     this.unsubscribe();
 
-    MessageBus.subscribe(`/post/${this.attrs.post.id}`, data => {
-      data.type.forEach(reaction => {
+    MessageBus.subscribe(`/post/${this.attrs.post.id}`, (data) => {
+      data.type.forEach((reaction) => {
         if (this.state[reaction].length) {
           this.getUsers(reaction);
         }
@@ -42,11 +44,11 @@ export default createWidget("discourse-reactions-counter", {
     this.siteSettings.discourse_reactions_enabled_reactions
       .split("|")
       .filter(Boolean)
-      .forEach(item => {
+      .forEach((item) => {
         state[item] = [];
       });
 
-    (attrs.post.reactions || []).forEach(reaction => {
+    (attrs.post.reactions || []).forEach((reaction) => {
       if (!state[reaction.id]) {
         state[reaction.id] = [];
       }
@@ -85,9 +87,9 @@ export default createWidget("discourse-reactions-counter", {
     }
 
     CustomReaction.findReactionUsers(this.attrs.post.id, {
-      reactionValue
-    }).then(reactions => {
-      reactions.reaction_users.forEach(reactionUser => {
+      reactionValue,
+    }).then((reactions) => {
+      reactions.reaction_users.forEach((reactionUser) => {
         this.state[reactionUser.id] = reactionUser.users;
       });
       if (reactionValue) {
@@ -149,9 +151,11 @@ export default createWidget("discourse-reactions-counter", {
 
   html(attrs) {
     if (attrs.post.reaction_users_count) {
-      const count = attrs.post.reaction_users_count;
+      const post = attrs.post;
+      const count = post.reaction_users_count;
       const mainReaction = this.siteSettings
         .discourse_reactions_reaction_for_like;
+      const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
       const items = [];
 
       if (count <= 0) {
@@ -163,15 +167,15 @@ export default createWidget("discourse-reactions-counter", {
           "discourse-reactions-state-panel",
           Object.assign({}, attrs, {
             statePanelExpanded: this.state.statePanelExpanded,
-            state: this.state
+            state: this.state,
           })
         )
       );
 
       if (
         !(
-          attrs.post.reactions.length === 1 &&
-          attrs.post.reactions[0].id === mainReaction
+          post.reactions.length === 1 &&
+          post.reactions[0].id === mainReaction
         )
       ) {
         attrs.state = this.state;
@@ -179,6 +183,23 @@ export default createWidget("discourse-reactions-counter", {
       }
 
       items.push(h("span.reactions-counter", count.toString()));
+
+      if (
+        post.yours &&
+        post.reactions &&
+        post.reactions.length === 1 &&
+        post.reactions[0].id === mainReaction
+      ) {
+        items.push(
+          h(
+            "div.discourse-reactions-reaction-button.my-likes",
+            h(
+              "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+              [iconNode(`${mainReactionIcon}`)]
+            )
+          )
+        );
+      }
 
       return items;
     }
@@ -195,7 +216,7 @@ export default createWidget("discourse-reactions-counter", {
         .querySelectorAll(
           ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
         )
-        .forEach(popper => popper.classList.remove("is-expanded"));
+        .forEach((popper) => popper.classList.remove("is-expanded"));
 
     this.scheduleRerender();
   },
@@ -221,15 +242,11 @@ export default createWidget("discourse-reactions-counter", {
     this.state.reactionsPickerExpanded = false;
     this.state.statePanelExpanded = true;
     this.scheduleRerender();
-    this._setupPopper(
-      this.attrs.post.id,
-      "_popperStatePanel",
-      ".discourse-reactions-state-panel"
-    );
+    this._setupPopper(this.attrs.post.id, ".discourse-reactions-state-panel");
   },
 
-  _setupPopper(postId, popper, selector) {
-    next(() => {
+  _setupPopper(postId, selector) {
+    schedule("afterRender", () => {
       let popperElement;
       const trigger = document.querySelector(
         `#discourse-reactions-counter-${postId}`
@@ -248,32 +265,29 @@ export default createWidget("discourse-reactions-counter", {
       if (popperElement) {
         popperElement.classList.add("is-expanded");
 
-        if (this[popper]) {
-          return;
-        }
-
-        this[popper] = this._applyPopper(trigger, popperElement);
+        _popperStatePanel && _popperStatePanel.destroy();
+        _popperStatePanel = this._applyPopper(trigger, popperElement);
       }
     });
   },
 
   _applyPopper(button, picker) {
-    createPopper(button, picker, {
+    return createPopper(button, picker, {
       placement: "top",
       modifiers: [
         {
           name: "offset",
           options: {
-            offset: [0, -5]
-          }
+            offset: [0, -5],
+          },
         },
         {
           name: "preventOverflow",
           options: {
-            padding: 5
-          }
-        }
-      ]
+            padding: 5,
+          },
+        },
+      ],
     });
-  }
+  },
 });

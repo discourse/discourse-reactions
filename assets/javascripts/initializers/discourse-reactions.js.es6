@@ -1,31 +1,30 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
+import { emojiUrlFor } from "discourse/lib/text";
 
 replaceIcon("notification.reaction", "bell");
 
 function initializeDiscourseReactions(api) {
   api.removePostMenuButton("like");
 
-  api.addKeyboardShortcut("l", () => {
-    const button = document.querySelector(
-      ".topic-post.selected .discourse-reactions-reaction-button"
-    );
-    button && button.click();
+  api.addKeyboardShortcut("l", null, {
+    click: ".topic-post.selected .discourse-reactions-reaction-button",
   });
 
-  api.decorateWidget("post-menu:before-extra-controls", dec => {
+  api.decorateWidget("post-menu:before-extra-controls", (dec) => {
     const post = dec.getModel();
-
-    if (!post) {
+    if (!post || post.deleted_at) {
       return;
     }
 
     return dec.attach("discourse-reactions-actions", {
-      post
+      post,
     });
   });
 
-  api.decorateWidget("post-menu:extra-post-controls", dec => {
+  api.replaceIcon("notification.reaction", "custom-reaction-icon");
+
+  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
     if (dec.widget.site.mobileView) {
       return;
     }
@@ -34,7 +33,7 @@ function initializeDiscourseReactions(api) {
       dec.widget.siteSettings.discourse_reactions_reaction_for_like;
     const post = dec.getModel();
 
-    if (!post) {
+    if (!post || post.deleted_at) {
       return;
     }
 
@@ -47,8 +46,42 @@ function initializeDiscourseReactions(api) {
     }
 
     return dec.attach("discourse-reactions-counter", {
-      post
+      post,
     });
+  });
+
+  api.modifyClass("component:emoji-value-list", {
+    didReceiveAttrs() {
+      this._super(...arguments);
+
+      if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
+        return;
+      }
+
+      let defaultValue = this.values.includes(
+        this.siteSettings.discourse_reactions_reaction_for_like
+      );
+
+      if (!defaultValue) {
+        this.collection.unshiftObject({
+          emojiUrl: emojiUrlFor(
+            this.siteSettings.discourse_reactions_reaction_for_like
+          ),
+          isEditable: false,
+          isEditing: false,
+          value: this.siteSettings.discourse_reactions_reaction_for_like,
+        });
+      } else {
+        const mainEmoji = this.collection.findBy(
+          "value",
+          this.siteSettings.discourse_reactions_reaction_for_like
+        );
+
+        if (mainEmoji) {
+          mainEmoji.isEditable = false;
+        }
+      }
+    },
   });
 }
 
@@ -60,5 +93,5 @@ export default {
     if (siteSettings.discourse_reactions_enabled) {
       withPluginApi("0.10.1", initializeDiscourseReactions);
     }
-  }
+  },
 };

@@ -4,14 +4,14 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { later, cancel } from "@ember/runloop";
+import { cancel, later } from "@ember/runloop";
 
 let _laterHoverHandlers = {};
 
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
 
-  buildKey: attrs => `discourse-reactions-reaction-button-${attrs.post.id}`,
+  buildKey: (attrs) => `discourse-reactions-reaction-button-${attrs.post.id}`,
 
   click() {
     this._cancelHoverHandler();
@@ -20,13 +20,23 @@ export default createWidget("discourse-reactions-reaction-button", {
       this.callWidgetFunction("toggleFromButton", {
         reaction: currentUserReaction
           ? currentUserReaction.id
-          : this.siteSettings.discourse_reactions_reaction_for_like
+          : this.siteSettings.discourse_reactions_reaction_for_like,
       });
     }
   },
 
   mouseOver(event) {
     this._cancelHoverHandler();
+
+    const likeAction = this.attrs.post.likeAction;
+    const currentUserReaction = this.attrs.post.current_user_reaction;
+    if (
+      currentUserReaction &&
+      !currentUserReaction.can_undo &&
+      (!likeAction || isBlank(likeAction.can_undo))
+    ) {
+      return;
+    }
 
     if (!window.matchMedia("(hover: none)").matches) {
       _laterHoverHandlers[this.attrs.post.id] = later(
@@ -49,7 +59,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   buildAttributes(attrs) {
     const likeAction = attrs.post.likeAction;
     if (!likeAction) {
-      return;
+      return {};
     }
 
     let title;
@@ -98,6 +108,9 @@ export default createWidget("discourse-reactions-reaction-button", {
     if (hasUsedMainReaction) {
       return h(
         "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+        {
+          title: this.buildAttributes(attrs).title,
+        },
         [iconNode(mainReactionIcon)]
       );
     }
@@ -105,15 +118,21 @@ export default createWidget("discourse-reactions-reaction-button", {
     if (currentUserReaction) {
       return h(
         "button.btn-icon.no-text.reaction-button",
+        {
+          title: this.buildAttributes(attrs).title,
+        },
         h("img.btn-toggle-reaction-emoji.reaction-button", {
           src: emojiUrlFor(currentUserReaction.id),
-          alt: `:${currentUserReaction.id}:`
+          alt: `:${currentUserReaction.id}:`,
         })
       );
     }
 
     return h(
       "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
+      {
+        title: this.buildAttributes(attrs).title,
+      },
       [iconNode(`far-${mainReactionIcon}`)]
     );
   },
@@ -127,5 +146,5 @@ export default createWidget("discourse-reactions-reaction-button", {
     this.callWidgetFunction("cancelCollapse");
     this.callWidgetFunction("toggleReactions", event);
     this.callWidgetFunction("collapseStatePanel");
-  }
+  },
 });

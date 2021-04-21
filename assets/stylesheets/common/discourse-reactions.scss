@@ -47,6 +47,7 @@ html.discourse-reactions-no-select {
     }
 
     .user-list {
+      position: absolute;
       visibility: hidden;
       z-index: z("usercard") - 2;
       transition: opacity 0.33s;
@@ -122,6 +123,7 @@ html.discourse-reactions-no-select {
     animation: 0.33s fadeIn;
     animation-fill-mode: forwards;
     display: flex;
+    visibility: visible;
   }
 
   .container {
@@ -192,6 +194,7 @@ html.discourse-reactions-no-select {
     animation: 0.33s fadeIn;
     animation-fill-mode: forwards;
     display: flex;
+    visibility: visible;
   }
 
   .container {
@@ -371,10 +374,6 @@ html.discourse-reactions-no-select {
 
           background: var(--primary-low);
         }
-      }
-
-      .discourse-reactions-reaction-button {
-        cursor: default;
       }
     }
 

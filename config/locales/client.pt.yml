@@ -1,0 +1,35 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+pt:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Reações Discourse"
+  js:
+    discourse_reactions:
+      reactions_title: "Reações"
+      state_panel:
+        more_users: "e mais %{count}..."
+      reaction:
+        too_many_request:
+          one: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundo."
+          other: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundos."
+        forbidden: "Reagiu a este post há muito tempo atrás, pelo que agora não tem permissão para remover a sua reação."
+      picker:
+        react_with: "Reagir a esta publicação com: %{reaction}"
+        cant_remove_reaction: "Não pode remover esta reação"
+        remove_reaction: "Remover esta %{reaction} reação"
+      main_reaction:
+        add: "Gostar desta publicação"
+        remove: "Remover este gosto"
+        cant_remove: "Não pode remover este gosto"
+    notifications:
+      reaction: "<span>%{username}</span>%{description}"
+      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      titles:
+        reaction: "nova reação"

@@ -20,7 +20,7 @@ describe TopicViewSerializer do
 
     it 'shows valid reactions and user reactions' do
       SiteSetting.discourse_reactions_like_icon = "heart"
-      SiteSetting.discourse_reactions_enabled_reactions = "laughing|heart|-open_mouth|-cry|-angry|thumbsup|-thumbsdown"
+      SiteSetting.discourse_reactions_enabled_reactions = "laughing|heart|open_mouth|cry|angry|thumbsup|thumbsdown"
       json = TopicViewSerializer.new(topic_view, scope: Guardian.new(user_1), root: false).as_json
       expect(json[:valid_reactions]).to eq(%w(laughing heart open_mouth cry angry thumbsup thumbsdown).to_set)
       expect(json[:post_stream][:posts][0][:reactions]).to eq(
