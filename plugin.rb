@@ -43,7 +43,8 @@ after_initialize do
     "../lib/discourse_reactions/topic_view_serializer_extension.rb",
     "../lib/discourse_reactions/notification_extension.rb",
     "../lib/discourse_reactions/post_alerter_extension.rb",
-    "../lib/discourse_reactions/guardian_extension.rb"
+    "../lib/discourse_reactions/guardian_extension.rb",
+    "../lib/tasks/reactions.rake"
   ].each { |path| load File.expand_path(path, __FILE__) }
 
   reloadable_patch do |plugin|

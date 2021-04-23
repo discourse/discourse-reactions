@@ -52,7 +52,7 @@ task "reactions:generate", [:post_id, :reactions_count, :reaction] => [:environm
 end
 
 desc "Converts reactions to like"
-task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args|
+task "reactions:nuke", [:reaction_list_to_convert] do |_, args|
   require 'highline/import'
   destroy = ask("You are about to destroy all reactions from database and convert some/all of them to likes, are you sure ? y/n  ")
 
@@ -68,7 +68,13 @@ task "reactions:nuke", [:reaction_list_to_convert] => [:environment] do |_, args
 
   if args[:reaction_list_to_convert]
     reaction_list_to_convert = args[:reaction_list_to_convert].split('|')
-    reactions = DiscourseReactions::Reaction.where("reaction_value IN (?)", reaction_list_to_convert)
+
+    reaction_list_to_convert.each do |reaction_value|
+      reaction = DiscourseReactions::Reaction.find_by(reaction_value: reaction_value)
+      reactions << reaction if reaction
+
+      raise "Please check your reaction list, one or more invalid reaction in list" unless reaction
+    end
   else
     reactions = DiscourseReactions::Reaction.all
   end
