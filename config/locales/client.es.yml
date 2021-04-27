@@ -19,7 +19,6 @@ es:
         too_many_request:
           one: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundo."
           other: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundos."
-        forbidden: "Ya reaccionaste a esta publicación hace un tiempo, por lo que no puedes deshacerlo ahora."
       picker:
         react_with: "Reacciona a esta publicación con: %{reaction}"
         cant_remove_reaction: "No puedes deshacer esta reacción."

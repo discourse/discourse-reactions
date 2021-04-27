@@ -19,7 +19,6 @@ pt:
         too_many_request:
           one: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundo."
           other: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundos."
-        forbidden: "Reagiu a este post há muito tempo atrás, pelo que agora não tem permissão para remover a sua reação."
       picker:
         react_with: "Reagir a esta publicação com: %{reaction}"
         cant_remove_reaction: "Não pode remover esta reação"

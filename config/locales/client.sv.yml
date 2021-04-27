@@ -19,7 +19,6 @@ sv:
         too_many_request:
           one: "Du har reagerat lite för snabbt, försök igen om %{count} sekund."
           other: "Du har reagerat lite för snabbt, försök igen om %{count} sekunder."
-        forbidden: "Du reagerade på detta inlägg för så länge sedan att du inte får ta bort din reaktion nu."
       picker:
         react_with: "Reagera på det här inlägget med: %{reaction}"
         cant_remove_reaction: "Du kan inte ta bort denna reaktion"
