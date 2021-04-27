@@ -7,13 +7,13 @@
 fr:
   site_settings:
     discourse_reactions_like_icon: "Définir l'icône utilisée pour le bouton principal de réaction."
-    discourse_reactions_reaction_for_like: "Définir la réaction associée à l'action similaire."
+    discourse_reactions_reaction_for_like: "Définir la réaction associée à l'action « j'aime »."
     discourse_reactions_enabled: "Activer le plugin discourse-reactions."
-    discourse_reactions_enabled_reactions: "Définir une liste de réactions activées, tout emoji est autorisé ici."
-    discourse_reactions_desaturated_reaction_panel: "Réduire le bruit visuel des réactions en les affichant désaturées jusqu'au survol."
+    discourse_reactions_enabled_reactions: "Définir une liste de réactions activées, tout émoji est autorisé ici."
+    discourse_reactions_desaturated_reaction_panel: "Désaturer les couleurs des émojis de réaction lorsque l'utilisateur ne les survole pas du doigt ou de la souris. Permet de réduire le bruit visuel."
   badges:
     first_reaction:
       name: Première réaction
-      description: Réagir au post
+      description: A réagi au message
       long_description: |
-        Ce badge est accordé la première fois que vous aimez un message en utilisant le bouton . Aimer des messages est le moyen parfait pour dire aux autres membres de la communauté que ce qu'ils ont posté était intéressant, utile, sympa ou amusant !
+        Ce badge est décerné lorsque vous réagissez à un message pour la première fois. Les réactions sont un bon moyen de dire aux autres membres de la communauté que leur message était intéressant, utile, sympa, ou drôle !

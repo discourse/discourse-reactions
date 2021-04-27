@@ -19,7 +19,6 @@ de:
         too_many_request:
           one: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunde erneut."
           other: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunden erneut."
-        forbidden: "Du hast auf diesen Beitrag bereits vor langer Zeit reagiert, weshalb du deine Reaktion jetzt nicht mehr entfernen darfst."
       picker:
         react_with: "Reagiere auf diesem Beitrag mit: %{reaction}"
         cant_remove_reaction: "Du kannst diese Reaktion nicht entfernen"

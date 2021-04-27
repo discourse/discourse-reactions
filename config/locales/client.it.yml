@@ -15,8 +15,6 @@ it:
       reactions_title: "Reazioni"
       state_panel:
         more_users: "e altre %{count}..."
-      reaction:
-        forbidden: "Hai reagito a questo messaggio molto tempo fa, quindi ora non sei autorizzato a rimuovere la tua reazione."
       picker:
         react_with: "Reagisci a questo messaggio con: %{reaction}"
         cant_remove_reaction: "Non puoi rimuovere questa reazione"
