@@ -145,7 +145,7 @@ after_initialize do
   end
 
   add_report('reactions') do |report|
-    count_relation  = ->(relation, start_date) {
+    count_relation = ->(relation, start_date) {
       relation
         .where('created_at >= ?', start_date)
         .where('created_at <= ?', start_date + 1.day)
