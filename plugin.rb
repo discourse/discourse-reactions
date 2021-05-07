@@ -145,6 +145,7 @@ after_initialize do
   end
 
   add_report('reactions') do |report|
+    main_id = DiscourseReactions::Reaction.main_reaction_id
     count_relation = ->(relation, start_date) {
       relation
         .where('created_at >= ?', start_date)
@@ -166,14 +167,13 @@ after_initialize do
       {
         type: :number,
         property: :like_count,
-        html_title: PrettyText.unescape_emoji(CGI::escapeHTML(":#{DiscourseReactions::Reaction.main_reaction_id}:"))
+        html_title: PrettyText.unescape_emoji(CGI::escapeHTML(":#{main_id}:"))
       }
     ]
 
-    reactions = DiscourseReactions::Reaction
-      .where('reaction_users_count IS NOT NULL AND reaction_value != ?', DiscourseReactions::Reaction.main_reaction_id)
+    reactions = SiteSetting.discourse_reactions_enabled_reactions.split("|")
 
-    reactions.pluck(:reaction_value).uniq.each do |reaction|
+    reactions.each do |reaction|
       report.labels << {
         type: :number,
         property: "#{reaction}_count",
@@ -181,22 +181,46 @@ after_initialize do
       }
     end
 
+    reactions_results = DB.query(<<~SQL, start_date: report.start_date.to_date, end_date: report.end_date.to_date)
+      SELECT
+        drr.reaction_value,
+        count(drru.id) as reactions_count,
+        date_trunc('day', drru.created_at)::date as day
+      FROM discourse_reactions_reactions as drr
+      LEFT OUTER JOIN discourse_reactions_reaction_users as drru on drr.id = drru.reaction_id
+      WHERE drr.reaction_users_count IS NOT NULL
+        AND drru.created_at >= :start_date::DATE AND drru.created_at <= :end_date::DATE
+      GROUP BY drr.reaction_value, day
+    SQL
+
+    likes_results = DB.query(<<~SQL, start_date: report.start_date.to_date, end_date: report.end_date.to_date)
+      SELECT
+        count(pa.id) as likes_count,
+        date_trunc('day', pa.created_at)::date as day
+      FROM post_actions as pa
+      WHERE pa.created_at >= :start_date::DATE AND pa.created_at <= :end_date::DATE
+      GROUP BY day
+    SQL
+
     (report.start_date.to_date..report.end_date.to_date).each do |date|
       data = { 'day' => date }
 
-      like_count = count_relation.call(PostAction.where(post_action_type_id: PostActionType.types[:like]), date)
-
-      like_reactions = DiscourseReactions::Reaction.where(reaction_value: DiscourseReactions::Reaction.main_reaction_id)
+      like_count = 0
       like_reaction_count = 0
-      like_reactions.each do |reaction|
-        like_reaction_count += count_relation.call(reaction.reaction_users, date)
+      likes_results.select { |r|  r.day == date  }.each do |result|
+        like_count += result.likes_count
       end
-      data['like_count'] = like_reaction_count + like_count
 
-      reactions.each do |reaction|
-        data["#{reaction.reaction_value}_count"] ||= 0
-        data["#{reaction.reaction_value}_count"] += count_relation.call(reaction.reaction_users, date)
+      reactions_results.select { |r| r.day == date }.each do |result|
+        if result.reaction_value == main_id
+          like_reaction_count += result.reactions_count
+        else
+          data["#{result.reaction_value}_count"] ||= 0
+          data["#{result.reaction_value}_count"] += result.reactions_count
+        end
       end
+
+      data['like_count'] = like_reaction_count + like_count
 
       report.data << data
     end
