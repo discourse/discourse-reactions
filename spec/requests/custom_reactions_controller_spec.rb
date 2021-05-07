@@ -8,10 +8,12 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:user_2) { Fabricate(:user) }
   fab!(:user_3) { Fabricate(:user) }
   fab!(:user_4) { Fabricate(:user) }
+  fab!(:user_5) { Fabricate(:user) }
   fab!(:post_2) { Fabricate(:post, user: user_1) }
   fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
   fab!(:reaction_2) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
   fab!(:reaction_3) { Fabricate(:reaction, post: post_2, reaction_value: "hugs") }
+  fab!(:like) { Fabricate(:post_action, post: post_2, user: user_5, post_action_type_id: PostActionType.types[:like]) }
   fab!(:reaction_user_1) { Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_2) }
   fab!(:reaction_user_2) { Fabricate(:reaction_user, reaction: reaction_1, user: user_1, post: post_2) }
   fab!(:reaction_user_3) { Fabricate(:reaction_user, reaction: reaction_3, user: user_4, post: post_2) }
@@ -131,9 +133,9 @@ describe DiscourseReactions::CustomReactionsController do
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
-      expect(parsed["reaction_users"][0]["users"][0]["username"]).to eq(user_1.username)
-      expect(parsed["reaction_users"][0]["users"][0]["name"]).to eq(user_1.name)
-      expect(parsed["reaction_users"][0]["users"][0]["avatar_template"]).to eq(user_1.avatar_template)
+      expect(parsed["reaction_users"][0]["users"][0]["username"]).to eq(user_5.username)
+      expect(parsed["reaction_users"][0]["users"][0]["name"]).to eq(user_5.name)
+      expect(parsed["reaction_users"][0]["users"][0]["avatar_template"]).to eq(user_5.avatar_template)
     end
 
     it 'return reaction_users of reaction when there are parameters' do
@@ -152,6 +154,24 @@ describe DiscourseReactions::CustomReactionsController do
 
       get "/discourse-reactions/posts/1000000/reactions-users.json?reaction_value=test"
       expect(response.status).to eq(400)
+    end
+
+    it 'merges identic custom reaction into likes' do
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
+      parsed = response.parsed_body
+      like_count = parsed["reaction_users"][0]["count"].to_i
+      expect(parsed["reaction_users"][0]["count"]).to eq(post_2.like_count)
+
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=laughing"
+      parsed = response.parsed_body
+      reaction_count = parsed["reaction_users"][0]["count"].to_i
+      expect(parsed["reaction_users"][0]["count"]).to eq(reaction_1.reaction_users_count)
+
+      SiteSetting.discourse_reactions_reaction_for_like = 'laughing'
+
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
+      parsed = response.parsed_body
+      expect(parsed["reaction_users"][0]["count"]).to eq(like_count + reaction_count)
     end
   end
 

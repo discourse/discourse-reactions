@@ -77,15 +77,25 @@ module DiscourseReactions
       likes = post.post_actions.where('deleted_at IS NULL AND post_action_type_id = ?', PostActionType.types[:like]) if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
 
       if likes.present?
+        main_reaction = DiscourseReactions::Reaction.find_by(reaction_value: DiscourseReactions::Reaction.main_reaction_id, post_id: post.id)
+        count = likes.length
+        users = format_likes_users(likes)
+
+        if main_reaction && main_reaction[:reaction_users_count]
+          (users << get_users(main_reaction)).flatten!
+          users.sort_by! { |user| user[:created_at] }
+          count += main_reaction.reaction_users_count.to_i
+        end
+
         reaction_users << {
           id: DiscourseReactions::Reaction.main_reaction_id,
-          count: likes.length.to_i,
-          users: format_likes_users(likes)
+          count: count,
+          users: users.reverse.slice(0, MAX_USERS_COUNT + 1)
         }
       end
 
       if !reaction_value
-        post.reactions.select { |reaction| reaction[:reaction_users_count] }.each do |reaction|
+        post.reactions.select { |reaction| reaction[:reaction_users_count] && reaction[:reaction_value] != DiscourseReactions::Reaction.main_reaction_id }.each do |reaction|
           reaction_users << format_reaction_user(reaction)
         end
       elsif reaction_value != DiscourseReactions::Reaction.main_reaction_id
@@ -105,7 +115,8 @@ module DiscourseReactions
           username: reaction_user.user.username,
           name: reaction_user.user.name,
           avatar_template: reaction_user.user.avatar_template,
-          can_undo: reaction_user.can_undo?
+          can_undo: reaction_user.can_undo?,
+          created_at: reaction_user.created_at.to_s
         }
       }
     end
@@ -144,7 +155,8 @@ module DiscourseReactions
         username: like.user.username,
         name: like.user.name,
         avatar_template: like.user.avatar_template,
-        can_undo: guardian.can_delete_post_action?(like)
+        can_undo: guardian.can_delete_post_action?(like),
+        created_at: like.created_at.to_s
       }
     end
 
