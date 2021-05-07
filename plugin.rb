@@ -143,4 +143,62 @@ after_initialize do
   add_model_callback(User, :before_destroy) do
     DiscourseReactions::ReactionUser.where(user_id: self.id).delete_all
   end
+
+  add_report('reactions') do |report|
+    count_relation  = ->(relation, start_date) {
+      relation
+        .where('created_at >= ?', start_date)
+        .where('created_at <= ?', start_date + 1.day)
+        .count
+    }
+
+    report.icon = 'emoji-icon'
+    report.modes = [:table]
+
+    report.data = []
+
+    report.labels = [
+      {
+        type: :date,
+        property: :day,
+        title: I18n.t('reports.reactions.labels.day')
+      },
+      {
+        type: :number,
+        property: :like_count,
+        html_title: PrettyText.unescape_emoji(CGI::escapeHTML(":#{DiscourseReactions::Reaction.main_reaction_id}:"))
+      }
+    ]
+
+    reactions = DiscourseReactions::Reaction
+      .where('reaction_users_count IS NOT NULL AND reaction_value != ?', DiscourseReactions::Reaction.main_reaction_id)
+
+    reactions.pluck(:reaction_value).uniq.each do |reaction|
+      report.labels << {
+        type: :number,
+        property: "#{reaction}_count",
+        html_title: PrettyText.unescape_emoji(CGI::escapeHTML(":#{reaction}:"))
+      }
+    end
+
+    (report.start_date.to_date..report.end_date.to_date).each do |date|
+      data = { 'day' => date }
+
+      like_count = count_relation.call(PostAction.where(post_action_type_id: PostActionType.types[:like]), date)
+
+      like_reactions = DiscourseReactions::Reaction.where(reaction_value: DiscourseReactions::Reaction.main_reaction_id)
+      like_reaction_count = 0
+      like_reactions.each do |reaction|
+        like_reaction_count += count_relation.call(reaction.reaction_users, date)
+      end
+      data['like_count'] = like_reaction_count + like_count
+
+      reactions.each do |reaction|
+        data["#{reaction.reaction_value}_count"] ||= 0
+        data["#{reaction.reaction_value}_count"] += count_relation.call(reaction.reaction_users, date)
+      end
+
+      report.data << data
+    end
+  end
 end
