@@ -171,7 +171,7 @@ after_initialize do
       }
     ]
 
-    reactions = SiteSetting.discourse_reactions_enabled_reactions.split("|")
+    reactions = SiteSetting.discourse_reactions_enabled_reactions.split("|") - [main_id]
 
     reactions.each do |reaction|
       report.labels << {
