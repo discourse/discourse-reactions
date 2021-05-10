@@ -4,6 +4,8 @@ module DiscourseReactions
   class CustomReactionsController < DiscourseReactionsController
     MAX_USERS_COUNT = 26
 
+    before_action :ensure_logged_in, except: [:post_reactions_users]
+
     def toggle
       post = fetch_post_from_params
 
