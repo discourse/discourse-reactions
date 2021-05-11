@@ -21,6 +21,7 @@ pl_PL:
           few: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekundy."
           many: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekund."
           other: "Odpowiadasz trochę za szybko, spróbuj ponownie za %{count} sekund."
+        forbidden: "Ta reakcja powstała zbyt dawno temu. Nie można go już modyfikować ani usuwać."
       picker:
         react_with: "Zareaguj na ten post z: %{reaction}"
         cant_remove_reaction: "Nie można usunąć tej reakcji"

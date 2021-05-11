@@ -13,5 +13,12 @@ pl_PL:
   badges:
     first_reaction:
       name: Pierwsza reakcja
+      description: Reakcja na post
       long_description: |
         Ta odznaka jest przyznawana po raz pierwszy przy reagowaniu na wpis. Reagowanie na posty to świetny sposób na to, by członkowie społeczności wiedzieli, że to, co opublikowali, było interesujące, przydatne, fajne lub zabawne. Podziel się swoją reakcją!
+  reports:
+    reactions:
+      title: "Reakcje"
+      description: "Lista najnowszych reakcji."
+      labels:
+        day: "Dzień"

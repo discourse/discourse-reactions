@@ -17,3 +17,9 @@ fr:
       description: A réagi au message
       long_description: |
         Ce badge est décerné lorsque vous réagissez à un message pour la première fois. Les réactions sont un bon moyen de dire aux autres membres de la communauté que leur message était intéressant, utile, sympa, ou drôle !
+  reports:
+    reactions:
+      title: "Réactions"
+      description: "Total des différentes réactions utilisées."
+      labels:
+        day: "Date"
