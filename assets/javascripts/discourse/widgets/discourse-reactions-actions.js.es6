@@ -214,7 +214,7 @@ export default createWidget("discourse-reactions-actions", {
           this.toggleReactions(event);
         }
       } else if (duration > 0 && duration < 200) {
-        // anything taking more than 200ms is most likely not intenional click
+        // anything taking more than 200ms is most likely not intentional click
         if (
           event.target &&
           (event.target.classList.contains(
