@@ -1,4 +1,3 @@
-import { makeArray } from "discourse-common/lib/helpers";
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { iconNode } from "discourse-common/lib/icon-library";
@@ -182,7 +181,12 @@ export default createWidget("discourse-reactions-counter", {
 
       items.push(h("span.reactions-counter", count.toString()));
 
-      if (post.yours && makeArray(post.reactions) === [mainReaction]) {
+      if (
+        post.yours &&
+        post.reactions &&
+        post.reactions.length === 1 &&
+        post.reactions[0].id === mainReaction
+      ) {
         items.push(
           h(
             "div.discourse-reactions-reaction-button.my-likes",

@@ -7,12 +7,4 @@
   nav.post-controls .show-replies {
     position: relative;
   }
-
-  .discourse-reactions-actions {
-    &.my-post:not(.custom-reaction-used).has-reactions {
-      .discourse-reactions-counter {
-        padding-right: 15px;
-      }
-    }
-  }
 }
