@@ -126,12 +126,20 @@ html.discourse-reactions-no-select {
     visibility: visible;
   }
 
-  .container {
+  .discourse-reactions-picker-container {
     margin: 0.25em;
     box-shadow: shadow("card");
     background-color: var(--secondary);
     z-index: 1;
-    border-radius: 2em;
+    border-radius: 8px;
+    display: grid;
+    grid-gap: 0.25em;
+
+    @for $i from 5 through 8 {
+      &.col-#{$i} {
+        grid-template-columns: repeat($i, 1fr);
+      }
+    }
   }
 
   .pickable-reaction {
@@ -140,7 +148,7 @@ html.discourse-reactions-no-select {
     margin: 0.25em !important;
     border: 1px solid transparent !important;
     cursor: not-allowed;
-    border-radius: 2em;
+    border-radius: 8px;
 
     .emoji {
       pointer-events: none;

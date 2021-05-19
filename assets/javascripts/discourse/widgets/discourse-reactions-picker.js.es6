@@ -40,7 +40,9 @@ export default createWidget("discourse-reactions-picker", {
 
       return [
         h(
-          "div.container",
+          `div.discourse-reactions-picker-container.col-${this._computeCols(
+            reactions.length
+          )}`,
           reactions.map((reaction) => {
             let isUsed;
             let canUndo;
@@ -90,5 +92,28 @@ export default createWidget("discourse-reactions-picker", {
         ),
       ];
     }
+  },
+
+  _computeCols(count) {
+    let x;
+    const colsByRow = [5, 6, 7, 8];
+
+    colsByRow.forEach((i, index) => {
+      let rest = count % i;
+      if (rest === 0) {
+        x = i;
+        return;
+      }
+
+      if (index === 0) {
+        x = i;
+      } else {
+        if (rest > count % (i - 1)) {
+          x = i;
+        }
+      }
+    });
+
+    return x;
   },
 });
