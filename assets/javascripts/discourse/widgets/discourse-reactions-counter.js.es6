@@ -135,7 +135,11 @@ export default createWidget("discourse-reactions-counter", {
     const mainReaction = this.siteSettings
       .discourse_reactions_reaction_for_like;
 
-    if (makeArray(attrs.post.reactions) === [mainReaction]) {
+    if (
+      attrs.post.reactions &&
+      attrs.post.reactions.length === 1 &&
+      attrs.post.reactions[0].id === mainReaction
+    ) {
       classes.push("only-like");
     }
 
@@ -169,7 +173,9 @@ export default createWidget("discourse-reactions-counter", {
         )
       );
 
-      if (!(makeArray(post.reactions) === [mainReaction])) {
+      if (
+        !(post.reactions.length === 1 && post.reactions[0].id === mainReaction)
+      ) {
         attrs.state = this.state;
         items.push(this.attach("discourse-reactions-list", attrs));
       }
