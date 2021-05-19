@@ -274,7 +274,7 @@ export default createWidget("discourse-reactions-actions", {
                   return CustomReaction.toggle(params.postId, params.reaction)
                     .then(resolve)
                     .catch((e) => {
-                      bootbox.alert(this.extractErrors(e));
+                      bootbox.alert(this._extractErrors(e));
                       this._rollbackState(post);
                     });
                 });
@@ -286,7 +286,7 @@ export default createWidget("discourse-reactions-actions", {
                 CustomReaction.toggle(params.postId, params.reaction)
                   .then(resolve)
                   .catch((e) => {
-                    bootbox.alert(this.extractErrors(e));
+                    bootbox.alert(this._extractErrors(e));
                     this._rollbackState(post);
                   });
               });
@@ -413,7 +413,6 @@ export default createWidget("discourse-reactions-actions", {
 
     this.collapsePanels();
 
-    let selector;
     const mainReactionName = this.siteSettings
       .discourse_reactions_reaction_for_like;
     const post = this.attrs.post;
@@ -445,12 +444,13 @@ export default createWidget("discourse-reactions-actions", {
       this.toggleReaction(attrs);
       return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
         (e) => {
-          bootbox.alert(this.extractErrors(e));
+          bootbox.alert(this._extractErrors(e));
           this._rollbackState(post);
         }
       );
     }
 
+    let selector;
     if (
       post.reactions &&
       post.reactions.length === 1 &&
@@ -481,35 +481,12 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(this.attrs.post.id, toggleReaction)
             .then(resolve)
             .catch((e) => {
-              bootbox.alert(this.extractErrors(e));
+              bootbox.alert(this._extractErrors(e));
               this._rollbackState(post);
             });
         });
       });
     });
-  },
-
-  extractErrors(e) {
-    const xhr = e.xhr || e.jqXHR;
-
-    if (!xhr || !xhr.status) {
-      return I18n.t("errors.desc.network");
-    }
-
-    if (
-      xhr.status === 429 &&
-      xhr.responseJSON &&
-      xhr.responseJSON.extras &&
-      xhr.responseJSON.extras.wait_seconds
-    ) {
-      return I18n.t("discourse_reactions.reaction.too_many_request", {
-        count: xhr.responseJSON.extras.wait_seconds,
-      });
-    } else if (xhr.status === 403) {
-      return I18n.t("discourse_reactions.reaction.forbidden");
-    } else {
-      return I18n.t("errors.desc.unknown");
-    }
   },
 
   cancelCollapse() {
@@ -553,16 +530,6 @@ export default createWidget("discourse-reactions-actions", {
     this.state.reactionsPickerExpanded = false;
     this._resetPopper();
     this.scheduleRerender();
-  },
-
-  _resetPopper() {
-    const container = document.getElementById(this.buildId(this.attrs));
-    container &&
-      container
-        .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-picker.is-expanded"
-        )
-        .forEach((popper) => popper.classList.remove("is-expanded"));
   },
 
   html(attrs) {
@@ -654,5 +621,38 @@ export default createWidget("discourse-reactions-actions", {
     post.reactions = reactions;
     post.reaction_users_count = reaction_users_count;
     this.scheduleRerender();
+  },
+
+  _extractErrors(e) {
+    const xhr = e.xhr || e.jqXHR;
+
+    if (!xhr || !xhr.status) {
+      return I18n.t("errors.desc.network");
+    }
+
+    if (
+      xhr.status === 429 &&
+      xhr.responseJSON &&
+      xhr.responseJSON.extras &&
+      xhr.responseJSON.extras.wait_seconds
+    ) {
+      return I18n.t("discourse_reactions.reaction.too_many_request", {
+        count: xhr.responseJSON.extras.wait_seconds,
+      });
+    } else if (xhr.status === 403) {
+      return I18n.t("discourse_reactions.reaction.forbidden");
+    } else {
+      return I18n.t("errors.desc.unknown");
+    }
+  },
+
+  _resetPopper() {
+    const container = document.getElementById(this.buildId(this.attrs));
+    container &&
+      container
+        .querySelectorAll(
+          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-picker.is-expanded"
+        )
+        .forEach((popper) => popper.classList.remove("is-expanded"));
   },
 });

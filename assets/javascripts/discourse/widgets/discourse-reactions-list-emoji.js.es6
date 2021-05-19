@@ -10,7 +10,7 @@ const DISPLAY_MAX_USERS = 19;
 let _popperReactionUserPanel;
 
 export default createWidget("discourse-reactions-list-emoji", {
-  tagName: "div.reaction",
+  tagName: "div.discourse-reactions-list-emoji",
 
   buildId: (attrs) =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
@@ -32,9 +32,7 @@ export default createWidget("discourse-reactions-list-emoji", {
 
     const reaction = attrs.reaction;
     const users = attrs.users || [];
-    const displayUsers = [];
-
-    displayUsers.push(h("span.heading", attrs.reaction.id));
+    const displayUsers = [h("span.heading", attrs.reaction.id)];
 
     if (!users.length) {
       displayUsers.push(h("div.center", h("div.spinner.small")));
@@ -77,7 +75,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     ];
 
     if (!window.matchMedia("(hover: none)").matches) {
-      elements.push(h(`div.user-list`, h("div.container", displayUsers)));
+      elements.push(h("div.user-list", h("div.container", displayUsers)));
     }
 
     return elements;
@@ -85,35 +83,30 @@ export default createWidget("discourse-reactions-list-emoji", {
 
   _setupPopper(selector) {
     schedule("afterRender", () => {
-      let popperElement;
       const elementId = CSS.escape(this.buildId(this.attrs));
       const trigger = document.querySelector(`#${elementId}`);
-      popperElement = document.querySelector(`#${elementId} ${selector}`);
+      const popperElement = document.querySelector(`#${elementId} ${selector}`);
 
       if (popperElement) {
         _popperReactionUserPanel && _popperReactionUserPanel.destroy();
-        _popperReactionUserPanel = this._applyPopper(trigger, popperElement);
+        _popperReactionUserPanel = createPopper(trigger, popperElement, {
+          placement: "bottom",
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, -5],
+              },
+            },
+            {
+              name: "preventOverflow",
+              options: {
+                padding: 5,
+              },
+            },
+          ],
+        });
       }
-    });
-  },
-
-  _applyPopper(button, picker) {
-    return createPopper(button, picker, {
-      placement: "bottom",
-      modifiers: [
-        {
-          name: "offset",
-          options: {
-            offset: [0, -5],
-          },
-        },
-        {
-          name: "preventOverflow",
-          options: {
-            padding: 5,
-          },
-        },
-      ],
     });
   },
 });

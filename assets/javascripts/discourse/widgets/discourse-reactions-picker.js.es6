@@ -22,7 +22,6 @@ export default createWidget("discourse-reactions-picker", {
 
   html(attrs) {
     if (attrs.reactionsPickerExpanded) {
-      const post = attrs.post;
       const reactions = this.siteSettings.discourse_reactions_enabled_reactions
         .split("|")
         .filter(Boolean);
@@ -37,6 +36,8 @@ export default createWidget("discourse-reactions-picker", {
         );
       }
 
+      const currentUserReaction = attrs.post.current_user_reaction;
+
       return [
         h(
           "div.container",
@@ -48,19 +49,17 @@ export default createWidget("discourse-reactions-picker", {
               reaction ===
               this.siteSettings.discourse_reactions_reaction_for_like
             ) {
-              isUsed = post.current_user_used_main_reaction;
+              isUsed = attrs.post.current_user_used_main_reaction;
             } else {
               isUsed =
-                post.current_user_reaction &&
-                post.current_user_reaction.id === reaction;
+                currentUserReaction && currentUserReaction.id === reaction;
             }
 
-            if (post.current_user_reaction) {
+            if (currentUserReaction) {
               canUndo =
-                post.current_user_reaction.can_undo &&
-                post.likeAction.canToggle;
+                currentUserReaction.can_undo && attrs.post.likeAction.canToggle;
             } else {
-              canUndo = post.likeAction.canToggle;
+              canUndo = attrs.post.likeAction.canToggle;
             }
 
             let title;
@@ -75,7 +74,7 @@ export default createWidget("discourse-reactions-picker", {
             return this.attach("button", {
               action: "toggle",
               data: { reaction },
-              actionParam: { reaction, postId: post.id, canUndo },
+              actionParam: { reaction, postId: attrs.post.id, canUndo },
               className: `pickable-reaction ${reaction} ${
                 canUndo ? "can-undo" : ""
               } ${isUsed ? "is-used" : ""}`,
