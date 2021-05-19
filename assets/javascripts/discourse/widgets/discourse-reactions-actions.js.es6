@@ -262,11 +262,6 @@ export default createWidget("discourse-reactions-actions", {
             const postContainer = document.querySelector(
               `[data-post-id="${params.postId}"]`
             );
-            const current_user_reaction = post.current_user_reaction;
-            const current_user_used_main_reaction =
-              post.current_user_used_main_reaction;
-            const reactions = Object.assign([], post.reactions);
-            const reaction_users_count = post.reaction_users_count;
 
             if (
               post.current_user_reaction &&
@@ -280,13 +275,7 @@ export default createWidget("discourse-reactions-actions", {
                     .then(resolve)
                     .catch((e) => {
                       bootbox.alert(this.extractErrors(e));
-
-                      post.current_user_reaction = current_user_reaction;
-                      post.current_user_used_main_reaction = current_user_used_main_reaction;
-                      post.reactions = reactions;
-                      post.reaction_users_count = reaction_users_count;
-
-                      this.scheduleRerender();
+                      this._rollbackState(post);
                     });
                 });
               }, 100);
@@ -298,12 +287,7 @@ export default createWidget("discourse-reactions-actions", {
                   .then(resolve)
                   .catch((e) => {
                     bootbox.alert(this.extractErrors(e));
-
-                    post.current_user_reaction = current_user_reaction;
-                    post.current_user_used_main_reaction = current_user_used_main_reaction;
-                    post.reactions = reactions;
-                    post.reaction_users_count = reaction_users_count;
-                    this.scheduleRerender();
+                    this._rollbackState(post);
                   });
               });
             }
@@ -434,10 +418,6 @@ export default createWidget("discourse-reactions-actions", {
       .discourse_reactions_reaction_for_like;
     const post = this.attrs.post;
     const current_user_reaction = post.current_user_reaction;
-    const current_user_used_main_reaction =
-      post.current_user_used_main_reaction;
-    const reactions = Object.assign([], post.reactions);
-    const reaction_users_count = post.reaction_users_count;
 
     if (
       post.likeAction &&
@@ -466,12 +446,7 @@ export default createWidget("discourse-reactions-actions", {
       return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
         (e) => {
           bootbox.alert(this.extractErrors(e));
-
-          post.current_user_reaction = current_user_reaction;
-          post.current_user_used_main_reaction = current_user_used_main_reaction;
-          post.reactions = reactions;
-          post.reaction_users_count = reaction_users_count;
-          this.scheduleRerender();
+          this._rollbackState(post);
         }
       );
     }
@@ -507,12 +482,7 @@ export default createWidget("discourse-reactions-actions", {
             .then(resolve)
             .catch((e) => {
               bootbox.alert(this.extractErrors(e));
-
-              post.current_user_reaction = current_user_reaction;
-              post.current_user_used_main_reaction = current_user_used_main_reaction;
-              post.reactions = reactions;
-              post.reaction_users_count = reaction_users_count;
-              this.scheduleRerender();
+              this._rollbackState(post);
             });
         });
       });
@@ -670,5 +640,19 @@ export default createWidget("discourse-reactions-actions", {
         },
       ],
     });
+  },
+
+  _rollbackState(post) {
+    const current_user_reaction = post.current_user_reaction;
+    const current_user_used_main_reaction =
+      post.current_user_used_main_reaction;
+    const reactions = Object.assign([], post.reactions);
+    const reaction_users_count = post.reaction_users_count;
+
+    post.current_user_reaction = current_user_reaction;
+    post.current_user_used_main_reaction = current_user_used_main_reaction;
+    post.reactions = reactions;
+    post.reaction_users_count = reaction_users_count;
+    this.scheduleRerender();
   },
 });
