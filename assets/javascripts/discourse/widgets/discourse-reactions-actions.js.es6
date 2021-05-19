@@ -202,7 +202,8 @@ export default createWidget("discourse-reactions-actions", {
         }
       }
 
-      const duration = Date.now() - (this._touchStartAt || Date.now());
+      const duration = Date.now() - (this._touchStartAt || 0);
+      this._touchStartAt = null;
       if (duration > 400) {
         if (
           event.originalEvent &&
@@ -213,8 +214,7 @@ export default createWidget("discourse-reactions-actions", {
         ) {
           this.toggleReactions(event);
         }
-      } else if (duration > 0 && duration < 200) {
-        // anything taking more than 200ms is most likely not intentional click
+      } else {
         if (
           event.target &&
           (event.target.classList.contains(
@@ -229,8 +229,6 @@ export default createWidget("discourse-reactions-actions", {
           });
         }
       }
-
-      this._touchStartAt = null;
     }
   },
 
