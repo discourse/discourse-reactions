@@ -411,7 +411,7 @@ html.discourse-reactions-no-select {
 .discourse-reactions-reaction-button {
   position: relative;
   display: flex;
-  touch-action: none;
+  touch-action: pan-y;
 
   .btn-toggle-reaction-like {
     outline: none;
