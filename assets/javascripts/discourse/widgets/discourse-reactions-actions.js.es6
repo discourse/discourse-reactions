@@ -555,7 +555,7 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions[0].id === mainReaction
     ) {
       items.push(this.attach("discourse-reactions-double-button", attrs));
-    } else if (post.site.mobileView) {
+    } else if (this.site.mobileView) {
       if (!post.yours) {
         items.push(this.attach("discourse-reactions-counter", attrs));
         items.push(this.attach("discourse-reactions-reaction-button", attrs));
