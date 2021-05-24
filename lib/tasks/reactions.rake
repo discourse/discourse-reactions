@@ -75,8 +75,8 @@ task "reactions:convert", [:old_reaction, :new_reaction] do |_, args|
 
   puts "Converting reactions"
   reaction.reaction_users.each do |reaction_user|
-    post = Post.find_by(id: reaction_user.post_id)
-    user = User.find_by(id: reaction_user.user_id)
+    post = reaction.post
+    user = reaction_user.user
 
     puts "Couldn’t find user with id: #{reaction_user.user_id}, continuing to next reaction..." if !user
     puts "Couldn’t find post with id: #{reaction_user.post_id}, continuing to next reaction..." if !post
