@@ -50,3 +50,48 @@ task "reactions:generate", [:post_id, :reactions_count, :reaction] => [:environm
       .toggle!
   end
 end
+
+desc "Convert reactions"
+task "reactions:convert", [:old_reaction, :new_reaction] do |_, args|
+  old_reaction = args[:old_reaction]
+  new_reaction = args[:new_reaction]
+
+  if !old_reaction
+    raise "Please provide the reaction you want to convert i.e. 'old_reaction'"
+  end
+
+  POST_UNDO_ACTION_WINDOW_MINS = SiteSetting.post_undo_action_window_mins
+  SiteSetting.post_undo_action_window_mins = 2000000000
+
+  if new_reaction && !DiscourseReactions::Reaction.valid_reactions.include?(new_reaction)
+    raise "Invalid Reaction, please check 'new_reaction' parameter and try again!"
+  end
+
+  reaction = DiscourseReactions::Reaction.find_by(reaction_value: old_reaction)
+
+  if !reaction
+    raise "Please provide an existing reaction in 'old_reaction' parameter and try again!"
+  end
+
+  puts "Converting reactions"
+  reaction.reaction_users.each do |reaction_user|
+    post = Post.find_by(id: reaction_user.post_id)
+    user = User.find_by(id: reaction_user.user_id)
+
+    puts "Couldn’t find user with id: #{reaction_user.user_id}, continuing to next reaction..." if !user
+    puts "Couldn’t find post with id: #{reaction_user.post_id}, continuing to next reaction..." if !post
+
+    next unless post && user
+
+    DiscourseReactions::ReactionManager.new(
+      reaction_value: new_reaction ? new_reaction : old_reaction,
+      user: user,
+      guardian: Guardian.new(user),
+      post: post
+    ).toggle!
+  end
+
+  SiteSetting.post_undo_action_window_mins = POST_UNDO_ACTION_WINDOW_MINS
+
+  puts "Hurray! you have successfully converted the reaction"
+end
