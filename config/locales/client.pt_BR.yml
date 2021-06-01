@@ -5,3 +5,31 @@
 # https://translate.discourse.org/
 
 pt_BR:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Reações do Discourse"
+  js:
+    discourse_reactions:
+      reactions_title: "Reações"
+      state_panel:
+        more_users: "e %{count} mais..."
+      reaction:
+        too_many_request:
+          one: "Você está reagindo um pouco rápido demais, tente novamente em %{count} segundo."
+          other: "Você está reagindo um pouco rápido demais, tente novamente em %{count} segundos."
+        forbidden: "Essa reação foi criada há muito tempo. Ela não pode mais ser modificada ou removida."
+      picker:
+        react_with: "Reaja a esta postagem com: %{reaction}"
+        cant_remove_reaction: "Você não pode remover esta reação"
+        remove_reaction: "Remova esta %{reaction} reação"
+      main_reaction:
+        add: "Curta esta postagem"
+        remove: "Remova essa curtida"
+        cant_remove: "Você não pode remover esta curtida"
+    notifications:
+      reaction: "<span>%{username}</span> %{description}"
+      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      titles:
+        reaction: "nova reação"
