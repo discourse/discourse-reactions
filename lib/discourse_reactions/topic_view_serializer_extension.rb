@@ -3,7 +3,10 @@
 module DiscourseReactions::TopicViewSerializerExtension
   def posts
     if SiteSetting.discourse_reactions_enabled
-      posts = object.posts.includes(:post_actions, reactions: { reaction_users: :user })
+      posts = object.posts
+        .includes(:post_actions, reactions: { reaction_users: :user })
+        .to_a
+
       post_ids = posts.map(&:id).uniq
 
       posts_reaction_users_count = TopicViewSerializer.posts_reaction_users_count(post_ids)
