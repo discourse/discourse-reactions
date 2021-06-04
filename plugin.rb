@@ -75,10 +75,7 @@ after_initialize do
       }
     end
 
-    likes = object.post_actions.select do |l|
-      l.post_action_type_id == PostActionType.types[:like] &&
-      l.deleted_at.blank?
-    end
+    likes = object.post_actions.where('deleted_at IS NULL AND post_action_type_id = ?', PostActionType.types[:like])
 
     if likes.blank?
       return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] }
@@ -97,8 +94,7 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_reaction) do
     return nil unless scope.user.present?
-
-    object.reactions.each do |reaction|
+    object.reactions.includes([:reaction_users]).each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
       next unless reaction_user
