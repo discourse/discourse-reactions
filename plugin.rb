@@ -156,7 +156,7 @@ after_initialize do
         .count
     }
 
-    report.icon = 'emoji-icon'
+    report.icon = 'discourse-emojis'
     report.modes = [:table]
 
     report.data = []

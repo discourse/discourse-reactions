@@ -22,7 +22,7 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.replaceIcon("notification.reaction", "custom-reaction-icon");
+  api.replaceIcon("notification.reaction", "discourse-emojis");
 
   api.decorateWidget("post-menu:extra-post-controls", (dec) => {
     if (dec.widget.site.mobileView) {
