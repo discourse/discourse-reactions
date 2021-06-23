@@ -4,15 +4,6 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
 import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
-import MessageBus from "message-bus-client";
-import { addWidgetCleanCallback } from "discourse/components/mount-widget";
-
-let subscriptions = [];
-
-addWidgetCleanCallback("post-stream", () => {
-  subscriptions.forEach((channel) => MessageBus.unsubscribe(channel));
-  subscriptions = [];
-});
 
 let _popperStatePanel;
 
@@ -22,32 +13,6 @@ export default createWidget("discourse-reactions-counter", {
   buildKey: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
   buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
-
-  init() {
-    this.subscribe();
-  },
-
-  unsubscribe() {
-    if (!this.attrs.post.id) {
-      return;
-    }
-    MessageBus.unsubscribe(`/post/${this.attrs.post.id}`);
-  },
-
-  subscribe() {
-    this.unsubscribe();
-
-    const channel = `/post/${this.attrs.post.id}`;
-    subscriptions.push(channel);
-
-    MessageBus.subscribe(channel, (data) => {
-      data.type.forEach((reaction) => {
-        if (this.state[reaction].length) {
-          this.getUsers(reaction);
-        }
-      });
-    });
-  },
 
   defaultState(attrs) {
     const state = {};
