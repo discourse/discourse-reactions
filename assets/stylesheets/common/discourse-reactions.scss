@@ -172,7 +172,7 @@ html.discourse-reactions-no-select {
     }
 
     &.is-used {
-      border-color: $tertiary-low !important;
+      border-color: var(--tertiary-low) !important;
     }
   }
 }
