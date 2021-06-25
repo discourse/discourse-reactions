@@ -1,4 +1,3 @@
-import TopicController from "discourse/controllers/topic";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -25,22 +24,27 @@ function initializeDiscourseReactions(api) {
 
   api.replaceIcon("notification.reaction", "discourse-emojis");
 
-  TopicController.reopen({
-    subscribe() {
+  api.modifyClass("component:scrolling-post-stream", {
+    didInsertElement() {
       this._super(...arguments);
 
-      this.messageBus.subscribe(
-        `/topic/${this.get("model.id")}/reactions`,
-        (data) => {
-          this.appEvents.trigger(`/post/${data.post_id}/reactions`, data);
-        }
-      );
+      const topicId = this?.posts?.firstObject?.topic_id;
+      if (topicId) {
+        this.messageBus.subscribe(`/topic/${topicId}/reactions`, (data) => {
+          this.dispatch(
+            "reactions:changed",
+            "discourse-reactions-counter",
+            data
+          );
+        });
+      }
     },
 
     unsusbcribe() {
       this._super(...arguments);
 
-      this.messageBus.unsubscribe(`/topic/${this.get("model.id")}/reactions`);
+      const topicId = this?.posts?.firstObject?.topic_id;
+      topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
     },
   });
 

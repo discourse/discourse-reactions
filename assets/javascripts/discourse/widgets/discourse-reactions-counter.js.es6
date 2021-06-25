@@ -4,13 +4,6 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
 import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
-import { addWidgetCleanCallback } from "discourse/components/mount-widget";
-
-addWidgetCleanCallback("post-stream", (widget) => {
-  widget.attrs.posts.forEach((post) => {
-    widget.appEvents.off(`post:${post.id}:reactions`);
-  });
-});
 
 let _popperStatePanel;
 
@@ -21,27 +14,14 @@ export default createWidget("discourse-reactions-counter", {
 
   buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
-  init() {
-    this.subscribe();
-  },
-
-  unsubscribe() {
-    if (!this.attrs.post.id) {
-      return;
-    }
-    this.appEvents.off(`post:${this.attrs.post.id}:reactions`);
-  },
-
-  subscribe() {
-    this.unsubscribe();
-
-    this.appEvents.on(`post:${this.attrs.post.id}:reactions`, (data) => {
+  reactionsChanged(data) {
+    if (data.post_id === this.attrs.post.id) {
       data.reactions.forEach((reaction) => {
         if (this.state[reaction].length) {
           this.getUsers(reaction);
         }
       });
-    });
+    }
   },
 
   defaultState(attrs) {
