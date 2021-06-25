@@ -21,6 +21,7 @@ module DiscourseReactions
       end
 
       post.publish_change_to_clients!(:acted)
+      publish_change_to_clients!(post)
 
       render_json_dump(post_serializer(post).as_json)
     end
@@ -154,6 +155,23 @@ module DiscourseReactions
       post = Post.find(params[:post_id])
       guardian.ensure_can_see!(post)
       post
+    end
+
+    def publish_change_to_clients!(post)
+      reactions = [params[:reaction]]
+      reaction_user = DiscourseReactions::ReactionUser.find_by(user_id: current_user.id, post_id: post.id)
+
+      if reaction_user
+        reaction = DiscourseReactions::Reaction.find(reaction_user.reaction_id)
+        reactions.push(reaction.reaction_value)
+      end
+
+      message = {
+        post_id: post.id,
+        reactions: reactions
+      }
+
+      MessageBus.publish("/topic/#{post.topic.id}/reactions", message)
     end
   end
 end

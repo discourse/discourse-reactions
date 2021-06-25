@@ -1,3 +1,4 @@
+import TopicController from "discourse/controllers/topic";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -23,6 +24,25 @@ function initializeDiscourseReactions(api) {
   });
 
   api.replaceIcon("notification.reaction", "discourse-emojis");
+
+  TopicController.reopen({
+    subscribe() {
+      this._super(...arguments);
+
+      this.messageBus.subscribe(
+        `/topic/${this.get("model.id")}/reactions`,
+        (data) => {
+          this.appEvents.trigger(`/post/${data.post_id}/reactions`, data);
+        }
+      );
+    },
+
+    unsusbcribe() {
+      this._super(...arguments);
+
+      this.messageBus.unsubscribe(`/topic/${this.get("model.id")}/reactions`);
+    },
+  });
 
   api.decorateWidget("post-menu:extra-post-controls", (dec) => {
     if (dec.widget.site.mobileView) {
