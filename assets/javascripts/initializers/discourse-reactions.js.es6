@@ -31,11 +31,14 @@ function initializeDiscourseReactions(api) {
       const topicId = this?.posts?.firstObject?.topic_id;
       if (topicId) {
         this.messageBus.subscribe(`/topic/${topicId}/reactions`, (data) => {
-          this.dispatch(
-            "reactions:changed",
-            "discourse-reactions-counter",
-            data
+          this.dirtyKeys.keyDirty(
+            `discourse-reactions-counter-${data.post_id}`,
+            {
+              onRefresh: "reactionsChanged",
+              refreshArg: data,
+            }
           );
+          this._refresh({ id: data.post_id });
         });
       }
     },
