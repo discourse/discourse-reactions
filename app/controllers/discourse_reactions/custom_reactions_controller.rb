@@ -165,7 +165,7 @@ module DiscourseReactions
 
       if reaction_id
         reaction_value = DiscourseReactions::Reaction
-          .where(reaction_id)
+          .where(id: reaction_id)
           .pluck_first(:reaction_value)
 
         reactions.push(reaction_value) if reaction_value
