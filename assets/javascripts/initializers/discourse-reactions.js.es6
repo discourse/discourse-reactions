@@ -42,11 +42,13 @@ function initializeDiscourseReactions(api) {
         });
       }
     },
+  });
 
-    unsusbcribe() {
+  api.modifyClass("controller:topic", {
+    unsubscribe() {
       this._super(...arguments);
 
-      const topicId = this?.posts?.firstObject?.topic_id;
+      const topicId = this.model.id;
       topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
     },
   });
