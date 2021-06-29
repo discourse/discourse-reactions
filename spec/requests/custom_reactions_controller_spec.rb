@@ -79,14 +79,22 @@ describe DiscourseReactions::CustomReactionsController do
       expect(response.parsed_body['reactions']).to eq([])
     end
 
-    it 'sends MessageBus message that user acted' do
+    it 'publishes MessageBus messages' do
       sign_in(user_1)
+
       messages = MessageBus.track_publish("/topic/#{post_1.topic.id}") do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
       end
       expect(messages.count).to eq(2)
       expect(messages.map(&:data).map { |m| m[:type] }.uniq).to eq(%i(acted))
+
+      messages = MessageBus.track_publish("/topic/#{post_1.topic.id}/reactions") do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
+      end
+      expect(messages.count).to eq(2)
+      expect(messages.map(&:channel).uniq.first).to eq("/topic/#{post_1.topic.id}/reactions")
     end
 
     it 'errors when reaction is invalid' do
