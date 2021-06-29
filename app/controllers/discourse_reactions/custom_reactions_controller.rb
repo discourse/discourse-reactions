@@ -167,7 +167,7 @@ module DiscourseReactions
         reaction_value = DiscourseReactions::Reaction
           .where(reaction_id)
           .pluck_first(:reaction_value)
-          
+
         reactions.push(reaction_value) if reaction_value
       end
 
