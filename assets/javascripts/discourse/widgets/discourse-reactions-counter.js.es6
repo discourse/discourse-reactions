@@ -14,6 +14,14 @@ export default createWidget("discourse-reactions-counter", {
 
   buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
+  reactionsChanged(data) {
+    data.reactions.forEach((reaction) => {
+      if (this.state[reaction].length) {
+        this.getUsers(reaction);
+      }
+    });
+  },
+
   defaultState(attrs) {
     const state = {};
 

@@ -24,6 +24,35 @@ function initializeDiscourseReactions(api) {
 
   api.replaceIcon("notification.reaction", "discourse-emojis");
 
+  api.modifyClass("component:scrolling-post-stream", {
+    didInsertElement() {
+      this._super(...arguments);
+
+      const topicId = this?.posts?.firstObject?.topic_id;
+      if (topicId) {
+        this.messageBus.subscribe(`/topic/${topicId}/reactions`, (data) => {
+          this.dirtyKeys.keyDirty(
+            `discourse-reactions-counter-${data.post_id}`,
+            {
+              onRefresh: "reactionsChanged",
+              refreshArg: data,
+            }
+          );
+          this._refresh({ id: data.post_id });
+        });
+      }
+    },
+  });
+
+  api.modifyClass("controller:topic", {
+    unsubscribe() {
+      this._super(...arguments);
+
+      const topicId = this.model.id;
+      topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
+    },
+  });
+
   api.decorateWidget("post-menu:extra-post-controls", (dec) => {
     if (dec.widget.site.mobileView) {
       return;
