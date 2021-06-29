@@ -159,11 +159,16 @@ module DiscourseReactions
 
     def publish_change_to_clients!(post)
       reactions = [params[:reaction]]
-      reaction_user = DiscourseReactions::ReactionUser.find_by(user_id: current_user.id, post_id: post.id)
+      reaction_id = DiscourseReactions::ReactionUser
+        .where(user_id: current_user.id, post_id: post.id)
+        .pluck_first(:reaction_id)
 
-      if reaction_user
-        reaction = DiscourseReactions::Reaction.find(reaction_user.reaction_id)
-        reactions.push(reaction.reaction_value)
+      if reaction_id
+        reaction_value = DiscourseReactions::Reaction
+          .where(reaction_id)
+          .pluck_first(:reaction_value)
+          
+        reactions.push(reaction_value) if reaction_value
       end
 
       message = {
