@@ -44,6 +44,7 @@ jobs:
           if ls test/**/*.@(js|es6) &> /dev/null; then
             yarn prettier --list-different "test/**/*.{js,es6}"
           fi
+
       - name: Ember template lint
         if: ${{ always() }}
         run: yarn ember-template-lint assets/javascripts
