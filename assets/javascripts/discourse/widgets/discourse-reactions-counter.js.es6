@@ -82,7 +82,7 @@ export default createWidget("discourse-reactions-counter", {
       } else {
         this.state.postId = null;
       }
-      _popperStatePanel && _popperStatePanel.update();
+      _popperStatePanel?.update();
       this.scheduleRerender();
     });
   },
