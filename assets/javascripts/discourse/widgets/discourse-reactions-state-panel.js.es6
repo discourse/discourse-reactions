@@ -30,13 +30,13 @@ export default createWidget("discourse-reactions-state-panel", {
     }
   },
 
-  showUsers(attrs) {
+  showUsers(reactionId) {
     if (!this.state.displayedReactionId) {
-      this.state.displayedReactionId = attrs.reaction.id;
-    } else if (this.state.displayedReactionId === attrs.reaction.id) {
+      this.state.displayedReactionId = reactionId;
+    } else if (this.state.displayedReactionId === reactionId) {
       this.hideUsers();
-    } else if (this.state.displayedReactionId !== attrs.reaction.id) {
-      this.state.displayedReactionId = attrs.reaction.id;
+    } else if (this.state.displayedReactionId !== reactionId) {
+      this.state.displayedReactionId = reactionId;
     }
   },
 
@@ -69,6 +69,6 @@ export default createWidget("discourse-reactions-state-panel", {
         )
       : h("div.spinner-container", h("div.spinner"));
 
-    return [, h("div.container", reactions)];
+    return h("div.container", reactions);
   },
 });

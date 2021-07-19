@@ -18,6 +18,15 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
     }
   },
 
+  click(event) {
+    if (event?.target?.classList?.contains("show-users")) {
+      event.preventDefault();
+      event.stopPropagation();
+
+      this.sendWidgetAction("showUsers", this.attrs?.reaction?.id);
+    }
+  },
+
   html(attrs) {
     const elements = [];
 
@@ -42,15 +51,10 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
     if (attrs.users.length > MIN_USERS_COUNT) {
       list.push(
-        this.attach("button", {
-          action: "showUsers",
-          contents: [
-            iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down"),
-          ],
-          actionParam: attrs,
-          className: "show-users",
-          title: "",
-        })
+        h(
+          "button.show-users",
+          iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down")
+        )
       );
     }
 
