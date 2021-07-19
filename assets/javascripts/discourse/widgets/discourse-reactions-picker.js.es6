@@ -37,10 +37,9 @@ export default createWidget("discourse-reactions-picker", {
       }
 
       const currentUserReaction = attrs.post.current_user_reaction;
-
       return [
         h(
-          `div.discourse-reactions-picker-container.col-${this._computeCols(
+          `div.discourse-reactions-picker-container.col-${this._getOptimalColsCount(
             reactions.length
           )}`,
           reactions.map((reaction) => {
@@ -94,17 +93,27 @@ export default createWidget("discourse-reactions-picker", {
     }
   },
 
-  _computeCols(count) {
+  _getOptimalColsCount(count) {
     let x;
     const colsByRow = [5, 6, 7, 8];
 
-    colsByRow.forEach((i, index) => {
+    // if small count, just use it
+    if (count < colsByRow[0]) {
+      return count;
+    }
+
+    for (let index = 0; index < colsByRow.length; ++index) {
+      const i = colsByRow[index];
+
+      // if same as one of the max cols number, just use it
       let rest = count % i;
       if (rest === 0) {
         x = i;
-        return;
+        break;
       }
 
+      // loop until we find a number limiting to the minimum the number
+      // of empty cells
       if (index === 0) {
         x = i;
       } else {
@@ -112,7 +121,7 @@ export default createWidget("discourse-reactions-picker", {
           x = i;
         }
       }
-    });
+    }
 
     return x;
   },
