@@ -135,7 +135,7 @@ html.discourse-reactions-no-select {
     display: grid;
     grid-gap: 0.25em;
 
-    @for $i from 5 through 8 {
+    @for $i from 1 through 8 {
       &.col-#{$i} {
         grid-template-columns: repeat($i, 1fr);
       }
