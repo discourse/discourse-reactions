@@ -303,6 +303,7 @@ html.discourse-reactions-no-select {
     .d-icon {
       color: var(--primary-medium) !important;
       margin: 0;
+      pointer-events: none;
     }
   }
 

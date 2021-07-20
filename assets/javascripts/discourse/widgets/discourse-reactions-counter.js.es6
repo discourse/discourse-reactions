@@ -89,6 +89,19 @@ export default createWidget("discourse-reactions-counter", {
 
   click(event) {
     if (!this.capabilities.touch || !this.site.mobileView) {
+      event.stopPropagation();
+
+      // in case we lost sync due to another widget not in the same tree
+      // collapsing the panel, we attempt to reconciliate from DOM state
+      const container = document.getElementById(this.buildId(this.attrs));
+      if (
+        !container
+          .querySelector(".discourse-reactions-state-panel")
+          .classList.contains("is-expanded")
+      ) {
+        this.state.statePanelExpanded = false;
+      }
+
       if (!this.state.statePanelExpanded) {
         this.getUsers();
       }
