@@ -120,7 +120,7 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['reaction']['id']).to eq(reaction_1.id)
     end
 
-    context 'a topic containing a post with one of your reactions has been deleted' do
+    context 'a post with one of your reactions has been deleted' do
       fab!(:deleted_post) { Fabricate(:post) }
       fab!(:kept_post) { Fabricate(:post) }
       fab!(:user) { Fabricate(:user) }
