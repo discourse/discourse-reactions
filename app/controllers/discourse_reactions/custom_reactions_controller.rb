@@ -28,7 +28,8 @@ module DiscourseReactions
 
     def my_reactions
       reaction_users = DiscourseReactions::ReactionUser
-        .joins(:reaction)
+        .joins(:reaction, :post)
+        .includes(:user, :post, :reaction)
         .where(user_id: current_user.id)
         .where('discourse_reactions_reactions.reaction_users_count IS NOT NULL')
 
