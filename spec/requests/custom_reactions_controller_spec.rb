@@ -119,6 +119,32 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_1.id)
     end
+
+    context 'a post with one of your reactions has been deleted' do
+      fab!(:deleted_post) { Fabricate(:post) }
+      fab!(:kept_post) { Fabricate(:post) }
+      fab!(:user) { Fabricate(:user) }
+      fab!(:reaction_on_deleted_post) { Fabricate(:reaction, post: deleted_post, reaction_value: "laughing") }
+      fab!(:reaction_on_kept_post) { Fabricate(:reaction, post: kept_post, reaction_value: "laughing") }
+      fab!(:reaction_user_on_deleted_post) { Fabricate(:reaction_user, reaction: reaction_on_deleted_post, user: user, post: deleted_post) }
+      fab!(:reaction_user_on_kept_post) { Fabricate(:reaction_user, reaction: reaction_on_kept_post, user: user, post: kept_post) }
+
+      it 'doesn’t return the deleted post/reaction' do
+        sign_in(user)
+
+        get "/discourse-reactions/posts/my-reactions.json"
+        parsed = response.parsed_body
+        expect(parsed.length).to eq(2)
+
+        PostDestroyer.new(Discourse.system_user, deleted_post).destroy
+
+        get "/discourse-reactions/posts/my-reactions.json"
+        parsed = response.parsed_body
+
+        expect(parsed.length).to eq(1)
+        expect(parsed[0]['post_id']).to eq(kept_post.id)
+      end
+    end
   end
 
   context '#reactions_received' do
