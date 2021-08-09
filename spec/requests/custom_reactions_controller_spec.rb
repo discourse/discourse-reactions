@@ -132,8 +132,7 @@ describe DiscourseReactions::CustomReactionsController do
       it 'doesn’t return the deleted post/reaction' do
         sign_in(user)
 
-        deleted_post.topic.destroy!
-        # deleted_post.reload
+        PostDestroyer.new(Discourse.system_user, deleted_post).destroy
 
         get "/discourse-reactions/posts/my-reactions.json"
         parsed = response.parsed_body
