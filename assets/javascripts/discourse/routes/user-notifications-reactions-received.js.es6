@@ -3,7 +3,10 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default DiscourseRoute.extend({
   model() {
-    return CustomReaction.findReactions("reactions-received");
+    return CustomReaction.findReactions(
+      "reactions-received",
+      this.modelFor("user").get("username")
+    );
   },
 
   setupController(controller, model) {
@@ -12,6 +15,7 @@ export default DiscourseRoute.extend({
       model,
       canLoadMore: !loadedAll,
       reactionsUrl: "reactions-received",
+      username: this.modelFor("user").get("username"),
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },

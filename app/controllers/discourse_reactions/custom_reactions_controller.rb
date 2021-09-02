@@ -27,10 +27,14 @@ module DiscourseReactions
     end
 
     def my_reactions
+      params.require(:username)
+      user = fetch_user_from_params(include_inactive: current_user.try(:staff?) || (current_user && SiteSetting.show_inactive_accounts))
+      raise Discourse::NotFound unless guardian.can_see_profile?(user)
+
       reaction_users = DiscourseReactions::ReactionUser
         .joins(:reaction, :post)
         .includes(:user, :post, :reaction)
-        .where(user_id: current_user.id)
+        .where(user_id: user.id)
         .where('discourse_reactions_reactions.reaction_users_count IS NOT NULL')
 
       if params[:before_reaction_user_id]
@@ -46,7 +50,11 @@ module DiscourseReactions
     end
 
     def reactions_received
-      posts = Post.joins(:topic).where(user_id: current_user.id)
+      params.require(:username)
+      user = fetch_user_from_params(include_inactive: current_user.try(:staff?) || (current_user && SiteSetting.show_inactive_accounts))
+      raise Discourse::NotFound unless guardian.can_see_profile?(user)
+
+      posts = Post.joins(:topic).where(user_id: user.id)
       posts = guardian.filter_allowed_categories(posts)
       post_ids = posts.pluck(:id)
 
