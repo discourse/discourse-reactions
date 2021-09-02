@@ -21,10 +21,9 @@ CustomReaction.reopenClass({
     );
   },
 
-  findReactions(url, opts) {
+  findReactions(url, username, opts) {
     opts = opts || {};
-
-    const data = {};
+    const data = { username };
 
     if (opts.beforeReactionUserId) {
       data.before_reaction_user_id = opts.beforeReactionUserId;

@@ -23,7 +23,7 @@ export default Controller.extend({
 
     const opts = { beforeReactionUserId };
 
-    CustomReaction.findReactions(this.reactionsUrl, opts)
+    CustomReaction.findReactions(this.reactionsUrl, this.username, opts)
       .then((newReactionUsers) => {
         reactionUsers.addObjects(newReactionUsers);
         if (newReactionUsers.length === 0) {
