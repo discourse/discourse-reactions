@@ -26,7 +26,7 @@ module DiscourseReactions
       render_json_dump(post_serializer(post).as_json)
     end
 
-    def my_reactions
+    def reactions_given
       params.require(:username)
       user = fetch_user_from_params(include_inactive: current_user.try(:staff?) || (current_user && SiteSetting.show_inactive_accounts))
       raise Discourse::NotFound unless guardian.can_see_profile?(user)
