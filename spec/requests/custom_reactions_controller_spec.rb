@@ -107,11 +107,11 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
-  context '#my_reactions' do
+  context '#reactions_given' do
     it 'returns reactions given by a user' do
       sign_in(user_1)
 
-      get "/discourse-reactions/posts/my-reactions.json", params: { username: user_2.username }
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
       parsed = response.parsed_body
 
       expect(parsed[0]['user']['id']).to eq(user_2.id)
@@ -132,13 +132,13 @@ describe DiscourseReactions::CustomReactionsController do
       it 'doesn’t return the deleted post/reaction' do
         sign_in(user)
 
-        get "/discourse-reactions/posts/my-reactions.json", params: { username: user.username }
+        get "/discourse-reactions/posts/reactions.json", params: { username: user.username }
         parsed = response.parsed_body
         expect(parsed.length).to eq(2)
 
         PostDestroyer.new(Discourse.system_user, deleted_post).destroy
 
-        get "/discourse-reactions/posts/my-reactions.json", params: { username: user.username }
+        get "/discourse-reactions/posts/reactions.json", params: { username: user.username }
         parsed = response.parsed_body
 
         expect(parsed.length).to eq(1)

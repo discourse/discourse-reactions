@@ -11,7 +11,7 @@ export default DiscourseRoute.extend({
 
   setupController(controller, model) {
     let loadedAll = model.length < 20;
-    this.controllerFor("user-activity-my-reactions").setProperties({
+    this.controllerFor("user-activity-reactions").setProperties({
       model,
       canLoadMore: !loadedAll,
       reactionsUrl: "reactions-received",
@@ -21,6 +21,6 @@ export default DiscourseRoute.extend({
   },
 
   renderTemplate() {
-    this.render("user-activity-my-reactions");
+    this.render("user-activity-reactions");
   },
 });
