@@ -2,6 +2,8 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 
+const PLUGIN_ID = "discourse-reactions";
+
 replaceIcon("notification.reaction", "bell");
 
 function initializeDiscourseReactions(api) {
@@ -25,6 +27,8 @@ function initializeDiscourseReactions(api) {
   api.replaceIcon("notification.reaction", "discourse-emojis");
 
   api.modifyClass("component:scrolling-post-stream", {
+    pluginId: PLUGIN_ID,
+
     didInsertElement() {
       this._super(...arguments);
 
@@ -45,6 +49,8 @@ function initializeDiscourseReactions(api) {
   });
 
   api.modifyClass("controller:topic", {
+    pluginId: PLUGIN_ID,
+
     unsubscribe() {
       this._super(...arguments);
 
@@ -80,6 +86,8 @@ function initializeDiscourseReactions(api) {
   });
 
   api.modifyClass("component:emoji-value-list", {
+    pluginId: PLUGIN_ID,
+
     didReceiveAttrs() {
       this._super(...arguments);
 
