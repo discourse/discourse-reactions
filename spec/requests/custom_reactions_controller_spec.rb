@@ -21,6 +21,7 @@ describe DiscourseReactions::CustomReactionsController do
 
   before do
     SiteSetting.discourse_reactions_like_icon = 'heart'
+    SiteSetting.discourse_reactions_enabled_reactions = "laughing|open_mouth|cry|angry|thumbsup|hugs"
   end
 
   context '#toggle' do
