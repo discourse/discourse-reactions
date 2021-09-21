@@ -5,3 +5,30 @@
 # https://translate.discourse.org/
 
 zh_CN:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse 回应"
+  js:
+    discourse_reactions:
+      reactions_title: "回应"
+      state_panel:
+        more_users: "还有 %{count} 个..."
+      reaction:
+        too_many_request:
+          other: "您的回应速度有点太快了，请在 %{count} 秒后重试。"
+        forbidden: "此回应是很久以前产生的。它不能再被修改或删除。"
+      picker:
+        react_with: "用以下方式对此帖子做出回应： %{reaction}"
+        cant_remove_reaction: "您无法删除此回应"
+        remove_reaction: "删除这个 %{reaction} 回应"
+      main_reaction:
+        add: "喜欢这个帖子"
+        remove: "删除这个赞"
+        cant_remove: "您不能删除这个赞"
+    notifications:
+      reaction: "<span>%{username}</span> %{description}"
+      reaction_2: "<span>%{username} %{username2}</span> %{description}"
+      titles:
+        reaction: "新回应"
