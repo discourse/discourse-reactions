@@ -1,4 +1,4 @@
-# Discourse Reactions - Beyond Likes Plugin
+# Discourse Reactions
 
 Discourse-reactions is a plugin that allows user to add their reactions to the post.
 
