@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require_relative '../fabricators/reaction_fabricator.rb'
+require_relative '../fabricators/reaction_user_fabricator.rb'
 
 describe DiscourseReactions::CustomReactionsController do
   fab!(:post_1) { Fabricate(:post) }
@@ -109,6 +111,17 @@ describe DiscourseReactions::CustomReactionsController do
   end
 
   context '#reactions_given' do
+    fab!(:private_topic) { Fabricate(:private_message_topic, user: user_2) }
+    fab!(:private_post) { Fabricate(:post, topic: private_topic) }
+    fab!(:secure_group) { Fabricate(:group) }
+    fab!(:secure_category) { Fabricate(:private_category, group: secure_group) }
+    fab!(:secure_topic) { Fabricate(:topic, category: secure_category) }
+    fab!(:secure_post) { Fabricate(:post, topic: secure_topic) }
+    fab!(:private_reaction) { Fabricate(:reaction, post: private_post, reaction_value: "hugs") }
+    fab!(:secure_reaction) { Fabricate(:reaction, post: secure_post, reaction_value: "hugs") }
+    fab!(:private_topic_reaction_user) { Fabricate(:reaction_user, reaction: private_reaction, user: user_2, post: private_post) }
+    fab!(:secure_topic_reaction_user) { Fabricate(:reaction_user, reaction: secure_reaction, user: user_2, post: secure_post) }
+
     it 'returns reactions given by a user' do
       sign_in(user_1)
 
@@ -119,6 +132,40 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post_id']).to eq(post_2.id)
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_1.id)
+    end
+
+    it 'does not return reactions for private messages' do
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(private_post.id)
+
+      sign_in(user_2)
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(private_post.id)
+    end
+
+    it 'does not return reactions for secure categories' do
+      secure_group.add(user_2)
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(secure_post.id)
+
+      secure_group.add(user_1)
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
+
+      sign_in(user_2)
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
     end
 
     context 'a post with one of your reactions has been deleted' do
