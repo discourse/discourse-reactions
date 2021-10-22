@@ -1,6 +1,6 @@
 discourse_reactions:
   discourse_reactions_enabled:
-    default: true
+    default: false
     client: true
   discourse_reactions_like_icon:
     client: true
