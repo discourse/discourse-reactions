@@ -6,6 +6,7 @@ require_relative '../fabricators/reaction_user_fabricator.rb'
 
 describe DiscourseReactions::ReactionNotification do
   before do
+    SiteSetting.discourse_reactions_enabled = true
     PostActionNotifier.enable
   end
 

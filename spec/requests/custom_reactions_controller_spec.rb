@@ -22,6 +22,7 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:reaction_user_4) { Fabricate(:reaction_user, reaction: reaction_2, user: user_3, post: post_2) }
 
   before do
+    SiteSetting.discourse_reactions_enabled = true
     SiteSetting.discourse_reactions_like_icon = 'heart'
     SiteSetting.discourse_reactions_enabled_reactions = "laughing|open_mouth|cry|angry|thumbsup|hugs"
   end

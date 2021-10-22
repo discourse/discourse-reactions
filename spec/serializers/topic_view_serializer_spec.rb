@@ -5,6 +5,10 @@ require_relative '../fabricators/reaction_fabricator.rb'
 require_relative '../fabricators/reaction_user_fabricator.rb'
 
 describe TopicViewSerializer do
+  before do
+    SiteSetting.discourse_reactions_enabled = true
+  end
+
   context 'reactions and shadow like' do
     fab!(:user_1) { Fabricate(:user) }
     fab!(:user_2) { Fabricate(:user) }
