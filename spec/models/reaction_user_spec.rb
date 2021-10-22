@@ -5,6 +5,10 @@ require_relative '../fabricators/reaction_fabricator.rb'
 require_relative '../fabricators/reaction_user_fabricator.rb'
 
 describe DiscourseReactions::ReactionUser do
+  before do
+    SiteSetting.discourse_reactions_enabled = true
+  end
+
   describe 'delegating methods when the user is nil' do
     let(:reaction_user) { described_class.new(user: nil) }
 

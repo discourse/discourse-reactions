@@ -12,6 +12,7 @@ describe BadgeGranter do
   let(:badge) { Badge.find_by(name: 'First Reaction') }
 
   before do
+    SiteSetting.discourse_reactions_enabled = true
     BadgeGranter.enable_queue
   end
 

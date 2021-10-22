@@ -18,6 +18,7 @@ describe PostSerializer do
   fab!(:like) { Fabricate(:post_action, post: post_1, user: user_4, post_action_type_id: PostActionType.types[:like]) }
 
   before do
+    SiteSetting.discourse_reactions_enabled = true
     SiteSetting.post_undo_action_window_mins = 10
     SiteSetting.discourse_reactions_enabled_reactions = 'otter|thumbsup'
     SiteSetting.discourse_reactions_like_icon = 'heart'
