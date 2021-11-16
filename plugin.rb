@@ -67,7 +67,7 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    reactions = object.reactions.select { |reaction| reaction[:reaction_users_count] }.map do |reaction|
+    reactions = object.emoji_reactions.select { |reaction| reaction[:reaction_users_count] }.map do |reaction|
       {
         id: reaction.reaction_value,
         type: reaction.reaction_type.to_sym,
@@ -97,7 +97,8 @@ after_initialize do
 
   add_to_serializer(:post, :current_user_reaction) do
     return nil unless scope.user.present?
-    object.reactions.each do |reaction|
+
+    object.emoji_reactions.each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
 
       next unless reaction_user
