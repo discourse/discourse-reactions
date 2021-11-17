@@ -2,6 +2,7 @@ import { ajax } from "discourse/lib/ajax";
 import RestModel from "discourse/models/rest";
 import Topic from "discourse/models/topic";
 import User from "discourse/models/user";
+import Post from "discourse/models/post";
 import Category from "discourse/models/category";
 import EmberObject from "@ember/object";
 
@@ -37,6 +38,7 @@ CustomReaction.reopenClass({
         reaction.topic = Topic.create(reaction.post.topic);
         reaction.post_user = User.create(reaction.post.user);
         reaction.category = Category.findById(reaction.post.category_id);
+        reaction.post = Post.create(reaction.post);
         return EmberObject.create(reaction);
       });
     });
