@@ -106,4 +106,44 @@ describe DiscourseReactions::ReactionNotification do
     DiscourseReactions::ReactionUser.find_by(reaction: cry, user: user_2).destroy
     expect { described_class.new(cry, user_2).delete }.to change { Notification.count }.by(-1)
   end
+
+  describe 'consolidating reaction notifications' do
+    fab!(:post_2) { Fabricate(:post, user: post_1.user) }
+    fab!(:user_2) { Fabricate(:user) }
+    let!(:cry_p1) { Fabricate(:reaction, post: post_1, reaction_value: 'cry') }
+    let!(:cry_p2) { Fabricate(:reaction, post: post_2, reaction_value: 'cry') }
+
+    before do
+      SiteSetting.notification_consolidation_threshold = 1
+    end
+
+    it 'consolidates notifications from the same user' do
+      described_class.new(cry_p1, user_2).create
+      described_class.new(cry_p2, user_2).create
+
+      expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(1)
+      consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+      expect(consolidated_notification.data_hash['consolidated']).to eq(true)
+      expect(consolidated_notification.data_hash['username']).to eq(user_2.username)
+    end
+
+    it "doesn't update a consolidated notification when a different user reacts to a post" do
+      post_1.user.user_option.update!(
+        like_notification_frequency:
+        UserOption.like_notification_frequency_type[:always]
+      )
+      user_3 = Fabricate(:user)
+
+      described_class.new(cry_p1, user_2).create
+      described_class.new(cry_p2, user_2).create
+      described_class.new(cry_p2, user_3).create
+
+      expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
+      consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+      expect(consolidated_notification.data_hash['consolidated']).to be_nil
+      expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+    end
+  end
 end
