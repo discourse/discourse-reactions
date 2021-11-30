@@ -229,4 +229,36 @@ after_initialize do
       report.data << data
     end
   end
+
+  # TODO(Roman): Remove #respond_to? after the 2.8 release.
+  if respond_to?(:register_notification_consolidation_plan)
+    field_key = 'display_username'
+
+    consolidation_plan = Notifications::ConsolidateNotifications.new(
+      from: Notification.types[:reaction],
+      to: Notification.types[:reaction],
+      threshold: -> { SiteSetting.notification_consolidation_threshold },
+      consolidation_window: SiteSetting.likes_notification_consolidation_window_mins.minutes,
+      unconsolidated_query_blk: ->(notifications, data) do
+        notifications
+          .where("data::json ->> 'username2' IS NULL AND data::json ->> 'consolidated' IS NULL")
+          .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
+      end,
+      consolidated_query_blk: ->(notifications, data) do
+        notifications
+          .where("(data::json ->> 'consolidated')::bool")
+          .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
+      end
+    ).set_mutations(
+      set_data_blk: ->(notification) do
+        data = notification.data_hash
+        data.merge(
+          username: data[:display_username],
+          consolidated: true,
+        )
+      end
+    )
+
+    register_notification_consolidation_plan(consolidation_plan)
+  end
 end

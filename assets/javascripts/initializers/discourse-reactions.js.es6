@@ -24,8 +24,6 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.replaceIcon("notification.reaction", "discourse-emojis");
-
   api.modifyClass("component:scrolling-post-stream", {
     pluginId: PLUGIN_ID,
 
