@@ -17,10 +17,10 @@ he:
         more_users: "ו־%{count} נוספות..."
       reaction:
         too_many_request:
-          one: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד שנייה %{count}."
-          two: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
-          many: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
-          other: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
+          one: "תגובת התחושה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד שנייה %{count}."
+          two: "תגובת התחושה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
+          many: "תגובת התחושה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
+          other: "תגובת התחושה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
         forbidden: "תחושה זו נוצרה לפני זמן רב מידי. לא ניתן יותר לערוך או להסיר אותה."
       picker:
         react_with: "להוסיף תחושה לפוסט הזה: %{reaction}"
@@ -31,7 +31,9 @@ he:
         remove: "הסרת הלייק הזה"
         cant_remove: "אין לך אפשרות להסיר את הלייק הזה"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "תחושה חדשה"

@@ -29,7 +29,6 @@ pt_BR:
         remove: "Remova essa curtida"
         cant_remove: "Você não pode remover esta curtida"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "nova reação"

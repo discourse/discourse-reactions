@@ -31,7 +31,6 @@ pl_PL:
         remove: "Usuń to polubienie"
         cant_remove: "Nie możesz usunąć tego polubienia"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "nowa reakcja"

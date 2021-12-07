@@ -31,7 +31,9 @@ ru:
         remove: "Удалить эту эмоцию"
         cant_remove: "Вы не можете удалить эту эмоцию"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> отреагировал на %{count} ваших сообщений"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "Новая реакция"
