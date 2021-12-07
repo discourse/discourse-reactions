@@ -29,7 +29,9 @@ sv:
         remove: "Ta bort denna gillning"
         cant_remove: "Du kan inte ta bort denna gillning"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagerade på %{count} av dina inlägg"
       reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "ny reaktion"

@@ -28,7 +28,6 @@ es:
         remove: "Deshacer me gusta"
         cant_remove: "No puedes deshacer el me gusta."
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
       reaction_2: "<span>%{username} y %{username2}</span> %{description}"
       titles:
         reaction: "nueva reacción"
