@@ -9,7 +9,7 @@ replaceIcon("notification.reaction", "discourse-emojis");
 
 createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
   notificationTitle() {
-    return I18n.t("discourse_reactions.notifications.titles.reaction");
+    return I18n.t("notifications.titles.reaction");
   },
 
   text(_notificationName, data) {
