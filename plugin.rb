@@ -239,18 +239,18 @@ after_initialize do
       to: Notification.types[:reaction],
       threshold: -> { SiteSetting.notification_consolidation_threshold },
       consolidation_window: SiteSetting.likes_notification_consolidation_window_mins.minutes,
-      unconsolidated_query_blk: ->(notifications, data) do
+      unconsolidated_query_blk: Proc.new do |notifications, data|
         notifications
           .where("data::json ->> 'username2' IS NULL AND data::json ->> 'consolidated' IS NULL")
           .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
       end,
-      consolidated_query_blk: ->(notifications, data) do
+      consolidated_query_blk: Proc.new do |notifications, data|
         notifications
           .where("(data::json ->> 'consolidated')::bool")
           .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
       end
     ).set_mutations(
-      set_data_blk: ->(notification) do
+      set_data_blk: Proc.new do |notification|
         data = notification.data_hash
         data.merge(
           username: data[:display_username],
