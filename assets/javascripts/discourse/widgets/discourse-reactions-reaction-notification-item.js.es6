@@ -13,9 +13,23 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
   },
 
   text(_notificationName, data) {
-    const reactionsCount = data.count;
+    const count = data.count;
+    const username = formatUsername(data.display_username);
 
-    if (!reactionsCount || reactionsCount === 1) {
+    if (data.username2) {
+      const othersCount = count - 2;
+      const notificationKey =
+        othersCount === 0 ? "reaction_2" : "reaction_many";
+
+      return I18n.t(`notifications.${notificationKey}`, {
+        username,
+        username2: formatUsername(data.username2),
+        description: this.attrs.fancy_title,
+        count: othersCount,
+      });
+    }
+
+    if (!count || count === 1) {
       return I18n.t("notifications.reaction.single", {
         username: formatUsername(data.display_username),
         description: this.attrs.fancy_title,
@@ -23,7 +37,7 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
     } else {
       return I18n.t("notifications.reaction.multiple", {
         username: formatUsername(data.display_username),
-        count: reactionsCount,
+        count,
       });
     }
   },

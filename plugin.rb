@@ -234,7 +234,7 @@ after_initialize do
   if respond_to?(:register_notification_consolidation_plan)
     field_key = 'display_username'
 
-    consolidation_plan = Notifications::ConsolidateNotifications.new(
+    consolidated_reactions = Notifications::ConsolidateNotifications.new(
       from: Notification.types[:reaction],
       to: Notification.types[:reaction],
       threshold: -> { SiteSetting.notification_consolidation_threshold },
@@ -257,8 +257,45 @@ after_initialize do
           consolidated: true,
         )
       end
+    ).set_precondition(precondition_blk: Proc.new { |data| data[:username2].blank? })
+
+    reacted_by_two_users = Notifications::DeletePreviousNotifications.new(
+      type: Notification.types[:reaction],
+      previous_query_blk: Proc.new do |notifications, data|
+        notifications.where(id: data[:previous_notification_id])
+      end
+    ).set_mutations(
+      set_data_blk: Proc.new do |notification|
+        existing_notification_of_same_type = Notification
+          .where(user: notification.user)
+          .order("notifications.id DESC")
+          .where(topic_id: notification.topic_id, post_number: notification.post_number)
+          .where(notification_type: notification.notification_type)
+          .where('created_at > ?', 1.day.ago)
+          .first
+
+        data = notification.data_hash
+        if existing_notification_of_same_type
+          same_type_data = existing_notification_of_same_type.data_hash
+          data.merge(
+            previous_notification_id: existing_notification_of_same_type.id,
+            username2: same_type_data[:display_username],
+            count: (same_type_data[:count] || 1).to_i + 1
+          )
+        else
+          data
+        end
+      end
+    ).set_precondition(
+      precondition_blk: Proc.new do |data, notification|
+        always_freq = UserOption.like_notification_frequency_type[:always]
+
+        notification.user&.user_option&.like_notification_frequency == always_freq &&
+          data[:previous_notification_id].present?
+      end
     )
 
-    register_notification_consolidation_plan(consolidation_plan)
+    register_notification_consolidation_plan(reacted_by_two_users)
+    register_notification_consolidation_plan(consolidated_reactions)
   end
 end

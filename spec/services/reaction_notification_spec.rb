@@ -62,26 +62,6 @@ describe DiscourseReactions::ReactionNotification do
     expect { described_class.new(cry, user_2).create }.to change { Notification.count }.by(1)
   end
 
-  it 'correctly creates notification when notification setting is always' do
-    post_1.user.user_option.update!(
-      like_notification_frequency:
-      UserOption.like_notification_frequency_type[:always]
-    )
-
-    expect { described_class.new(thumbsup, user_1).create }.to change { Notification.count }.by(1)
-    expect(Notification.last.user_id).to eq(post_1.user.id)
-    expect(JSON.parse(Notification.last.data)['original_username']).to eq(user_1.username)
-
-    cry = Fabricate(:reaction, post: post_1, reaction_value: 'cry')
-    Fabricate(:reaction_user, reaction: cry, user: user_1)
-    described_class.new(cry, user_1).create
-    expect { described_class.new(cry, user_1).create }.to change { Notification.count }.by(1)
-
-    user_2 = Fabricate(:user)
-    Fabricate(:reaction_user, reaction: cry, user: user_2)
-    expect { described_class.new(cry, user_2).create }.to change { Notification.count }.by(1)
-  end
-
   it 'deletes notification when all reactions are removed' do
     expect { described_class.new(thumbsup, user_1).create }.to change { Notification.count }.by(1)
 
@@ -110,40 +90,70 @@ describe DiscourseReactions::ReactionNotification do
   describe 'consolidating reaction notifications' do
     fab!(:post_2) { Fabricate(:post, user: post_1.user) }
     fab!(:user_2) { Fabricate(:user) }
+    fab!(:user_3) { Fabricate(:user) }
     let!(:cry_p1) { Fabricate(:reaction, post: post_1, reaction_value: 'cry') }
     let!(:cry_p2) { Fabricate(:reaction, post: post_2, reaction_value: 'cry') }
 
-    before do
-      SiteSetting.notification_consolidation_threshold = 1
+    describe 'multiple reactions from the same user' do
+      before do
+        SiteSetting.notification_consolidation_threshold = 1
+      end
+
+      it 'consolidates notifications from the same user' do
+        described_class.new(cry_p1, user_2).create
+        described_class.new(cry_p2, user_2).create
+
+        expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(1)
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash['consolidated']).to eq(true)
+        expect(consolidated_notification.data_hash['username']).to eq(user_2.username)
+      end
+
+      it "doesn't update a consolidated notification when a different user reacts to a post" do
+        described_class.new(cry_p1, user_2).create
+        described_class.new(cry_p2, user_2).create
+        described_class.new(cry_p2, user_3).create
+
+        expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash['consolidated']).to be_nil
+        expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+      end
     end
 
-    it 'consolidates notifications from the same user' do
-      described_class.new(cry_p1, user_2).create
-      described_class.new(cry_p2, user_2).create
+    describe 'multiple users reacting to the same post' do
+      it 'keeps one notification pointing to the two last users that reacted to a post' do
+        post_1.user.user_option.update!(
+          like_notification_frequency:
+          UserOption.like_notification_frequency_type[:always]
+        )
 
-      expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(1)
-      consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+        described_class.new(cry_p1, user_2).create
+        described_class.new(thumbsup, user_3).create
 
-      expect(consolidated_notification.data_hash['consolidated']).to eq(true)
-      expect(consolidated_notification.data_hash['username']).to eq(user_2.username)
-    end
+        expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(1)
 
-    it "doesn't update a consolidated notification when a different user reacts to a post" do
-      post_1.user.user_option.update!(
-        like_notification_frequency:
-        UserOption.like_notification_frequency_type[:always]
-      )
-      user_3 = Fabricate(:user)
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
 
-      described_class.new(cry_p1, user_2).create
-      described_class.new(cry_p2, user_2).create
-      described_class.new(cry_p2, user_3).create
+        expect(consolidated_notification.data_hash['username2']).to eq(user_2.username)
+        expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+      end
 
-      expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
-      consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+      it 'creates a new notification if the last one was created more than one day ago' do
+        post_1.user.user_option.update!(
+          like_notification_frequency:
+          UserOption.like_notification_frequency_type[:always]
+        )
 
-      expect(consolidated_notification.data_hash['consolidated']).to be_nil
-      expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+        first_notification = described_class.new(cry_p1, user_2).create
+        first_notification.update!(created_at: 2.days.ago)
+
+        described_class.new(thumbsup, user_3).create
+
+        expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
+      end
     end
   end
 end
