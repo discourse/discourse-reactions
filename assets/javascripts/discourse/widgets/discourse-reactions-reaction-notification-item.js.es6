@@ -1,6 +1,6 @@
 import { createWidgetFrom } from "discourse/widgets/widget";
 import { DefaultNotificationItem } from "discourse/widgets/default-notification-item";
-import { replaceIcon } from "discourse-common/lib/icon-library";
+import { iconNode, replaceIcon } from "discourse-common/lib/icon-library";
 import { formatUsername, postUrl } from "discourse/lib/utilities";
 import { userPath } from "discourse/lib/url";
 import I18n from "I18n";
@@ -10,6 +10,26 @@ replaceIcon("notification.reaction", "discourse-emojis");
 createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
   notificationTitle() {
     return I18n.t("notifications.titles.reaction");
+  },
+
+  icon(notificationName) {
+    let reactionName = this.attrs.data.reaction_icon;
+    let icon;
+
+    if (reactionName && !this.attrs.data.username2) {
+      icon = iconNode(reactionName);
+    } else {
+      icon = iconNode(`notification.${notificationName}`);
+    }
+
+    // TODO(roman): Remove after the 2.8 release.
+    icon.properties.attributes["aria-label"] = I18n.t(
+      `notifications.titles.${notificationName}`
+    );
+    icon.properties.attributes["aria-hidden"] = false;
+    icon.properties.attributes["role"] = "img";
+
+    return icon;
   },
 
   text(_notificationName, data) {

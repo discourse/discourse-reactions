@@ -2,6 +2,8 @@
 
 module DiscourseReactions
   class ReactionNotification
+    HEART_ICON_NAME = 'heart'
+
     def initialize(reaction, user)
       @reaction = reaction
       @post = reaction.post
@@ -13,7 +15,13 @@ module DiscourseReactions
 
       return if post_user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:never]
 
-      PostAlerter.new.create_notification(post_user, Notification.types[:reaction], @post, user_id: @user.id, display_username: @user.username)
+      opts = { user_id: @user.id, display_username: @user.username }
+
+      if @reaction.reaction_value == HEART_ICON_NAME
+        opts[:custom_data] = { reaction_icon: @reaction.reaction_value }
+      end
+
+      PostAlerter.new.create_notification(post_user, Notification.types[:reaction], @post, opts)
     end
 
     def delete

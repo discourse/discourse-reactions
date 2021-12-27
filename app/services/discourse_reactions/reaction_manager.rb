@@ -25,15 +25,17 @@ module DiscourseReactions
     private
 
     def toggle_like
-      remove_shadow_like if @like
       remove_reaction if reaction_user
-      add_shadow_like unless @like
+      @like ? remove_shadow_like : add_shadow_like
     end
 
     def toggle_reaction
-      previous_reaction = old_reaction(reaction_user) if reaction_user
-      remove_reaction if reaction_user
-      return if previous_reaction && previous_reaction.reaction_value == @reaction_value
+      if reaction_user
+        previous_reaction_value = old_reaction_value(reaction_user)
+        remove_reaction
+        return if previous_reaction_value && previous_reaction_value == @reaction_value
+      end
+
       remove_shadow_like if @like
       add_reaction unless reaction_user
     end
@@ -67,18 +69,21 @@ module DiscourseReactions
       DiscourseReactions::ReactionUser.find_by(user_id: @user.id, post_id: @post.id)
     end
 
-    def old_reaction(reaction_user)
+    def old_reaction_value(reaction_user)
       return unless reaction_user
-      DiscourseReactions::Reaction.where(id: reaction_user.reaction_id).first
+      DiscourseReactions::Reaction.where(id: reaction_user.reaction_id).first&.reaction_value
     end
 
     def add_shadow_like
-      PostActionCreator.like(@user, @post)
+      silent = true
+      PostActionCreator.like(@user, @post, silent)
+      add_reaction_notification
     end
 
     def remove_shadow_like
       PostActionDestroyer.new(@user, @post, post_action_like_type).perform
       delete_like_reaction
+      remove_reaction_notification
     end
 
     def delete_like_reaction

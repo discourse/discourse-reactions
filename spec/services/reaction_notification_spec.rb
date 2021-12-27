@@ -156,4 +156,17 @@ describe DiscourseReactions::ReactionNotification do
       end
     end
   end
+
+  describe 'stores the icon in the notification payload' do
+    fab!(:user_2) { Fabricate(:user) }
+
+    it 'stores the heart icon for like reactions' do
+      like_reaction = Fabricate(:reaction, post: post_1, reaction_value: 'heart')
+
+      described_class.new(like_reaction, user_2).create
+      notification = Notification.where(user: post_1.user, notification_type: Notification.types[:reaction]).last
+
+      expect(notification.data_hash[:reaction_icon]).to eq(like_reaction.reaction_value)
+    end
+  end
 end
