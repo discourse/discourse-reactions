@@ -16,7 +16,7 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
     let reactionName = this.attrs.data.reaction_icon;
     let icon;
 
-    if (reactionName && !this.attrs.data.username2) {
+    if (reactionName) {
       icon = iconNode(reactionName);
     } else {
       icon = iconNode(`notification.${notificationName}`);

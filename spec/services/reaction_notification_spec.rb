@@ -13,7 +13,10 @@ describe DiscourseReactions::ReactionNotification do
   fab!(:post_1) { Fabricate(:post) }
   fab!(:thumbsup) { Fabricate(:reaction, post: post_1, reaction_value: 'thumbsup') }
   fab!(:user_1) { Fabricate(:user) }
+  fab!(:user_2) { Fabricate(:user) }
+  fab!(:user_3) { Fabricate(:user) }
   fab!(:reaction_user1) { Fabricate(:reaction_user, reaction: thumbsup, user: user_1) }
+  fab!(:like_reaction) { Fabricate(:reaction, post: post_1, reaction_value: 'heart') }
 
   it 'does not create notification when user is muted' do
     MutedUser.create!(user_id: post_1.user.id, muted_user_id: user_1.id)
@@ -87,10 +90,36 @@ describe DiscourseReactions::ReactionNotification do
     expect { described_class.new(cry, user_2).delete }.to change { Notification.count }.by(-1)
   end
 
+  it 'adds the heart icon when the remaining notification is a like' do
+    Fabricate(:reaction_user, reaction: like_reaction, user: user_2)
+    described_class.new(like_reaction, user_2).create
+
+    DiscourseReactions::ReactionUser.find_by(reaction: thumbsup, user: user_1).destroy!
+    described_class.new(thumbsup, user_1).delete
+
+    remaining_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+    expect(remaining_notification.data_hash[:reaction_icon]).to eq(like_reaction.reaction_value)
+  end
+
+  it "doesn't add the heart icon when not all remaining notifications are likes" do
+    Fabricate(:reaction_user, reaction: like_reaction, user: user_2)
+    described_class.new(like_reaction, user_2).create
+
+    cry = Fabricate(:reaction, post: post_1, reaction_value: 'cry')
+    Fabricate(:reaction_user, reaction: cry, user: user_3)
+    described_class.new(cry, user_3).create
+
+    DiscourseReactions::ReactionUser.find_by(reaction: thumbsup, user: user_1).destroy!
+    described_class.new(thumbsup, user_1).delete
+
+    remaining_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+    expect(remaining_notification.data_hash[:reaction_icon]).to be_nil
+  end
+
   describe 'consolidating reaction notifications' do
     fab!(:post_2) { Fabricate(:post, user: post_1.user) }
-    fab!(:user_2) { Fabricate(:user) }
-    fab!(:user_3) { Fabricate(:user) }
     let!(:cry_p1) { Fabricate(:reaction, post: post_1, reaction_value: 'cry') }
     let!(:cry_p2) { Fabricate(:reaction, post: post_2, reaction_value: 'cry') }
 
@@ -124,12 +153,14 @@ describe DiscourseReactions::ReactionNotification do
     end
 
     describe 'multiple users reacting to the same post' do
-      it 'keeps one notification pointing to the two last users that reacted to a post' do
+      before do
         post_1.user.user_option.update!(
           like_notification_frequency:
           UserOption.like_notification_frequency_type[:always]
         )
+      end
 
+      it 'keeps one notification pointing to the two last users that reacted to a post' do
         described_class.new(cry_p1, user_2).create
         described_class.new(thumbsup, user_3).create
 
@@ -142,11 +173,6 @@ describe DiscourseReactions::ReactionNotification do
       end
 
       it 'creates a new notification if the last one was created more than one day ago' do
-        post_1.user.user_option.update!(
-          like_notification_frequency:
-          UserOption.like_notification_frequency_type[:always]
-        )
-
         first_notification = described_class.new(cry_p1, user_2).create
         first_notification.update!(created_at: 2.days.ago)
 
@@ -154,15 +180,29 @@ describe DiscourseReactions::ReactionNotification do
 
         expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
       end
+
+      it 'removes the reaction icon if the post received different reactions' do
+        described_class.new(thumbsup, user_3).create
+        described_class.new(like_reaction, user_2).create
+
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash[:reaction_icon]).to be_nil
+      end
+
+      it 'keeps the reaction icon if all the reactions were likes' do
+        described_class.new(like_reaction, user_3).create
+        described_class.new(like_reaction, user_2).create
+
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash[:reaction_icon]).to eq(like_reaction.reaction_value)
+      end
     end
   end
 
   describe 'stores the icon in the notification payload' do
-    fab!(:user_2) { Fabricate(:user) }
-
     it 'stores the heart icon for like reactions' do
-      like_reaction = Fabricate(:reaction, post: post_1, reaction_value: 'heart')
-
       described_class.new(like_reaction, user_2).create
       notification = Notification.where(user: post_1.user, notification_type: Notification.types[:reaction]).last
 
