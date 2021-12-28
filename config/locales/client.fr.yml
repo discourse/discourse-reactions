@@ -29,6 +29,5 @@ fr:
         remove: "Supprimer ce « j'aime »"
         cant_remove: "Vous ne pouvez pas supprimer ce « j'aime »"
     notifications:
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "nouvelle réaction"

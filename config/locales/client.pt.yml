@@ -28,6 +28,5 @@ pt:
         remove: "Remover este gosto"
         cant_remove: "Não pode remover este gosto"
     notifications:
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "nova reação"

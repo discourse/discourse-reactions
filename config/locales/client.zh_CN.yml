@@ -28,6 +28,5 @@ zh_CN:
         remove: "删除这个赞"
         cant_remove: "您不能删除这个赞"
     notifications:
-      reaction_2: "<span>%{username} %{username2}</span> %{description}"
       titles:
         reaction: "新回应"

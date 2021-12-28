@@ -31,6 +31,14 @@ pl_PL:
         remove: "Usuń to polubienie"
         cant_remove: "Nie możesz usunąć tego polubienia"
     notifications:
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> zareagował na %{count} twoich postów"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} oraz %{count} inny</span> %{description}"
+        few: "<span class='multi-user'>%{username}, %{username2} oraz %{count} innych</span> %{description}"
+        many: "<span class='multi-user'>%{username}, %{username2} oraz %{count} innych</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} oraz %{count} innych</span> %{description}"
       titles:
         reaction: "nowa reakcja"

@@ -24,6 +24,5 @@ it:
         remove: "Rimuovi questo \"Mi piace\""
         cant_remove: "Non puoi rimuovere questo \"Mi piace\""
     notifications:
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "nuova reazione"
