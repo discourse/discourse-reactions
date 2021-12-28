@@ -41,28 +41,34 @@ module DiscourseReactions
 
     private
 
-    def reaction_usernames
+    def remaining_reaction_data
       @post.reactions
         .joins(:users)
         .order('discourse_reactions_reactions.created_at DESC')
         .where('discourse_reactions_reactions.created_at > ?', 1.day.ago)
-        .pluck(:username)
+        .pluck(:username, :reaction_value)
     end
 
     def refresh_notification(read)
       return unless @post && @post.user_id && @post.topic
 
-      usernames = reaction_usernames
-
-      return if usernames.blank?
+      remaining_data = remaining_reaction_data
+      return if remaining_data.blank?
 
       data = {
         topic_title: @post.topic.title,
-        username: usernames[0],
-        display_username: usernames[0],
-        username2: usernames[1],
-        count: usernames.length
+        count: remaining_data.length,
+        username: remaining_data[0][0],
+        display_username: remaining_data[0][0],
       }
+
+      if remaining_data[1]
+        data[:username2] = remaining_data[1][0]
+      end
+
+      if remaining_data.all? { |element| element[1] == HEART_ICON_NAME }
+        data[:reaction_icon] = HEART_ICON_NAME
+      end
 
       Notification.create(
         notification_type: Notification.types[:reaction],

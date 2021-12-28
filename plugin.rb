@@ -277,11 +277,18 @@ after_initialize do
         data = notification.data_hash
         if existing_notification_of_same_type
           same_type_data = existing_notification_of_same_type.data_hash
-          data.merge(
+
+          new_data = data.merge(
             previous_notification_id: existing_notification_of_same_type.id,
             username2: same_type_data[:display_username],
             count: (same_type_data[:count] || 1).to_i + 1
           )
+
+          if new_data[:reaction_icon] != same_type_data[:reaction_icon]
+            new_data.delete(:reaction_icon)
+          end
+
+          new_data
         else
           data
         end
