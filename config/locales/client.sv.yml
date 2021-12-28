@@ -32,6 +32,9 @@ sv:
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagerade på %{count} av dina inlägg"
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span>%{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username},%{username2} och %{count} annan</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} och %{count} andra</span> %{description}"
       titles:
         reaction: "ny reaktion"

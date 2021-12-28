@@ -29,6 +29,5 @@ de:
         remove: "Entferne diesen Like"
         cant_remove: "Du kannst diesen Like nicht entfernen"
     notifications:
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "neue Reaktion"

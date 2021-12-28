@@ -5,3 +5,15 @@
 # https://translate.discourse.org/
 
 fa_IR:
+  site_settings:
+    discourse_reactions_enabled: "فعال کردن افزونه discourse-reactions."
+  badges:
+    first_reaction:
+      name: اولین واکنش‌
+      description: به این نوشته واکنش نشان داد
+  reports:
+    reactions:
+      title: "واکنش‌‌ها"
+      description: "آخرین واکنش‌ها را فهرست کنید."
+      labels:
+        day: "روز"

@@ -5,3 +5,30 @@
 # https://translate.discourse.org/
 
 fa_IR:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "واکنش‌های دیسکورس"
+  js:
+    discourse_reactions:
+      reactions_title: "واکنش‌ها"
+      state_panel:
+        more_users: "و %{count} نفر دیگر..."
+      picker:
+        react_with: "واکنش به این نوشته با: %{reaction}"
+        cant_remove_reaction: "شما این واکنش را نمی‌توانید، حذف کنید"
+        remove_reaction: "حذف این %{reaction} واکنش"
+      main_reaction:
+        add: "پسندیدن این نوشته"
+        remove: "حذف واکنش پسندیدن"
+        cant_remove: "شما این پسندیدن را نمی‌توایند، حذف کنید"
+    notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}، %{username2} و %{count} نفر دیگر</span> %{description}"
+        other: "<span class='multi-user'>%{username}، %{username2} و %{count} نفر دیگر</span> %{description}"
+      titles:
+        reaction: "واکنش‌ جدید"
