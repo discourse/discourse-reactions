@@ -259,6 +259,25 @@ after_initialize do
       end
     ).set_precondition(precondition_blk: Proc.new { |data| data[:username2].blank? })
 
+    if consolidated_reactions.respond_to?(:before_consolidation_callbacks)
+      consolidated_reactions.before_consolidation_callbacks(
+        before_consolidation_blk: Proc.new do |notifications, data|
+          new_icon = data[:reaction_icon]
+
+          if new_icon
+            icons = notifications.pluck("data::json ->> 'reaction_icon'")
+
+            data.delete(:reaction_icon) if icons.any? { |i| i != new_icon }
+          end
+        end,
+        before_update_blk: Proc.new do |consolidated, updated_data, notification|
+          if consolidated.data_hash[:reaction_icon] != notification.data_hash[:reaction_icon]
+            updated_data.delete(:reaction_icon)
+          end
+        end
+      )
+    end
+
     reacted_by_two_users = Notifications::DeletePreviousNotifications.new(
       type: Notification.types[:reaction],
       previous_query_blk: Proc.new do |notifications, data|
