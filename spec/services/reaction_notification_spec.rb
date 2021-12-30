@@ -135,8 +135,8 @@ describe DiscourseReactions::ReactionNotification do
         expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(1)
         consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
 
-        expect(consolidated_notification.data_hash['consolidated']).to eq(true)
-        expect(consolidated_notification.data_hash['username']).to eq(user_2.username)
+        expect(consolidated_notification.data_hash[:consolidated]).to eq(true)
+        expect(consolidated_notification.data_hash[:username]).to eq(user_2.username)
       end
 
       it "doesn't update a consolidated notification when a different user reacts to a post" do
@@ -147,8 +147,43 @@ describe DiscourseReactions::ReactionNotification do
         expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
         consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
 
-        expect(consolidated_notification.data_hash['consolidated']).to be_nil
-        expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+        expect(consolidated_notification.data_hash[:consolidated]).to be_nil
+        expect(consolidated_notification.data_hash[:display_username]).to eq(user_3.username)
+      end
+
+      it 'keeps the reaction icon when consolidating multiple likes from the same user' do
+        like_reaction_p2 = Fabricate(:reaction, post: post_2, reaction_value: 'heart')
+
+        described_class.new(like_reaction, user_2).create
+        described_class.new(like_reaction_p2, user_2).create
+
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash[:consolidated]).to eq(true)
+        expect(consolidated_notification.data_hash[:reaction_icon]).to eq(like_reaction.reaction_value)
+      end
+
+      it "doesn't add the reaction icon when consolidating a non-like and a like notification" do
+        described_class.new(cry_p2, user_2).create
+        described_class.new(like_reaction, user_2).create
+
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash[:reaction_icon]).to be_nil
+      end
+
+      it 'removes the reaction icon when updating a like consolidated notification with a different reactions' do
+        like_reaction_p2 = Fabricate(:reaction, post: post_2, reaction_value: 'heart')
+        post_3 = Fabricate(:post, user: post_1.user)
+        cry_p3 = Fabricate(:reaction, post: post_3, reaction_value: 'cry')
+
+        described_class.new(like_reaction, user_2).create
+        described_class.new(like_reaction_p2, user_2).create
+        described_class.new(cry_p3, user_2).create
+
+        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
+
+        expect(consolidated_notification.data_hash[:reaction_icon]).to be_nil
       end
     end
 
@@ -168,8 +203,8 @@ describe DiscourseReactions::ReactionNotification do
 
         consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
 
-        expect(consolidated_notification.data_hash['username2']).to eq(user_2.username)
-        expect(consolidated_notification.data_hash['display_username']).to eq(user_3.username)
+        expect(consolidated_notification.data_hash[:username2]).to eq(user_2.username)
+        expect(consolidated_notification.data_hash[:display_username]).to eq(user_3.username)
       end
 
       it 'creates a new notification if the last one was created more than one day ago' do
