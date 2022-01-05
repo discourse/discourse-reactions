@@ -303,10 +303,6 @@ after_initialize do
             count: (same_type_data[:count] || 1).to_i + 1
           )
 
-          if new_data[:reaction_icon] != same_type_data[:reaction_icon]
-            new_data.delete(:reaction_icon)
-          end
-
           new_data
         else
           data

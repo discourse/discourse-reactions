@@ -216,17 +216,8 @@ describe DiscourseReactions::ReactionNotification do
         expect(Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count).to eq(2)
       end
 
-      it 'removes the reaction icon if the post received different reactions' do
+      it 'keeps the icon of the last notification' do
         described_class.new(thumbsup, user_3).create
-        described_class.new(like_reaction, user_2).create
-
-        consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
-
-        expect(consolidated_notification.data_hash[:reaction_icon]).to be_nil
-      end
-
-      it 'keeps the reaction icon if all the reactions were likes' do
-        described_class.new(like_reaction, user_3).create
         described_class.new(like_reaction, user_2).create
 
         consolidated_notification = Notification.where(notification_type: Notification.types[:reaction]).last
