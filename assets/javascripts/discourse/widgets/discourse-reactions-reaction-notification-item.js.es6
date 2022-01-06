@@ -68,8 +68,9 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
     if (topicId) {
       return postUrl(this.attrs.slug, topicId, this.attrs.post_number);
     } else {
+      const data = this.attrs.data;
       return userPath(
-        `${this.currentUser.username}/notifications/reactions-received`
+        `${this.currentUser.username}/notifications/reactions-received?acting_username=${data.display_username}`
       );
     }
   },

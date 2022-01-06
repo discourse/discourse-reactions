@@ -208,6 +208,21 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_2.id)
     end
+
+    it 'filters by acting username' do
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json", params: {
+        username: user_1.username, acting_username: user_4.username
+      }
+      parsed = response.parsed_body
+
+      expect(parsed.size).to eq(1)
+      expect(parsed[0]['user']['id']).to eq(user_4.id)
+      expect(parsed[0]['post_id']).to eq(post_2.id)
+      expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
+      expect(parsed[0]['reaction']['id']).to eq(reaction_3.id)
+    end
   end
 
   context '#post_reactions_users' do

@@ -21,7 +21,10 @@ export default Controller.extend({
       ? reactionUsers[reactionUsers.length - 1].get("id")
       : null;
 
-    const opts = { beforeReactionUserId };
+    const opts = {
+      beforeReactionUserId,
+      actingUsername: this.actingUsername,
+    };
 
     CustomReaction.findReactions(this.reactionsUrl, this.username, opts)
       .then((newReactionUsers) => {

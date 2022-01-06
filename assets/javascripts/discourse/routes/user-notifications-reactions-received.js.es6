@@ -2,10 +2,15 @@ import DiscourseRoute from "discourse/routes/discourse";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default DiscourseRoute.extend({
-  model() {
+  queryParams: {
+    acting_username: { refreshModel: true },
+  },
+
+  model(params) {
     return CustomReaction.findReactions(
       "reactions-received",
-      this.modelFor("user").get("username")
+      this.modelFor("user").get("username"),
+      { actingUsername: params.acting_username }
     );
   },
 
@@ -16,6 +21,7 @@ export default DiscourseRoute.extend({
       canLoadMore: !loadedAll,
       reactionsUrl: "reactions-received",
       username: this.modelFor("user").get("username"),
+      actingUsername: controller.acting_username,
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },

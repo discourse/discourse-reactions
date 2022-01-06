@@ -30,6 +30,10 @@ CustomReaction.reopenClass({
       data.before_reaction_user_id = opts.beforeReactionUserId;
     }
 
+    if (opts.actingUsername) {
+      data.acting_username = opts.actingUsername;
+    }
+
     return ajax(`/discourse-reactions/posts/${url}.json`, {
       data,
     }).then((reactions) => {
