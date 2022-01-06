@@ -71,6 +71,12 @@ module DiscourseReactions
           .where('discourse_reactions_reaction_users.id < ?', params[:before_post_id].to_i)
       end
 
+      if params[:acting_username]
+        reaction_users = reaction_users
+          .joins(:user)
+          .where(users: { username: params[:acting_username] })
+      end
+
       reaction_users = reaction_users
         .order(created_at: :desc)
         .limit(20)
