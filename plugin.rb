@@ -297,13 +297,11 @@ after_initialize do
         if existing_notification_of_same_type
           same_type_data = existing_notification_of_same_type.data_hash
 
-          new_data = data.merge(
+          data.merge(
             previous_notification_id: existing_notification_of_same_type.id,
             username2: same_type_data[:display_username],
             count: (same_type_data[:count] || 1).to_i + 1
           )
-
-          new_data
         else
           data
         end
