@@ -11,6 +11,7 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:user_3) { Fabricate(:user) }
   fab!(:user_4) { Fabricate(:user) }
   fab!(:user_5) { Fabricate(:user) }
+  fab!(:user_6) { Fabricate(:user) }
   fab!(:post_2) { Fabricate(:post, user: user_1) }
   fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
   fab!(:reaction_2) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
@@ -223,6 +224,27 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_3.id)
     end
+
+    it 'include likes' do
+      sign_in(user_6)
+
+      put "/discourse-reactions/posts/#{post_2.id}/custom-reactions/heart/toggle.json"
+
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json", params: {
+        username: user_1.username, acting_username: user_6.username
+      }
+      parsed = response.parsed_body
+
+      expect(parsed.size).to eq(1)
+      expect(parsed[0]['user']['id']).to eq(user_6.id)
+      expect(parsed[0]['post_id']).to eq(post_2.id)
+      expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
+
+      used_reaction = DiscourseReactions::Reaction.find_by(id: parsed[0]['reaction']['id'])
+      expect(used_reaction.reaction_value).to eq(SiteSetting.discourse_reactions_like_icon)
+    end
   end
 
   context '#post_reactions_users' do
@@ -258,18 +280,30 @@ describe DiscourseReactions::CustomReactionsController do
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
       parsed = response.parsed_body
       like_count = parsed["reaction_users"][0]["count"].to_i
-      expect(parsed["reaction_users"][0]["count"]).to eq(post_2.like_count)
+      expect(like_count).to eq(post_2.like_count)
 
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=laughing"
       parsed = response.parsed_body
       reaction_count = parsed["reaction_users"][0]["count"].to_i
-      expect(parsed["reaction_users"][0]["count"]).to eq(reaction_1.reaction_users_count)
+      expect(reaction_count).to eq(reaction_1.reaction_users_count)
 
       SiteSetting.discourse_reactions_reaction_for_like = 'laughing'
 
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
       parsed = response.parsed_body
       expect(parsed["reaction_users"][0]["count"]).to eq(like_count + reaction_count)
+    end
+
+    it "don't duplicate likes when using the default like icon" do
+      sign_in(user_6)
+
+      put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
+
+      get "/discourse-reactions/posts/#{post_1.id}/reactions-users.json"
+      parsed = response.parsed_body
+      like_count = parsed["reaction_users"][0]["count"].to_i
+
+      expect(like_count).to eq(1)
     end
   end
 
