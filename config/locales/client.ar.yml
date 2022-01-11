@@ -5,3 +5,44 @@
 # https://translate.discourse.org/
 
 ar:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "تفاعلات Discourse"
+  js:
+    discourse_reactions:
+      reactions_title: "التفاعلات"
+      state_panel:
+        more_users: "و%{count} أخرى..."
+      reaction:
+        too_many_request:
+          zero: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال %{count} ثانية."
+          one: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال ثانية واحدة (%{count})."
+          two: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال ثانيتين (%{count})."
+          few: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال %{count} ثوانٍ."
+          many: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال %{count} ثانيةً."
+          other: "لقد كنت تتفاعل بسرعة كبيرة جدًا، حاول مرة أخرى خلال %{count} ثانية."
+        forbidden: "تم إنشاء هذا التفاعل منذ فترة طويلة جدًا، ولم يعُد من الممكن تعديله أو حذفه."
+      picker:
+        react_with: "تفاعل مع هذا المنشور باستخدام: %{reaction}"
+        cant_remove_reaction: "لا يمكنك إزالة هذا التفاعل"
+        remove_reaction: "إزالة هذا التفاعل %{reaction}"
+      main_reaction:
+        add: "تسجيل الإعجاب بهذا المنشور"
+        remove: "إزالة هذا الإعجاب"
+        cant_remove: "لا يمكنك إزالة هذا الإعجاب"
+    notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"
+      reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
+      reaction_many:
+        zero: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
+        one: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخر</span> %{description}"
+        two: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرَين</span> %{description}"
+        few: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
+        many: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
+        other: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
+      titles:
+        reaction: "تفاعل جديد"

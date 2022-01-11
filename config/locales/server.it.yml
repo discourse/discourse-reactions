@@ -9,12 +9,14 @@ it:
     discourse_reactions_like_icon: "Definisce l'icona usata per il pulsante di reazione principale."
     discourse_reactions_reaction_for_like: "Definisce la reazione associata all'azione \"Mi piace\"."
     discourse_reactions_enabled: "Abilita il plugin discourse-reactions."
+    discourse_reactions_enabled_reactions: "Definisce un elenco di reazioni abilitate, tutti gli emoji sono consentiti qui."
+    discourse_reactions_desaturated_reaction_panel: "Riduce il disturbo visivo delle reazioni mostrandole desaturate fino al passaggio del mouse."
   badges:
     first_reaction:
-      name: Prima Reazione
-      description: Reagito al post
+      name: Prima reazione
+      description: Ha reagito al messaggio
       long_description: |
-        Questo distintivo è assegnato la prima volta che reagisci a un messaggio. Reagire ai messaggi è un ottimo modo per far sapere ai tuoi colleghi membri della comunità che quello che hanno pubblicato era interessante, utile, fico o divertente. Condividi la tua reazione!
+        Questo distintivo è assegnato la prima volta che reagisci a un messaggio. Reagire ai messaggi è un ottimo modo per far sapere agli altri membri della tua comunità che quello che hanno pubblicato era interessante, utile, o divertente. Condividi la tua reazione!
   reports:
     reactions:
       title: "Reazioni"

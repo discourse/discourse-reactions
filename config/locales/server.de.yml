@@ -7,9 +7,10 @@
 de:
   site_settings:
     discourse_reactions_like_icon: "Definiert das Symbol, das für die Hauptreaktionsschaltfläche verwendet wird."
-    discourse_reactions_reaction_for_like: "Definiert die Reaktion, die mit der \"Gefällt mir\"-Aktion verbunden ist."
-    discourse_reactions_enabled: "Aktiviere das discourse-reactions Plugin"
-    discourse_reactions_enabled_reactions: "Definiert die Liste der verfügbaren Reaktionen, es ist jedes Emoji erlaubt."
+    discourse_reactions_reaction_for_like: "Definiert die Reaktion, die mit der „Gefällt mir“-Aktion verbunden ist."
+    discourse_reactions_enabled: "Aktiviere das discourse-reactions-Plug-in"
+    discourse_reactions_enabled_reactions: "Definiert eine Liste von aktivierten Reaktionen. Jedes Emoji ist hier erlaubt."
+    discourse_reactions_desaturated_reaction_panel: "Stellt Reaktionen weniger ablenkend in Graustufen dar, bis sie im Fokus des Zeigers stehen."
   badges:
     first_reaction:
       name: Erste Reaktion

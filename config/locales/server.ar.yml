@@ -5,3 +5,21 @@
 # https://translate.discourse.org/
 
 ar:
+  site_settings:
+    discourse_reactions_like_icon: "يحدد الأيقونة المستخدمة لزر التفاعل الرئيسي."
+    discourse_reactions_reaction_for_like: "يحدد التفاعل المرتبط بإجراء تسجيل الإعجاب."
+    discourse_reactions_enabled: "يفعِّل المكوِّن الإضافي discourse-reactions"
+    discourse_reactions_enabled_reactions: "يحدد قائمة بالتفاعلات المفعَّلة، ويُسمَح بأي رمز تعبيري هنا."
+    discourse_reactions_desaturated_reaction_panel: "يقلل التشويش البصري للتفاعلات عن طريق عرضها بألوان غير مشبَّعة حتى التمرير فوقها."
+  badges:
+    first_reaction:
+      name: أول تفاعل
+      description: تفاعل مع المنشور
+      long_description: |
+        يتم منح هذه الشارة في المرة الأولى التي تتفاعل فيها مع منشور. يُعد التفاعل مع المنشورات طريقة رائعة لإخبار زملائك في المجتمع بأن ما نشروه كان مثيرًا للاهتمام أو مفيدًا أو رائعًا أو مرحًا. شارك تفاعلك!
+  reports:
+    reactions:
+      title: "التفاعلات"
+      description: "يعرض قائمة بأحدث التفاعلات."
+      labels:
+        day: "اليوم"

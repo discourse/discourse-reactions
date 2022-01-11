@@ -6,20 +6,20 @@
 
 fr:
   site_settings:
-    discourse_reactions_like_icon: "Définir l'icône utilisée pour le bouton principal de réaction."
-    discourse_reactions_reaction_for_like: "Définir la réaction associée à l'action « j'aime »."
-    discourse_reactions_enabled: "Activer le plugin discourse-reactions."
-    discourse_reactions_enabled_reactions: "Définir une liste de réactions activées, tout émoji est autorisé ici."
-    discourse_reactions_desaturated_reaction_panel: "Désaturer les couleurs des émojis de réaction lorsque l'utilisateur ne les survole pas du doigt ou de la souris. Permet de réduire le bruit visuel."
+    discourse_reactions_like_icon: "Définit l'icône utilisée pour le bouton de réaction principal."
+    discourse_reactions_reaction_for_like: "Définit la réaction associée à l'action « J'aime »."
+    discourse_reactions_enabled: "Activer l'extension discourse-reactions."
+    discourse_reactions_enabled_reactions: "Définit une liste de réactions activées, n'importe quel émoji est autorisé ici."
+    discourse_reactions_desaturated_reaction_panel: "Réduit le bruit visuel des réactions en les affichant désaturées lorsqu'elles ne sont pas survolées."
   badges:
     first_reaction:
       name: Première réaction
       description: A réagi au message
       long_description: |
-        Ce badge est décerné lorsque vous réagissez à un message pour la première fois. Les réactions sont un bon moyen de dire aux autres membres de la communauté que leur message était intéressant, utile, sympa, ou drôle !
+        Ce badge est accordé la première fois que vous réagissez à un message. Les réactions sont un excellent moyen de faire savoir aux autres membres de la communauté que leurs messages sont intéressants, utiles, cools ou amusants. Partagez vos réactions !
   reports:
     reactions:
       title: "Réactions"
-      description: "Total des différentes réactions utilisées."
+      description: "Répertorie les réactions les plus récentes."
       labels:
-        day: "Date"
+        day: "Jour"

@@ -9,12 +9,17 @@ it:
     admin:
       site_settings:
         categories:
-          discourse_reactions: "Discourse Reactions"
+          discourse_reactions: "Reazioni Discourse"
   js:
     discourse_reactions:
       reactions_title: "Reazioni"
       state_panel:
         more_users: "e altre %{count}..."
+      reaction:
+        too_many_request:
+          one: "Stai reagendo troppo velocemente, riprova tra %{count} secondo."
+          other: "Stai reagendo troppo velocemente, riprova tra %{count} secondi."
+        forbidden: "Quella reazione è stata creata troppo tempo fa. Non può più essere modificata né rimossa."
       picker:
         react_with: "Reagisci a questo messaggio con: %{reaction}"
         cant_remove_reaction: "Non puoi rimuovere questa reazione"
@@ -24,5 +29,12 @@ it:
         remove: "Rimuovi questo \"Mi piace\""
         cant_remove: "Non puoi rimuovere questo \"Mi piace\""
     notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> ha reagito a %{count} dei tuoi messaggi"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} e %{count} altro</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} e altri %{count}</span> %{description}"
       titles:
         reaction: "nuova reazione"

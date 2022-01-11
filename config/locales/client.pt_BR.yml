@@ -14,7 +14,7 @@ pt_BR:
     discourse_reactions:
       reactions_title: "Reações"
       state_panel:
-        more_users: "e %{count} mais..."
+        more_users: "e mais %{count}..."
       reaction:
         too_many_request:
           one: "Você está reagindo um pouco rápido demais, tente novamente em %{count} segundo."
@@ -29,5 +29,12 @@ pt_BR:
         remove: "Remova essa curtida"
         cant_remove: "Você não pode remover esta curtida"
     notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagiu a %{count} de suas postagens"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} e %{count} outro</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} e %{count} outros</span> %{description}"
       titles:
         reaction: "nova reação"
