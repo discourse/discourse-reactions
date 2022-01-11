@@ -9,25 +9,32 @@ de:
     admin:
       site_settings:
         categories:
-          discourse_reactions: "Discourse Reaktionen"
+          discourse_reactions: "Discourse-Reaktionen"
   js:
     discourse_reactions:
       reactions_title: "Reaktionen"
       state_panel:
-        more_users: "und %{count} weitere..."
+        more_users: "und %{count} weitere …"
       reaction:
         too_many_request:
           one: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunde erneut."
           other: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunden erneut."
         forbidden: "Diese Reaktion wurde vor zu langer Zeit erstellt. Sie kann nicht mehr bearbeitet oder gelöscht werden."
       picker:
-        react_with: "Reagiere auf diesem Beitrag mit: %{reaction}"
+        react_with: "Reagiere auf diesen Beitrag mit: %{reaction}"
         cant_remove_reaction: "Du kannst diese Reaktion nicht entfernen"
         remove_reaction: "Entferne diese %{reaction} Reaktion"
       main_reaction:
-        add: "Dieser Beitrag gefällt mir"
-        remove: "Entferne diesen Like"
-        cant_remove: "Du kannst diesen Like nicht entfernen"
+        add: "Diesem Beitrag ein „Gefällt mir“ geben"
+        remove: "Entferne dieses „Gefällt mir“"
+        cant_remove: "Du kannst dieses „Gefällt mir“ nicht entfernen"
     notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> hat auf %{count} deiner Beiträge reagiert"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} und %{count} andere Person</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} und %{count} andere Personen</span> %{description}"
       titles:
         reaction: "neue Reaktion"

@@ -5,7 +5,21 @@
 # https://translate.discourse.org/
 
 ja:
+  site_settings:
+    discourse_reactions_like_icon: "主なリアクションボタンに使用されるアイコンを定義します。"
+    discourse_reactions_reaction_for_like: "「いいね！」アクションに関連付けられるリアクションを定義します。"
+    discourse_reactions_enabled: "discourse-reactions プラグインを有効にします。"
+    discourse_reactions_enabled_reactions: "有効なリアクションのリストを定義します。ここではすべての絵文字を使用できます。"
+    discourse_reactions_desaturated_reaction_panel: "ホバーされるまで彩度を下げて表示することで、リアクションの視覚的な煩わしさを低減します。"
   badges:
     first_reaction:
+      name: 最初のリアクション
+      description: 投稿に反応しました
       long_description: |
-        このバッジは、初めて投稿にリアクションしたときに付与されます。投稿へのリアクションは、コミュニティメンバーが投稿した内容が面白い、役に立つ、かっこいい、楽しいなどの感想を仲間に伝えるのに最適な方法です。あなたのリアクションを共有しましょう～！
+        このバッジは、初めて投稿に反応したときに付与されます。投稿へのリアクションは、コミュニティメンバーが投稿した内容が面白い、役に立つ、かっこいい、楽しいなどの感想を仲間に伝えるのに最適な方法です。あなたのリアクションを共有しましょう！
+  reports:
+    reactions:
+      title: "リアクション"
+      description: "直近のリアクションをリストします。"
+      labels:
+        day: "日"

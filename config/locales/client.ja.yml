@@ -5,3 +5,34 @@
 # https://translate.discourse.org/
 
 ja:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse リアクション"
+  js:
+    discourse_reactions:
+      reactions_title: "リアクション"
+      state_panel:
+        more_users: "および他 %{count} 人..."
+      reaction:
+        too_many_request:
+          other: "反応が少し速すぎます。%{count} 秒してからお試しください。"
+        forbidden: "そのリアクションはかなり前に作成されました。変更または削除できなくなっています。"
+      picker:
+        react_with: "この投稿へのリアクション: %{reaction}"
+        cant_remove_reaction: "このリアクションを削除できません"
+        remove_reaction: "この %{reaction} リアクションを削除する"
+      main_reaction:
+        add: "この投稿に「いいね！」する"
+        remove: "この「いいね！」を削除する"
+        cant_remove: "この「いいね！」を削除できません"
+    notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> があなたの %{count} 件の投稿に反応しました"
+      reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
+      reaction_many:
+        other: "<span class='multi-user'>%{username}、%{username2}、および他 %{count} 人</span> %{description}"
+      titles:
+        reaction: "新しいリアクション"
