@@ -2,8 +2,6 @@
 
 module DiscourseReactions
   class ReactionManager
-    DEFAULT_REACTION_VALUE = 'heart'
-
     def initialize(reaction_value:, user:, guardian:, post:)
       @reaction_value = reaction_value
       @user = user
@@ -27,7 +25,7 @@ module DiscourseReactions
     private
 
     def toggle_like
-      reaction_user ? remove_reaction : add_reaction
+      remove_reaction if reaction_user
       @like ? remove_shadow_like : add_shadow_like
     end
 
@@ -79,10 +77,17 @@ module DiscourseReactions
     def add_shadow_like
       silent = true
       PostActionCreator.like(@user, @post, silent)
+      add_reaction_notification
     end
 
     def remove_shadow_like
       PostActionDestroyer.new(@user, @post, post_action_like_type).perform
+      delete_like_reaction
+      remove_reaction_notification
+    end
+
+    def delete_like_reaction
+      DiscourseReactions::Reaction.where("reaction_value = '#{DiscourseReactions::Reaction.main_reaction_id}' AND post_id = ?", @post.id).destroy_all
     end
 
     def add_reaction
@@ -92,7 +97,7 @@ module DiscourseReactions
     end
 
     def remove_reaction
-      @reaction_user&.destroy
+      @reaction_user.destroy
       remove_reaction_notification
       delete_reaction
     end

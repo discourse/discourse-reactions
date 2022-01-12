@@ -96,17 +96,14 @@ module DiscourseReactions
       likes = post.post_actions.where('deleted_at IS NULL AND post_action_type_id = ?', PostActionType.types[:like]) if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
 
       if likes.present?
+        main_reaction = DiscourseReactions::Reaction.find_by(reaction_value: DiscourseReactions::Reaction.main_reaction_id, post_id: post.id)
         count = likes.length
         users = format_likes_users(likes)
 
-        if DiscourseReactions::Reaction.main_reaction_id != DiscourseReactions::ReactionManager::DEFAULT_REACTION_VALUE
-          main_reaction = DiscourseReactions::Reaction.find_by(reaction_value: DiscourseReactions::Reaction.main_reaction_id, post_id: post.id)
-
-          if main_reaction && main_reaction[:reaction_users_count]
-            (users << get_users(main_reaction)).flatten!
-            users.sort_by! { |user| user[:created_at] }
-            count += main_reaction.reaction_users_count.to_i
-          end
+        if main_reaction && main_reaction[:reaction_users_count]
+          (users << get_users(main_reaction)).flatten!
+          users.sort_by! { |user| user[:created_at] }
+          count += main_reaction.reaction_users_count.to_i
         end
 
         reaction_users << {

@@ -2,6 +2,8 @@
 
 module DiscourseReactions
   class ReactionNotification
+    HEART_ICON_NAME = 'heart'
+
     def initialize(reaction, user)
       @reaction = reaction
       @post = reaction.post
@@ -15,7 +17,7 @@ module DiscourseReactions
 
       opts = { user_id: @user.id, display_username: @user.username }
 
-      if @reaction.reaction_value == DiscourseReactions::ReactionManager::DEFAULT_REACTION_VALUE
+      if @reaction.reaction_value == HEART_ICON_NAME
         opts[:custom_data] = { reaction_icon: @reaction.reaction_value }
       end
 
@@ -64,8 +66,8 @@ module DiscourseReactions
         data[:username2] = remaining_data[1][0]
       end
 
-      if remaining_data.all? { |element| element[1] == DiscourseReactions::ReactionManager::DEFAULT_REACTION_VALUE }
-        data[:reaction_icon] = DiscourseReactions::ReactionManager::DEFAULT_REACTION_VALUE
+      if remaining_data.all? { |element| element[1] == HEART_ICON_NAME }
+        data[:reaction_icon] = HEART_ICON_NAME
       end
 
       Notification.create(
