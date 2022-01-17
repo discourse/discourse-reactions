@@ -4,13 +4,17 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 export default DiscourseRoute.extend({
   queryParams: {
     acting_username: { refreshModel: true },
+    include_likes: { refreshModel: true },
   },
 
   model(params) {
     return CustomReaction.findReactions(
       "reactions-received",
       this.modelFor("user").get("username"),
-      { actingUsername: params.acting_username }
+      {
+        actingUsername: params.acting_username,
+        includeLikes: params.include_likes,
+      }
     );
   },
 
@@ -22,6 +26,7 @@ export default DiscourseRoute.extend({
       reactionsUrl: "reactions-received",
       username: this.modelFor("user").get("username"),
       actingUsername: controller.acting_username,
+      includeLikes: controller.include_likes,
     });
     this.controllerFor("application").set("showFooter", loadedAll);
   },

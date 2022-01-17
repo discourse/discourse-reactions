@@ -30,6 +30,14 @@ CustomReaction.reopenClass({
       data.before_reaction_user_id = opts.beforeReactionUserId;
     }
 
+    if (opts.beforeLikeId) {
+      data.before_like_id = opts.beforeLikeId;
+    }
+
+    if (opts.includeLikes) {
+      data.include_likes = opts.includeLikes;
+    }
+
     if (opts.actingUsername) {
       data.acting_username = opts.actingUsername;
     }
