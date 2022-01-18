@@ -69,8 +69,15 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
       return postUrl(this.attrs.slug, topicId, this.attrs.post_number);
     } else {
       const data = this.attrs.data;
+      let activityName = "reactions-received";
+
+      // All collapsed notifications were "likes"
+      if (data.reaction_icon) {
+        activityName = "likes-received";
+      }
+
       return userPath(
-        `${this.currentUser.username}/notifications/reactions-received?acting_username=${data.display_username}`
+        `${this.currentUser.username}/notifications/${activityName}?acting_username=${data.display_username}&include_likes=true`
       );
     }
   },

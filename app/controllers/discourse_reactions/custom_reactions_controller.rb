@@ -80,8 +80,27 @@ module DiscourseReactions
       reaction_users = reaction_users
         .order(created_at: :desc)
         .limit(20)
+        .to_a
 
-      render_serialized reaction_users.to_a, UserReactionSerializer
+      if params[:include_likes]
+        likes = PostAction
+          .where(post_id: post_ids, deleted_at: nil, post_action_type_id: PostActionType.types[:like])
+          .order(created_at: :desc)
+          .limit(20)
+
+        if params[:before_like_id]
+          likes = likes.where('post_actions.id < ?', params[:before_like_id].to_i)
+        end
+
+        if params[:acting_username]
+          likes = likes.joins(:user).where(users: { username: params[:acting_username] })
+        end
+
+        reaction_users = reaction_users.concat(translate_to_reactions(likes))
+        reaction_users = reaction_users.sort { |a, b| b.created_at <=> a.created_at }
+      end
+
+      render_serialized reaction_users.first(20), UserReactionSerializer
     end
 
     def post_reactions_users
@@ -230,6 +249,25 @@ module DiscourseReactions
       end
 
       reaction_users
+    end
+
+    def translate_to_reactions(likes)
+      likes.map do |like|
+        DiscourseReactions::ReactionUser.new(
+          id: like.id,
+          post: like.post,
+          user: like.user,
+          created_at: like.created_at,
+          reaction: DiscourseReactions::Reaction.new(
+            id: like.id,
+            reaction_type: 'emoji',
+            post_id: like.post_id,
+            reaction_value: DiscourseReactions::Reaction.main_reaction_id,
+            created_at: like.created_at,
+            reaction_users_count: 1
+          )
+        )
+      end
     end
   end
 end

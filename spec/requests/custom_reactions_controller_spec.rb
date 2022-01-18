@@ -223,6 +223,57 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
       expect(parsed[0]['reaction']['id']).to eq(reaction_3.id)
     end
+
+    it 'include likes' do
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json", params: {
+        username: user_1.username, include_likes: true, acting_username: user_5.username
+      }
+
+      parsed = response.parsed_body
+
+      expect(parsed.size).to eq(1)
+      expect(parsed[0]['user']['id']).to eq(user_5.id)
+      expect(parsed[0]['post_id']).to eq(post_2.id)
+      expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
+      expect(parsed[0]['reaction']['id']).to eq(like.id)
+    end
+
+    it 'also filter likes by id when including likes' do
+      latest_like = Fabricate(:post_action, post: post_1, user: user_5, post_action_type_id: PostActionType.types[:like])
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json", params: {
+        username: user_1.username, include_likes: true, acting_username: user_5.username,
+        before_like_id: latest_like.id
+      }
+
+      parsed = response.parsed_body
+
+      expect(parsed.size).to eq(1)
+      expect(parsed[0]['user']['id']).to eq(user_5.id)
+      expect(parsed[0]['post_id']).to eq(post_2.id)
+      expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
+      expect(parsed[0]['reaction']['id']).to eq(like.id)
+    end
+
+    it 'filters likes by username' do
+      latest_like = Fabricate(:post_action, post: post_1, user: user_4, post_action_type_id: PostActionType.types[:like])
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json", params: {
+        username: user_1.username, include_likes: true, acting_username: user_5.username
+      }
+
+      parsed = response.parsed_body
+
+      expect(parsed.size).to eq(1)
+      expect(parsed[0]['user']['id']).to eq(user_5.id)
+      expect(parsed[0]['post_id']).to eq(post_2.id)
+      expect(parsed[0]['post']['user']['id']).to eq(user_1.id)
+      expect(parsed[0]['reaction']['id']).to eq(like.id)
+    end
   end
 
   context '#post_reactions_users' do
