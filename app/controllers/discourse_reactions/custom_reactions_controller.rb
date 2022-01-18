@@ -66,9 +66,16 @@ module DiscourseReactions
         .where(post_id: post_ids)
         .where('discourse_reactions_reactions.reaction_users_count IS NOT NULL')
 
-      if params[:before_post_id]
+      # Guarantee backwards compatibility if someone was calling this endpoint with the old param.
+      # TODO(roman): Remove after the 2.9 release.
+      before_reaction_id = params[:before_reaction_user_id]
+      if before_reaction_id.blank? && params[:before_post_id]
+        before_reaction_id = params[:before_post_id]
+      end
+
+      if before_reaction_id
         reaction_users = reaction_users
-          .where('discourse_reactions_reaction_users.id < ?', params[:before_post_id].to_i)
+          .where('discourse_reactions_reaction_users.id < ?', before_reaction_id.to_i)
       end
 
       if params[:acting_username]
