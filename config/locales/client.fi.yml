@@ -5,3 +5,36 @@
 # https://translate.discourse.org/
 
 fi:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Reactions"
+  js:
+    discourse_reactions:
+      reactions_title: "Reaktiot"
+      state_panel:
+        more_users: "ja %{count} muuta..."
+      reaction:
+        too_many_request:
+          one: "Olet reagoinut hieman liian nopeasti, yritä uudelleen %{count} sekunnin kuluttua."
+          other: "Olet reagoinut hieman liian nopeasti, yritä uudelleen %{count} sekunnin kuluttua."
+        forbidden: "Tämä reaktio luotiin liian kauan sitten. Sitä ei voi enää muokata tai poistaa."
+      picker:
+        react_with: "Reagoi tähän viestiin reaktiolla: %{reaction}"
+        cant_remove_reaction: "Et voi poistaa tätä reaktiota"
+        remove_reaction: "Poista tämä reaktio: %{reaction}"
+      main_reaction:
+        add: "Tykkää viestistä"
+        remove: "Poista tämä tykkäys"
+        cant_remove: "Et voi poistaa tätä tykkäystä"
+    notifications:
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagoi %{count} viesteistäsi"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} ja %{count} muu</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} ja %{count} muuta</span> %{description}"
+      titles:
+        reaction: "uusi reaktio"
