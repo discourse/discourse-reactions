@@ -20,10 +20,10 @@ class RenameThumbsupReactions < ActiveRecord::Migration[6.1]
     end
 
     has_both_reactions = DB.query_single(<<~SQL, alias: alias_name, new_value: original_name)
-      SELECT post_id 
-      FROM discourse_reactions_reactions 
-      WHERE reaction_value IN (:alias, :new_value) 
-      GROUP BY post_id 
+      SELECT post_id
+      FROM discourse_reactions_reactions
+      WHERE reaction_value IN (:alias, :new_value)
+      GROUP BY post_id
       HAVING COUNT(post_id) > 1
     SQL
 
