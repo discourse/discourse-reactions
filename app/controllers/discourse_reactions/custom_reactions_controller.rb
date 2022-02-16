@@ -32,8 +32,9 @@ module DiscourseReactions
       raise Discourse::NotFound unless guardian.can_see_profile?(user)
 
       reaction_users = DiscourseReactions::ReactionUser
-        .joins(:reaction, post: :topic)
-        .joins("LEFT JOIN categories ON categories.id = topics.category_id")
+        .joins(:reaction, :post)
+        .joins("INNER JOIN topics t ON t.id = posts.topic_id")
+        .joins("LEFT JOIN categories c ON c.id = t.category_id")
         .includes(:user, :post, :reaction)
         .where(user_id: user.id)
         .where('discourse_reactions_reactions.reaction_users_count IS NOT NULL')
@@ -224,38 +225,10 @@ module DiscourseReactions
     end
 
     def secure_reaction_users!(reaction_users)
-      if !guardian.can_see_private_messages?(current_user.id) || !guardian.user
-        reaction_users = reaction_users.where("topics.archetype <> :private_message", private_message: archetype::private_message)
-      else
-        unless guardian.is_admin?
-          sql = <<~SQL
-            topics.archetype <> :private_message OR
-            EXISTS (
-              SELECT 1 FROM topic_allowed_users tu WHERE tu.topic_id = topics.id AND tu.user_id = :current_user_id
-            ) OR
-            EXISTS (
-              SELECT 1 FROM topic_allowed_groups tg WHERE tg.topic_id = topics.id AND tg.group_id IN (
-                SELECT group_id FROM group_users gu WHERE gu.user_id = :current_user_id
-              )
-            )
-          SQL
-
-          reaction_users = reaction_users.where(sql, private_message: Archetype::private_message, current_user_id: guardian.user.id)
-        end
-      end
-
-      unless guardian.is_admin?
-        allowed = guardian.secure_category_ids
-        if allowed.present?
-          reaction_users = reaction_users.where("(categories.read_restricted IS NULL OR
-                         NOT categories.read_restricted OR
-                        (categories.read_restricted and categories.id in (:categories)) )", categories: guardian.secure_category_ids)
-        else
-          reaction_users = reaction_users.where("(categories.read_restricted IS NULL OR NOT categories.read_restricted)")
-        end
-      end
-
-      reaction_users
+      builder = DB.build("/*where*/")
+      UserAction.filter_private_messages(builder, current_user.id, guardian)
+      UserAction.filter_categories(builder, guardian)
+      reaction_users.where(builder.to_sql.delete_prefix("/*where*/").delete_prefix("WHERE"))
     end
 
     def translate_to_reactions(likes)
