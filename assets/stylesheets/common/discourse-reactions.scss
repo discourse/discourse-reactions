@@ -472,8 +472,8 @@ nav.post-controls .actions button {
 }
 
 nav.post-controls .actions .reaction-button:focus {
-  background: transparent;
-  color: var(--primary-low-mid);
+  background: var(--primary-low);
+  color: var(--primary);
 }
 
 nav.post-controls .actions .reaction-button {
