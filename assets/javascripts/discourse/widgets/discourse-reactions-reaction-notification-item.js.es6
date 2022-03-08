@@ -22,13 +22,6 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
       icon = iconNode(`notification.${notificationName}`);
     }
 
-    // TODO(roman): Remove after the 2.8 release.
-    icon.properties.attributes["aria-label"] = I18n.t(
-      `notifications.titles.${notificationName}`
-    );
-    icon.properties.attributes["aria-hidden"] = false;
-    icon.properties.attributes["role"] = "img";
-
     return icon;
   },
 
