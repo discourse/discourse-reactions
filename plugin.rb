@@ -230,94 +230,88 @@ after_initialize do
     end
   end
 
-  # TODO(Roman): Remove #respond_to? after the 2.8 release.
-  if respond_to?(:register_notification_consolidation_plan)
-    field_key = 'display_username'
-
-    consolidated_reactions = Notifications::ConsolidateNotifications.new(
-      from: Notification.types[:reaction],
-      to: Notification.types[:reaction],
-      threshold: -> { SiteSetting.notification_consolidation_threshold },
-      consolidation_window: SiteSetting.likes_notification_consolidation_window_mins.minutes,
-      unconsolidated_query_blk: Proc.new do |notifications, data|
-        notifications
-          .where("data::json ->> 'username2' IS NULL AND data::json ->> 'consolidated' IS NULL")
-          .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
-      end,
-      consolidated_query_blk: Proc.new do |notifications, data|
-        notifications
-          .where("(data::json ->> 'consolidated')::bool")
-          .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
-      end
-    ).set_mutations(
-      set_data_blk: Proc.new do |notification|
-        data = notification.data_hash
-        data.merge(
-          username: data[:display_username],
-          consolidated: true,
-        )
-      end
-    ).set_precondition(precondition_blk: Proc.new { |data| data[:username2].blank? })
-
-    if consolidated_reactions.respond_to?(:before_consolidation_callbacks)
-      consolidated_reactions.before_consolidation_callbacks(
-        before_consolidation_blk: Proc.new do |notifications, data|
-          new_icon = data[:reaction_icon]
-
-          if new_icon
-            icons = notifications.pluck("data::json ->> 'reaction_icon'")
-
-            data.delete(:reaction_icon) if icons.any? { |i| i != new_icon }
-          end
-        end,
-        before_update_blk: Proc.new do |consolidated, updated_data, notification|
-          if consolidated.data_hash[:reaction_icon] != notification.data_hash[:reaction_icon]
-            updated_data.delete(:reaction_icon)
-          end
-        end
+  field_key = 'display_username'
+  consolidated_reactions = Notifications::ConsolidateNotifications.new(
+    from: Notification.types[:reaction],
+    to: Notification.types[:reaction],
+    threshold: -> { SiteSetting.notification_consolidation_threshold },
+    consolidation_window: SiteSetting.likes_notification_consolidation_window_mins.minutes,
+    unconsolidated_query_blk: Proc.new do |notifications, data|
+      notifications
+        .where("data::json ->> 'username2' IS NULL AND data::json ->> 'consolidated' IS NULL")
+        .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
+    end,
+    consolidated_query_blk: Proc.new do |notifications, data|
+      notifications
+        .where("(data::json ->> 'consolidated')::bool")
+        .where("data::json ->> '#{field_key}' = ?", data[field_key.to_sym].to_s)
+    end
+  ).set_mutations(
+    set_data_blk: Proc.new do |notification|
+      data = notification.data_hash
+      data.merge(
+        username: data[:display_username],
+        consolidated: true,
       )
     end
+  ).set_precondition(precondition_blk: Proc.new { |data| data[:username2].blank? })
 
-    reacted_by_two_users = Notifications::DeletePreviousNotifications.new(
-      type: Notification.types[:reaction],
-      previous_query_blk: Proc.new do |notifications, data|
-        notifications.where(id: data[:previous_notification_id])
+  consolidated_reactions.before_consolidation_callbacks(
+    before_consolidation_blk: Proc.new do |notifications, data|
+      new_icon = data[:reaction_icon]
+
+      if new_icon
+        icons = notifications.pluck("data::json ->> 'reaction_icon'")
+
+        data.delete(:reaction_icon) if icons.any? { |i| i != new_icon }
       end
-    ).set_mutations(
-      set_data_blk: Proc.new do |notification|
-        existing_notification_of_same_type = Notification
-          .where(user: notification.user)
-          .order("notifications.id DESC")
-          .where(topic_id: notification.topic_id, post_number: notification.post_number)
-          .where(notification_type: notification.notification_type)
-          .where('created_at > ?', 1.day.ago)
-          .first
-
-        data = notification.data_hash
-        if existing_notification_of_same_type
-          same_type_data = existing_notification_of_same_type.data_hash
-
-          new_data = data.merge(
-            previous_notification_id: existing_notification_of_same_type.id,
-            username2: same_type_data[:display_username],
-            count: (same_type_data[:count] || 1).to_i + 1
-          )
-
-          new_data
-        else
-          data
-        end
+    end,
+    before_update_blk: Proc.new do |consolidated, updated_data, notification|
+      if consolidated.data_hash[:reaction_icon] != notification.data_hash[:reaction_icon]
+        updated_data.delete(:reaction_icon)
       end
-    ).set_precondition(
-      precondition_blk: Proc.new do |data, notification|
-        always_freq = UserOption.like_notification_frequency_type[:always]
+    end
+  )
 
-        notification.user&.user_option&.like_notification_frequency == always_freq &&
-          data[:previous_notification_id].present?
+  reacted_by_two_users = Notifications::DeletePreviousNotifications.new(
+    type: Notification.types[:reaction],
+    previous_query_blk: Proc.new do |notifications, data|
+      notifications.where(id: data[:previous_notification_id])
+    end
+  ).set_mutations(
+    set_data_blk: Proc.new do |notification|
+      existing_notification_of_same_type = Notification
+        .where(user: notification.user)
+        .order("notifications.id DESC")
+        .where(topic_id: notification.topic_id, post_number: notification.post_number)
+        .where(notification_type: notification.notification_type)
+        .where('created_at > ?', 1.day.ago)
+        .first
+
+      data = notification.data_hash
+      if existing_notification_of_same_type
+        same_type_data = existing_notification_of_same_type.data_hash
+
+        new_data = data.merge(
+          previous_notification_id: existing_notification_of_same_type.id,
+          username2: same_type_data[:display_username],
+          count: (same_type_data[:count] || 1).to_i + 1
+        )
+
+        new_data
+      else
+        data
       end
-    )
+    end
+  ).set_precondition(
+    precondition_blk: Proc.new do |data, notification|
+      always_freq = UserOption.like_notification_frequency_type[:always]
 
-    register_notification_consolidation_plan(reacted_by_two_users)
-    register_notification_consolidation_plan(consolidated_reactions)
-  end
+      notification.user&.user_option&.like_notification_frequency == always_freq &&
+        data[:previous_notification_id].present?
+    end
+  )
+
+  register_notification_consolidation_plan(reacted_by_two_users)
+  register_notification_consolidation_plan(consolidated_reactions)
 end
