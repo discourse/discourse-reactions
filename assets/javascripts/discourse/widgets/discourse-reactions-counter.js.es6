@@ -16,9 +16,7 @@ export default createWidget("discourse-reactions-counter", {
 
   reactionsChanged(data) {
     data.reactions.forEach((reaction) => {
-      if (this.state[reaction].length) {
-        this.getUsers(reaction);
-      }
+      this.getUsers(reaction);
     });
   },
 
