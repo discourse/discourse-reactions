@@ -16,8 +16,8 @@ export default Controller.extend({
 
   _updateBeforeIds(reactionUsers) {
     if (this.includeLikes) {
-      const mainReaction =
-        this.siteSettings.discourse_reactions_reaction_for_like;
+      const mainReaction = this.siteSettings
+        .discourse_reactions_reaction_for_like;
       const [likes, reactions] = reactionUsers.reduce(
         (memo, elem) => {
           if (elem.reaction.reaction_value === mainReaction) {
