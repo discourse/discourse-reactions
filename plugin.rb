@@ -5,6 +5,7 @@
 # version: 0.2
 # author: Ahmed Gagan, Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
 # url: https://github.com/discourse/discourse-reactions
+# transpile_js: true
 
 enabled_site_setting :discourse_reactions_enabled
 
