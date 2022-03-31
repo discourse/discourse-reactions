@@ -23,7 +23,7 @@ en:
         remove: "Remove this like"
         cant_remove: "You can’t remove this like"
     notifications:
-      reaction: 
+      reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reacted to %{count} of your posts"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
