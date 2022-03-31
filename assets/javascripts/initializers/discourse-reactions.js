@@ -83,41 +83,46 @@ function initializeDiscourseReactions(api) {
     });
   });
 
-  api.modifyClass("component:emoji-value-list", {
-    pluginId: PLUGIN_ID,
+  api.modifyClass(
+    "component:emoji-value-list",
+    {
+      pluginId: PLUGIN_ID,
 
-    didReceiveAttrs() {
-      this._super(...arguments);
+      didReceiveAttrs() {
+        this._super(...arguments);
 
-      if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
-        return;
-      }
+        if (this.setting.setting !== "discourse_reactions_enabled_reactions") {
+          return;
+        }
 
-      let defaultValue = this.values.includes(
-        this.siteSettings.discourse_reactions_reaction_for_like
-      );
-
-      if (!defaultValue) {
-        this.collection.unshiftObject({
-          emojiUrl: emojiUrlFor(
-            this.siteSettings.discourse_reactions_reaction_for_like
-          ),
-          isEditable: false,
-          isEditing: false,
-          value: this.siteSettings.discourse_reactions_reaction_for_like,
-        });
-      } else {
-        const mainEmoji = this.collection.findBy(
-          "value",
+        let defaultValue = this.values.includes(
           this.siteSettings.discourse_reactions_reaction_for_like
         );
 
-        if (mainEmoji) {
-          mainEmoji.isEditable = false;
+        if (!defaultValue) {
+          this.collection.unshiftObject({
+            emojiUrl: emojiUrlFor(
+              this.siteSettings.discourse_reactions_reaction_for_like
+            ),
+            isEditable: false,
+            isEditing: false,
+            value: this.siteSettings.discourse_reactions_reaction_for_like,
+          });
+        } else {
+          const mainEmoji = this.collection.findBy(
+            "value",
+            this.siteSettings.discourse_reactions_reaction_for_like
+          );
+
+          if (mainEmoji) {
+            mainEmoji.isEditable = false;
+          }
         }
-      }
+      },
     },
-  });
+    // It's an admin component so it's not always present
+    { ignoreMissing: true }
+  );
 }
 
 export default {
