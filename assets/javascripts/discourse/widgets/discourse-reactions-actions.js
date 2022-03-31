@@ -413,8 +413,8 @@ export default createWidget("discourse-reactions-actions", {
 
     this.collapsePanels();
 
-    const mainReactionName = this.siteSettings
-      .discourse_reactions_reaction_for_like;
+    const mainReactionName =
+      this.siteSettings.discourse_reactions_reaction_for_like;
     const post = this.attrs.post;
     const current_user_reaction = post.current_user_reaction;
 
@@ -535,8 +535,8 @@ export default createWidget("discourse-reactions-actions", {
   html(attrs) {
     const post = attrs.post;
     const items = [];
-    const mainReaction = this.siteSettings
-      .discourse_reactions_reaction_for_like;
+    const mainReaction =
+      this.siteSettings.discourse_reactions_reaction_for_like;
 
     if (this.currentUser && post.user_id !== this.currentUser.id) {
       items.push(
