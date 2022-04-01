@@ -15,11 +15,16 @@ const CustomReaction = RestModel.extend({
 });
 
 CustomReaction.reopenClass({
-  toggle(postId, reactionId) {
+  toggle(post, reactionId) {
     return ajax(
-      `/discourse-reactions/posts/${postId}/custom-reactions/${reactionId}/toggle.json`,
+      `/discourse-reactions/posts/${post.id}/custom-reactions/${reactionId}/toggle.json`,
       { type: "PUT" }
-    );
+    ).then((result) => {
+      post.appEvents.trigger("discourse-reactions:reaction-toggled", {
+        post: result,
+        reaction: result.current_user_reaction,
+      });
+    });
   },
 
   findReactions(url, username, opts) {

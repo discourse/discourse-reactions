@@ -271,7 +271,7 @@ export default createWidget("discourse-reactions-actions", {
 
               later(() => {
                 dropReaction(postContainer, params.reaction, () => {
-                  return CustomReaction.toggle(params.postId, params.reaction)
+                  return CustomReaction.toggle(this.attrs.post, params.reaction)
                     .then(resolve)
                     .catch((e) => {
                       bootbox.alert(this._extractErrors(e));
@@ -283,7 +283,7 @@ export default createWidget("discourse-reactions-actions", {
               addReaction(postContainer, params.reaction, () => {
                 this.toggleReaction(params);
 
-                CustomReaction.toggle(params.postId, params.reaction)
+                CustomReaction.toggle(this.attrs.post, params.reaction)
                   .then(resolve)
                   .catch((e) => {
                     bootbox.alert(this._extractErrors(e));
@@ -442,7 +442,7 @@ export default createWidget("discourse-reactions-actions", {
 
     if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       this.toggleReaction(attrs);
-      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
+      return CustomReaction.toggle(this.attrs.post, attrs.reaction).catch(
         (e) => {
           bootbox.alert(this._extractErrors(e));
           this._rollbackState(post);
@@ -478,7 +478,7 @@ export default createWidget("discourse-reactions-actions", {
               ? attrs.reaction
               : this.siteSettings.discourse_reactions_reaction_for_like;
 
-          CustomReaction.toggle(this.attrs.post.id, toggleReaction)
+          CustomReaction.toggle(this.attrs.post, toggleReaction)
             .then(resolve)
             .catch((e) => {
               bootbox.alert(this._extractErrors(e));
