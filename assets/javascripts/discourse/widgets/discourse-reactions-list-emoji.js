@@ -19,7 +19,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (!window.matchMedia("(hover: none)").matches) {
       this._setupPopper(".user-list");
 
-      if (!this.attrs.users.length) {
+      if (!this.attrs.users?.length) {
         this.callWidgetFunction("getUsers", this.attrs.reaction.id);
       }
     }
