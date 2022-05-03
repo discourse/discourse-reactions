@@ -14,14 +14,15 @@ module DiscourseReactions
       end
 
       begin
-        DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post).toggle!
+        manager = DiscourseReactions::ReactionManager.new(reaction_value: params[:reaction], user: current_user, guardian: guardian, post: post)
+        manager.toggle!
       rescue ActiveRecord::RecordNotUnique
         # If the user already performed this action, it's probably due to a different browser tab
         # or non-debounced clicking. We can ignore.
       end
 
       post.publish_change_to_clients!(:acted)
-      publish_change_to_clients!(post)
+      publish_change_to_clients!(post, reaction: manager.reaction_value, previous_reaction: manager.previous_reaction_value)
 
       render_json_dump(post_serializer(post).as_json)
     end
@@ -202,26 +203,11 @@ module DiscourseReactions
       post
     end
 
-    def publish_change_to_clients!(post)
-      reactions = [params[:reaction]]
-      reaction_id = DiscourseReactions::ReactionUser
-        .where(user_id: current_user.id, post_id: post.id)
-        .pluck_first(:reaction_id)
-
-      if reaction_id
-        reaction_value = DiscourseReactions::Reaction
-          .where(id: reaction_id)
-          .pluck_first(:reaction_value)
-
-        reactions.push(reaction_value) if reaction_value
-      end
-
-      message = {
+    def publish_change_to_clients!(post, reaction: nil, previous_reaction: nil)
+      MessageBus.publish("/topic/#{post.topic.id}/reactions",
         post_id: post.id,
-        reactions: reactions
-      }
-
-      MessageBus.publish("/topic/#{post.topic.id}/reactions", message)
+        reactions: [reaction, previous_reaction].compact.uniq
+      )
     end
 
     def secure_reaction_users!(reaction_users)
