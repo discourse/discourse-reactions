@@ -20,11 +20,11 @@ export default createWidget("discourse-reactions-counter", {
     });
   },
 
-  defaultState(attrs) {
-    const state = {};
-    state.reactionsUsers = {};
-    state.statePanelExpanded = false;
-    return state;
+  defaultState() {
+    return {
+      reactionsUsers: {},
+      statePanelExpanded: false,
+    };
   },
 
   getUsers(reactionValue) {
