@@ -11,15 +11,7 @@ let _laterHoverHandlers = {};
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
 
-  buildId: (attrs) =>
-    `discourse-reactions-reaction-button-${attrs.post.id}-${
-      attrs.position || "right"
-    }`,
-
-  buildKey: (attrs) =>
-    `discourse-reactions-reaction-button-${attrs.post.id}-${
-      attrs.position || "right"
-    }`,
+  buildKey: (attrs) => `discourse-reactions-reaction-button-${attrs.post.id}`,
 
   click() {
     this.callWidgetFunction("cancelCollapse");
