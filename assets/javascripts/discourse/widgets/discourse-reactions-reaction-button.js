@@ -4,9 +4,6 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { h } from "virtual-dom";
 import { createWidget } from "discourse/widgets/widget";
-import { cancel, later } from "@ember/runloop";
-
-let _laterHoverHandlers = {};
 
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",

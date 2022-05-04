@@ -1,8 +1,6 @@
-import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
-import { cancel, later, schedule } from "@ember/runloop";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 let _popperStatePanel;
@@ -148,7 +146,7 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  toggleStatePanel(event) {
+  toggleStatePanel() {
     if (!this.attrs.statePanelExpanded) {
       this.callWidgetFunction("expandStatePanel");
     } else {
@@ -156,11 +154,11 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  mouseOver(event) {
+  mouseOver() {
     this.callWidgetFunction("cancelCollapse");
   },
 
-  mouseOut(event) {
+  mouseOut() {
     this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
   },
 });
