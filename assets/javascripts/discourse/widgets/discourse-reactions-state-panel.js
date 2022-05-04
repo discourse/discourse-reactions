@@ -15,12 +15,16 @@ export default createWidget("discourse-reactions-state-panel", {
       classes.push(`max-length-${charsCount}`);
     }
 
+    if (attrs.statePanelExpanded) {
+      classes.push("is-expanded");
+    }
+
     return classes;
   },
 
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse");
+      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
     }
   },
 
@@ -67,7 +71,7 @@ export default createWidget("discourse-reactions-state-panel", {
             })
           )
         )
-      : h("div.spinner-container", h("div.spinner"));
+      : h("div.spinner-container", h("div.spinner.small"));
 
     return h("div.container", reactions);
   },

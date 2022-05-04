@@ -78,8 +78,9 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
-    return dec.attach("discourse-reactions-counter", {
+    return dec.attach("discourse-reactions-actions", {
       post,
+      position: "left",
     });
   });
 

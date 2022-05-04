@@ -11,10 +11,19 @@ let _laterHoverHandlers = {};
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
 
-  buildKey: (attrs) => `discourse-reactions-reaction-button-${attrs.post.id}`,
+  buildId: (attrs) =>
+    `discourse-reactions-reaction-button-${attrs.post.id}-${
+      attrs.position || "right"
+    }`,
+
+  buildKey: (attrs) =>
+    `discourse-reactions-reaction-button-${attrs.post.id}-${
+      attrs.position || "right"
+    }`,
 
   click() {
-    this._cancelHoverHandler();
+    this.callWidgetFunction("cancelCollapse");
+
     const currentUserReaction = this.attrs.post.current_user_reaction;
     if (!this.capabilities.touch || !this.site.mobileView) {
       this.callWidgetFunction("toggleFromButton", {
@@ -26,7 +35,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   mouseOver(event) {
-    this._cancelHoverHandler();
+    this.callWidgetFunction("cancelCollapse");
 
     const likeAction = this.attrs.post.likeAction;
     const currentUserReaction = this.attrs.post.current_user_reaction;
@@ -39,20 +48,13 @@ export default createWidget("discourse-reactions-reaction-button", {
     }
 
     if (!window.matchMedia("(hover: none)").matches) {
-      _laterHoverHandlers[this.attrs.post.id] = later(
-        this,
-        this._hoverHandler,
-        event,
-        500
-      );
+      this.callWidgetFunction("toggleReactions", event);
     }
   },
 
   mouseOut() {
-    this._cancelHoverHandler();
-
     if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse");
+      this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
     }
   },
 
@@ -135,16 +137,5 @@ export default createWidget("discourse-reactions-reaction-button", {
       },
       [iconNode(`far-${mainReactionIcon}`)]
     );
-  },
-
-  _cancelHoverHandler() {
-    const handler = _laterHoverHandlers[this.attrs.post.id];
-    handler && cancel(handler);
-  },
-
-  _hoverHandler(event) {
-    this.callWidgetFunction("cancelCollapse");
-    this.callWidgetFunction("toggleReactions", event);
-    this.callWidgetFunction("collapseStatePanel");
   },
 });

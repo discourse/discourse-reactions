@@ -41,35 +41,27 @@ export default createWidget("discourse-reactions-counter", {
   },
 
   click(event) {
+    this.callWidgetFunction("cancelCollapse");
+
     if (!this.capabilities.touch || !this.site.mobileView) {
       event.stopPropagation();
 
-      // in case we lost sync due to another widget not in the same tree
-      // collapsing the panel, we attempt to reconciliate from DOM state
-      const container = document.getElementById(this.buildId(this.attrs));
-      if (
-        !container
-          .querySelector(".discourse-reactions-state-panel")
-          .classList.contains("is-expanded")
-      ) {
-        this.state.statePanelExpanded = false;
-      }
-
-      if (!this.state.statePanelExpanded) {
+      if (!this.attrs.statePanelExpanded) {
         this.getUsers();
       }
+
       this.toggleStatePanel(event);
     }
   },
 
   clickOutside() {
-    if (this.state.statePanelExpanded) {
-      this.collapsePanels();
+    if (this.attrs.statePanelExpanded) {
+      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
     }
   },
 
   touchStart(event) {
-    if (this.state.statePanelExpanded) {
+    if (this.attrs.statePanelExpanded) {
       return;
     }
 
@@ -117,7 +109,6 @@ export default createWidget("discourse-reactions-counter", {
         this.attach(
           "discourse-reactions-state-panel",
           Object.assign({}, attrs, {
-            statePanelExpanded: this.state.statePanelExpanded,
             reactionsUsers: this.state.reactionsUsers,
           })
         )
@@ -157,87 +148,19 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  collapsePanels() {
-    this.cancelCollapse();
-    this.state.statePanelExpanded = false;
-    this.state.reactionsPickerExpanded = false;
-    this._resetPopper();
-    this.scheduleRerender();
-  },
-
-  scheduleCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
-    this._collapseHandler = later(this, this.collapsePanels, 500);
-  },
-
-  cancelCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
-  },
-
   toggleStatePanel(event) {
-    if (!this.state.statePanelExpanded) {
-      this.expandStatePanel(event);
+    if (!this.attrs.statePanelExpanded) {
+      this.callWidgetFunction("expandStatePanel");
     } else {
-      this.scheduleCollapse();
+      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
     }
   },
 
-  expandStatePanel() {
-    this.state.reactionsPickerExpanded = false;
-    this.state.statePanelExpanded = true;
-    this.scheduleRerender();
-    this._setupPopper(this.attrs.post.id, ".discourse-reactions-state-panel");
+  mouseOver(event) {
+    this.callWidgetFunction("cancelCollapse");
   },
 
-  _setupPopper(postId, selector) {
-    schedule("afterRender", () => {
-      let popperElement;
-      const trigger = document.querySelector(
-        `#discourse-reactions-counter-${postId}`
-      );
-
-      if (this.site.mobileView) {
-        popperElement = document.querySelector(
-          `[data-post-id="${postId}"] ${selector}`
-        );
-      } else {
-        popperElement = document.querySelector(
-          `#discourse-reactions-counter-${postId} ${selector}`
-        );
-      }
-
-      if (popperElement) {
-        popperElement.classList.add("is-expanded");
-
-        _popperStatePanel && _popperStatePanel.destroy();
-        _popperStatePanel = createPopper(trigger, popperElement, {
-          placement: "top",
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [0, -5],
-              },
-            },
-            {
-              name: "preventOverflow",
-              options: {
-                padding: 5,
-              },
-            },
-          ],
-        });
-      }
-    });
-  },
-
-  _resetPopper() {
-    const container = document.getElementById(this.buildId(this.attrs));
-    container &&
-      container
-        .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-reactions-picker.is-expanded, .user-list.is-expanded"
-        )
-        .forEach((popper) => popper.classList.remove("is-expanded"));
+  mouseOut(event) {
+    this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
   },
 });
