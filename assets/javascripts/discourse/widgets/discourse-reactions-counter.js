@@ -15,71 +15,26 @@ export default createWidget("discourse-reactions-counter", {
   buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
 
   reactionsChanged(data) {
-    data.reactions.forEach((reaction) => {
+    data.reactions.uniq().forEach((reaction) => {
       this.getUsers(reaction);
     });
   },
 
-  defaultState(attrs) {
-    const state = {};
-
-    this.siteSettings.discourse_reactions_enabled_reactions
-      .split("|")
-      .filter(Boolean)
-      .forEach((item) => {
-        state[item] = [];
-      });
-
-    (attrs.post.reactions || []).forEach((reaction) => {
-      if (!state[reaction.id]) {
-        state[reaction.id] = [];
-      }
-    });
-
-    state[this.siteSettings.discourse_reactions_reaction_for_like] = [];
-    state.statePanelExpanded = false;
-    state.postId = null;
-    state.reactionValues = [];
-    state.postIds = [];
-
-    return state;
+  defaultState() {
+    return {
+      reactionsUsers: {},
+      statePanelExpanded: false,
+    };
   },
 
   getUsers(reactionValue) {
-    if (reactionValue && this.state.reactionValues.includes(reactionValue)) {
-      return;
-    }
-
-    if (
-      !reactionValue &&
-      (this.state.postId === this.attrs.post.id ||
-        this.state.postIds.includes(this.attrs.post.id))
-    ) {
-      return;
-    }
-
-    if (!reactionValue && !this.state.postIds.includes(this.attrs.post.id)) {
-      this.state.postIds.push(this.attrs.post.id);
-    }
-
-    if (reactionValue) {
-      this.state.reactionValues.push(reactionValue);
-    } else {
-      this.state.postId = this.attrs.post.id;
-    }
-
     return CustomReaction.findReactionUsers(this.attrs.post.id, {
       reactionValue,
-    }).then((reactions) => {
-      reactions.reaction_users.forEach((reactionUser) => {
-        this.state[reactionUser.id] = reactionUser.users;
+    }).then((response) => {
+      response.reaction_users.forEach((reactionUser) => {
+        this.state.reactionsUsers[reactionUser.id] = reactionUser.users;
       });
-      if (reactionValue) {
-        const index = this.state.reactionValues.indexOf(reactionValue);
-        this.state.reactionValues.splice(index, 1);
-      } else {
-        this.state.postId = null;
-      }
+
       _popperStatePanel?.update();
       this.scheduleRerender();
     });
@@ -163,7 +118,7 @@ export default createWidget("discourse-reactions-counter", {
           "discourse-reactions-state-panel",
           Object.assign({}, attrs, {
             statePanelExpanded: this.state.statePanelExpanded,
-            state: this.state,
+            reactionsUsers: this.state.reactionsUsers,
           })
         )
       );
@@ -171,8 +126,12 @@ export default createWidget("discourse-reactions-counter", {
       if (
         !(post.reactions.length === 1 && post.reactions[0].id === mainReaction)
       ) {
-        attrs.state = this.state;
-        items.push(this.attach("discourse-reactions-list", attrs));
+        items.push(
+          this.attach("discourse-reactions-list", {
+            reactionsUsers: this.state.reactionsUsers,
+            post: attrs.post,
+          })
+        );
       }
 
       items.push(h("span.reactions-counter", count.toString()));

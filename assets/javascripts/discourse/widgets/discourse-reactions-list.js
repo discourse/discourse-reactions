@@ -15,7 +15,7 @@ export default createWidget("discourse-reactions-list", {
         attrs.post.reactions.map((reaction) =>
           this.attach("discourse-reactions-list-emoji", {
             reaction,
-            users: attrs.state[reaction.id],
+            users: attrs.reactionsUsers[reaction.id],
             post: attrs.post,
           })
         )
