@@ -2,12 +2,19 @@
 
 module DiscourseReactions
   class ReactionManager
+    attr_reader :reaction_value, :previous_reaction_value
+
     def initialize(reaction_value:, user:, guardian:, post:)
       @reaction_value = reaction_value
       @user = user
       @guardian = guardian
       @post = post
       @like = @post.post_actions.find_by(user: @user, post_action_type_id: post_action_like_type)
+      @previous_reaction_value = if @like
+        DiscourseReactions::Reaction.main_reaction_id
+      elsif reaction_user
+        old_reaction_value(reaction_user)
+      end
     end
 
     def toggle!
@@ -31,7 +38,6 @@ module DiscourseReactions
 
     def toggle_reaction
       if reaction_user
-        previous_reaction_value = old_reaction_value(reaction_user)
         remove_reaction
         return if previous_reaction_value && previous_reaction_value == @reaction_value
       end

@@ -99,6 +99,17 @@ describe DiscourseReactions::CustomReactionsController do
       end
       expect(messages.count).to eq(2)
       expect(messages.map(&:channel).uniq.first).to eq("/topic/#{post_1.topic.id}/reactions")
+      expect(messages[0].data[:reactions]).to contain_exactly("cry")
+      expect(messages[1].data[:reactions]).to contain_exactly("cry")
+
+      messages = MessageBus.track_publish("/topic/#{post_1.topic.id}/reactions") do
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
+        put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/angry/toggle.json"
+      end
+      expect(messages.count).to eq(2)
+      expect(messages.map(&:channel).uniq.first).to eq("/topic/#{post_1.topic.id}/reactions")
+      expect(messages[0].data[:reactions]).to contain_exactly("cry")
+      expect(messages[1].data[:reactions]).to contain_exactly("cry", "angry")
     end
 
     it 'errors when reaction is invalid' do
