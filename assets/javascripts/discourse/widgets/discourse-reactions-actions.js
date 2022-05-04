@@ -159,7 +159,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   touchStart() {
-    this._touchTimeout && cancel(this._touchTimeout);
+    cancel(this._touchTimeout);
 
     if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
@@ -175,7 +175,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   touchEnd(event) {
-    this._touchTimeout && cancel(this._touchTimeout);
+    cancel(this._touchTimeout);
 
     const root = document.getElementsByTagName("html")[0];
     root && root.classList.remove("discourse-reactions-no-select");
