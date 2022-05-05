@@ -8,9 +8,11 @@ let _popperStatePanel;
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
 
-  buildKey: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
+  buildKey: (attrs) =>
+    `discourse-reactions-counter-${attrs.post.id}-${attrs.position || "right"}`,
 
-  buildId: (attrs) => `discourse-reactions-counter-${attrs.post.id}`,
+  buildId: (attrs) =>
+    `discourse-reactions-counter-${attrs.post.id}-${attrs.position || "right"}`,
 
   reactionsChanged(data) {
     data.reactions.uniq().forEach((reaction) => {
@@ -38,11 +40,22 @@ export default createWidget("discourse-reactions-counter", {
     });
   },
 
+  mouseDown(event) {
+    event.stopImmediatePropagation();
+    return false;
+  },
+
+  mouseUp(event) {
+    event.stopImmediatePropagation();
+    return false;
+  },
+
   click(event) {
     this.callWidgetFunction("cancelCollapse");
 
     if (!this.capabilities.touch || !this.site.mobileView) {
       event.stopPropagation();
+      event.preventDefault();
 
       if (!this.attrs.statePanelExpanded) {
         this.getUsers();
@@ -150,7 +163,7 @@ export default createWidget("discourse-reactions-counter", {
     if (!this.attrs.statePanelExpanded) {
       this.callWidgetFunction("expandStatePanel");
     } else {
-      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+      this.callWidgetFunction("collapseStatePanel");
     }
   },
 
@@ -158,7 +171,9 @@ export default createWidget("discourse-reactions-counter", {
     this.callWidgetFunction("cancelCollapse");
   },
 
-  mouseOut() {
-    this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+  mouseOut(event) {
+    if (!event.relatedTarget?.closest(`#${this.buildId(this.attrs)}`)) {
+      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+    }
   },
 });

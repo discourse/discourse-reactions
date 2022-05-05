@@ -497,7 +497,7 @@ export default createWidget("discourse-reactions-actions", {
   scheduleCollapse(handler) {
     this.cancelCollapse();
 
-    this._collapseHandler = later(this, this[handler], 1500);
+    this._collapseHandler = later(this, this[handler], 500);
   },
 
   buildId: (attrs) =>
