@@ -42,6 +42,8 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   mouseOut() {
+    this.callWidgetFunction("cancelExpand");
+
     if (!window.matchMedia("(hover: none)").matches) {
       this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
     }

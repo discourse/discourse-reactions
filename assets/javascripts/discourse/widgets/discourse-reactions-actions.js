@@ -154,7 +154,11 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReactions(event) {
     if (!this.state.reactionsPickerExpanded) {
-      this.expandReactionsPicker(event);
+      if (this.state.statePanelExpanded) {
+        this.scheduleExpand("expandReactionsPicker");
+      } else {
+        this.expandReactionsPicker(event);
+      }
     }
   },
 
@@ -492,6 +496,16 @@ export default createWidget("discourse-reactions-actions", {
 
   cancelCollapse() {
     cancel(this._collapseHandler);
+  },
+
+  cancelExpand() {
+    cancel(this._expandHandler);
+  },
+
+  scheduleExpand(handler) {
+    this.cancelExpand();
+
+    this._expandHandler = later(this, this[handler], 250);
   },
 
   scheduleCollapse(handler) {
