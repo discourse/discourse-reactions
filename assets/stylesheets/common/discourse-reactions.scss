@@ -263,6 +263,7 @@ html.discourse-reactions-no-select {
     align-items: center;
     justify-content: center;
     padding-top: 0.25em;
+    margin-left: 0 !important; // core rule has too much specificity
 
     .count {
       font-size: $font-down-1;
@@ -310,6 +311,7 @@ html.discourse-reactions-no-select {
     align-items: center;
     justify-content: center;
     display: flex;
+    margin-left: 0 !important; // core rule has too much specificity
   }
 
   // manually account for emoji not being a perfect square

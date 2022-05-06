@@ -553,6 +553,10 @@ export default createWidget("discourse-reactions-actions", {
     this.scheduleRerender();
   },
 
+  updatePopperPosition() {
+    _popperPicker?.update();
+  },
+
   html(attrs) {
     const post = attrs.post;
     const items = [];
