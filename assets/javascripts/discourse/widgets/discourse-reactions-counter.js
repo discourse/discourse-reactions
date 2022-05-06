@@ -37,6 +37,7 @@ export default createWidget("discourse-reactions-counter", {
 
       _popperStatePanel?.update();
       this.scheduleRerender();
+      this.callWidgetFunction("updatePopperPosition");
     });
   },
 
@@ -67,17 +68,29 @@ export default createWidget("discourse-reactions-counter", {
 
   clickOutside() {
     if (this.attrs.statePanelExpanded) {
-      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+      this.callWidgetFunction("collapseAllPanels");
     }
   },
 
   touchStart(event) {
+    this.callWidgetFunction("cancelCollapse");
+
+    if (
+      event.target.classList.contains("show-users") ||
+      event.target.classList.contains("avatar")
+    ) {
+      return true;
+    }
+
     if (this.attrs.statePanelExpanded) {
+      event.stopPropagation();
+      event.preventDefault();
       return;
     }
 
     if (this.capabilities.touch) {
       event.stopPropagation();
+      event.preventDefault();
       this.getUsers();
       this.toggleStatePanel(event);
     }
