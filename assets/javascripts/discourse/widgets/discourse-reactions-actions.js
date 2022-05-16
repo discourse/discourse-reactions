@@ -626,16 +626,6 @@ export default createWidget("discourse-reactions-actions", {
         } ${selectors[1]}`
       );
 
-      // we only keep one popper instance for simplicity
-      // so we could destroy it before the class is actually removed
-      // in this case the popper would stay at a bad position until
-      // the class would be removed
-      const existingPopper = _popperPicker?.state?.elements?.popper;
-      if (existingPopper && existingPopper !== popperElement) {
-        existingPopper.classList.remove("is-expanded");
-      }
-
-      _popperPicker?.destroy();
       _popperPicker = this._applyPopper(trigger, popperElement);
     });
   },
