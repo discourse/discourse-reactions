@@ -614,19 +614,20 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   _setupPopper(selectors) {
+    _popperPicker?.state?.elements?.popper?.classList?.remove("is-expanded");
+
     schedule("afterRender", () => {
+      const position = this.attrs.position || "right";
+      const id = this.attrs.post.id;
       const trigger = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id}-${
-          this.attrs.position || "right"
-        } ${selectors[0]}`
+        `#discourse-reactions-actions-${id}-${position} ${selectors[0]}`
       );
-      const popperElement = document.querySelector(
-        `#discourse-reactions-actions-${this.attrs.post.id}-${
-          this.attrs.position || "right"
-        } ${selectors[1]}`
+      const popper = document.querySelector(
+        `#discourse-reactions-actions-${id}-${position} ${selectors[1]}`
       );
 
-      _popperPicker = this._applyPopper(trigger, popperElement);
+      _popperPicker?.destroy();
+      _popperPicker = this._applyPopper(trigger, popper);
     });
   },
 
