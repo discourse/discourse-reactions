@@ -112,9 +112,11 @@ html.discourse-reactions-no-select {
   z-index: z("usercard") - 2;
   position: absolute;
   visibility: hidden;
+  display: none;
   padding: 15px 0;
 
   &.is-expanded {
+    display: block;
     visibility: visible;
   }
 
@@ -174,10 +176,12 @@ html.discourse-reactions-no-select {
   position: absolute;
   visibility: hidden;
   padding: 15px 0;
+  display: none;
 
   &.is-expanded {
     min-width: 80px;
     visibility: visible;
+    display: block;
   }
 
   .discourse-reactions-state-panel-reaction .count {
