@@ -614,6 +614,8 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   _setupPopper(selectors) {
+    _popperPicker?.state?.elements?.popper?.classList?.remove("is-expanded");
+
     schedule("afterRender", () => {
       const position = this.attrs.position || "right";
       const id = this.attrs.post.id;
@@ -624,7 +626,6 @@ export default createWidget("discourse-reactions-actions", {
         `#discourse-reactions-actions-${id}-${position} ${selectors[1]}`
       );
 
-      _popperPicker?.state?.elements?.popper?.classList?.remove("is-expanded");
       _popperPicker?.destroy();
       _popperPicker = this._applyPopper(trigger, popper);
     });
