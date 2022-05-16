@@ -11,6 +11,11 @@ import bootbox from "bootbox";
 const VIBRATE_DURATION = 5;
 
 let _popperPicker;
+let _currentReactionWidget;
+
+export function resetCurrentReaction() {
+  _currentReactionWidget = null;
+}
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
@@ -614,8 +619,6 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   _setupPopper(selectors) {
-    _popperPicker?.state?.elements?.popper?.classList?.remove("is-expanded");
-
     schedule("afterRender", () => {
       const position = this.attrs.position || "right";
       const id = this.attrs.post.id;
@@ -626,8 +629,10 @@ export default createWidget("discourse-reactions-actions", {
         `#discourse-reactions-actions-${id}-${position} ${selectors[1]}`
       );
 
+      _currentReactionWidget?.collapseAllPanels();
       _popperPicker?.destroy();
       _popperPicker = this._applyPopper(trigger, popper);
+      _currentReactionWidget = this;
     });
   },
 

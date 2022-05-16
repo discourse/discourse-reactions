@@ -3,8 +3,6 @@ import { iconNode } from "discourse-common/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
-let _popperStatePanel;
-
 export default createWidget("discourse-reactions-counter", {
   tagName: "div",
 
@@ -35,7 +33,6 @@ export default createWidget("discourse-reactions-counter", {
         this.state.reactionsUsers[reactionUser.id] = reactionUser.users;
       });
 
-      _popperStatePanel?.update();
       this.scheduleRerender();
       this.callWidgetFunction("updatePopperPosition");
     });
