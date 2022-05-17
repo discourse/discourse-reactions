@@ -530,6 +530,7 @@ export default createWidget("discourse-reactions-actions", {
 
   expandReactionsPicker() {
     cancel(this._collapseHandler);
+    _currentReactionWidget?.collapseAllPanels();
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
@@ -541,6 +542,7 @@ export default createWidget("discourse-reactions-actions", {
 
   expandStatePanel() {
     cancel(this._collapseHandler);
+    _currentReactionWidget?.collapseAllPanels();
     this.state.statePanelExpanded = true;
     this.state.reactionsPickerExpanded = false;
     this.scheduleRerender();
@@ -629,7 +631,6 @@ export default createWidget("discourse-reactions-actions", {
         `#discourse-reactions-actions-${id}-${position} ${selectors[1]}`
       );
 
-      _currentReactionWidget?.collapseAllPanels();
       _popperPicker?.destroy();
       _popperPicker = this._applyPopper(trigger, popper);
       _currentReactionWidget = this;
