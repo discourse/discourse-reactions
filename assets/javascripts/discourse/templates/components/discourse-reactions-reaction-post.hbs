@@ -1,8 +1,19 @@
 <div class="clearfix info">
-  <a href={{reaction.post_user.userUrl}} data-user-card={{reaction.post_user.username}} class="avatar-link">
-    {{avatar reaction.post_user imageSize="large" extraClasses="actor" ignoreTitle="true"}}
+  <a
+    href={{reaction.post_user.userUrl}}
+    data-user-card={{reaction.post_user.username}}
+    class="avatar-link"
+  >
+    {{avatar
+      reaction.post_user
+      imageSize="large"
+      extraClasses="actor"
+      ignoreTitle="true"
+    }}
   </a>
+
   <span class="time">{{format-date reaction.created_at leaveAgo="true"}}</span>
+
   {{expand-post item=reaction.post}}
 
   <div class="stream-topic-details">
@@ -26,8 +37,17 @@
 {{#if reaction.reaction.reaction_users_count}}
   <div class="discourse-reactions-my-reaction">
     <img src={{emojiUrl}} class="reaction-emoji">
-    <a href={{reaction.user.userUrl}} data-user-card={{reaction.user.username}} class="avatar-link">
-      {{avatar reaction.user imageSize="tiny" extraClasses="actor" ignoreTitle="true"}}
+    <a
+      href={{reaction.user.userUrl}}
+      data-user-card={{reaction.user.username}}
+      class="avatar-link"
+    >
+      {{avatar
+        reaction.user
+        imageSize="tiny"
+        extraClasses="actor"
+        ignoreTitle="true"
+      }}
     </a>
   </div>
 {{/if}}
