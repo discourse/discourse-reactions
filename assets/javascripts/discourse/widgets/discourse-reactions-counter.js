@@ -95,8 +95,8 @@ export default createWidget("discourse-reactions-counter", {
 
   buildClasses(attrs) {
     const classes = [];
-    const mainReaction = this.siteSettings
-      .discourse_reactions_reaction_for_like;
+    const mainReaction =
+      this.siteSettings.discourse_reactions_reaction_for_like;
 
     if (
       attrs.post.reactions &&
@@ -121,8 +121,8 @@ export default createWidget("discourse-reactions-counter", {
         return;
       }
 
-      const mainReaction = this.siteSettings
-        .discourse_reactions_reaction_for_like;
+      const mainReaction =
+        this.siteSettings.discourse_reactions_reaction_for_like;
       const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
       const items = [];
 
