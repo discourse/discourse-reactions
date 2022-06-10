@@ -8,9 +8,19 @@ export default createWidget("discourse-reactions-picker", {
 
   buildKey: (attrs) => `discourse-reactions-picker-${attrs.post.id}`,
 
+  buildClasses(attrs) {
+    const classes = [];
+
+    if (attrs.reactionsPickerExpanded) {
+      classes.push("is-expanded");
+    }
+
+    return classes;
+  },
+
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse");
+      this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
     }
   },
 

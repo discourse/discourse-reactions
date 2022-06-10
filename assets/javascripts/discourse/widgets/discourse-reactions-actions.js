@@ -11,6 +11,11 @@ import bootbox from "bootbox";
 const VIBRATE_DURATION = 5;
 
 let _popperPicker;
+let _currentReactionWidget;
+
+export function resetCurrentReaction() {
+  _currentReactionWidget = null;
+}
 
 function buildFakeReaction(reactionId) {
   const img = document.createElement("img");
@@ -102,7 +107,8 @@ export default createWidget("discourse-reactions-actions", {
     };
   },
 
-  buildKey: (attrs) => `discourse-reactions-actions-${attrs.post.id}`,
+  buildKey: (attrs) =>
+    `discourse-reactions-actions-${attrs.post.id}-${attrs.position || "right"}`,
 
   buildClasses(attrs) {
     if (!attrs.post.reactions) {
@@ -153,16 +159,20 @@ export default createWidget("discourse-reactions-actions", {
 
   toggleReactions(event) {
     if (!this.state.reactionsPickerExpanded) {
-      this.expandReactionsPicker(event);
+      if (this.state.statePanelExpanded) {
+        this.scheduleExpand("expandReactionsPicker");
+      } else {
+        this.expandReactionsPicker(event);
+      }
     }
   },
 
   touchStart() {
-    this._touchTimeout && cancel(this._touchTimeout);
+    cancel(this._touchTimeout);
 
     if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
-      root && root.classList.add("discourse-reactions-no-select");
+      root?.classList?.add("discourse-reactions-no-select");
 
       this._touchStartAt = Date.now();
       this._touchTimeout = later(() => {
@@ -174,7 +184,7 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   touchEnd(event) {
-    this._touchTimeout && cancel(this._touchTimeout);
+    cancel(this._touchTimeout);
 
     const root = document.getElementsByTagName("html")[0];
     root && root.classList.remove("discourse-reactions-no-select");
@@ -271,7 +281,7 @@ export default createWidget("discourse-reactions-actions", {
 
               later(() => {
                 dropReaction(postContainer, params.reaction, () => {
-                  return CustomReaction.toggle(params.postId, params.reaction)
+                  return CustomReaction.toggle(this.attrs.post, params.reaction)
                     .then(resolve)
                     .catch((e) => {
                       bootbox.alert(this._extractErrors(e));
@@ -283,7 +293,7 @@ export default createWidget("discourse-reactions-actions", {
               addReaction(postContainer, params.reaction, () => {
                 this.toggleReaction(params);
 
-                CustomReaction.toggle(params.postId, params.reaction)
+                CustomReaction.toggle(this.attrs.post, params.reaction)
                   .then(resolve)
                   .catch((e) => {
                     bootbox.alert(this._extractErrors(e));
@@ -294,14 +304,14 @@ export default createWidget("discourse-reactions-actions", {
           });
         });
       }).finally(() => {
-        this.collapsePanels();
+        this.collapseAllPanels();
         this.scheduleRerender();
       });
     }
   },
 
   toggleReaction(attrs) {
-    this.collapsePanels();
+    this.collapseAllPanels();
 
     if (
       this.attrs.post.current_user_reaction &&
@@ -411,7 +421,7 @@ export default createWidget("discourse-reactions-actions", {
       return this.sendWidgetAction("showLogin");
     }
 
-    this.collapsePanels();
+    this.collapseAllPanels();
 
     const mainReactionName =
       this.siteSettings.discourse_reactions_reaction_for_like;
@@ -442,7 +452,7 @@ export default createWidget("discourse-reactions-actions", {
 
     if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       this.toggleReaction(attrs);
-      return CustomReaction.toggle(this.attrs.post.id, attrs.reaction).catch(
+      return CustomReaction.toggle(this.attrs.post, attrs.reaction).catch(
         (e) => {
           bootbox.alert(this._extractErrors(e));
           this._rollbackState(post);
@@ -478,7 +488,7 @@ export default createWidget("discourse-reactions-actions", {
               ? attrs.reaction
               : this.siteSettings.discourse_reactions_reaction_for_like;
 
-          CustomReaction.toggle(this.attrs.post.id, toggleReaction)
+          CustomReaction.toggle(this.attrs.post, toggleReaction)
             .then(resolve)
             .catch((e) => {
               bootbox.alert(this._extractErrors(e));
@@ -490,46 +500,82 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   cancelCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
+    cancel(this._collapseHandler);
   },
 
-  scheduleCollapse() {
-    this._collapseHandler && cancel(this._collapseHandler);
-    this._collapseHandler = later(this, this.collapsePanels, 500);
+  cancelExpand() {
+    cancel(this._expandHandler);
   },
 
-  buildId: (attrs) => `discourse-reactions-actions-${attrs.post.id}`,
+  scheduleExpand(handler) {
+    this.cancelExpand();
+
+    this._expandHandler = later(this, this[handler], 250);
+  },
+
+  scheduleCollapse(handler) {
+    this.cancelCollapse();
+
+    this._collapseHandler = later(this, this[handler], 500);
+  },
+
+  buildId: (attrs) =>
+    `discourse-reactions-actions-${attrs.post.id}-${attrs.position || "right"}`,
 
   clickOutside() {
     if (this.state.reactionsPickerExpanded || this.state.statePanelExpanded) {
-      this.collapsePanels();
+      this.collapseAllPanels();
     }
   },
 
   expandReactionsPicker() {
+    cancel(this._collapseHandler);
+    _currentReactionWidget?.collapseAllPanels();
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = true;
     this.scheduleRerender();
-
-    this._setupPopper(this.attrs.post.id, [
+    this._setupPopper([
       ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker",
     ]);
   },
 
+  expandStatePanel() {
+    cancel(this._collapseHandler);
+    _currentReactionWidget?.collapseAllPanels();
+    this.state.statePanelExpanded = true;
+    this.state.reactionsPickerExpanded = false;
+    this.scheduleRerender();
+    this._setupPopper([
+      ".discourse-reactions-counter",
+      ".discourse-reactions-state-panel",
+    ]);
+  },
+
   collapseStatePanel() {
+    cancel(this._collapseHandler);
+    this._collapseHandler = null;
     this.state.statePanelExpanded = false;
-    this._resetPopper();
     this.scheduleRerender();
   },
 
-  collapsePanels() {
-    this.cancelCollapse();
+  collapseReactionsPicker() {
+    cancel(this._collapseHandler);
+    this._collapseHandler = null;
+    this.state.reactionsPickerExpanded = false;
+    this.scheduleRerender();
+  },
 
+  collapseAllPanels() {
+    cancel(this._collapseHandler);
+    this._collapseHandler = null;
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
-    this._resetPopper();
     this.scheduleRerender();
+  },
+
+  updatePopperPosition() {
+    _popperPicker?.update();
   },
 
   html(attrs) {
@@ -538,15 +584,18 @@ export default createWidget("discourse-reactions-actions", {
     const mainReaction =
       this.siteSettings.discourse_reactions_reaction_for_like;
 
+    const payload = Object.assign({}, attrs, {
+      reactionsPickerExpanded: this.state.reactionsPickerExpanded,
+      statePanelExpanded: this.state.statePanelExpanded,
+    });
+
     if (this.currentUser && post.user_id !== this.currentUser.id) {
-      items.push(
-        this.attach(
-          "discourse-reactions-picker",
-          Object.assign({}, attrs, {
-            reactionsPickerExpanded: this.state.reactionsPickerExpanded,
-          })
-        )
-      );
+      items.push(this.attach("discourse-reactions-picker", payload));
+    }
+
+    if (attrs.position === "left") {
+      items.push(this.attach("discourse-reactions-counter", payload));
+      return items;
     }
 
     if (
@@ -554,38 +603,37 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.length === 1 &&
       post.reactions[0].id === mainReaction
     ) {
-      items.push(this.attach("discourse-reactions-double-button", attrs));
+      items.push(this.attach("discourse-reactions-double-button", payload));
     } else if (this.site.mobileView) {
       if (!post.yours) {
-        items.push(this.attach("discourse-reactions-counter", attrs));
-        items.push(this.attach("discourse-reactions-reaction-button", attrs));
+        items.push(this.attach("discourse-reactions-counter", payload));
+        items.push(this.attach("discourse-reactions-reaction-button", payload));
       } else if (post.yours && post.reactions && post.reactions.length) {
-        items.push(this.attach("discourse-reactions-counter", attrs));
+        items.push(this.attach("discourse-reactions-counter", payload));
       }
     } else {
       if (!post.yours) {
-        items.push(this.attach("discourse-reactions-reaction-button", attrs));
+        items.push(this.attach("discourse-reactions-reaction-button", payload));
       }
     }
 
     return items;
   },
 
-  _setupPopper(postId, selectors) {
+  _setupPopper(selectors) {
     schedule("afterRender", () => {
+      const position = this.attrs.position || "right";
+      const id = this.attrs.post.id;
       const trigger = document.querySelector(
-        `#discourse-reactions-actions-${postId} ${selectors[0]}`
+        `#discourse-reactions-actions-${id}-${position} ${selectors[0]}`
       );
-      const popperElement = document.querySelector(
-        `#discourse-reactions-actions-${postId} ${selectors[1]}`
+      const popper = document.querySelector(
+        `#discourse-reactions-actions-${id}-${position} ${selectors[1]}`
       );
 
-      if (popperElement) {
-        popperElement.classList.add("is-expanded");
-
-        _popperPicker && _popperPicker.destroy();
-        _popperPicker = this._applyPopper(trigger, popperElement);
-      }
+      _popperPicker?.destroy();
+      _popperPicker = this._applyPopper(trigger, popper);
+      _currentReactionWidget = this;
     });
   },
 
@@ -634,25 +682,15 @@ export default createWidget("discourse-reactions-actions", {
       xhr.status === 429 &&
       xhr.responseJSON &&
       xhr.responseJSON.extras &&
-      xhr.responseJSON.extras.wait_seconds
+      xhr.responseJSON.extras.time_left
     ) {
       return I18n.t("discourse_reactions.reaction.too_many_request", {
-        count: xhr.responseJSON.extras.wait_seconds,
+        time_left: xhr.responseJSON.extras.time_left,
       });
     } else if (xhr.status === 403) {
       return I18n.t("discourse_reactions.reaction.forbidden");
     } else {
       return I18n.t("errors.desc.unknown");
     }
-  },
-
-  _resetPopper() {
-    const container = document.getElementById(this.buildId(this.attrs));
-    container &&
-      container
-        .querySelectorAll(
-          ".discourse-reactions-state-panel.is-expanded, .discourse-reactions-picker.is-expanded"
-        )
-        .forEach((popper) => popper.classList.remove("is-expanded"));
   },
 });

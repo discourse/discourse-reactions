@@ -66,10 +66,6 @@ html.discourse-reactions-no-select {
         display: flex;
         flex-direction: column;
 
-        .spinner-container {
-          align-self: center;
-        }
-
         .heading {
           font-weight: 700;
           font-size: $font-up-1;
@@ -113,16 +109,12 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-picker {
-  visibility: hidden;
-  display: none;
-  padding: 15px 0;
   z-index: z("usercard") - 2;
-  position: relative;
+  position: absolute;
+  visibility: hidden;
+  padding: 15px 0;
 
   &.is-expanded {
-    animation: 0.33s fadeIn;
-    animation-fill-mode: forwards;
-    display: flex;
     visibility: visible;
   }
 
@@ -178,13 +170,15 @@ html.discourse-reactions-no-select {
 }
 
 .discourse-reactions-state-panel {
-  min-width: 80px;
-  max-width: 275px;
-  visibility: hidden;
-  display: none;
-  padding: 15px 0;
   z-index: z("usercard") - 2;
-  position: relative;
+  position: absolute;
+  visibility: hidden;
+  padding: 15px 0;
+
+  &.is-expanded {
+    min-width: 80px;
+    visibility: visible;
+  }
 
   .discourse-reactions-state-panel-reaction .count {
     padding-right: 0.25em;
@@ -196,13 +190,6 @@ html.discourse-reactions-no-select {
         width: #{$i * 10}px;
       }
     }
-  }
-
-  &.is-expanded {
-    animation: 0.33s fadeIn;
-    animation-fill-mode: forwards;
-    display: flex;
-    visibility: visible;
   }
 
   .container {
@@ -276,6 +263,7 @@ html.discourse-reactions-no-select {
     align-items: center;
     justify-content: center;
     padding-top: 0.25em;
+    margin-left: 0 !important; // core rule has too much specificity
 
     .count {
       font-size: $font-down-1;
@@ -317,6 +305,14 @@ html.discourse-reactions-no-select {
 .discourse-reactions-actions {
   display: inline-flex;
   justify-content: flex-end;
+
+  .spinner-container {
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    margin-left: 0 !important; // core rule has too much specificity
+  }
 
   // manually account for emoji not being a perfect square
   .reactions-counter {

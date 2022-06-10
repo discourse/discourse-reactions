@@ -1,3 +1,4 @@
+import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -78,8 +79,9 @@ function initializeDiscourseReactions(api) {
       return;
     }
 
-    return dec.attach("discourse-reactions-counter", {
+    return dec.attach("discourse-reactions-actions", {
       post,
+      position: "left",
     });
   });
 
@@ -133,5 +135,9 @@ export default {
     if (siteSettings.discourse_reactions_enabled) {
       withPluginApi("0.10.1", initializeDiscourseReactions);
     }
+  },
+
+  teardown() {
+    resetCurrentReaction();
   },
 };
