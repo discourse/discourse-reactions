@@ -16,8 +16,6 @@ zh_CN:
       state_panel:
         more_users: "还有 %{count} 个…"
       reaction:
-        too_many_request:
-          other: "您回应的速度过快，请在 %{count} 秒后再试。"
         forbidden: "该回应是很久以前创建的。它不能再被修改或移除。"
       picker:
         react_with: "使用以下方式回应此帖子：%{reaction}"

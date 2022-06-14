@@ -16,9 +16,6 @@ de:
       state_panel:
         more_users: "und %{count} weitere …"
       reaction:
-        too_many_request:
-          one: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunde erneut."
-          other: "Du hast etwas zu schnell auf diesen Beitrag reagiert. Versuche es in %{count} Sekunden erneut."
         forbidden: "Diese Reaktion wurde vor zu langer Zeit erstellt. Sie kann nicht mehr bearbeitet oder gelöscht werden."
       picker:
         react_with: "Reagiere auf diesen Beitrag mit: %{reaction}"

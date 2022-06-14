@@ -16,9 +16,6 @@ pt_BR:
       state_panel:
         more_users: "e mais %{count}..."
       reaction:
-        too_many_request:
-          one: "Você está reagindo um pouco rápido demais, tente novamente em %{count} segundo."
-          other: "Você está reagindo um pouco rápido demais, tente novamente em %{count} segundos."
         forbidden: "Essa reação foi criada há muito tempo. Ela não pode mais ser modificada ou removida."
       picker:
         react_with: "Reaja a esta postagem com: %{reaction}"
