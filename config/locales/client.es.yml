@@ -16,9 +16,6 @@ es:
       state_panel:
         more_users: "y %{count} más..."
       reaction:
-        too_many_request:
-          one: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundo."
-          other: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundos."
         forbidden: "Esa reacción se creó hace demasiado tiempo. Ya no se puede modificar ni eliminar."
       picker:
         react_with: "Reacciona a esta publicación con: %{reaction}"

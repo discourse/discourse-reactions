@@ -16,9 +16,6 @@ hu:
       state_panel:
         more_users: "és %{count} további…"
       reaction:
-        too_many_request:
-          one: "Kicsit túl gyorsan reagált, próbálja újra %{count} másodperc múlva."
-          other: "Kicsit túl gyorsan reagált, próbálja újra %{count} másodperc múlva."
         forbidden: "Ez a reakció túl régen lett létrehozva. Már nem lehet módosítani vagy eltávolítani."
       picker:
         react_with: "Reagálás erre a bejegyzésre ezzel: %{reaction}"

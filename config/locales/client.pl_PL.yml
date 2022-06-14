@@ -16,11 +16,6 @@ pl_PL:
       state_panel:
         more_users: "i %{count} więcej..."
       reaction:
-        too_many_request:
-          one: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekundę."
-          few: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekundy."
-          many: "Zareagowałeś zbyt szybko, spróbuj ponownie za %{count} sekund."
-          other: "Odpowiadasz trochę za szybko, spróbuj ponownie za %{count} sekund."
         forbidden: "Ta reakcja powstała zbyt dawno temu. Nie można go już modyfikować ani usuwać."
       picker:
         react_with: "Zareaguj na ten post z: %{reaction}"

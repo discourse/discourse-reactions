@@ -16,9 +16,6 @@ fi:
       state_panel:
         more_users: "ja %{count} muuta..."
       reaction:
-        too_many_request:
-          one: "Olet reagoinut hieman liian nopeasti, yritä uudelleen %{count} sekunnin kuluttua."
-          other: "Olet reagoinut hieman liian nopeasti, yritä uudelleen %{count} sekunnin kuluttua."
         forbidden: "Tämä reaktio luotiin liian kauan sitten. Sitä ei voi enää muokata tai poistaa."
       picker:
         react_with: "Reagoi tähän viestiin reaktiolla: %{reaction}"

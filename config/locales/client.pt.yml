@@ -15,10 +15,6 @@ pt:
       reactions_title: "Reações"
       state_panel:
         more_users: "e mais %{count}..."
-      reaction:
-        too_many_request:
-          one: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundo."
-          other: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundos."
       picker:
         react_with: "Reagir a esta publicação com: %{reaction}"
         cant_remove_reaction: "Não pode remover esta reação"

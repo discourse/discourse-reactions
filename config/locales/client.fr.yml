@@ -16,9 +16,6 @@ fr:
       state_panel:
         more_users: "et %{count} de plus…"
       reaction:
-        too_many_request:
-          one: "La fréquence de vos réactions est un peu trop élevée, réessayez dans %{count} seconde."
-          other: "La fréquence de vos réactions est un peu trop élevée, réessayez dans %{count} secondes."
         forbidden: "Cette réaction a été créée il y a trop longtemps. Elle ne peut plus être modifiée ou supprimée."
       picker:
         react_with: "Réagir à ce message avec : %{reaction}"
