@@ -19,7 +19,7 @@ en:
       main_reaction:
         add: "Like this post"
         remove: "Remove this like"
-        cant_remove: "You can no longer remove this like"
+        cant_remove: "You can no longer remove your like"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"
