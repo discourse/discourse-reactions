@@ -14,12 +14,12 @@ en:
         forbidden: "That reaction was created too long ago. It can no longer be modified or removed."
       picker:
         react_with: "React to this post with: %{reaction}"
-        cant_remove_reaction: "You can’t remove this reaction"
+        cant_remove_reaction: "You can no longer remove your reaction"
         remove_reaction: "Remove this %{reaction} reaction"
       main_reaction:
         add: "Like this post"
         remove: "Remove this like"
-        cant_remove: "You can’t remove this like"
+        cant_remove: "You can no longer remove your like"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"
