@@ -17,12 +17,10 @@ pt:
         more_users: "e mais %{count}..."
       picker:
         react_with: "Reagir a esta publicação com: %{reaction}"
-        cant_remove_reaction: "Não pode remover esta reação"
         remove_reaction: "Remover esta %{reaction} reação"
       main_reaction:
         add: "Gostar desta publicação"
         remove: "Remover este gosto"
-        cant_remove: "Não pode remover este gosto"
     notifications:
       titles:
         reaction: "nova reação"

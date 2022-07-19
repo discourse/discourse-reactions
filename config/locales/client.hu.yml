@@ -19,12 +19,10 @@ hu:
         forbidden: "Ez a reakció túl régen lett létrehozva. Már nem lehet módosítani vagy eltávolítani."
       picker:
         react_with: "Reagálás erre a bejegyzésre ezzel: %{reaction}"
-        cant_remove_reaction: "Nem távolíthatja el ezt a reakciót"
         remove_reaction: "A(z) %{reaction} reakció eltávolítása"
       main_reaction:
         add: "Bejegyzés kedvelése"
         remove: "Kedvelés eltávolítása"
-        cant_remove: "Nem távolíthatja el ezt a kedvelést"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"
