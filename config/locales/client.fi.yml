@@ -19,12 +19,10 @@ fi:
         forbidden: "Tämä reaktio luotiin liian kauan sitten. Sitä ei voi enää muokata tai poistaa."
       picker:
         react_with: "Reagoi tähän viestiin reaktiolla: %{reaction}"
-        cant_remove_reaction: "Et voi poistaa tätä reaktiota"
         remove_reaction: "Poista tämä reaktio: %{reaction}"
       main_reaction:
         add: "Tykkää viestistä"
         remove: "Poista tämä tykkäys"
-        cant_remove: "Et voi poistaa tätä tykkäystä"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"

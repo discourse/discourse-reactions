@@ -19,12 +19,10 @@ pt_BR:
         forbidden: "Essa reação foi criada há muito tempo. Ela não pode mais ser modificada ou removida."
       picker:
         react_with: "Reaja a esta postagem com: %{reaction}"
-        cant_remove_reaction: "Você não pode remover esta reação"
         remove_reaction: "Remova esta %{reaction} reação"
       main_reaction:
         add: "Curta esta postagem"
         remove: "Remova essa curtida"
-        cant_remove: "Você não pode remover esta curtida"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"

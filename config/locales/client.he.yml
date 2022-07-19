@@ -20,12 +20,12 @@ he:
         forbidden: "תחושה זו נוצרה לפני זמן רב מידי. לא ניתן יותר לערוך או להסיר אותה."
       picker:
         react_with: "להוסיף תחושה לפוסט הזה: %{reaction}"
-        cant_remove_reaction: "אי אפשר להסיר את התחושה הזאת"
+        cant_remove_reaction: "כבר אין לך אפשרות להסיר את התחושה שלך"
         remove_reaction: "להסיר את התחושה %{reaction}"
       main_reaction:
         add: "לסמן את הפוסט בלייק"
         remove: "הסרת הלייק הזה"
-        cant_remove: "אין לך אפשרות להסיר את הלייק הזה"
+        cant_remove: "כבר אין לך אפשרות להסיר את הלייק שלך"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"

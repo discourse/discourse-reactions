@@ -19,12 +19,10 @@ zh_CN:
         forbidden: "该回应是很久以前创建的。它不能再被修改或移除。"
       picker:
         react_with: "使用以下方式回应此帖子：%{reaction}"
-        cant_remove_reaction: "您无法移除此回应"
         remove_reaction: "删除此 %{reaction} 回应"
       main_reaction:
         add: "点赞此帖子"
         remove: "移除此赞"
-        cant_remove: "您无法移除此赞"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"

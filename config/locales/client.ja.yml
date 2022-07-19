@@ -19,12 +19,10 @@ ja:
         forbidden: "そのリアクションはかなり前に作成されました。変更または削除できなくなっています。"
       picker:
         react_with: "この投稿へのリアクション: %{reaction}"
-        cant_remove_reaction: "このリアクションを削除できません"
         remove_reaction: "この %{reaction} リアクションを削除する"
       main_reaction:
         add: "この投稿に「いいね！」する"
         remove: "この「いいね！」を削除する"
-        cant_remove: "この「いいね！」を削除できません"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"

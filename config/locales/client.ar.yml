@@ -19,12 +19,10 @@ ar:
         forbidden: "تم إنشاء هذا التفاعل منذ فترة طويلة جدًا، ولم يعُد من الممكن تعديله أو حذفه."
       picker:
         react_with: "تفاعل مع هذا المنشور باستخدام: %{reaction}"
-        cant_remove_reaction: "لا يمكنك إزالة هذا التفاعل"
         remove_reaction: "إزالة هذا التفاعل %{reaction}"
       main_reaction:
         add: "تسجيل الإعجاب بهذا المنشور"
         remove: "إزالة هذا الإعجاب"
-        cant_remove: "لا يمكنك إزالة هذا الإعجاب"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"
