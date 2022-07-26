@@ -20,10 +20,12 @@ sv:
         forbidden: "Den reaktionen skapades för långt tillbaka i tiden. Den kan inte längre ändras eller tas bort."
       picker:
         react_with: "Reagera på det här inlägget med: %{reaction}"
+        cant_remove_reaction: "Du kan inte längre ta bort din reaktion"
         remove_reaction: "Ta bort denna %{reaction}-reaktion"
       main_reaction:
         add: "Gilla detta inlägg"
         remove: "Ta bort denna gillning"
+        cant_remove: "Du kan inte längre ta bort ditt gillande"
     notifications:
       reaction:
         single: "<span>%{username}</span> %{description}"
