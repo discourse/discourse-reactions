@@ -208,7 +208,7 @@ after_initialize do
     SQL
 
     (report.start_date.to_date..report.end_date.to_date).each do |date|
-      data = { 'day' => date }
+      data = { day: date }
 
       like_count = 0
       like_reaction_count = 0
@@ -225,7 +225,7 @@ after_initialize do
         end
       end
 
-      data['like_count'] = like_reaction_count + like_count
+      data[:like_count] = like_reaction_count + like_count
 
       report.data << data
     end
