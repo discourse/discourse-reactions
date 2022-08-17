@@ -20,6 +20,9 @@ acceptance("Discourse Reactions - Post", function (needs) {
   needs.pretender((server, helper) => {
     const topicPath = "/t/topic_with_reactions_and_likes.json";
     server.get(topicPath, () => helper.response(ReactionsTopics[topicPath]));
+    server.get("/discourse-reactions/posts/854/reactions-users.json", () =>
+      helper.response({ reaction_users: [] })
+    );
   });
 
   test("Reactions count", async (assert) => {
@@ -40,6 +43,8 @@ acceptance("Discourse Reactions - Post", function (needs) {
       "heart|angry|laughing|open_mouth|cry|thumbsdown|nose:t2|thumbsup";
 
     await visit("/t/-/topic_with_reactions_and_likes");
+
+    await click("#post_1 .discourse-reactions-counter");
 
     queryAll(
       "#post_1 .discourse-reactions-counter .discourse-reactions-list .reactions .discourse-reactions-list-emoji .heading"
