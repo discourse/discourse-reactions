@@ -1,5 +1,10 @@
 import { test } from "qunit";
-import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
+import {
+  acceptance,
+  exists,
+  query,
+  queryAll,
+} from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtures";
 import { visit } from "@ember/test-helpers";
 
@@ -22,7 +27,9 @@ acceptance("Discourse Reactions - Post", function (needs) {
     await visit("/t/-/topic_with_reactions_and_likes");
 
     assert.equal(
-      find("#post_1 .discourse-reactions-counter .reactions-counter").text(),
+      queryAll(
+        "#post_1 .discourse-reactions-counter .reactions-counter"
+      ).text(),
       209,
       "it displays the correct count"
     );
@@ -35,7 +42,7 @@ acceptance("Discourse Reactions - Post", function (needs) {
 
     await visit("/t/-/topic_with_reactions_and_likes");
 
-    find(
+    queryAll(
       "#post_1 .discourse-reactions-counter .discourse-reactions-list .reactions .reaction"
     ).map((index, currentValue) => {
       reactions.push(currentValue.innerText);
@@ -81,6 +88,42 @@ acceptance("Discourse Reactions - Post", function (needs) {
     assert.notOk(
       exists("#post_1 .discourse-reactions-double-button"),
       "it does not display the reaction count beside the reaction button"
+    );
+  });
+
+  test("Current user has no reaction on post and can toggle", async (assert) => {
+    await visit("/t/-/topic_with_reactions_and_likes");
+
+    assert.ok(
+      exists("#post_2 .discourse-reactions-actions.can-toggle-reaction"),
+      "it allows to toggle the reaction"
+    );
+  });
+
+  test("Current user has no reaction on post and can toggle", async (assert) => {
+    await visit("/t/-/topic_with_reactions_and_likes");
+
+    assert.ok(
+      exists("#post_2 .discourse-reactions-actions.can-toggle-reaction"),
+      "it allows to toggle the reaction"
+    );
+  });
+
+  test("Current user can undo on post and can toggle", async (assert) => {
+    await visit("/t/-/topic_with_reactions_and_likes");
+
+    assert.ok(
+      exists("#post_3 .discourse-reactions-actions.can-toggle-reaction"),
+      "it allows to toggle the reaction"
+    );
+  });
+
+  test("Current user can't toggle", async (assert) => {
+    await visit("/t/-/topic_with_reactions_and_likes");
+
+    assert.notOk(
+      exists("#post_1 .discourse-reactions-actions.can-toggle-reaction"),
+      "it doesn’t allow to toggle the reaction"
     );
   });
 });
