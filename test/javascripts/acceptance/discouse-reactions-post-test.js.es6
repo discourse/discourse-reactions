@@ -1,4 +1,4 @@
-import { test } from "qunit";
+import { skip, test } from "qunit";
 import {
   acceptance,
   exists,
@@ -34,7 +34,7 @@ acceptance("Discourse Reactions - Post", function (needs) {
     );
   });
 
-  test("Reactions list", async (assert) => {
+  skip("Reactions list", async (assert) => {
     const reactions = [];
     const expectedSequence =
       "heart|angry|laughing|open_mouth|cry|thumbsdown|nose:t2|thumbsup";
