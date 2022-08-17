@@ -42,9 +42,9 @@ acceptance("Discourse Reactions - Post", function (needs) {
     await visit("/t/-/topic_with_reactions_and_likes");
 
     queryAll(
-      "#post_1 .discourse-reactions-counter .discourse-reactions-list .reactions .discourse-reactions-list-emoji"
-    ).map((index, currentValue) => {
-      reactions.push(currentValue.innerText);
+      "#post_1 .discourse-reactions-counter .discourse-reactions-list .reactions .discourse-reactions-list-emoji .heading"
+    ).map((index, node) => {
+      reactions.push(node.innerText.trim());
     });
 
     assert.equal(
