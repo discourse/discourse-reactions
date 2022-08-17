@@ -326,6 +326,20 @@ html.discourse-reactions-no-select {
     }
   }
 
+  &.can-toggle-reaction {
+    .discourse-reactions-reaction-button .reaction-button,
+    .discourse-reactions-reaction-button {
+      cursor: pointer;
+    }
+  }
+
+  &:not(.can-toggle-reaction) {
+    .discourse-reactions-reaction-button .reaction-button,
+    .discourse-reactions-reaction-button {
+      cursor: not-allowed;
+    }
+  }
+
   &.has-reacted {
     .discourse-no-touch & {
       .discourse-reactions-double-button:hover {
@@ -361,11 +375,6 @@ html.discourse-reactions-no-select {
           background: var(--primary-low);
         }
       }
-
-      .discourse-reactions-reaction-button .reaction-button,
-      .discourse-reactions-reaction-button {
-        cursor: not-allowed;
-      }
     }
   }
 
@@ -392,10 +401,6 @@ html.discourse-reactions-no-select {
 
           background: var(--love-low);
         }
-      }
-
-      .discourse-reactions-reaction-button {
-        cursor: pointer;
       }
     }
   }
