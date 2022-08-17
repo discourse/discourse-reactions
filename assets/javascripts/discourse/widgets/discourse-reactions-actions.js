@@ -149,7 +149,7 @@ export default createWidget("discourse-reactions-actions", {
 
     if (
       (!post.current_user_reaction || post.current_user_reaction.can_undo) &&
-      post.likeAction.canToggle
+      post.likeAction?.canToggle
     ) {
       classes.push("can-toggle-reaction");
     }
