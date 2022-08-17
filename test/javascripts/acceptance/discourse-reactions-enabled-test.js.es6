@@ -1,7 +1,7 @@
 import { acceptance } from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtures";
 
-acceptance("Discourse Reactions - Deleted post", function (needs) {
+acceptance("Discourse Reactions - Enabled", function (needs) {
   needs.user();
 
   needs.settings({
@@ -16,12 +16,12 @@ acceptance("Discourse Reactions - Deleted post", function (needs) {
     server.get(topicPath, () => helper.response(ReactionsTopics[topicPath]));
   });
 
-  test("Reaction controls", async (assert) => {
+  test("It shows reactions controls", async (assert) => {
     await visit("/t/-/topic_with_reactions_and_likes");
 
-    assert.notOk(
-      exists("#post_4 .discourse-reactions-actions"),
-      "reaction controls are not shown"
+    assert.ok(
+      exists(".discourse-reactions-actions"),
+      "reaction controls are available"
     );
   });
 });
