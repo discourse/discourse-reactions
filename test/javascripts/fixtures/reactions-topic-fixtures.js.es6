@@ -40,8 +40,7 @@ export default {
               clicks: 0,
             },
             {
-              url:
-                "https://meta.discourse.org/t/install-plugins-in-discourse/19157",
+              url: "https://meta.discourse.org/t/install-plugins-in-discourse/19157",
               internal: false,
               reflection: false,
               title: "Install Plugins in Discourse - admins - Discourse Meta",
