@@ -2,6 +2,9 @@ import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/disc
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
+import { userPath } from "discourse/lib/url";
+import { formatUsername } from "discourse/lib/utilities";
+import I18n from "I18n";
 
 const PLUGIN_ID = "discourse-reactions";
 
@@ -125,6 +128,85 @@ function initializeDiscourseReactions(api) {
     // It's an admin component so it's not always present
     { ignoreMissing: true }
   );
+
+  api.replaceIcon("notification.reaction", "discourse-emojis");
+
+  if (api.registerNotificationTypeRenderer) {
+    api.registerNotificationTypeRenderer("reaction", (NotificationItemBase) => {
+      return class extends NotificationItemBase {
+        get linkTitle() {
+          return I18n.t("notifications.titles.reaction");
+        }
+
+        get linkHref() {
+          const superHref = super.linkHref;
+          if (superHref) {
+            return superHref;
+          }
+          let activityName = "reactions-received";
+
+          // All collapsed notifications were "likes"
+          if (this.notification.data.reaction_icon) {
+            activityName = "likes-received";
+          }
+          return userPath(
+            `${this.currentUser.username}/notifications/${activityName}?acting_username=${this.notification.data.display_username}&include_likes=true`
+          );
+        }
+
+        get icon() {
+          return (
+            this.notification.data.reaction_icon ||
+            `notification.${this.notificationName}`
+          );
+        }
+
+        get label() {
+          const count = this.notification.data.count;
+          const username = this.username;
+
+          if (!count || count === 1 || !this.notification.data.username2) {
+            return username;
+          }
+
+          if (count > 2) {
+            return I18n.t("notifications.reaction_2_users_with_others", {
+              username,
+              username2: formatUsername(this.notification.data.username2),
+              count: count - 2,
+            });
+          } else {
+            return I18n.t("notifications.reaction_2_users", {
+              username,
+              username2: formatUsername(this.notification.data.username2),
+            });
+          }
+        }
+
+        get labelClasses() {
+          if (this.notification.data.username2) {
+            if (this.notification.data.count > 2) {
+              return ["multi-user"];
+            } else {
+              return ["double-user"];
+            }
+          }
+        }
+
+        get description() {
+          if (
+            this.notification.data.count > 1 &&
+            !this.notification.data.username2
+          ) {
+            return I18n.t("notifications.reaction_1_user_multiple_posts", {
+              count: this.notification.data.count,
+            });
+          }
+          return super.description;
+        }
+      };
+    });
+  }
 }
 
 export default {
