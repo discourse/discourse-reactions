@@ -1,11 +1,9 @@
 import { createWidgetFrom } from "discourse/widgets/widget";
 import { DefaultNotificationItem } from "discourse/widgets/default-notification-item";
-import { iconNode, replaceIcon } from "discourse-common/lib/icon-library";
+import { iconNode } from "discourse-common/lib/icon-library";
 import { formatUsername, postUrl } from "discourse/lib/utilities";
 import { userPath } from "discourse/lib/url";
 import I18n from "I18n";
-
-replaceIcon("notification.reaction", "discourse-emojis");
 
 createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
   notificationTitle() {
