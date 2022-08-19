@@ -132,8 +132,8 @@ function initializeDiscourseReactions(api) {
   api.replaceIcon("notification.reaction", "discourse-emojis");
 
   if (api.registerNotificationTypeRenderer) {
-    api.registerNotificationTypeRenderer("reaction", (NotificationItemBase) => {
-      return class extends NotificationItemBase {
+    api.registerNotificationTypeRenderer("reaction", (NotificationTypeBase) => {
+      return class extends NotificationTypeBase {
         get linkTitle() {
           return I18n.t("notifications.titles.reaction");
         }
