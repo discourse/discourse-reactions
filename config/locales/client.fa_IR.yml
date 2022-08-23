@@ -24,6 +24,11 @@ fa_IR:
         remove: "حذف واکنش پسندیدن"
         cant_remove: "شما دیگر پسندیدن خود را نمی‌توانید حذف کنید"
     notifications:
+      reaction_1_user_multiple_posts: "به %{count} تا از نوشته‌های شما واکنش نشان داد"
+      reaction_2_users: "%{username}، %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}، %{username2} و %{count} نفر دیگر"
+        other: "%{username}، %{username2} و %{count} نفر دیگر"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"

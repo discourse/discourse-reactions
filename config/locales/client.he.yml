@@ -27,6 +27,12 @@ he:
         remove: "הסרת הלייק הזה"
         cant_remove: "כבר אין לך אפשרות להסיר את הלייק שלך"
     notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} ועוד %{count}"
+        two: "%{username}, %{username2} ועוד %{count}"
+        many: "%{username}, %{username2} ועוד %{count}"
+        other: "%{username}, %{username2} ועוד %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
