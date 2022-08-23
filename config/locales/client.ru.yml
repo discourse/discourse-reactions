@@ -27,6 +27,13 @@ ru:
         remove: "Удалить эту эмоцию"
         cant_remove: "Вы больше не можете удалить выраженную симпатию"
     notifications:
+      reaction_1_user_multiple_posts: "отреагировал на %{count} ваших сообщений"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} и ещё %{count} пользователь"
+        few: "%{username}, %{username2} и ещё %{count} пользователя"
+        many: "%{username}, %{username2} и ещё %{count} пользователей"
+        other: "%{username}, %{username2} и ещё %{count} пользователей"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> отреагировал на %{count} ваших сообщений"
