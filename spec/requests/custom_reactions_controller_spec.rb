@@ -67,7 +67,7 @@ describe DiscourseReactions::CustomReactionsController do
 
       expect do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/hugs/toggle.json"
-      end.to change { DiscourseReactions::Reaction.count }.by(0)
+      end.to not_change { DiscourseReactions::Reaction.count }
         .and change { DiscourseReactions::ReactionUser.count }.by(-1)
 
       expect(response.status).to eq(200)
@@ -180,7 +180,7 @@ describe DiscourseReactions::CustomReactionsController do
       expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
     end
 
-    context 'a post with one of your reactions has been deleted' do
+    describe 'a post with one of your reactions has been deleted' do
       fab!(:deleted_post) { Fabricate(:post) }
       fab!(:kept_post) { Fabricate(:post) }
       fab!(:user) { Fabricate(:user) }
@@ -335,7 +335,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
-  context 'positive notifications' do
+  describe 'positive notifications' do
     before do
       PostActionNotifier.enable
     end
@@ -356,7 +356,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
-  context 'reaction notifications' do
+  describe 'reaction notifications' do
     it 'calls ReactinNotification service' do
       sign_in(user_1)
       DiscourseReactions::ReactionNotification.any_instance.expects(:create).once
@@ -387,8 +387,8 @@ describe DiscourseReactions::CustomReactionsController do
     freeze_time(Time.zone.now + 11.minutes)
     expect do
       put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/hugs/toggle.json"
-    end.to change { DiscourseReactions::Reaction.count }.by(0)
-      .and change { DiscourseReactions::ReactionUser.count }.by(0)
+    end.to not_change { DiscourseReactions::Reaction.count }
+      .and not_change { DiscourseReactions::ReactionUser.count }
 
     expect(response.status).to eq(403)
   end
