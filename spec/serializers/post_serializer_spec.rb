@@ -162,7 +162,7 @@ describe PostSerializer do
     end
   end
 
-  context 'disabled' do
+  context 'when disabled' do
     it 'is not extending post serializer when plugin is disabled' do
       SiteSetting.discourse_reactions_enabled = false
       json = PostSerializer.new(post_1, scope: Guardian.new(user_1), root: false).as_json
@@ -170,7 +170,7 @@ describe PostSerializer do
     end
   end
 
-  context 'changing discourse_reactions_like_icon' do
+  describe 'changing discourse_reactions_like_icon' do
     before do
       SiteSetting.discourse_reactions_reaction_for_like = 'otter'
     end
