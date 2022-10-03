@@ -20,7 +20,7 @@ describe DiscourseReactions::ReactionNotification do
 
   it 'does not create notification when user is muted' do
     MutedUser.create!(user_id: post_1.user.id, muted_user_id: user_1.id)
-    expect { described_class.new(thumbsup, user_1).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(thumbsup, user_1).create }.not_to change { Notification.count }
   end
 
   it 'does not create notification when topic is muted' do
@@ -31,7 +31,7 @@ describe DiscourseReactions::ReactionNotification do
     )
     MutedUser.create!(user_id: post_1.user.id, muted_user_id: user_1.id)
     described_class.new(thumbsup, user_1).create
-    expect { described_class.new(thumbsup, user_1).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(thumbsup, user_1).create }.not_to change { Notification.count }
   end
 
   it 'does not create notification when notification setting is never' do
@@ -40,7 +40,7 @@ describe DiscourseReactions::ReactionNotification do
       UserOption.like_notification_frequency_type[:never]
     )
     MutedUser.create!(user_id: post_1.user.id, muted_user_id: user_1.id)
-    expect { described_class.new(thumbsup, user_1).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(thumbsup, user_1).create }.not_to change { Notification.count }
   end
 
   it 'correctly creates notification when notification setting is first time and daily' do
@@ -56,7 +56,7 @@ describe DiscourseReactions::ReactionNotification do
 
     user_2 = Fabricate(:user)
     Fabricate(:reaction_user, reaction: thumbsup, user: user_2)
-    expect { described_class.new(thumbsup, user_2).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(thumbsup, user_2).create }.not_to change { Notification.count }
 
     freeze_time(Time.zone.now + 1.day)
 
@@ -70,11 +70,11 @@ describe DiscourseReactions::ReactionNotification do
 
     cry = Fabricate(:reaction, post: post_1, reaction_value: 'cry')
     Fabricate(:reaction_user, reaction: cry, user: user_1)
-    expect { described_class.new(cry, user_1).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(cry, user_1).create }.not_to change { Notification.count }
 
     user_2 = Fabricate(:user)
     Fabricate(:reaction_user, reaction: cry, user: user_2)
-    expect { described_class.new(cry, user_1).create }.to change { Notification.count }.by(0)
+    expect { described_class.new(cry, user_1).create }.not_to change { Notification.count }
     expect(JSON.parse(Notification.last.data)['display_username']).to eq(user_1.username)
 
     DiscourseReactions::ReactionUser.find_by(reaction: cry, user: user_1).destroy
@@ -82,7 +82,7 @@ describe DiscourseReactions::ReactionNotification do
     expect do
       described_class.new(cry, user_1).delete
       described_class.new(thumbsup, user_1).delete
-    end.to change { Notification.count }.by(0)
+    end.not_to change { Notification.count }
     expect(JSON.parse(Notification.last.data)['display_username']).to eq(user_2.username)
     expect(Notification.last.notification_type).to eq(Notification.types[:reaction])
 

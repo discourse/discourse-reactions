@@ -27,7 +27,7 @@ describe DiscourseReactions::CustomReactionsController do
     SiteSetting.discourse_reactions_enabled_reactions = "laughing|open_mouth|cry|angry|thumbsup|hugs"
   end
 
-  context '#toggle' do
+  describe '#toggle' do
     let(:payload_with_user) {
       [
         {
@@ -116,13 +116,13 @@ describe DiscourseReactions::CustomReactionsController do
       sign_in(user_1)
       expect do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/invalid-reaction/toggle.json"
-      end.to change { DiscourseReactions::Reaction.count }.by(0)
+      end.not_to change { DiscourseReactions::Reaction.count }
 
       expect(response.status).to eq(422)
     end
   end
 
-  context '#reactions_given' do
+  describe '#reactions_given' do
     fab!(:private_topic) { Fabricate(:private_message_topic, user: user_2) }
     fab!(:private_post) { Fabricate(:post, topic: private_topic) }
     fab!(:secure_group) { Fabricate(:group) }
@@ -207,7 +207,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
-  context '#reactions_received' do
+  describe '#reactions_received' do
     it 'returns reactions received by a user' do
       sign_in(user_2)
 
@@ -287,7 +287,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
   end
 
-  context '#post_reactions_users' do
+  describe '#post_reactions_users' do
     it 'return reaction_users of post when theres no parameters' do
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json"
       parsed = response.parsed_body
