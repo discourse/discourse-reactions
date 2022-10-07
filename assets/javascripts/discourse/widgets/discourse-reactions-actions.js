@@ -6,7 +6,6 @@ import { createWidget } from "discourse/widgets/widget";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import I18n from "I18n";
-import bootbox from "bootbox";
 
 const VIBRATE_DURATION = 5;
 
@@ -100,6 +99,7 @@ function scaleReactionAnimation(mainReaction, start, end, complete) {
 
 export default createWidget("discourse-reactions-actions", {
   tagName: "div.discourse-reactions-actions",
+  services: ["dialog"],
 
   defaultState() {
     return {
@@ -169,7 +169,6 @@ export default createWidget("discourse-reactions-actions", {
 
   touchStart() {
     cancel(this._touchTimeout);
-
     if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
       root?.classList?.add("discourse-reactions-no-select");
@@ -284,7 +283,7 @@ export default createWidget("discourse-reactions-actions", {
                   return CustomReaction.toggle(this.attrs.post, params.reaction)
                     .then(resolve)
                     .catch((e) => {
-                      bootbox.alert(this._extractErrors(e));
+                      this.dialog.alert(this._extractErrors(e));
                       this._rollbackState(post);
                     });
                 });
@@ -296,7 +295,7 @@ export default createWidget("discourse-reactions-actions", {
                 CustomReaction.toggle(this.attrs.post, params.reaction)
                   .then(resolve)
                   .catch((e) => {
-                    bootbox.alert(this._extractErrors(e));
+                    this.dialog.alert(this._extractErrors(e));
                     this._rollbackState(post);
                   });
               });
@@ -454,7 +453,7 @@ export default createWidget("discourse-reactions-actions", {
       this.toggleReaction(attrs);
       return CustomReaction.toggle(this.attrs.post, attrs.reaction).catch(
         (e) => {
-          bootbox.alert(this._extractErrors(e));
+          this.dialog.alert(this._extractErrors(e));
           this._rollbackState(post);
         }
       );
@@ -491,7 +490,7 @@ export default createWidget("discourse-reactions-actions", {
           CustomReaction.toggle(this.attrs.post, toggleReaction)
             .then(resolve)
             .catch((e) => {
-              bootbox.alert(this._extractErrors(e));
+              this.dialog.alert(this._extractErrors(e));
               this._rollbackState(post);
             });
         });
