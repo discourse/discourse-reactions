@@ -203,7 +203,8 @@ after_initialize do
         count(pa.id) as likes_count,
         date_trunc('day', pa.created_at)::date as day
       FROM post_actions as pa
-      WHERE pa.created_at >= :start_date::DATE AND pa.created_at <= :end_date::DATE
+      WHERE pa.post_action_type_id = 2
+      AND pa.created_at >= :start_date::DATE AND pa.created_at <= :end_date::DATE
       GROUP BY day
     SQL
 
