@@ -10,7 +10,6 @@ en:
       state_panel:
         more_users: "and %{count} more..."
       reaction:
-        too_many_request: "You’ve reached the maximum daily reactions for today, but as you gain trust levels, you’ll earn more daily reactions. You’ll be able to react to posts again in %{time_left}."
         forbidden: "That reaction was created too long ago. It can no longer be modified or removed."
       picker:
         react_with: "React to this post with: %{reaction}"

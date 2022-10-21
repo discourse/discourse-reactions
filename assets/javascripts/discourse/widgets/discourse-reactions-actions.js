@@ -680,12 +680,10 @@ export default createWidget("discourse-reactions-actions", {
     if (
       xhr.status === 429 &&
       xhr.responseJSON &&
-      xhr.responseJSON.extras &&
-      xhr.responseJSON.extras.time_left
+      xhr.responseJSON.errors &&
+      xhr.responseJSON.errors[0]
     ) {
-      return I18n.t("discourse_reactions.reaction.too_many_request", {
-        time_left: xhr.responseJSON.extras.time_left,
-      });
+      return xhr.responseJSON.errors[0];
     } else if (xhr.status === 403) {
       return I18n.t("discourse_reactions.reaction.forbidden");
     } else {
