@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative '../fabricators/reaction_fabricator.rb'
-require_relative '../fabricators/reaction_user_fabricator.rb'
 
 describe DiscourseReactions::CustomReactionsController do
   fab!(:post_1) { Fabricate(:post) }
@@ -203,6 +201,27 @@ describe DiscourseReactions::CustomReactionsController do
 
         expect(parsed.length).to eq(1)
         expect(parsed[0]['post_id']).to eq(kept_post.id)
+      end
+    end
+
+    context "When op containing reactions is destroyed" do
+      fab!(:topic) { create_topic }
+      fab!(:op) { Fabricate(:post, topic: topic) }
+
+      it "doesn’t return the reactions from deleted topic" do
+        deleted_topic_id = topic.id
+        sign_in(user_1)
+        put "/discourse-reactions/posts/#{op.id}/custom-reactions/hugs/toggle.json"
+        get "/discourse-reactions/posts/reactions.json", params: { username: user_1.username }
+
+        expect(response.parsed_body.length).to eq(2)
+
+        PostDestroyer.new(Discourse.system_user, op).destroy
+        get "/discourse-reactions/posts/reactions.json", params: { username: user_1.username }
+
+        parsed = response.parsed_body
+        expect(parsed.length).to eq(1)
+        expect(parsed[0]["topic_id"]).to_not eq(deleted_topic_id)
       end
     end
   end
