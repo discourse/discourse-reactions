@@ -204,7 +204,7 @@ describe DiscourseReactions::CustomReactionsController do
       end
     end
 
-    context "When op containing reactions is destroyed" do
+    context "when op containing reactions is destroyed" do
       fab!(:topic) { create_topic }
       fab!(:op) { Fabricate(:post, topic: topic) }
 
