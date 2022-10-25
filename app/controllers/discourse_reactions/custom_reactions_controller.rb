@@ -34,7 +34,7 @@ module DiscourseReactions
 
       reaction_users = DiscourseReactions::ReactionUser
         .joins(:reaction, :post)
-        .joins("INNER JOIN topics t ON t.id = posts.topic_id")
+        .joins("INNER JOIN topics t ON t.id = posts.topic_id AND t.deleted_at IS NULL")
         .joins("LEFT JOIN categories c ON c.id = t.category_id")
         .includes(:user, :post, :reaction)
         .where(user_id: user.id)
