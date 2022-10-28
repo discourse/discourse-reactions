@@ -198,12 +198,12 @@ after_initialize do
       GROUP BY drr.reaction_value, day
     SQL
 
-    likes_results = DB.query(<<~SQL, start_date: report.start_date.to_date, end_date: report.end_date.to_date)
+    likes_results = DB.query(<<~SQL, start_date: report.start_date.to_date, end_date: report.end_date.to_date, likes: PostActionType.types[:like])
       SELECT
         count(pa.id) as likes_count,
         date_trunc('day', pa.created_at)::date as day
       FROM post_actions as pa
-      WHERE pa.post_action_type_id = 2
+      WHERE pa.post_action_type_id = :likes
       AND pa.created_at >= :start_date::DATE AND pa.created_at <= :end_date::DATE
       GROUP BY day
     SQL
