@@ -1,6 +1,4 @@
 en:
-  rate_limiter:
-    too_many_requests: "You have been reacting a bit too fast. Please wait %{time_left} before trying again."
   site_settings:
     discourse_reactions_like_icon: "Defines the icon used for the main reaction button."
     discourse_reactions_reaction_for_like: "Defines the reaction associated to to the like action."
