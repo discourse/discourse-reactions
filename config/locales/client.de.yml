@@ -16,7 +16,6 @@ de:
       state_panel:
         more_users: "und %{count} weitere …"
       reaction:
-        too_many_request: "Du hast die maximale Anzahl an täglichen Reaktionen für heute erreicht, aber je mehr Vertrauen du erlangst, desto mehr tägliche Reaktionen erhältst du. Du kannst wieder auf Beiträge in %{time_left} reagieren."
         forbidden: "Diese Reaktion wurde vor zu langer Zeit erstellt. Sie kann nicht mehr bearbeitet oder gelöscht werden."
       picker:
         react_with: "Reagiere auf diesen Beitrag mit: %{reaction}"
@@ -25,10 +24,13 @@ de:
       main_reaction:
         add: "Diesem Beitrag ein „Gefällt mir“ geben"
         remove: "Entferne dieses „Gefällt mir“"
-        cant_remove: "Du kannst dein Like nicht mehr entfernen"
+        cant_remove: "Du kannst dein „Gefällt mir“ nicht mehr entfernen"
     notifications:
       reaction_1_user_multiple_posts: "reagierte auf %{count} deiner Beiträge"
       reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} und %{count} andere Person"
+        other: "%{username}, %{username2} und %{count} andere"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> hat auf %{count} deiner Beiträge reagiert"
