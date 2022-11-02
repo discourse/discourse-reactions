@@ -19,11 +19,18 @@ fr:
         forbidden: "Cette réaction a été créée il y a trop longtemps. Elle ne peut plus être modifiée ou supprimée."
       picker:
         react_with: "Réagir à ce message avec : %{reaction}"
+        cant_remove_reaction: "Vous ne pouvez plus supprimer votre réaction"
         remove_reaction: "Supprimer cette réaction %{reaction}"
       main_reaction:
         add: "Attribuer un « J'aime » à ce message"
         remove: "Supprimer ce « J'aime »"
+        cant_remove: "Vous ne pouvez plus supprimer votre J'aime"
     notifications:
+      reaction_1_user_multiple_posts: "a réagi à %{count} de vos messages"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} et %{count} autre utilisateur"
+        other: "%{username}, %{username2} et %{count} autres utilisateurs"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> a réagi à %{count} de vos messages."

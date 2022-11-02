@@ -19,11 +19,22 @@ ar:
         forbidden: "تم إنشاء هذا التفاعل منذ فترة طويلة جدًا، ولم يعُد من الممكن تعديله أو حذفه."
       picker:
         react_with: "تفاعل مع هذا المنشور باستخدام: %{reaction}"
+        cant_remove_reaction: "لم يعد بإمكانك إزالة تفاعلك"
         remove_reaction: "إزالة هذا التفاعل %{reaction}"
       main_reaction:
         add: "تسجيل الإعجاب بهذا المنشور"
         remove: "إزالة هذا الإعجاب"
+        cant_remove: "لم يعد بإمكانك إزالة إعجابك"
     notifications:
+      reaction_1_user_multiple_posts: "تفاعل على %{count} من منشوراتك"
+      reaction_2_users: "%{username}، و%{username2}"
+      reaction_2_users_with_others:
+        zero: "%{username}، و%{username2}، و%{count} آخرين"
+        one: "%{username}، و%{username2}، وواحد (%{count}) آخر"
+        two: "%{username}، و%{username2}، واثنان (%{count}) آخران"
+        few: "%{username}، و%{username2}، و%{count} آخرين"
+        many: "%{username}، و%{username2}، و%{count} آخرين"
+        other: "%{username}، و%{username2}، و%{count} آخر"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"

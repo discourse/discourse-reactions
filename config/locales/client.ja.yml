@@ -19,11 +19,17 @@ ja:
         forbidden: "そのリアクションはかなり前に作成されました。変更または削除できなくなっています。"
       picker:
         react_with: "この投稿へのリアクション: %{reaction}"
+        cant_remove_reaction: "リアクションを削除できなくなりました"
         remove_reaction: "この %{reaction} リアクションを削除する"
       main_reaction:
         add: "この投稿に「いいね！」する"
         remove: "この「いいね！」を削除する"
+        cant_remove: "「いいね！」を削除できなくなりました"
     notifications:
+      reaction_1_user_multiple_posts: "があなたの %{count} 件の投稿にリアクションしました"
+      reaction_2_users: "%{username}、%{username2}"
+      reaction_2_users_with_others:
+        other: "%{username}、%{username2}、他 %{count} 人"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> があなたの %{count} 件の投稿に反応しました"

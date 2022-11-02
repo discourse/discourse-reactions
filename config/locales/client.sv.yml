@@ -16,7 +16,6 @@ sv:
       state_panel:
         more_users: "och %{count} till..."
       reaction:
-        too_many_request: "Du har nått de maximala antalet dagliga reaktionerna för idag, men när du beviljas ökade förtroendenivåer erbjuds du fler dagliga reaktioner. Du kommer att kunna reagera på inlägg igen om %{time_left}."
         forbidden: "Den reaktionen skapades för långt tillbaka i tiden. Den kan inte längre ändras eller tas bort."
       picker:
         react_with: "Reagera på det här inlägget med: %{reaction}"
