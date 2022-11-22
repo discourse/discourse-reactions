@@ -14,10 +14,8 @@ INNER JOIN discourse_reactions_reaction_users pa1 on pa1.id = x.id
 EOS
 
 Badge.seed(:name) do |b|
-  b.name = I18n.t("badges.first_reaction.name")
-  b.description = I18n.t("badges.first_reaction.description")
-  b.long_description = I18n.t("badges.first_reaction.long_description")
-  b.icon = "far-smile"
+  b.name = "First Reaction"
+  b.default_icon = "far-smile"
   b.badge_type_id = BadgeType::Bronze
   b.multiple_grant = false
   b.target_posts = true
