@@ -1,6 +1,5 @@
 import Controller, { inject as controller } from "@ember/controller";
 import { action } from "@ember/object";
-import { observes } from "discourse-common/utils/decorators";
 import { inject as service } from "@ember/service";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { tracked } from "@glimmer/tracking";
@@ -12,6 +11,11 @@ export default class UserActivityReactions extends Controller {
   @tracked loading = false;
   @tracked beforeLikeId = null;
   @tracked beforeReactionUserId = null;
+
+  constructor() {
+    super(...arguments);
+    this.set("application.showFooter", !this.canLoadMore);
+  }
 
   #getLastIdFrom(array) {
     return array.length ? array[array.length - 1].get("id") : null;
@@ -44,6 +48,7 @@ export default class UserActivityReactions extends Controller {
   @action
   loadMore() {
     if (!this.canLoadMore || this.loading || !this.reactionsUrl) {
+      this.set("application.showFooter", !this.canLoadMore);
       return;
     }
 
@@ -72,10 +77,5 @@ export default class UserActivityReactions extends Controller {
       .finally(() => {
         this.loading = false;
       });
-  }
-
-  @observes("canLoadMore")
-  _showFooter() {
-    this.application.showFooter = !this.canLoadMore;
   }
 }
