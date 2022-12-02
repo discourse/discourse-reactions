@@ -3,14 +3,15 @@ import { action } from "@ember/object";
 import { observes } from "discourse-common/utils/decorators";
 import { inject as service } from "@ember/service";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
+import { tracked } from "@glimmer/tracking";
 
 export default class UserActivityReactions extends Controller {
   @controller application;
   @service siteSettings;
-  canLoadMore = true;
-  loading = false;
-  beforeLikeId = null;
-  beforeReactionUserId = null;
+  @tracked canLoadMore = true;
+  @tracked loading = false;
+  @tracked beforeLikeId = null;
+  @tracked beforeReactionUserId = null;
 
   #getLastIdFrom(array) {
     return array.length ? array[array.length - 1].get("id") : null;
