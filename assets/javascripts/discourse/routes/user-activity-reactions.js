@@ -1,7 +1,7 @@
-import Route from "@ember/routing/route";
+import DiscourseRoute from "discourse/routes/discourse";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
-export default class UserActivityReactions extends Route {
+export default class UserActivityReactions extends DiscourseRoute {
   model() {
     return CustomReaction.findReactions(
       "reactions",

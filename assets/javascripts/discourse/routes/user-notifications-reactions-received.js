@@ -1,7 +1,7 @@
-import Route from "@ember/routing/route";
+import DiscourseRoute from "discourse/routes/discourse";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
-export default class UserNotificationsReactionsReceived extends Route {
+export default class UserNotificationsReactionsReceived extends DiscourseRoute {
   templateName = "user-activity-reactions";
   controllerName = "user-activity-reactions";
 
