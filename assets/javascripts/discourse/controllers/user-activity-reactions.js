@@ -1,20 +1,22 @@
 import Controller, { inject as controller } from "@ember/controller";
-import { observes } from "discourse-common/utils/decorators";
 import { action } from "@ember/object";
+import { observes } from "discourse-common/utils/decorators";
+import { inject as service } from "@ember/service";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
-export default Controller.extend({
-  canLoadMore: true,
-  loading: false,
-  application: controller(),
-  beforeLikeId: null,
-  beforeReactionUserId: null,
+export default class UserActivityReactions extends Controller {
+  @controller application;
+  @service siteSettings;
+  canLoadMore = true;
+  loading = false;
+  beforeLikeId = null;
+  beforeReactionUserId = null;
 
-  _getLastIdFrom(array) {
+  #getLastIdFrom(array) {
     return array.length ? array[array.length - 1].get("id") : null;
-  },
+  }
 
-  _updateBeforeIds(reactionUsers) {
+  #updateBeforeIds(reactionUsers) {
     if (this.includeLikes) {
       const mainReaction =
         this.siteSettings.discourse_reactions_reaction_for_like;
@@ -31,12 +33,12 @@ export default Controller.extend({
         [[], []]
       );
 
-      this.beforeLikeId = this._getLastIdFrom(likes);
-      this.beforeReactionUserId = this._getLastIdFrom(reactions);
+      this.beforeLikeId = this.#getLastIdFrom(likes);
+      this.beforeReactionUserId = this.#getLastIdFrom(reactions);
     } else {
-      this.beforeReactionUserId = this._getLastIdFrom(reactionUsers);
+      this.beforeReactionUserId = this.#getLastIdFrom(reactionUsers);
     }
-  },
+  }
 
   @action
   loadMore() {
@@ -44,11 +46,11 @@ export default Controller.extend({
       return;
     }
 
-    this.set("loading", true);
+    this.loading = true;
     const reactionUsers = this.model;
 
     if (!this.beforeReactionUserId) {
-      this._updateBeforeIds(reactionUsers);
+      this.#updateBeforeIds(reactionUsers);
     }
 
     const opts = {
@@ -61,18 +63,18 @@ export default Controller.extend({
     CustomReaction.findReactions(this.reactionsUrl, this.username, opts)
       .then((newReactionUsers) => {
         reactionUsers.addObjects(newReactionUsers);
-        this._updateBeforeIds(newReactionUsers);
+        this.#updateBeforeIds(newReactionUsers);
         if (newReactionUsers.length === 0) {
-          this.set("canLoadMore", false);
+          this.canLoadMore = false;
         }
       })
       .finally(() => {
-        this.set("loading", false);
+        this.loading = false;
       });
-  },
+  }
 
   @observes("canLoadMore")
   _showFooter() {
-    this.set("application.showFooter", !this.canLoadMore);
-  },
-});
+    this.application.showFooter = !this.canLoadMore;
+  }
+}
