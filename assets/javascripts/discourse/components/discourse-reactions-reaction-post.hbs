@@ -1,5 +1,8 @@
 <div
-  class="user-stream-item item {{if this.moderatorAction 'moderatorAction'}}"
+  class="{{concat-class
+      'user-stream-item item'
+      (if this.moderatorAction 'moderatorAction')
+    }}"
 >
   <div class="clearfix info">
     <a
