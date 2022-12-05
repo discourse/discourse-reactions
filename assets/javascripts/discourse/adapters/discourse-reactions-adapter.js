@@ -1,7 +1,7 @@
 import RestAdapter from "discourse/adapters/rest";
 
-export default RestAdapter.extend({
+export default class DiscourseReactionsAdapter extends RestAdapter {
   basePath() {
     return "/discourse-reactions/";
-  },
-});
+  }
+}

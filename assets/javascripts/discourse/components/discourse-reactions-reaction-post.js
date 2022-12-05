@@ -1,27 +1,25 @@
-import Component from "@ember/component";
-import discourseComputed from "discourse-common/utils/decorators";
+import Component from "@glimmer/component";
+import { equal } from "@ember/object/computed";
 import getURL from "discourse-common/lib/get-url";
-import { propertyEqual } from "discourse/lib/computed";
 import { emojiUrlFor } from "discourse/lib/text";
+import { inject as service } from "@ember/service";
 
-export default Component.extend({
-  classNameBindings: [":user-stream-item", ":item", "moderatorAction"],
+export default class DiscourseReactionsReactionPost extends Component {
+  @service site;
 
-  @discourseComputed("reaction.post.url")
-  postUrl(url) {
-    return getURL(url);
-  },
+  @equal("args.reaction.post.post_type", "site.post_types.moderator_action")
+  moderatorAction;
 
-  @discourseComputed("reaction.reaction.reaction_value")
-  emojiUrl(reactionValue) {
+  get postUrl() {
+    return getURL(this.args.reaction.post.url);
+  }
+
+  get emojiUrl() {
+    const reactionValue = this.args.reaction.reaction.reaction_value;
+
     if (!reactionValue) {
       return;
     }
     return emojiUrlFor(reactionValue);
-  },
-
-  moderatorAction: propertyEqual(
-    "reaction.post.post_type",
-    "site.post_types.moderator_action"
-  ),
-});
+  }
+}

@@ -1,11 +1,14 @@
 import DiscourseRoute from "discourse/routes/discourse";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
-export default DiscourseRoute.extend({
-  queryParams: {
+export default class UserNotificationsReactionsReceived extends DiscourseRoute {
+  templateName = "user-activity-reactions";
+  controllerName = "user-activity-reactions";
+
+  queryParams = {
     acting_username: { refreshModel: true },
     include_likes: { refreshModel: true },
-  },
+  };
 
   model(params) {
     return CustomReaction.findReactions(
@@ -16,7 +19,7 @@ export default DiscourseRoute.extend({
         includeLikes: params.include_likes,
       }
     );
-  },
+  }
 
   setupController(controller, model) {
     let loadedAll = model.length < 20;
@@ -29,9 +32,5 @@ export default DiscourseRoute.extend({
       includeLikes: controller.include_likes,
     });
     this.controllerFor("application").set("showFooter", loadedAll);
-  },
-
-  renderTemplate() {
-    this.render("user-activity-reactions");
-  },
-});
+  }
+}
