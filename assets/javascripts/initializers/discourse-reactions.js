@@ -28,6 +28,47 @@ function initializeDiscourseReactions(api) {
     });
   });
 
+  // Glimmer Component (TODO remove other decorations)
+  api.decorateWidget("post-menu:before-extra-controls", (dec) => {
+    const post = dec.getModel();
+
+    if (!post || post.deleted_at) {
+      return;
+    }
+
+    return dec.attach("discourse-reactions-container", {
+      post,
+      position: "right",
+    });
+  });
+
+  api.decorateWidget("post-menu:before-extra-controls", (dec) => {
+    if (dec.widget.site.mobileView) {
+      return;
+    }
+    const mainReaction =
+      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
+    const post = dec.getModel();
+
+    if (!post || post.deleted_at) {
+      return;
+    }
+
+    if (
+      post.reactions &&
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
+    ) {
+      return;
+    }
+
+    return dec.attach("discourse-reactions-container", {
+      post,
+      position: "left",
+    });
+  });
+  // Glimmer End
+
   api.modifyClass("component:scrolling-post-stream", {
     pluginId: PLUGIN_ID,
 

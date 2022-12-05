@@ -1,0 +1,40 @@
+{{#if (eq @position "right")}}
+  {{#if this.reactionBtn.icon}}
+    <div class="discourse-reactions-reaction-button">
+      <DButton
+        @class={{this.reactionBtn.classes}}
+        @icon={{this.reactionBtn.icon}}
+        @translatedTitle={{this.reactionBtn.title}}
+        @action={{action this.toggleReaction}}
+      />
+    </div>
+  {{else if this.reactionBtn.image}}
+    <div class="discourse-reactions-reaction-button">
+      <button
+        type="button"
+        title={{this.reactionBtn.title}}
+        class={{this.reactionBtn.classes}}
+        {{action this.toggleReaction}}
+      >
+        <img
+          src={{this.reactionBtn.image.src}}
+          alt={{this.reactionBtn.image.attrs}}
+          class={{this.reactionBtn.image.classes}}
+        />
+      </button>
+    </div>
+
+  {{/if}}
+
+  {{#if this.showPicker}}
+    {{! Component for picker goes here }}
+    <MountWidget
+      @widget="discourse-reactions-picker"
+      @args={{hash post=this.args.post}}
+    />
+  {{/if}}
+{{/if}}
+
+{{#if (eq @position "left")}}
+  {{! Component for counter goes here }}
+{{/if}}
