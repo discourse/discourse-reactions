@@ -2,7 +2,7 @@
 
 module DiscourseReactions
   class ReactionNotification
-    HEART_ICON_NAME = 'heart'
+    HEART_ICON_NAME = "heart"
 
     def initialize(reaction, user)
       @reaction = reaction
@@ -13,7 +13,10 @@ module DiscourseReactions
     def create
       post_user = @post.user
 
-      return if post_user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:never]
+      if post_user.user_option.like_notification_frequency ==
+           UserOption.like_notification_frequency_type[:never]
+        return
+      end
 
       opts = { user_id: @user.id, display_username: @user.username }
 
@@ -27,25 +30,28 @@ module DiscourseReactions
     def delete
       return if DiscourseReactions::Reaction.where(post_id: @post.id).by_user(@user).count != 0
       read = true
-      Notification.where(
-        topic_id: @post.topic_id,
-        user_id: @post.user_id,
-        post_number: @post.post_number,
-        notification_type: Notification.types[:reaction]
-      ).each do |notification|
-        read = false unless notification.read
-        notification.destroy
-      end
+      Notification
+        .where(
+          topic_id: @post.topic_id,
+          user_id: @post.user_id,
+          post_number: @post.post_number,
+          notification_type: Notification.types[:reaction],
+        )
+        .each do |notification|
+          read = false unless notification.read
+          notification.destroy
+        end
       refresh_notification(read)
     end
 
     private
 
     def remaining_reaction_data
-      @post.reactions
+      @post
+        .reactions
         .joins(:users)
-        .order('discourse_reactions_reactions.created_at DESC')
-        .where('discourse_reactions_reactions.created_at > ?', 1.day.ago)
+        .order("discourse_reactions_reactions.created_at DESC")
+        .where("discourse_reactions_reactions.created_at > ?", 1.day.ago)
         .pluck(:username, :reaction_value)
     end
 
@@ -62,9 +68,7 @@ module DiscourseReactions
         display_username: remaining_data[0][0],
       }
 
-      if remaining_data[1]
-        data[:username2] = remaining_data[1][0]
-      end
+      data[:username2] = remaining_data[1][0] if remaining_data[1]
 
       if remaining_data.all? { |element| element[1] == HEART_ICON_NAME }
         data[:reaction_icon] = HEART_ICON_NAME
@@ -76,7 +80,7 @@ module DiscourseReactions
         post_number: @post.post_number,
         user_id: @post.user_id,
         read: read,
-        data: data.to_json
+        data: data.to_json,
       )
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_dependency 'enum_site_setting'
+require_dependency "enum_site_setting"
 
 class ReactionForLikeSiteSettingEnum < EnumSiteSetting
   def self.valid_value?(val)
@@ -8,10 +8,12 @@ class ReactionForLikeSiteSettingEnum < EnumSiteSetting
   end
 
   def self.values
-    @values = begin
-      reactions = DiscourseReactions::Reaction.valid_reactions.map do |reaction|
-        { name: reaction, value: reaction }
+    @values =
+      begin
+        reactions =
+          DiscourseReactions::Reaction.valid_reactions.map do |reaction|
+            { name: reaction, value: reaction }
+          end
       end
-    end
   end
 end

@@ -1,28 +1,26 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-require_relative '../fabricators/reaction_fabricator.rb'
-require_relative '../fabricators/reaction_user_fabricator.rb'
+require "rails_helper"
+require_relative "../fabricators/reaction_fabricator.rb"
+require_relative "../fabricators/reaction_user_fabricator.rb"
 
 describe DiscourseReactions::ReactionUser do
-  before do
-    SiteSetting.discourse_reactions_enabled = true
-  end
+  before { SiteSetting.discourse_reactions_enabled = true }
 
-  describe 'delegating methods when the user is nil' do
+  describe "delegating methods when the user is nil" do
     let(:reaction_user) { described_class.new(user: nil) }
 
-    it 'returns nil when delegating the username method with a nil user' do
+    it "returns nil when delegating the username method with a nil user" do
       expect(reaction_user.username).to be_nil
     end
 
-    it 'returns nil when delegating the avatar_template method with a nil user' do
+    it "returns nil when delegating the avatar_template method with a nil user" do
       expect(reaction_user.avatar_template).to be_nil
     end
   end
 
-  describe 'when a user gets deleted' do
-    it 'deletes all the reactions for that user' do
+  describe "when a user gets deleted" do
+    it "deletes all the reactions for that user" do
       user = Fabricate(:user)
       reaction = Fabricate(:reaction)
       post = Fabricate(:post)

@@ -18,16 +18,18 @@ class RenameBadge < ActiveRecord::Migration[6.1]
     "ru" => "Первая реакция",
     "sv" => "Första reaktionen",
     "zh_CN" => "首次回应",
-    "zh_TW" => "頭一個反應"
+    "zh_TW" => "頭一個反應",
   }
 
   def up
-    default_locale = DB.query_single("SELECT value FROM site_settings WHERE name = 'default_locale'").first || "en"
+    default_locale =
+      DB.query_single("SELECT value FROM site_settings WHERE name = 'default_locale'").first || "en"
     default_badge_name = "First Reaction"
     badge_name = TRANSLATIONS.fetch(default_locale, default_badge_name)
 
     if badge_name != default_badge_name
-      default_badge_id = DB.query_single("SELECT id FROM badges WHERE name = :name", name: default_badge_name).first
+      default_badge_id =
+        DB.query_single("SELECT id FROM badges WHERE name = :name", name: default_badge_name).first
 
       if default_badge_id
         DB.exec("DELETE FROM badges WHERE id = :id", id: default_badge_id)

@@ -10,12 +10,13 @@ class ResetErroneousLikeReactionsCount < ActiveRecord::Migration[6.1]
 
     # the model does this gsub
     # https://github.com/discourse/discourse-reactions/blob/10505af498ae99b6acc704bff6eb072bbffc2ade/app/models/discourse_reactions/reaction.rb#L25
-    like_reaction = like_reaction.gsub('-', '')
+    like_reaction = like_reaction.gsub("-", "")
 
     # AR enum in the Reaction model
     emoji_reaction_type = 0
 
-    inconsistent_reactions = DB.query(<<~SQL, like_reaction: like_reaction, emoji_reaction_type: emoji_reaction_type)
+    inconsistent_reactions =
+      DB.query(<<~SQL, like_reaction: like_reaction, emoji_reaction_type: emoji_reaction_type)
       SELECT id
       FROM discourse_reactions_reactions
       WHERE

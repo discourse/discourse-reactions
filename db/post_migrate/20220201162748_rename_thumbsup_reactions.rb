@@ -2,12 +2,15 @@
 
 class RenameThumbsupReactions < ActiveRecord::Migration[6.1]
   def up
-    current_reactions = DB.query_single(
-      "SELECT value FROM site_settings WHERE name = 'discourse_reactions_enabled_reactions'"
-    )[0]
+    current_reactions =
+      DB.query_single(
+        "SELECT value FROM site_settings WHERE name = 'discourse_reactions_enabled_reactions'",
+      )[
+        0
+      ]
 
-    alias_name = 'thumbsup'
-    original_name = '+1'
+    alias_name = "thumbsup"
+    original_name = "+1"
 
     if current_reactions
       updated_reactions = current_reactions.gsub(alias_name, original_name)
