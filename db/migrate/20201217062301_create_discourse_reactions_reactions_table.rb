@@ -10,6 +10,9 @@ class CreateDiscourseReactionsReactionsTable < ActiveRecord::Migration[6.0]
       t.timestamps
     end
     add_index :discourse_reactions_reactions, :post_id
-    add_index :discourse_reactions_reactions, [:post_id, :reaction_type, :reaction_value], unique: true, name: 'reaction_type_reaction_value'
+    add_index :discourse_reactions_reactions,
+              %i[post_id reaction_type reaction_value],
+              unique: true,
+              name: "reaction_type_reaction_value"
   end
 end
