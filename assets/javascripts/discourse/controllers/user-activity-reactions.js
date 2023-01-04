@@ -5,8 +5,9 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { tracked } from "@glimmer/tracking";
 
 export default class UserActivityReactions extends Controller {
-  @controller application;
   @service siteSettings;
+  @controller application;
+
   @tracked canLoadMore = true;
   @tracked loading = false;
   @tracked beforeLikeId = null;
