@@ -36,7 +36,7 @@ tr_TR:
         multiple: "<span>%{username}</span> %{count} gönderinize tepki verdi"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
       reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} daha"
-        other: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} daha"
+        one: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} kişi daha"
+        other: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} kişi daha"
       titles:
         reaction: "yeni tepki"
