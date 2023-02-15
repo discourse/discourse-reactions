@@ -24,7 +24,7 @@ ru:
       main_reaction:
         add: "Выразить своё отношение к этому сообщению"
         remove: "Удалить эту эмоцию"
-        cant_remove: "Вы больше не можете удалить выраженную симпатию"
+        cant_remove: "Вы больше не можете удалить поставленный лайк"
     notifications:
       reaction_1_user_multiple_posts: "отреагировал на %{count} ваших сообщений"
       reaction_2_users: "%{username}, %{username2}"
