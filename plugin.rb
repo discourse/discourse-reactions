@@ -16,9 +16,7 @@ register_asset "stylesheets/mobile/discourse-reactions.scss", :mobile
 register_svg_icon "fas fa-star"
 register_svg_icon "far fa-star"
 
-MAX_USERS_COUNT = 26
-
-require_relative "lib/reaction_for_like_site_setting_enum"
+require_relative "lib/reaction_for_like_site_setting_enum.rb"
 
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
@@ -33,19 +31,18 @@ after_initialize do
   end
 
   %w[
-    ../app/serializers/user_reaction_serializer.rb
-    ../app/controllers/discourse_reactions_controller.rb
-    ../app/controllers/discourse_reactions/custom_reactions_controller.rb
-    ../app/models/discourse_reactions/reaction.rb
-    ../app/models/discourse_reactions/reaction_user.rb
-    ../app/services/discourse_reactions/reaction_manager.rb
-    ../app/services/discourse_reactions/reaction_notification.rb
-    ../lib/discourse_reactions/post_extension.rb
-    ../lib/discourse_reactions/topic_view_serializer_extension.rb
-    ../lib/discourse_reactions/notification_extension.rb
-    ../lib/discourse_reactions/post_alerter_extension.rb
-    ../lib/discourse_reactions/guardian_extension.rb
-  ].each { |path| load File.expand_path(path, __FILE__) }
+    app/controllers/discourse_reactions/custom_reactions_controller.rb
+    app/models/discourse_reactions/reaction_user.rb
+    app/models/discourse_reactions/reaction.rb
+    app/serializers/user_reaction_serializer.rb
+    app/services/discourse_reactions/reaction_manager.rb
+    app/services/discourse_reactions/reaction_notification.rb
+    lib/discourse_reactions/guardian_extension.rb
+    lib/discourse_reactions/notification_extension.rb
+    lib/discourse_reactions/post_alerter_extension.rb
+    lib/discourse_reactions/post_extension.rb
+    lib/discourse_reactions/topic_view_serializer_extension.rb
+  ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
