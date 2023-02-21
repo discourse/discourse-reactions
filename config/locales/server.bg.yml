@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 bg:
+  reports:
+    reactions:
+      labels:
+        day: "Ден"

@@ -5,3 +5,24 @@
 # https://translate.discourse.org/
 
 hr:
+  js:
+    discourse_reactions:
+      state_panel:
+        more_users: "i %{count} više..."
+      main_reaction:
+        add: "Like-aj objavu"
+    notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} i %{count} ostalo"
+        few: "%{username}, %{username2} i %{count} ostalih"
+        other: "%{username}, %{username2} i %{count} ostalih"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} i %{count} ostalo</span> %{description}"
+        few: "<span class='multi-user'>%{username}, %{username2} i %{count} ostalih</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} i %{count} ostalih</span> %{description}"
+      titles:
+        reaction: "nova reakcija"

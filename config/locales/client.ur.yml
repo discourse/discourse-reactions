@@ -5,3 +5,20 @@
 # https://translate.discourse.org/
 
 ur:
+  js:
+    discourse_reactions:
+      main_reaction:
+        add: "اس پوسٹ کو پسند کریں"
+    notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username2}، %{username} اور %{count} مزید"
+        other: "%{username2}، %{username} اور %{count} مزید"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username2}، %{username} اور %{count} مزید</span> %{description}"
+        other: "<span class='multi-user'>%{username2}، %{username} اور %{count} مزید</span> %{description}"
+      titles:
+        reaction: "نیا ردعمل"

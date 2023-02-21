@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 te:
+  js:
+    discourse_reactions:
+      main_reaction:
+        add: "ఈ టపాను ఇష్టపడు"

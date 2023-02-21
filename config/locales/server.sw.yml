@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 sw:
+  reports:
+    reactions:
+      labels:
+        day: "Siku"

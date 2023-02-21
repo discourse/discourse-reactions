@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 ur:
+  reports:
+    reactions:
+      labels:
+        day: "دن"

@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 sq:
+  reports:
+    reactions:
+      labels:
+        day: "Dit"

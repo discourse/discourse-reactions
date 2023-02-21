@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 lv:
+  reports:
+    reactions:
+      labels:
+        day: "Diena"
