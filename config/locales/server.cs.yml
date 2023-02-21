@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 cs:
+  reports:
+    reactions:
+      labels:
+        day: "Den"

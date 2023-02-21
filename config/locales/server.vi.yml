@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 vi:
+  reports:
+    reactions:
+      labels:
+        day: "Ngày"

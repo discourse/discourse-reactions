@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 be:
+  reports:
+    reactions:
+      labels:
+        day: "дзень"

@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 hy:
+  reports:
+    reactions:
+      labels:
+        day: "Օր"

@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 hr:
+  reports:
+    reactions:
+      labels:
+        day: "Dan"

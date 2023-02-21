@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 da:
+  reports:
+    reactions:
+      labels:
+        day: "Dag"

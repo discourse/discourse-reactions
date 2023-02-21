@@ -5,3 +5,12 @@
 # https://translate.discourse.org/
 
 et:
+  js:
+    discourse_reactions:
+      main_reaction:
+        add: "Laigi seda postitust"
+    notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"

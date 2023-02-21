@@ -24,6 +24,12 @@ pl_PL:
         add: "Polub ten post"
         remove: "Usuń to polubienie"
     notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} oraz %{count} inny"
+        few: "%{username}, %{username2} oraz %{count} innych"
+        many: "%{username}, %{username2} oraz %{count} innych"
+        other: "%{username}, %{username2} oraz %{count} innych"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> zareagował na %{count} twoich postów"

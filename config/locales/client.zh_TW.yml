@@ -23,5 +23,13 @@ zh_TW:
         add: "喜歡這篇文章"
         remove: "刪除這個喜歡"
     notifications:
+      reaction_2_users: "%{username}、%{username2}"
+      reaction_2_users_with_others:
+        other: "%{username}、%{username2} 和其他 %{count} 個人都"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
+      reaction_many:
+        other: "<span class='multi-user'>%{username}、%{username2} 和其他 %{count} 個人都</span> %{description}"
       titles:
         reaction: "新的反應"

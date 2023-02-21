@@ -24,6 +24,10 @@ hu:
         add: "Bejegyzés kedvelése"
         remove: "Kedvelés eltávolítása"
     notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} és még %{count} felhasználó"
+        other: "%{username}, %{username2} és még %{count} felhasználó"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagált %{count} bejegyzésére"

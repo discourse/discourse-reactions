@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 et:
+  reports:
+    reactions:
+      labels:
+        day: "Päev"

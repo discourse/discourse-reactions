@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 sk:
+  js:
+    discourse_reactions:
+      main_reaction:
+        add: "Páči sa mi tento príspevok"
