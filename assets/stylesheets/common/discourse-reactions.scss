@@ -201,11 +201,15 @@ html.discourse-reactions-no-select {
     z-index: 1;
     padding: 0.25em;
     border: 1px solid var(--primary-low);
+    border-radius: 8px;
   }
 
   .counters {
     display: flex;
     flex-direction: column;
+    max-height: 200px;
+    overflow-y: scroll;
+    @include scrollbar(var(--secondary));
   }
 }
 
