@@ -208,7 +208,6 @@ html.discourse-reactions-no-select {
     flex-direction: column;
     max-height: 200px;
     overflow-y: scroll;
-    @include scrollbar(var(--secondary));
   }
 }
 
