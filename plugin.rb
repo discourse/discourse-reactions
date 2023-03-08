@@ -9,7 +9,6 @@
 
 enabled_site_setting :discourse_reactions_enabled
 
-register_asset "stylesheets/mixins/scrollbar.scss"
 register_asset "stylesheets/common/discourse-reactions.scss"
 register_asset "stylesheets/desktop/discourse-reactions.scss", :desktop
 register_asset "stylesheets/mobile/discourse-reactions.scss", :mobile
