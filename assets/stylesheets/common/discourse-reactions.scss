@@ -200,14 +200,12 @@ html.discourse-reactions-no-select {
     flex-direction: column;
     z-index: 1;
     padding: 0.25em;
-    border-radius: 8px;
+    border: 1px solid var(--primary-low);
   }
 
   .counters {
     display: flex;
     flex-direction: column;
-    max-height: 200px;
-    overflow-y: scroll;
   }
 }
 
