@@ -207,7 +207,7 @@ html.discourse-reactions-no-select {
     display: flex;
     flex-direction: column;
     max-height: 200px;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 
