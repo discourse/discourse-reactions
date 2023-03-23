@@ -1,62 +1,36 @@
-<div
-  class={{concat-class
-    "user-stream-item item"
-    (if this.moderatorAction "moderatorAction")
+<UserStreamItem
+  @item={{hash
+    username=@reaction.post_user.username
+    name=@reaction.post_user.name
+    avatar_template=@reaction.post_user.avatar_template
+    created_at=@reaction.created_at
+    postUrl=this.postUrl
+    category=@reaction.category
+    title=@reaction.topic.title
+    expandedExcerpt=@reaction.post.expandedExcerpt
+    excerpt=@reaction.post.excerpt
+    topic_id=@reaction.topic_id
+    post_id=@reaction.post_id
+    user_id=@reaction.user_id
   }}
 >
-  <div class="clearfix info">
-    <a
-      href={{@reaction.post_user.userUrl}}
-      data-user-card={{@reaction.post_user.username}}
-      class="avatar-link"
-    >
-      {{avatar
-        @reaction.post_user
-        imageSize="large"
-        extraClasses="actor"
-        ignoreTitle="true"
-      }}
-    </a>
-    <span class="time">
-      {{format-date @reaction.created_at leaveAgo="true"}}
-    </span>
-    <ExpandPost @item={{@reaction.post}} />
-
-    <div class="stream-topic-details">
-      <div class="stream-topic-title">
-        <span class="title">
-          <a href={{this.postUrl}}>{{html-safe @reaction.topic.fancyTitle}}</a>
-        </span>
+  <:bottom>
+    {{#if @reaction.reaction.reaction_users_count}}
+      <div class="discourse-reactions-my-reaction">
+        <img src={{this.emojiUrl}} class="reaction-emoji" />
+        <a
+          href={{@reaction.user.userUrl}}
+          data-user-card={{@reaction.user.username}}
+          class="avatar-link"
+        >
+          {{avatar
+            @reaction.user
+            imageSize="tiny"
+            extraClasses="actor"
+            ignoreTitle="true"
+          }}
+        </a>
       </div>
-      <div class="group-post-category">
-        {{category-link @reaction.category}}
-      </div>
-    </div>
-  </div>
-
-  <div class="excerpt">
-    {{#if @reaction.post.expandedExcerpt}}
-      {{html-safe @reaction.post.expandedExcerpt}}
-    {{else}}
-      {{html-safe @reaction.post.excerpt}}
     {{/if}}
-  </div>
-
-  {{#if @reaction.reaction.reaction_users_count}}
-    <div class="discourse-reactions-my-reaction">
-      <img src={{this.emojiUrl}} class="reaction-emoji" />
-      <a
-        href={{@reaction.user.userUrl}}
-        data-user-card={{@reaction.user.username}}
-        class="avatar-link"
-      >
-        {{avatar
-          @reaction.user
-          imageSize="tiny"
-          extraClasses="actor"
-          ignoreTitle="true"
-        }}
-      </a>
-    </div>
-  {{/if}}
-</div>
+  </:bottom>
+</UserStreamItem>
