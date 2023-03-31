@@ -9,10 +9,14 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:user_3) { Fabricate(:user) }
   fab!(:user_4) { Fabricate(:user) }
   fab!(:user_5) { Fabricate(:user) }
+  fab!(:admin) { Fabricate(:admin) }
   fab!(:post_2) { Fabricate(:post, user: user_1) }
+  fab!(:private_topic) { Fabricate(:private_message_topic, user: user_2, recipient: admin) }
+  fab!(:private_post) { Fabricate(:post, topic: private_topic) }
   fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
   fab!(:reaction_2) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
   fab!(:reaction_3) { Fabricate(:reaction, post: post_2, reaction_value: "hugs") }
+  fab!(:reaction_4) { Fabricate(:reaction, post: private_post, reaction_value: "hugs") }
   fab!(:like) do
     Fabricate(
       :post_action,
@@ -33,6 +37,9 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:reaction_user_4) do
     Fabricate(:reaction_user, reaction: reaction_2, user: user_3, post: post_2)
   end
+  fab!(:reaction_user_5) do
+    Fabricate(:reaction_user, reaction: reaction_4, user: admin, post: private_post)
+  end
 
   before do
     SiteSetting.discourse_reactions_enabled = true
@@ -43,6 +50,7 @@ describe DiscourseReactions::CustomReactionsController do
 
   describe "#toggle" do
     let(:payload_with_user) { [{ "id" => "hugs", "type" => "emoji", "count" => 1 }] }
+    let(:api_key) { Fabricate(:api_key, user: admin, created_by: admin) }
 
     it "toggles reaction" do
       sign_in(user_1)
@@ -116,6 +124,21 @@ describe DiscourseReactions::CustomReactionsController do
       expect(messages.map(&:channel).uniq.first).to eq("/topic/#{post_1.topic.id}/reactions")
       expect(messages[0].data[:reactions]).to contain_exactly("cry")
       expect(messages[1].data[:reactions]).to contain_exactly("cry", "angry")
+    end
+
+    it "publishes MessageBus messages securely" do
+      sign_in(user_1)
+      messages =
+        MessageBus.track_publish("/topic/#{private_post.topic.id}/reactions") do
+          put "/discourse-reactions/posts/#{private_post.id}/custom-reactions/cry/toggle.json",
+              headers: {
+                "HTTP_API_KEY" => api_key.key,
+                "HTTP_API_USERNAME" => api_key.user.username,
+              }
+        end
+      user_1_messages = messages.find { |m| m.user_ids.include?(user_1.id) }
+      expect(messages.count).to eq(1)
+      expect(user_1_messages).to eq(nil)
     end
 
     it "errors when reaction is invalid" do
@@ -388,12 +411,12 @@ describe DiscourseReactions::CustomReactionsController do
       )
     end
 
-    it "gives 400 ERROR when the post_id OR reaction_value is invalid" do
+    it "gives 404 ERROR when the post_id OR reaction_value is invalid" do
       get "/discourse-reactions/posts/1000000/reactions-users.json"
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(404)
 
       get "/discourse-reactions/posts/1000000/reactions-users.json?reaction_value=test"
-      expect(response.status).to eq(400)
+      expect(response.status).to eq(404)
     end
 
     it "merges identic custom reaction into likes" do
@@ -412,6 +435,17 @@ describe DiscourseReactions::CustomReactionsController do
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
       parsed = response.parsed_body
       expect(parsed["reaction_users"][0]["count"]).to eq(like_count + reaction_count)
+    end
+
+    it "does not show reaction_users on PMs without permission" do
+      get "/discourse-reactions/posts/#{private_post.id}/reactions-users.json"
+      expect(response.status).to eq(403)
+    end
+
+    it "shows reaction_users on PMs with permission" do
+      sign_in(user_2)
+      get "/discourse-reactions/posts/#{private_post.id}/reactions-users.json"
+      expect(response.status).to eq(200)
     end
   end
 

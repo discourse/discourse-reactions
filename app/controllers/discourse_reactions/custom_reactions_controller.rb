@@ -138,7 +138,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
   def post_reactions_users
     id = params.require(:id).to_i
     reaction_value = params[:reaction_value]
-    post = Post.find_by(id: id)
+    post = fetch_post_from_params
 
     raise Discourse::InvalidParameters if !post
 
@@ -237,17 +237,20 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
   end
 
   def fetch_post_from_params
-    post = Post.find(params[:post_id])
+    post_id = params[:post_id] || params[:id]
+    post = Post.find(post_id)
     guardian.ensure_can_see!(post)
     post
   end
 
   def publish_change_to_clients!(post, reaction: nil, previous_reaction: nil)
-    MessageBus.publish(
-      "/topic/#{post.topic.id}/reactions",
-      post_id: post.id,
-      reactions: [reaction, previous_reaction].compact.uniq,
-    )
+    message = { post_id: post.id, reactions: [reaction, previous_reaction].compact.uniq }
+
+    opts = {}
+    secure_audience = post.topic.secure_audience_publish_messages
+    opts = secure_audience if secure_audience[:user_ids] != [] && secure_audience[:group_ids] != []
+
+    MessageBus.publish("/topic/#{post.topic.id}/reactions", message, opts)
   end
 
   def secure_reaction_users!(reaction_users)

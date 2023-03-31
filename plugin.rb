@@ -2,7 +2,7 @@
 
 # name: discourse-reactions
 # about: Allows users to react with emojis to a post
-# version: 0.2
+# version: 0.3
 # author: Ahmed Gagan, Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
 # url: https://github.com/discourse/discourse-reactions
 # transpile_js: true
