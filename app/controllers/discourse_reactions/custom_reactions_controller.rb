@@ -82,7 +82,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
 
     posts = Post.joins(:topic).where(user_id: user.id)
     posts = guardian.filter_allowed_categories(posts)
-    post_ids = posts.pluck(:id)
+    post_ids = posts.select(:id)
 
     reaction_users =
       DiscourseReactions::ReactionUser
