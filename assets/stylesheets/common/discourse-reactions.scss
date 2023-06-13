@@ -120,7 +120,7 @@ html.discourse-reactions-no-select {
 
   .discourse-reactions-picker-container {
     margin: 0.25em;
-    box-shadow: shadow("card");
+    box-shadow: var(--shadow-card);
     background-color: var(--secondary);
     z-index: 1;
     border-radius: 8px;
@@ -194,7 +194,7 @@ html.discourse-reactions-no-select {
   }
 
   .container {
-    box-shadow: shadow("card");
+    box-shadow: var(--shadow-card);
     background-color: var(--secondary);
     display: flex;
     flex-direction: column;
