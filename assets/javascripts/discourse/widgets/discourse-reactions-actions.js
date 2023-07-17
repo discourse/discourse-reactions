@@ -168,6 +168,8 @@ export default createWidget("discourse-reactions-actions", {
   },
 
   touchStart() {
+    this._validTouch = true;
+
     cancel(this._touchTimeout);
     if (this.capabilities.touch) {
       const root = document.getElementsByTagName("html")[0];
@@ -182,8 +184,19 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
+  touchMove() {
+    // if users move while touching we consider it as a scroll and don't want to
+    // trigger the reaction or the picker
+    this._validTouch = false;
+    cancel(this._touchTimeout);
+  },
+
   touchEnd(event) {
     cancel(this._touchTimeout);
+
+    if (!this._validTouch) {
+      return;
+    }
 
     const root = document.getElementsByTagName("html")[0];
     root && root.classList.remove("discourse-reactions-no-select");
