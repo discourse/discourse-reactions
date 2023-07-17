@@ -184,7 +184,7 @@ export default createWidget("discourse-reactions-actions", {
     }
   },
 
-  touchMove(event) {
+  touchMove() {
     // if users move while touching we consider it as a scroll and don't want to
     // trigger the reaction or the picker
     this._validTouch = false;
