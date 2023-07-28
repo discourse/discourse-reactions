@@ -321,15 +321,15 @@ html.discourse-reactions-no-select {
     margin-left: 0 !important; // core rule has too much specificity
   }
 
-  // manually account for emoji not being a perfect square
-  .reactions-counter {
-    padding-top: 2px;
-  }
-
   &:not(.custom-reaction-used) {
     .discourse-reactions-counter {
-      padding-right: 0;
-      padding-left: 15px;
+      padding: 8px 0 8px 10px;
+      line-height: 1;
+      + .discourse-reactions-reaction-button {
+        button {
+          padding-left: 0.45em;
+        }
+      }
     }
   }
 
@@ -442,7 +442,7 @@ html.discourse-reactions-no-select {
   align-items: center;
   text-align: center;
   cursor: pointer;
-  padding: 0 10px;
+  padding: 0 10px 0 0;
 
   .reactions-counter {
     font-size: $font-up-1;
