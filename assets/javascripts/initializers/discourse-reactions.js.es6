@@ -13,8 +13,7 @@ function initializeDiscourseReactions(api) {
       return { post: widget.findAncestorModel() };
     },
     shouldRender: (widget) => {
-      const post = widget.findAncestorModel();
-      return post && !post.deletedAt;
+      const post = widget.findAncestorModel(); return post && !post.deletedAt;
     },
   });
 
