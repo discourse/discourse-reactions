@@ -5,3 +5,38 @@
 # https://translate.discourse.org/
 
 nl:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse-reacties"
+  js:
+    discourse_reactions:
+      reactions_title: "Reacties"
+      state_panel:
+        more_users: "en nog %{count}..."
+      reaction:
+        forbidden: "De reactie is te lang geleden gemaakt. Deze kan niet meer worden gewijzigd of verwijderd."
+      picker:
+        react_with: "Reageer op dit bericht met: %{reaction}"
+        cant_remove_reaction: "Je kunt je reactie niet meer verwijderen"
+        remove_reaction: "Deze %{reaction} reactie verwijderen"
+      main_reaction:
+        add: "Dit bericht liken"
+        remove: "Deze like verwijderen"
+        cant_remove: "Je kunt je like niet meer verwijderen"
+    notifications:
+      reaction_1_user_multiple_posts: "heeft gereageerd op %{count} van je berichten"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} en %{count} ander"
+        other: "%{username}, %{username2} en %{count} anderen"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> heeft gereageerd op %{count} van je berichten"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} en %{count} ander</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} en %{count} anderen</span> %{description}"
+      titles:
+        reaction: "nieuwe reactie"

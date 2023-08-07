@@ -5,3 +5,38 @@
 # https://translate.discourse.org/
 
 fi:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Reactions"
+  js:
+    discourse_reactions:
+      reactions_title: "Reaktiot"
+      state_panel:
+        more_users: "ja %{count} muuta..."
+      reaction:
+        forbidden: "Tämä reaktio luotiin liian kauan sitten. Sitä ei voi enää muokata tai poistaa."
+      picker:
+        react_with: "Reagoi tähän viestiin reaktiolla: %{reaction}"
+        cant_remove_reaction: "Et voi enää poistaa reaktiotasi"
+        remove_reaction: "Poista tämä reaktio: %{reaction}"
+      main_reaction:
+        add: "Tykkää viestistä"
+        remove: "Poista tämä tykkäys"
+        cant_remove: "Et voi enää poistaa tykkäystäsi"
+    notifications:
+      reaction_1_user_multiple_posts: "reagoi %{count} viestiisi"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} ja %{count} muu"
+        other: "%{username}, %{username2} ja %{count} muuta"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagoi %{count} viesteistäsi"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} ja %{count} muu</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} ja %{count} muuta</span> %{description}"
+      titles:
+        reaction: "uusi reaktio"

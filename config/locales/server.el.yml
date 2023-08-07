@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 el:
+  reports:
+    reactions:
+      labels:
+        day: "Ημέρα"

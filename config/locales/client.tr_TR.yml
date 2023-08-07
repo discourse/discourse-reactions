@@ -5,3 +5,38 @@
 # https://translate.discourse.org/
 
 tr_TR:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Tepkileri"
+  js:
+    discourse_reactions:
+      reactions_title: "Tepkiler"
+      state_panel:
+        more_users: "ve %{count} tane daha..."
+      reaction:
+        forbidden: "Bu tepki çok uzun zaman önce oluşturuldu. Artık değiştirilemez veya kaldırılamaz."
+      picker:
+        react_with: "Bu gönderiye şununla tepki verin: %{reaction}"
+        cant_remove_reaction: "Artık tepkinizi kaldıramazsınız"
+        remove_reaction: "Bu %{reaction} tepkisini kaldır"
+      main_reaction:
+        add: "Bu gönderiyi beğen"
+        remove: "Bu beğeniyi kaldır"
+        cant_remove: "Artık beğeninizi kaldıramazsınız"
+    notifications:
+      reaction_1_user_multiple_posts: "%{count} gönderinize tepki verdi"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} ve %{count} kişi daha"
+        other: "%{username}, %{username2} ve %{count} kişi daha"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> %{count} gönderinize tepki verdi"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} kişi daha"
+        other: "<span class='multi-user'>%{username}, %{username2} ve %{count} </span> %{description} kişi daha"
+      titles:
+        reaction: "yeni tepki"

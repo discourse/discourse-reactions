@@ -15,12 +15,16 @@ export default createWidget("discourse-reactions-state-panel", {
       classes.push(`max-length-${charsCount}`);
     }
 
+    if (attrs.statePanelExpanded) {
+      classes.push("is-expanded");
+    }
+
     return classes;
   },
 
   mouseOut() {
     if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse");
+      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
     }
   },
 
@@ -55,19 +59,19 @@ export default createWidget("discourse-reactions-state-panel", {
       return;
     }
 
-    const reactions = attrs.state.postIds.includes(attrs.post.id)
+    const reactions = Object.keys(attrs.reactionsUsers).length
       ? h(
           "div.counters",
           attrs.post.reactions.map((reaction) =>
             this.attach("discourse-reactions-state-panel-reaction", {
               reaction,
-              users: attrs.state[reaction.id],
+              users: attrs.reactionsUsers[reaction.id],
               post: attrs.post,
               isDisplayed: reaction.id === this.state.displayedReactionId,
             })
           )
         )
-      : h("div.spinner-container", h("div.spinner"));
+      : h("div.spinner-container", h("div.spinner.small"));
 
     return h("div.container", reactions);
   },

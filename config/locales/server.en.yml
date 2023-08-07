@@ -16,4 +16,4 @@ en:
       title: "Reactions"
       description: "List most recent reactions."
       labels:
-          day: "Day"
+        day: "Day"

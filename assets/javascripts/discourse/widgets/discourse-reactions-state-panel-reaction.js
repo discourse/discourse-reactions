@@ -30,6 +30,10 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
   html(attrs) {
     const elements = [];
 
+    if (!attrs.users) {
+      return;
+    }
+
     elements.push(
       h("div.reaction-wrapper", [
         h("div.emoji-wrapper", [

@@ -16,19 +16,27 @@ es:
       state_panel:
         more_users: "y %{count} más..."
       reaction:
-        too_many_request:
-          one: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundo."
-          other: "Has estado reaccionando un poco rápido, inténtalo de nuevo en %{count} segundos."
+        forbidden: "Esa reacción se creó hace demasiado tiempo. Ya no se puede modificar ni eliminar."
       picker:
         react_with: "Reacciona a esta publicación con: %{reaction}"
-        cant_remove_reaction: "No puedes deshacer esta reacción."
-        remove_reaction: "Quitar la reacción %{reaction}"
+        cant_remove_reaction: "Ya no puedes eliminar tu reacción"
+        remove_reaction: "Eliminar la reacción %{reaction}"
       main_reaction:
-        add: "Me gusta"
+        add: "Me gusta esta publicación"
         remove: "Deshacer me gusta"
-        cant_remove: "No puedes deshacer el me gusta."
+        cant_remove: "Ya no puedes eliminar tu me gusta"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
-      reaction_2: "<span>%{username} y %{username2}</span> %{description}"
+      reaction_1_user_multiple_posts: "reaccionó a %{count} de tus publicaciones"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} y %{count} más"
+        other: "%{username}, %{username2} y %{count} más"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reaccionó a %{count} de tus publicaciones"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} y %{count} más</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} y %{count} más</span> %{description}"
       titles:
         reaction: "nueva reacción"

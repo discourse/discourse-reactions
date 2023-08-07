@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 ro:
+  reports:
+    reactions:
+      labels:
+        day: "Zi"

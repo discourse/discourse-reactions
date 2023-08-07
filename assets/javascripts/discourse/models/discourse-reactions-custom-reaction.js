@@ -15,11 +15,16 @@ const CustomReaction = RestModel.extend({
 });
 
 CustomReaction.reopenClass({
-  toggle(postId, reactionId) {
+  toggle(post, reactionId) {
     return ajax(
-      `/discourse-reactions/posts/${postId}/custom-reactions/${reactionId}/toggle.json`,
+      `/discourse-reactions/posts/${post.id}/custom-reactions/${reactionId}/toggle.json`,
       { type: "PUT" }
-    );
+    ).then((result) => {
+      post.appEvents.trigger("discourse-reactions:reaction-toggled", {
+        post: result,
+        reaction: result.current_user_reaction,
+      });
+    });
   },
 
   findReactions(url, username, opts) {
@@ -28,6 +33,18 @@ CustomReaction.reopenClass({
 
     if (opts.beforeReactionUserId) {
       data.before_reaction_user_id = opts.beforeReactionUserId;
+    }
+
+    if (opts.beforeLikeId) {
+      data.before_like_id = opts.beforeLikeId;
+    }
+
+    if (opts.includeLikes) {
+      data.include_likes = opts.includeLikes;
+    }
+
+    if (opts.actingUsername) {
+      data.acting_username = opts.actingUsername;
     }
 
     return ajax(`/discourse-reactions/posts/${url}.json`, {

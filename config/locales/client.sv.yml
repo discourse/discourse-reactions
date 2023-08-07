@@ -16,20 +16,27 @@ sv:
       state_panel:
         more_users: "och %{count} till..."
       reaction:
-        too_many_request:
-          one: "Du har reagerat lite för snabbt, försök igen om %{count} sekund."
-          other: "Du har reagerat lite för snabbt, försök igen om %{count} sekunder."
         forbidden: "Den reaktionen skapades för långt tillbaka i tiden. Den kan inte längre ändras eller tas bort."
       picker:
         react_with: "Reagera på det här inlägget med: %{reaction}"
-        cant_remove_reaction: "Du kan inte ta bort denna reaktion"
+        cant_remove_reaction: "Du kan inte längre ta bort din reaktion"
         remove_reaction: "Ta bort denna %{reaction}-reaktion"
       main_reaction:
         add: "Gilla detta inlägg"
         remove: "Ta bort denna gillning"
-        cant_remove: "Du kan inte ta bort denna gillning"
+        cant_remove: "Du kan inte längre ta bort ditt gillande"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction_1_user_multiple_posts: "reagerade på %{count} av dina inlägg"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username},%{username2} och %{count} annan"
+        other: "%{username},%{username2} och %{count} andra"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagerade på %{count} av dina inlägg"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span>%{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username},%{username2} och %{count} annan</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} och %{count} andra</span> %{description}"
       titles:
         reaction: "ny reaktion"

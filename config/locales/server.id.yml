@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 id:
+  reports:
+    reactions:
+      labels:
+        day: "Hari"

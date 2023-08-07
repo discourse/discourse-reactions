@@ -5,7 +5,31 @@
 # https://translate.discourse.org/
 
 zh_TW:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse Reactions"
   js:
     discourse_reactions:
+      reactions_title: "反應"
+      state_panel:
+        more_users: "和%{count}更多。"
       picker:
         react_with: "對這篇文章的反應是： %{reaction}"
+        cant_remove_reaction: "您無法再移除您的反應"
+        remove_reaction: "刪除此 %{reaction} 反應"
+      main_reaction:
+        add: "喜歡這篇文章"
+        remove: "刪除這個喜歡"
+    notifications:
+      reaction_2_users: "%{username}、%{username2}"
+      reaction_2_users_with_others:
+        other: "%{username}、%{username2} 和其他 %{count} 個人都"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
+      reaction_many:
+        other: "<span class='multi-user'>%{username}、%{username2} 和其他 %{count} 個人都</span> %{description}"
+      titles:
+        reaction: "新的反應"

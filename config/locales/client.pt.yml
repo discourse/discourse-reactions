@@ -15,20 +15,22 @@ pt:
       reactions_title: "Reações"
       state_panel:
         more_users: "e mais %{count}..."
-      reaction:
-        too_many_request:
-          one: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundo."
-          other: "Tem estado a reagir um pouco depressa demais, tente novamente em %{count} segundos."
       picker:
         react_with: "Reagir a esta publicação com: %{reaction}"
-        cant_remove_reaction: "Não pode remover esta reação"
         remove_reaction: "Remover esta %{reaction} reação"
       main_reaction:
         add: "Gostar desta publicação"
         remove: "Remover este gosto"
-        cant_remove: "Não pode remover este gosto"
     notifications:
-      reaction: "<span>%{username}</span>%{description}"
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} e %{count} outro"
+        other: "%{username}, %{username2} e %{count} outros"
+      reaction:
+        single: "<span>%{username}</span>%{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} e %{count} outro</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} e %{count} outros</span> %{description}"
       titles:
         reaction: "nova reação"

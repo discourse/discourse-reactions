@@ -16,22 +16,30 @@ he:
       state_panel:
         more_users: "ו־%{count} נוספות..."
       reaction:
-        too_many_request:
-          one: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד שנייה %{count}."
-          two: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
-          many: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
-          other: "התגובה שלך הייתה מעט מהירה מדי, נא לנסות שוב בעוד %{count} שניות."
         forbidden: "תחושה זו נוצרה לפני זמן רב מידי. לא ניתן יותר לערוך או להסיר אותה."
       picker:
         react_with: "להוסיף תחושה לפוסט הזה: %{reaction}"
-        cant_remove_reaction: "אי אפשר להסיר את התחושה הזאת"
+        cant_remove_reaction: "כבר אין לך אפשרות להסיר את התחושה שלך"
         remove_reaction: "להסיר את התחושה %{reaction}"
       main_reaction:
         add: "לסמן את הפוסט בלייק"
         remove: "הסרת הלייק הזה"
-        cant_remove: "אין לך אפשרות להסיר את הלייק הזה"
+        cant_remove: "כבר אין לך אפשרות להסיר את הלייק שלך"
     notifications:
-      reaction: "<span>%{username}</span> %{description}"
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} ועוד %{count}"
+        two: "%{username}, %{username2} ועוד %{count}"
+        many: "%{username}, %{username2} ועוד %{count}"
+        other: "%{username}, %{username2} ועוד %{count}"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
+        two: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
+        many: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
       titles:
         reaction: "תחושה חדשה"

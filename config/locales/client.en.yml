@@ -10,22 +10,27 @@ en:
       state_panel:
         more_users: "and %{count} more..."
       reaction:
-        too_many_request:
-          one: "You have been reacting a bit too fast, try again in %{count} second."
-          other: "You have been reacting a bit too fast, try again in %{count} seconds."
         forbidden: "That reaction was created too long ago. It can no longer be modified or removed."
       picker:
         react_with: "React to this post with: %{reaction}"
-        cant_remove_reaction: "You can’t remove this reaction"
+        cant_remove_reaction: "You can no longer remove your reaction"
         remove_reaction: "Remove this %{reaction} reaction"
       main_reaction:
         add: "Like this post"
         remove: "Remove this like"
-        cant_remove: "You can’t remove this like"
+        cant_remove: "You can no longer remove your like"
     notifications:
-      reaction: 
+      reaction_1_user_multiple_posts: "reacted to %{count} of your posts"
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} and %{count} other"
+        other: "%{username}, %{username2} and %{count} others"
+      reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reacted to %{count} of your posts"
-      reaction_2: "<span>%{username}, %{username2}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} and %{count} other</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} and %{count} others</span> %{description}"
       titles:
         reaction: "new reaction"

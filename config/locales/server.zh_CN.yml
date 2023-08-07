@@ -7,8 +7,8 @@
 zh_CN:
   site_settings:
     discourse_reactions_like_icon: "定义用于主回应按钮的图标。"
-    discourse_reactions_reaction_for_like: "定义与类似操作相关联的回应。"
-    discourse_reactions_enabled: "启用 Discourse 回应插件。"
+    discourse_reactions_reaction_for_like: "定义与点赞操作相关联的回应。"
+    discourse_reactions_enabled: "启用 discourse-reactions 插件。"
     discourse_reactions_enabled_reactions: "定义启用的回应列表，此处允许使用任何表情符号。"
     discourse_reactions_desaturated_reaction_panel: "通过在悬停前显示不饱和的回应，减少回应的视觉噪音。"
   badges:
@@ -16,7 +16,7 @@ zh_CN:
       name: 首次回应
       description: 回应了帖子
       long_description: |
-        您第一次对帖子做出回应时会授予此徽章。对帖子做出回应是让您的社区成员知道他们发布的内容酷、有用或有趣的好方法。分享你的回应！
+        您第一次回应帖子时会被授予此徽章。回应帖子是让您的社区成员知道他们发布的内容有趣、有用、酷或好玩的绝佳方式。分享您的回应！
   reports:
     reactions:
       title: "回应"

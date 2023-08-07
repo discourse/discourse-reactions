@@ -1,10 +1,10 @@
 {
   "name": "discourse-reactions",
   "version": "1.0.0",
-  "repository": "git@github.com:discourse/discourse-reactions.git",
+  "repository": "https://github.com/discourse/discourse-reactions",
   "author": "Discourse",
   "license": "MIT",
   "devDependencies": {
-    "eslint-config-discourse": "^1.1.8"
+    "eslint-config-discourse": "^3.4.0"
   }
 }

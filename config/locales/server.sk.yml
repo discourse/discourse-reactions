@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 sk:
+  reports:
+    reactions:
+      labels:
+        day: "Deň"

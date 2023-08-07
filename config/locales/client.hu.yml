@@ -5,3 +5,35 @@
 # https://translate.discourse.org/
 
 hu:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_reactions: "Discourse reakciók"
+  js:
+    discourse_reactions:
+      reactions_title: "Reakciók"
+      state_panel:
+        more_users: "és %{count} további…"
+      reaction:
+        forbidden: "Ez a reakció túl régen lett létrehozva. Már nem lehet módosítani vagy eltávolítani."
+      picker:
+        react_with: "Reagálás erre a bejegyzésre ezzel: %{reaction}"
+        remove_reaction: "A(z) %{reaction} reakció eltávolítása"
+      main_reaction:
+        add: "Bejegyzés kedvelése"
+        remove: "Kedvelés eltávolítása"
+    notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} és még %{count} felhasználó"
+        other: "%{username}, %{username2} és még %{count} felhasználó"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+        multiple: "<span>%{username}</span> reagált %{count} bejegyzésére"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} és még %{count} felhasználó</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} és még %{count} felhasználó</span> %{description}"
+      titles:
+        reaction: "új reakció"

@@ -5,3 +5,19 @@
 # https://translate.discourse.org/
 
 sl:
+  js:
+    notifications:
+      reaction_2_users: "%{username}, %{username2}"
+      reaction_2_users_with_others:
+        one: "%{username}, %{username2} in %{count} drug"
+        two: "%{username}, %{username2} in %{count} druga"
+        few: "%{username}, %{username2} in %{count} drugi"
+        other: "%{username}, %{username2} in %{count} drugih"
+      reaction:
+        single: "<span>%{username}</span> %{description}"
+      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username}, %{username2} in %{count} drug</span> %{description}"
+        two: "<span class='multi-user'>%{username}, %{username2} in %{count} druga</span> %{description}"
+        few: "<span class='multi-user'>%{username}, %{username2} in %{count} drugi</span> %{description}"
+        other: "<span class='multi-user'>%{username}, %{username2} in %{count} drugih</span> %{description}"

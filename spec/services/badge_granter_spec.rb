@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
-require_relative '../fabricators/reaction_fabricator.rb'
-require_relative '../fabricators/reaction_user_fabricator.rb'
+require "rails_helper"
+require_relative "../fabricators/reaction_fabricator.rb"
+require_relative "../fabricators/reaction_user_fabricator.rb"
 
 describe BadgeGranter do
   fab!(:user) { Fabricate(:user) }
   fab!(:post) { Fabricate(:post) }
   fab!(:reaction) { Fabricate(:reaction, post: post) }
   fab!(:reaction_user) { Fabricate(:reaction_user, reaction: reaction, user: user, post: post) }
-  let(:badge) { Badge.find_by(name: 'First Reaction') }
+  let(:badge) { Badge.find_by(name: "First Reaction") }
 
   before do
     SiteSetting.discourse_reactions_enabled = true
@@ -21,18 +21,18 @@ describe BadgeGranter do
     BadgeGranter.clear_queue!
   end
 
-  describe 'First Reaction' do
-    it 'badge is available' do
+  describe "First Reaction" do
+    it "badge is available" do
       expect(badge).not_to eq(nil)
     end
 
-    it 'badge query is not broken' do
+    it "badge query is not broken" do
       backfill = BadgeGranter.backfill(badge)
 
       expect(backfill).to eq(true)
     end
 
-    it 'can backfill the badge' do
+    it "can backfill the badge" do
       UserBadge.destroy_all
       BadgeGranter.backfill(badge)
 

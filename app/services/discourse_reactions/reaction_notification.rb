@@ -2,6 +2,8 @@
 
 module DiscourseReactions
   class ReactionNotification
+    HEART_ICON_NAME = "heart"
+
     def initialize(reaction, user)
       @reaction = reaction
       @post = reaction.post
@@ -11,67 +13,66 @@ module DiscourseReactions
     def create
       post_user = @post.user
 
-      return if post_user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:never]
+      if post_user.user_option.like_notification_frequency ==
+           UserOption.like_notification_frequency_type[:never]
+        return
+      end
 
-      last_notification = post_user.notifications
-        .order("notifications.id DESC")
-        .find_by(
-          topic_id: @post.topic_id,
-          post_number: @post.post_number,
-          notification_type: Notification.types[:reaction]
-        )
+      opts = { user_id: @user.id, display_username: @user.username }
 
-      return if (last_notification && !enabled_reaction_notifications?(post_user, last_notification))
+      if @reaction.reaction_value == HEART_ICON_NAME
+        opts[:custom_data] = { reaction_icon: @reaction.reaction_value }
+      end
 
-      PostAlerter.new.create_notification(post_user, Notification.types[:reaction], @post, user_id: @user.id, display_username: @user.username)
+      PostAlerter.new.create_notification(post_user, Notification.types[:reaction], @post, opts)
     end
 
     def delete
       return if DiscourseReactions::Reaction.where(post_id: @post.id).by_user(@user).count != 0
       read = true
-      Notification.where(
-        topic_id: @post.topic_id,
-        user_id: @post.user_id,
-        post_number: @post.post_number,
-        notification_type: Notification.types[:reaction]
-      ).each do |notification|
-        read = false unless notification.read
-        notification.destroy
-      end
+      Notification
+        .where(
+          topic_id: @post.topic_id,
+          user_id: @post.user_id,
+          post_number: @post.post_number,
+          notification_type: Notification.types[:reaction],
+        )
+        .each do |notification|
+          read = false unless notification.read
+          notification.destroy
+        end
       refresh_notification(read)
     end
 
     private
 
-    def enabled_reaction_notifications?(user, notification)
-      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:always]
-      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:first_time_and_daily] && notification.created_at < 1.day.ago
-      return true if user.user_option.like_notification_frequency == UserOption.like_notification_frequency_type[:first_time] && notification
-      false
-    end
-
-    def reaction_usernames
-      @post.reactions
+    def remaining_reaction_data
+      @post
+        .reactions
         .joins(:users)
-        .order('discourse_reactions_reactions.created_at DESC')
-        .where('discourse_reactions_reactions.created_at > ?', 1.day.ago)
-        .pluck(:username)
+        .order("discourse_reactions_reactions.created_at DESC")
+        .where("discourse_reactions_reactions.created_at > ?", 1.day.ago)
+        .pluck(:username, :reaction_value)
     end
 
     def refresh_notification(read)
       return unless @post && @post.user_id && @post.topic
 
-      usernames = reaction_usernames
-
-      return if usernames.blank?
+      remaining_data = remaining_reaction_data
+      return if remaining_data.blank?
 
       data = {
         topic_title: @post.topic.title,
-        username: usernames[0],
-        display_username: usernames[0],
-        username2: usernames[1],
-        count: usernames.length
+        count: remaining_data.length,
+        username: remaining_data[0][0],
+        display_username: remaining_data[0][0],
       }
+
+      data[:username2] = remaining_data[1][0] if remaining_data[1]
+
+      if remaining_data.all? { |element| element[1] == HEART_ICON_NAME }
+        data[:reaction_icon] = HEART_ICON_NAME
+      end
 
       Notification.create(
         notification_type: Notification.types[:reaction],
@@ -79,7 +80,7 @@ module DiscourseReactions
         post_number: @post.post_number,
         user_id: @post.user_id,
         read: read,
-        data: data.to_json
+        data: data.to_json,
       )
     end
   end
