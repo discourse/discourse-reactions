@@ -18,7 +18,7 @@ function initializeDiscourseReactions(api) {
     },
     shouldRender: (widget) => {
       const post = widget.findAncestorModel();
-      return post && !post.deletedAt;
+      return post && !post.deleted_at;
     },
   });
 
