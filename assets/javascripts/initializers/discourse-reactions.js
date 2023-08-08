@@ -11,21 +11,19 @@ const PLUGIN_ID = "discourse-reactions";
 replaceIcon("notification.reaction", "bell");
 
 function initializeDiscourseReactions(api) {
-  api.removePostMenuButton("like");
+  api.replacePostMenuButton("like", {
+    name: "discourse-reactions-actions",
+    buildAttrs: (widget) => {
+      return { post: widget.findAncestorModel() };
+    },
+    shouldRender: (widget) => {
+      const post = widget.findAncestorModel();
+      return post && !post.deleted_at;
+    },
+  });
 
   api.addKeyboardShortcut("l", null, {
     click: ".topic-post.selected .discourse-reactions-reaction-button",
-  });
-
-  api.decorateWidget("post-menu:before-extra-controls", (dec) => {
-    const post = dec.getModel();
-    if (!post || post.deleted_at) {
-      return;
-    }
-
-    return dec.attach("discourse-reactions-actions", {
-      post,
-    });
   });
 
   api.modifyClass("component:scrolling-post-stream", {
