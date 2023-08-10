@@ -50,6 +50,12 @@ export default createWidget("discourse-reactions-reaction-button", {
   },
 
   buildAttributes(attrs) {
+    if (!this.currentUser) {
+      return {
+        title: I18n.t("discourse_reactions.main_reaction.unauthenticated"),
+      };
+    }
+
     const likeAction = attrs.post.likeAction;
     if (!likeAction) {
       return {};
