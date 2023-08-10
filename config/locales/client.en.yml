@@ -19,6 +19,7 @@ en:
         add: "Like this post"
         remove: "Remove this like"
         cant_remove: "You can no longer remove your like"
+        unauthenticated: "Please sign up or log in to like this post"
     notifications:
       reaction_1_user_multiple_posts: "reacted to %{count} of your posts"
       reaction_2_users: "%{username}, %{username2}"
