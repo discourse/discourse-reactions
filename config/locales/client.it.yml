@@ -25,6 +25,7 @@ it:
         add: "Metti \"Mi piace\" a questo messaggio"
         remove: "Rimuovi questo \"Mi piace\""
         cant_remove: "Non puoi più rimuovere il tuo Mi piace"
+        unauthenticated: "Per favore registrati o accedi per mettere mi piace a questo post"
     notifications:
       reaction_1_user_multiple_posts: "ha reagito a %{count} dei tuoi messaggi"
       reaction_2_users: "%{username}, %{username2}"

@@ -25,7 +25,9 @@ he:
         add: "לסמן את הפוסט בלייק"
         remove: "הסרת הלייק הזה"
         cant_remove: "כבר אין לך אפשרות להסיר את הלייק שלך"
+        unauthenticated: "נא להירשם או להיכנס כדי לסמן את הפוסט הזה בלייק"
     notifications:
+      reaction_1_user_multiple_posts: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
       reaction_2_users: "%{username}, %{username2}"
       reaction_2_users_with_others:
         one: "%{username}, %{username2} ועוד %{count}"

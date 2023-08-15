@@ -19,11 +19,15 @@ pl_PL:
         forbidden: "Ta reakcja powstała zbyt dawno temu. Nie można go już modyfikować ani usuwać."
       picker:
         react_with: "Zareaguj na ten post z: %{reaction}"
+        cant_remove_reaction: "Nie możesz już usunąć swojej reakcji"
         remove_reaction: "Usuń reakcję %{reaction}"
       main_reaction:
         add: "Polub ten post"
         remove: "Usuń to polubienie"
+        cant_remove: "Nie możesz już usunąć polubienia"
+        unauthenticated: "Zarejestruj się lub zaloguj, aby polubić ten post"
     notifications:
+      reaction_1_user_multiple_posts: "zareagował na %{count} Twoich postów"
       reaction_2_users: "%{username}, %{username2}"
       reaction_2_users_with_others:
         one: "%{username}, %{username2} oraz %{count} inny"
