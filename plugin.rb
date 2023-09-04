@@ -200,7 +200,7 @@ after_initialize do
       FROM discourse_reactions_reactions as drr
       LEFT OUTER JOIN discourse_reactions_reaction_users as drru on drr.id = drru.reaction_id
       WHERE drr.reaction_users_count IS NOT NULL
-        AND drru.created_at >= :start_date::DATE AND drru.created_at <= :end_date::DATE
+        AND drru.created_at::DATE >= :start_date::DATE AND drru.created_at::DATE <= :end_date::DATE
       GROUP BY drr.reaction_value, day
     SQL
 
@@ -212,7 +212,7 @@ after_initialize do
         date_trunc('day', pa.created_at)::date as day
       FROM post_actions as pa
       WHERE pa.post_action_type_id = :likes
-      AND pa.created_at >= :start_date::DATE AND pa.created_at <= :end_date::DATE
+      AND pa.created_at::DATE >= :start_date::DATE AND pa.created_at::DATE <= :end_date::DATE
       GROUP BY day
     SQL
         start_date: report.start_date.to_date,
