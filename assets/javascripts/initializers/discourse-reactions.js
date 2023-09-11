@@ -182,10 +182,9 @@ function initializeDiscourseReactions(api) {
           }
 
           if (count > 2) {
-            return I18n.t("notifications.reaction_2_users_with_others", {
+            return I18n.t("notifications.reaction_multiple_users", {
               username,
-              username2: formatUsername(this.notification.data.username2),
-              count: count - 2,
+              count: count - 1,
             });
           } else {
             return I18n.t("notifications.reaction_2_users", {

@@ -28,7 +28,7 @@ createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {
     const username = formatUsername(data.display_username);
 
     if (data.username2) {
-      const othersCount = count - 2;
+      const othersCount = count - 1;
       const notificationKey =
         othersCount === 0 ? "reaction_2" : "reaction_many";
 

@@ -23,9 +23,7 @@ en:
     notifications:
       reaction_1_user_multiple_posts: "reacted to %{count} of your posts"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} and %{count} other"
-        other: "%{username}, %{username2} and %{count} others"
+      reaction_multiple_users: "%{username}, %{username2} and %{count} others"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reacted to %{count} of your posts"

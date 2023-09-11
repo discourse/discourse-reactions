@@ -186,10 +186,9 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
-      `${I18n.t("notifications.reaction_2_users_with_others", {
+      `${I18n.t("notifications.reaction_multiple_users", {
         username: "jam-and-cheese",
-        username2: "cheesy-monkey",
-        count: 1,
+        count: 2,
       })} Topic with likes from multiple users`,
       "notification for likes from 3 or more users has the right content"
     );
@@ -206,10 +205,9 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[3].textContent.replaceAll(/\s+/g, " ").trim(),
-      `${I18n.t("notifications.reaction_2_users_with_others", {
+      `${I18n.t("notifications.reaction_multiple_users", {
         username: "nuclear-reactor",
-        username2: "solar-engine",
-        count: 2,
+        count: 3,
       })} Topic with likes and reactions`,
       "notification for reactions from 3 or more users has the right content"
     );
