@@ -13,14 +13,6 @@ bs_BA:
         add: "Lajkuj ovaj post"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} and %{count} ostali"
-        few: "%{username}, %{username2} i ostalih %{count}"
-        other: "%{username}, %{username2} i ostalih %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} and %{count} ostali</span> %{description}"
-        few: "<span class='multi-user'>%{username}, %{username2} i ostalih %{count}</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} i ostalih %{count} </span> %{description}"

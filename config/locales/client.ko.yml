@@ -13,12 +13,8 @@ ko:
         add: "좋아요"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        other: "%{username}, %{username2} 외 %{count} 명의 사용자가"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        other: "<span class='multi-user'>%{username}, %{username2} 그리고 %{count} 그외 </span> %{description}"
       titles:
         reaction: "새로운 반응"

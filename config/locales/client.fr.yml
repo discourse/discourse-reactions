@@ -28,15 +28,10 @@ fr:
     notifications:
       reaction_1_user_multiple_posts: "a réagi à %{count} de vos messages"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} et %{count} autre utilisateur"
-        other: "%{username}, %{username2} et %{count} autres utilisateurs"
+      reaction_multiple_users: "%{username} et %{count} autres utilisateurs"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> a réagi à %{count} de vos messages."
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} et %{count} autre utilisateur</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} et %{count} autres utilisateurs</span> %{description}"
       titles:
         reaction: "nouvelle réaction"

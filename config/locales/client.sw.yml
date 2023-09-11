@@ -12,6 +12,3 @@ sw:
     notifications:
       reaction_2_users: "%{username}, %{username2}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} na %{count} mwingine </span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} na %{count} wengine</span> %{description}"

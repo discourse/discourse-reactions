@@ -28,15 +28,10 @@ fa_IR:
     notifications:
       reaction_1_user_multiple_posts: "به %{count} تا از نوشته‌های شما واکنش نشان داد"
       reaction_2_users: "%{username}، %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}، %{username2} و %{count} نفر دیگر"
-        other: "%{username}، %{username2} و %{count} نفر دیگر"
+      reaction_multiple_users: "%{username} و %{count} نفر دیگر"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> به %{count} نوشته شما واکنش نشان داد"
       reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}، %{username2} و %{count} نفر دیگر</span> %{description}"
-        other: "<span class='multi-user'>%{username}، %{username2} و %{count} نفر دیگر</span> %{description}"
       titles:
         reaction: "واکنش‌ جدید"

@@ -29,15 +29,9 @@ da:
     notifications:
       reaction_1_user_multiple_posts: "reagerede på %{count} af dine indlæg"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} og %{count} anden"
-        other: "%{username}, %{username2} og %{count} andre"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagerede på %{count} af dine indlæg"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} og %{count} anden</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} og %{count} andre</span> %{description}"
       titles:
         reaction: "ny reaktion"

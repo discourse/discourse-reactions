@@ -10,5 +10,3 @@ th:
       reaction:
         single: "<span>%{username}</span>%{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span>%{description}"
-      reaction_many:
-        other: "<span class='multi-user'>%{username}, %{username2} และอื่นๆอีก %{count}</span>%{description}"
