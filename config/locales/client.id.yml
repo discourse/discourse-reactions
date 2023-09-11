@@ -5,3 +5,7 @@
 # https://translate.discourse.org/
 
 id:
+  js:
+    notifications:
+      reaction_multiple_users: "%{username} dan %{count} lainnya"
+      reaction_many: "<span class='multi-user'>%{username} dan %{count} lainnya</span> %{description}"

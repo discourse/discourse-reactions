@@ -25,15 +25,10 @@ hu:
         remove: "Kedvelés eltávolítása"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} és még %{count} felhasználó"
-        other: "%{username}, %{username2} és még %{count} felhasználó"
+      reaction_multiple_users: "%{username} és még %{count} fő"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagált %{count} bejegyzésére"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} és még %{count} felhasználó</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} és még %{count} felhasználó</span> %{description}"
       titles:
         reaction: "új reakció"

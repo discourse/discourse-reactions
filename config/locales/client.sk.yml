@@ -9,3 +9,5 @@ sk:
     discourse_reactions:
       main_reaction:
         add: "Páči sa mi tento príspevok"
+    notifications:
+      reaction_multiple_users: "%{username} a %{count} ďalších"

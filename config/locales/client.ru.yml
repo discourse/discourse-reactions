@@ -28,19 +28,10 @@ ru:
     notifications:
       reaction_1_user_multiple_posts: "отреагировал на %{count} ваших сообщений"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} и ещё %{count} пользователь"
-        few: "%{username}, %{username2} и ещё %{count} пользователя"
-        many: "%{username}, %{username2} и ещё %{count} пользователей"
-        other: "%{username}, %{username2} и ещё %{count} пользователей"
+      reaction_multiple_users: "%{username} и ещё %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> отреагировал на %{count} ваших сообщений"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} и ещё %{count} пользователь</span> %{description}"
-        few: "<span class='multi-user'>%{username}, %{username2} и ещё %{count} пользователя</span> %{description}"
-        many: "<span class='multi-user'>%{username}, %{username2} и ещё %{count} пользователей</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} и ещё %{count} пользователей</span> %{description}"
       titles:
         reaction: "Новая реакция"

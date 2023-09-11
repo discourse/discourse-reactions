@@ -11,14 +11,8 @@ nb_NO:
         add: "Liker dette innlegget"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} og én annen"
-        other: "%{username}, %{username2} og %{count} andre"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} og én annen</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} og %{count} andre</span> %{description}"
       titles:
         reaction: "ny reaksjon"

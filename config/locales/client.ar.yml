@@ -28,23 +28,10 @@ ar:
     notifications:
       reaction_1_user_multiple_posts: "تفاعل على %{count} من منشوراتك"
       reaction_2_users: "%{username}، و%{username2}"
-      reaction_2_users_with_others:
-        zero: "%{username}، و%{username2}، و%{count} آخرين"
-        one: "%{username}، و%{username2}، وواحد (%{count}) آخر"
-        two: "%{username}، و%{username2}، واثنان (%{count}) آخران"
-        few: "%{username}، و%{username2}، و%{count} آخرين"
-        many: "%{username}، و%{username2}، و%{count} آخرين"
-        other: "%{username}، و%{username2}، و%{count} آخر"
+      reaction_multiple_users: "%{username} واثنان (%{count}) آخران"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"
       reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
-      reaction_many:
-        zero: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
-        one: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخر</span> %{description}"
-        two: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرَين</span> %{description}"
-        few: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
-        many: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
-        other: "<span class='multi-user'>%{username}، %{username2}، و%{count} آخرين</span> %{description}"
       titles:
         reaction: "تفاعل جديد"

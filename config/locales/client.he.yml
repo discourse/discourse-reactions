@@ -29,19 +29,11 @@ he:
     notifications:
       reaction_1_user_multiple_posts: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_2_users_with_others:
-        one: "%{username}, %{username2} ועוד %{count}"
-        two: "%{username}, %{username2} ועוד %{count}"
-        many: "%{username}, %{username2} ועוד %{count}"
-        other: "%{username}, %{username2} ועוד %{count}"
+      reaction_multiple_users: "%{username} ועוד %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
-        two: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
-        many: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
-        other: "<span class='multi-user'>%{username}, %{username2} ועוד %{count}</span> %{description}"
+      reaction_many: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
       titles:
         reaction: "תחושה חדשה"
