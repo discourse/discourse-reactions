@@ -1,5 +1,5 @@
 export default {
-  "/t/topic_with_reactions_and_likes.json": {
+  "/t/374.json": {
     post_stream: {
       posts: [
         {

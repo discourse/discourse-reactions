@@ -14,12 +14,12 @@ acceptance("Discourse Reactions - Deleted post", function (needs) {
   });
 
   needs.pretender((server, helper) => {
-    const topicPath = "/t/topic_with_reactions_and_likes.json";
+    const topicPath = "/t/374.json";
     server.get(topicPath, () => helper.response(ReactionsTopics[topicPath]));
   });
 
   test("Reaction controls", async (assert) => {
-    await visit("/t/-/topic_with_reactions_and_likes");
+    await visit("/t/topic_with_reactions_and_likes/374");
 
     assert.notOk(
       exists("#post_4 .discourse-reactions-actions"),
