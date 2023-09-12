@@ -33,5 +33,6 @@ fa_IR:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> به %{count} نوشته شما واکنش نشان داد"
       reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
+      reaction_many: "<span class='multi-user'>%{username} و %{count} نفر دیگر</span> %{description}"
       titles:
         reaction: "واکنش‌ جدید"

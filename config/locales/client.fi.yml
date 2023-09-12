@@ -34,5 +34,6 @@ fi:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagoi %{count} viesteistäsi"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many: "<span class='multi-user'>%{username} ja %{count} muuta</span> %{description}"
       titles:
         reaction: "uusi reaktio"
