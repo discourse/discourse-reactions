@@ -21,13 +21,19 @@ en:
         cant_remove: "You can no longer remove your like"
         unauthenticated: "Please sign up or log in to like this post"
     notifications:
-      reaction_1_user_multiple_posts: "reacted to %{count} of your posts"
+      reaction_1_user_multiple_posts:
+        one: "reacted to %{count} of your post"
+        other: "reacted to %{count} of your posts"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} and %{count} others"
+      reaction_multiple_users:
+        one: "%{username} and %{count} other"
+        other: "%{username} and %{count} others"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reacted to %{count} of your posts"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many: "<span class='multi-user'>%{username} and %{count} others</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} and %{count} other</span> %{description}"
+        other: "<span class='multi-user'>%{username} and %{count} others</span> %{description}"
       titles:
         reaction: "new reaction"
