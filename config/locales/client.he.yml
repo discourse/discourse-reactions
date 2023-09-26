@@ -27,13 +27,25 @@ he:
         cant_remove: "כבר אין לך אפשרות להסיר את הלייק שלך"
         unauthenticated: "נא להירשם או להיכנס כדי לסמן את הפוסט הזה בלייק"
     notifications:
-      reaction_1_user_multiple_posts: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
+      reaction_1_user_multiple_posts:
+        one: "תגובה כלשהי לפוסט שלך"
+        two: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
+        many: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
+        other: "תגובה כלשהי ל־%{count} מהפוסטים שלך"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} ועוד %{count}"
+      reaction_multiple_users:
+        one: "%{username} ועוד %{count}"
+        two: "%{username} ועוד %{count}"
+        many: "%{username} ועוד %{count}"
+        other: "%{username} ועוד %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
+        two: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
+        many: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
+        other: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
       titles:
         reaction: "תחושה חדשה"

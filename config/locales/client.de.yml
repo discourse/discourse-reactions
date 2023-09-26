@@ -26,13 +26,16 @@ de:
         remove: "Entferne dieses „Gefällt mir“"
         cant_remove: "Du kannst dein „Gefällt mir“ nicht mehr entfernen"
     notifications:
-      reaction_1_user_multiple_posts: "reagierte auf %{count} deiner Beiträge"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} und %{count} andere"
+      reaction_multiple_users:
+        one: "%{username} und %{count} andere Person"
+        other: "%{username} und %{count} andere"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> hat auf %{count} deiner Beiträge reagiert"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many: "<span class='multi-user'>%{username} und %{count} andere</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} und %{count} andere</span> %{description}"
+        other: "<span class='multi-user'>%{username} und %{count} andere</span> %{description}"
       titles:
         reaction: "neue Reaktion"

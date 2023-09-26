@@ -10,4 +10,8 @@ sk:
       main_reaction:
         add: "Páči sa mi tento príspevok"
     notifications:
-      reaction_multiple_users: "%{username} a %{count} ďalších"
+      reaction_multiple_users:
+        one: "%{username} a %{count} ďalší"
+        few: "%{username} a %{count} ďalších"
+        many: "%{username} a %{count} ďalších"
+        other: "%{username} a %{count} ďalších"

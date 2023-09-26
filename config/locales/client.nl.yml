@@ -26,9 +26,10 @@ nl:
         remove: "Deze like verwijderen"
         cant_remove: "Je kunt je like niet meer verwijderen"
     notifications:
-      reaction_1_user_multiple_posts: "heeft gereageerd op %{count} van je berichten"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} en %{count} anderen"
+      reaction_multiple_users:
+        one: "%{username} en %{count} ander"
+        other: "%{username} en %{count} anderen"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> heeft gereageerd op %{count} van je berichten"

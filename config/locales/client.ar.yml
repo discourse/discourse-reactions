@@ -26,9 +26,14 @@ ar:
         remove: "إزالة هذا الإعجاب"
         cant_remove: "لم يعد بإمكانك إزالة إعجابك"
     notifications:
-      reaction_1_user_multiple_posts: "تفاعل على %{count} من منشوراتك"
       reaction_2_users: "%{username}، و%{username2}"
-      reaction_multiple_users: "%{username} واثنان (%{count}) آخران"
+      reaction_multiple_users:
+        zero: "%{username} واثنان (%{count}) آخران"
+        one: "%{username} وواحد (%{count}) آخر"
+        two: "%{username} و%{count} آخرين"
+        few: "%{username} واثنان (%{count}) آخران"
+        many: "%{username} واثنان (%{count}) آخران"
+        other: "%{username} واثنان (%{count}) آخران"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"

@@ -27,12 +27,16 @@ it:
         cant_remove: "Non puoi più rimuovere il tuo Mi piace"
         unauthenticated: "Per favore registrati o accedi per mettere mi piace a questo post"
     notifications:
-      reaction_1_user_multiple_posts: "ha reagito a %{count} dei tuoi messaggi"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} e altri %{count}"
+      reaction_multiple_users:
+        one: "%{username} e %{count} altro"
+        other: "%{username} e altri %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> ha reagito a %{count} dei tuoi messaggi"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} e %{count} altro</span> %{description}"
+        other: "<span class='multi-user'>%{username} e altri %{count}</span> %{description}"
       titles:
         reaction: "nuova reazione"

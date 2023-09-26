@@ -27,9 +27,12 @@ pl_PL:
         cant_remove: "Nie możesz już usunąć polubienia"
         unauthenticated: "Zarejestruj się lub zaloguj, aby polubić ten post"
     notifications:
-      reaction_1_user_multiple_posts: "zareagował na %{count} Twoich postów"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} i %{count} innych"
+      reaction_multiple_users:
+        one: "%{username} i %{count} inny"
+        few: "%{username} i %{count} inni"
+        many: "%{username} i %{count} innych"
+        other: "%{username} i %{count} innych"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> zareagował na %{count} twoich postów"

@@ -26,9 +26,10 @@ pt_BR:
         remove: "Remova essa curtida"
         cant_remove: "Você não pode mais remover sua curtida"
     notifications:
-      reaction_1_user_multiple_posts: "reagiu a %{count} de suas postagens"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} e %{count} outros(as)"
+      reaction_multiple_users:
+        one: "%{username} e %{count} outro"
+        other: "%{username} e %{count} outros(as)"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagiu a %{count} de suas postagens"
