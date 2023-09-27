@@ -27,7 +27,6 @@ da:
         cant_remove: "Du kan ikke længere fjerne dit 'Synes godt om'"
         unauthenticated: "Tilmeld dig eller log ind for at 'synes godt om' dette indlæg"
     notifications:
-      reaction_1_user_multiple_posts: "reagerede på %{count} af dine indlæg"
       reaction_2_users: "%{username}, %{username2}"
       reaction:
         single: "<span>%{username}</span> %{description}"

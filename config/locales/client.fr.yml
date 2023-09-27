@@ -26,9 +26,10 @@ fr:
         remove: "Supprimer ce « J'aime »"
         cant_remove: "Vous ne pouvez plus supprimer votre J'aime"
     notifications:
-      reaction_1_user_multiple_posts: "a réagi à %{count} de vos messages"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} et %{count} autres utilisateurs"
+      reaction_multiple_users:
+        one: "%{username} et %{count} autre utilisateur"
+        other: "%{username} et %{count} autres utilisateurs"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> a réagi à %{count} de vos messages."

@@ -13,7 +13,8 @@ vi:
         add: "Thích bài viết này"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} và %{count} khác"
+      reaction_multiple_users:
+        other: "%{username} và %{count} khác"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"

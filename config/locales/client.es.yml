@@ -26,9 +26,10 @@ es:
         remove: "Deshacer me gusta"
         cant_remove: "Ya no puedes eliminar tu me gusta"
     notifications:
-      reaction_1_user_multiple_posts: "reaccionó a %{count} de tus publicaciones"
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} y otros %{count}"
+      reaction_multiple_users:
+        one: "%{username} y %{count} más"
+        other: "%{username} y otros %{count}"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reaccionó a %{count} de tus publicaciones"

@@ -11,8 +11,11 @@ cs:
         add: "Tento příspěvek se mi líbí"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction_multiple_users: "%{username} a %{count} dalších"
       reaction:
         single: "<span>%{username}</span> %{description}"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many: "<span>%{username} a %{count} dalších</span> %{description}"
+      reaction_many:
+        one: "<span>%{username} a %{count} další</span> %{description}"
+        few: "<span>%{username} a %{count} dalších</span> %{description}"
+        many: "<span>%{username} a %{count} dalších</span> %{description}"
+        other: "<span>%{username} a %{count} dalších</span> %{description}"
