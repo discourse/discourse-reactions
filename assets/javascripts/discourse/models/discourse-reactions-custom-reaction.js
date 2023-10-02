@@ -55,7 +55,11 @@ CustomReaction.reopenClass({
         reaction.topic = Topic.create(reaction.post.topic);
         reaction.post_user = User.create(reaction.post.user);
         reaction.category = Category.findById(reaction.post.category_id);
-        reaction.post = Post.create(reaction.post);
+
+        const postAttrs = { ...reaction.post };
+        delete postAttrs.url; // Auto-calculated by Model implementation
+
+        reaction.post = Post.create(postAttrs);
         return EmberObject.create(reaction);
       });
     });
