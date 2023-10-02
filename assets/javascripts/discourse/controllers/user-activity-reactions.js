@@ -13,11 +13,6 @@ export default class UserActivityReactions extends Controller {
   @tracked beforeLikeId = null;
   @tracked beforeReactionUserId = null;
 
-  constructor() {
-    super(...arguments);
-    this.set("application.showFooter", !this.canLoadMore);
-  }
-
   #getLastIdFrom(array) {
     return array.length ? array[array.length - 1].get("id") : null;
   }
@@ -48,11 +43,6 @@ export default class UserActivityReactions extends Controller {
 
   @action
   loadMore() {
-    if (!this.canLoadMore || this.loading || !this.reactionsUrl) {
-      this.set("application.showFooter", !this.canLoadMore);
-      return;
-    }
-
     this.loading = true;
     const reactionUsers = this.model;
 

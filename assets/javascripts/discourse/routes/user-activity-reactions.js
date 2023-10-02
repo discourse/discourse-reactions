@@ -17,6 +17,5 @@ export default class UserActivityReactions extends DiscourseRoute {
       reactionsUrl: "reactions",
       username: this.modelFor("user").get("username"),
     });
-    this.controllerFor("application").set("showFooter", loadedAll);
   }
 }
