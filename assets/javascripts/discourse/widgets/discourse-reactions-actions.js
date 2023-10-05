@@ -264,7 +264,7 @@ export default createWidget("discourse-reactions-actions", {
       (this.attrs.post.current_user_reaction.can_undo &&
         this.attrs.post.likeAction.canToggle)
     ) {
-      if (this.capabilities.canVibrate) {
+      if (this.capabilities.userHasBeenActive && this.capabilities.canVibrate) {
         navigator.vibrate(VIBRATE_DURATION);
       }
 
@@ -458,7 +458,7 @@ export default createWidget("discourse-reactions-actions", {
       return;
     }
 
-    if (this.capabilities.canVibrate) {
+    if (this.capabilities.userHasBeenActive && this.capabilities.canVibrate) {
       navigator.vibrate(VIBRATE_DURATION);
     }
 
