@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 # name: discourse-reactions
-# about: Allows users to react with emojis to a post
+# about: Allows users to react to a post with emojis.
+# meta_topic_id: 183261
 # version: 0.3
 # author: Ahmed Gagan, Rafael dos Santos Silva, Kris Aubuchon, Joffrey Jaffeux, Kris Kotlarek, Jordan Vidrine
 # url: https://github.com/discourse/discourse-reactions
