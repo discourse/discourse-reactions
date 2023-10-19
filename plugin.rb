@@ -348,16 +348,18 @@ after_initialize do
     next if original_post_id.nil?
     params = { old_post_id: original_post_id, new_post_id: post.id }
 
-    DB.exec(<<~SQL, params)
-      UPDATE discourse_reactions_reactions
-      SET post_id = :new_post_id
-      WHERE post_id = :old_post_id
-    SQL
+    ActiveRecord::Base.transaction do
+      DB.exec(<<~SQL, params)
+        UPDATE discourse_reactions_reactions
+        SET post_id = :new_post_id
+        WHERE post_id = :old_post_id
+      SQL
 
-    DB.exec(<<~SQL, params)
-      UPDATE discourse_reactions_reaction_users
-      SET post_id = :new_post_id
-      WHERE post_id = :old_post_id
-    SQL
+      DB.exec(<<~SQL, params)
+        UPDATE discourse_reactions_reaction_users
+        SET post_id = :new_post_id
+        WHERE post_id = :old_post_id
+      SQL
+    end
   end
 end
