@@ -345,18 +345,19 @@ after_initialize do
   register_notification_consolidation_plan(consolidated_reactions)
 
   on(:post_moved) do |post, original_topic_id, original_post_id|
-    params = { new_post_id: post.id, original_post_id: original_post_id }
+    next if original_post_id.nil?
+    params = { old_post_id: original_post_id, new_post_id: post.id }
 
     DB.exec(<<~SQL, params)
       UPDATE discourse_reactions_reactions
       SET post_id = :new_post_id
-      WHERE post_id = :original_post_id
+      WHERE post_id = :old_post_id
     SQL
 
     DB.exec(<<~SQL, params)
       UPDATE discourse_reactions_reaction_users
       SET post_id = :new_post_id
-      WHERE post_id = :original_post_id
+      WHERE post_id = :old_post_id
     SQL
   end
 end
