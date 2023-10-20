@@ -344,21 +344,29 @@ after_initialize do
   register_notification_consolidation_plan(reacted_by_two_users)
   register_notification_consolidation_plan(consolidated_reactions)
 
-  on(:post_moved) do |post, original_topic_id, original_post_id|
-    next if original_post_id.nil?
-    params = { old_post_id: original_post_id, new_post_id: post.id }
+  on(:first_post_moved) do |target_post, original_post|
+    reaction_cols = (DiscourseReactions::Reaction.column_names - %w[id post_id]).join(", ")
+    reaction_user_cols =
+      (DiscourseReactions::ReactionUser.column_names - %w[id post_id reaction_id]).join(", ")
 
     ActiveRecord::Base.transaction do
-      DB.exec(<<~SQL, params)
-        UPDATE discourse_reactions_reactions
-        SET post_id = :new_post_id
-        WHERE post_id = :old_post_id
+      DB.exec <<~SQL
+      INSERT INTO discourse_reactions_reactions(post_id, #{reaction_cols})
+      SELECT #{target_post.id}, #{reaction_cols}
+      FROM discourse_reactions_reactions
+      WHERE post_id = #{original_post.id}
       SQL
 
-      DB.exec(<<~SQL, params)
-        UPDATE discourse_reactions_reaction_users
-        SET post_id = :new_post_id
-        WHERE post_id = :old_post_id
+      reaction_id =
+        DB.query_single(
+          "SELECT id FROM discourse_reactions_reactions ORDER BY id DESC LIMIT 1",
+        ).first
+
+      DB.exec <<~SQL
+      INSERT INTO discourse_reactions_reaction_users(post_id, reaction_id, #{reaction_user_cols})
+      SELECT #{target_post.id}, #{reaction_id}, #{reaction_user_cols}
+      FROM discourse_reactions_reaction_users
+      WHERE post_id = #{original_post.id}
       SQL
     end
   end

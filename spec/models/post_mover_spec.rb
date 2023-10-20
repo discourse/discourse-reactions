@@ -33,7 +33,7 @@ describe PostMover do
 
     expect(topic_2.posts.count).to eq(1)
 
-    new_post = topic_2.reload.posts.first
+    new_post = topic_2.first_post
     reaction_emojis = new_post.reactions.pluck(:reaction_value)
 
     expect(new_post.reactions.count).to eq(1)
@@ -50,7 +50,7 @@ describe PostMover do
 
     expect(topic_3.posts.count).to eq(1)
 
-    new_post = topic_3.reload.posts.first
+    new_post = topic_3.first_post
     reaction_emojis = new_post.reactions.pluck(:reaction_value)
 
     expect(new_post.reactions.count).to eq(1)
