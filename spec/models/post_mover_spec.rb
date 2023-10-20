@@ -27,9 +27,8 @@ describe PostMover do
     expect(post_1.reactions).to include(reaction_1)
     expect(topic_2.posts.count).to eq(0)
 
-    expect {
-      topic_1.move_posts(admin, [post_1.id], { destination_topic_id: topic_2.id })
-    }.to change { topic_2.posts.count }.by(1)
+    post_mover = PostMover.new(topic_1, Discourse.system_user, [post_1.id])
+    expect { post_mover.to_topic(topic_2) }.to change { topic_2.posts.count }.by(1)
 
     expect(topic_2.posts.count).to eq(1)
 
@@ -44,9 +43,8 @@ describe PostMover do
     expect(post_2.reactions).to include(reaction_2)
     expect(topic_3.posts.count).to eq(0)
 
-    expect {
-      topic_1.move_posts(admin, [post_2.id], { destination_topic_id: topic_3.id })
-    }.to change { topic_3.posts.count }.by(1)
+    post_mover = PostMover.new(topic_1, Discourse.system_user, [post_2.id])
+    expect { post_mover.to_topic(topic_3) }.to change { topic_3.posts.count }.by(1)
 
     expect(topic_3.posts.count).to eq(1)
 
