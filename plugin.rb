@@ -345,29 +345,24 @@ after_initialize do
   register_notification_consolidation_plan(consolidated_reactions)
 
   on(:first_post_moved) do |target_post, original_post|
-    reaction_cols = (DiscourseReactions::Reaction.column_names - %w[id post_id]).join(", ")
-    reaction_user_cols =
-      (DiscourseReactions::ReactionUser.column_names - %w[id post_id reaction_id]).join(", ")
-
+    id_map = {}
     ActiveRecord::Base.transaction do
-      DB.exec <<~SQL
-      INSERT INTO discourse_reactions_reactions(post_id, #{reaction_cols})
-      SELECT #{target_post.id}, #{reaction_cols}
-      FROM discourse_reactions_reactions
-      WHERE post_id = #{original_post.id}
-      SQL
+      reactions = DiscourseReactions::Reaction.where(post_id: original_post.id)
+      reactions_attributes =
+        reactions.map { |reaction| reaction.attributes.except("id").merge(post_id: target_post.id) }
+      DiscourseReactions::Reaction
+        .insert_all(reactions_attributes)
+        .each_with_index { |entry, index| id_map[reactions[index].id] = entry["id"] }
 
-      reaction_id =
-        DB.query_single(
-          "SELECT id FROM discourse_reactions_reactions ORDER BY id DESC LIMIT 1",
-        ).first
-
-      DB.exec <<~SQL
-      INSERT INTO discourse_reactions_reaction_users(post_id, reaction_id, #{reaction_user_cols})
-      SELECT #{target_post.id}, #{reaction_id}, #{reaction_user_cols}
-      FROM discourse_reactions_reaction_users
-      WHERE post_id = #{original_post.id}
-      SQL
+      reaction_users = DiscourseReactions::ReactionUser.where(post_id: original_post.id)
+      reaction_users_attributes =
+        reaction_users.map do |reaction_user|
+          reaction_user
+            .attributes
+            .except("id")
+            .merge(post_id: target_post.id, reaction_id: id_map[reaction_user.reaction_id])
+        end
+      DiscourseReactions::ReactionUser.insert_all(reaction_users_attributes)
     end
   end
 end
