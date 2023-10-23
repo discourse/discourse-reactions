@@ -343,4 +343,26 @@ after_initialize do
 
   register_notification_consolidation_plan(reacted_by_two_users)
   register_notification_consolidation_plan(consolidated_reactions)
+
+  on(:first_post_moved) do |target_post, original_post|
+    id_map = {}
+    ActiveRecord::Base.transaction do
+      reactions = DiscourseReactions::Reaction.where(post_id: original_post.id)
+      reactions_attributes =
+        reactions.map { |reaction| reaction.attributes.except("id").merge(post_id: target_post.id) }
+      DiscourseReactions::Reaction
+        .insert_all(reactions_attributes)
+        .each_with_index { |entry, index| id_map[reactions[index].id] = entry["id"] }
+
+      reaction_users = DiscourseReactions::ReactionUser.where(post_id: original_post.id)
+      reaction_users_attributes =
+        reaction_users.map do |reaction_user|
+          reaction_user
+            .attributes
+            .except("id")
+            .merge(post_id: target_post.id, reaction_id: id_map[reaction_user.reaction_id])
+        end
+      DiscourseReactions::ReactionUser.insert_all(reaction_users_attributes)
+    end
+  end
 end
