@@ -19,8 +19,8 @@ describe PostMover do
 
   before { SiteSetting.discourse_reactions_enabled = true }
 
-  it "new post has topic's first post reactions (OP)" do
-    expect(post_1.reactions).to include(reaction_1)
+  it "should add old post's reactions to new post when a topic's first post is moved" do
+    expect(post_1.reactions).to contain_exactly(reaction_1, reaction_2)
     expect(topic_2.posts.count).to eq(0)
 
     post_mover = PostMover.new(topic_1, Discourse.system_user, [post_1.id])
@@ -39,8 +39,8 @@ describe PostMover do
     expect(reaction_user_ids).to match_array([user_reaction_1.user_id, user_reaction_2.user_id])
   end
 
-  it "moved post still has existing reactions" do
-    expect(post_2.reactions).to include(reaction_3)
+  it "should retain existing reactions after moving a post" do
+    expect(post_2.reactions).to contain_exactly(reaction_3, reaction_4)
     expect(topic_3.posts.count).to eq(0)
 
     post_mover = PostMover.new(topic_1, Discourse.system_user, [post_2.id])
