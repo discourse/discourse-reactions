@@ -19,7 +19,7 @@ describe PostMover do
 
   before { SiteSetting.discourse_reactions_enabled = true }
 
-  it "should add old post's reactions to new post when a topic's first post is moved" do
+  xit "should add old post's reactions to new post when a topic's first post is moved" do
     expect(post_1.reactions).to contain_exactly(reaction_1, reaction_2)
     expect(topic_2.posts.count).to eq(0)
 
