@@ -348,6 +348,8 @@ after_initialize do
     id_map = {}
     ActiveRecord::Base.transaction do
       reactions = DiscourseReactions::Reaction.where(post_id: original_post.id)
+      next if !reactions.any?
+
       reactions_attributes =
         reactions.map { |reaction| reaction.attributes.except("id").merge(post_id: target_post.id) }
       DiscourseReactions::Reaction

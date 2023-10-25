@@ -19,6 +19,15 @@ describe PostMover do
 
   before { SiteSetting.discourse_reactions_enabled = true }
 
+  it "should create new post when topic's first post has no reactions" do
+    old_topic = Fabricate(:topic)
+    new_topic = Fabricate(:topic)
+    post = Fabricate(:post, topic: old_topic)
+
+    post_mover = PostMover.new(old_topic, Discourse.system_user, [post.id])
+    expect { post_mover.to_topic(new_topic) }.to change { new_topic.posts.count }.by(1)
+  end
+
   xit "should add old post's reactions to new post when a topic's first post is moved" do
     expect(post_1.reactions).to contain_exactly(reaction_1, reaction_2)
     expect(topic_2.posts.count).to eq(0)
