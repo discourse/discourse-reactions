@@ -28,6 +28,25 @@ describe PostMover do
     expect { post_mover.to_topic(new_topic) }.to change { new_topic.posts.count }.by(1)
   end
 
+  it "should create new post when first post has likes but no emoji reaction user" do
+    old_topic = Fabricate(:topic)
+    new_topic = Fabricate(:topic)
+    post = Fabricate(:post, topic: old_topic)
+    reaction = Fabricate(:reaction, post: post, reaction_value: "heart")
+
+    PostActionCreator.create(user, post, :like)
+
+    expect(post.reload.like_count).to eq(1)
+
+    post_mover = PostMover.new(old_topic, Discourse.system_user, [post.id])
+    expect { post_mover.to_topic(new_topic) }.to change { new_topic.posts.count }.by(1)
+
+    new_post = new_topic.first_post
+    expect(new_post.like_count).to eq(1)
+    expect(new_post.reactions.count).to eq(1)
+    expect(new_post.reactions_user.count).to eq(0)
+  end
+
   xit "should add old post's reactions to new post when a topic's first post is moved" do
     expect(post_1.reactions).to contain_exactly(reaction_1, reaction_2)
     expect(topic_2.posts.count).to eq(0)
