@@ -6,7 +6,7 @@
 
 ro:
   site_settings:
-    discourse_reactions_like_icon: "Definește iconul folosit pentru butonul principal de reacție."
+    discourse_reactions_like_icon: "Definește iconul utilizat pentru butonul principal de reacție. Acesta trebuie să fie un nume de icon <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> , nu un nume de emoji."
     discourse_reactions_reaction_for_like: "Definește reacția asociată cu acțiunea similară de apreciere."
     discourse_reactions_enabled: "Activează modulul discourse-reactions."
     discourse_reactions_enabled_reactions: "Definește o listă de reacții activate, orice emoticon este permis aici."

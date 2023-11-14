@@ -6,7 +6,6 @@
 
 ja:
   site_settings:
-    discourse_reactions_like_icon: "主なリアクションボタンに使用されるアイコンを定義します。"
     discourse_reactions_reaction_for_like: "「いいね！」アクションに関連付けられるリアクションを定義します。"
     discourse_reactions_enabled: "discourse-reactions プラグインを有効にします。"
     discourse_reactions_enabled_reactions: "有効なリアクションのリストを定義します。ここではすべての絵文字を使用できます。"

@@ -6,7 +6,6 @@
 
 zh_TW:
   site_settings:
-    discourse_reactions_like_icon: "定義用於主反應按鈕的圖示。"
     discourse_reactions_reaction_for_like: "定義與「喜歡」操作關聯的反應。"
     discourse_reactions_enabled: "啟用discourse-reactions插件"
     discourse_reactions_enabled_reactions: "定義一組啟用反應的清單，並允許可用的表情符號於本清單中。"

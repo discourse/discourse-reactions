@@ -6,7 +6,6 @@
 
 fr:
   site_settings:
-    discourse_reactions_like_icon: "Définit l'icône utilisée pour le bouton de réaction principal."
     discourse_reactions_reaction_for_like: "Définit la réaction associée à l'action « J'aime »."
     discourse_reactions_enabled: "Activer l'extension discourse-reactions."
     discourse_reactions_enabled_reactions: "Définit une liste de réactions activées, n'importe quel émoji est autorisé ici."

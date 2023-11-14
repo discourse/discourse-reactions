@@ -6,7 +6,6 @@
 
 de:
   site_settings:
-    discourse_reactions_like_icon: "Definiert das Symbol, das für die Hauptreaktionsschaltfläche verwendet wird."
     discourse_reactions_reaction_for_like: "Definiert die Reaktion, die mit der „Gefällt mir“-Aktion verbunden ist."
     discourse_reactions_enabled: "Aktiviere das discourse-reactions-Plug-in"
     discourse_reactions_enabled_reactions: "Definiert eine Liste von aktivierten Reaktionen. Jedes Emoji ist hier erlaubt."

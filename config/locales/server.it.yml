@@ -6,7 +6,6 @@
 
 it:
   site_settings:
-    discourse_reactions_like_icon: "Definisce l'icona usata per il pulsante di reazione principale."
     discourse_reactions_reaction_for_like: "Definisce la reazione associata all'azione \"Mi piace\"."
     discourse_reactions_enabled: "Abilita il plugin discourse-reactions."
     discourse_reactions_enabled_reactions: "Definisce un elenco di reazioni abilitate, tutti gli emoji sono consentiti qui."
