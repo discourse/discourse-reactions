@@ -6,7 +6,6 @@
 
 da:
   site_settings:
-    discourse_reactions_like_icon: "Definerer det ikon, der bruges til hovedreaktionsknappen."
     discourse_reactions_reaction_for_like: "Definerer den reaktion, der er knyttet til handlingen 'Synes godt om'."
     discourse_reactions_enabled: "Aktiver discourse-reactions plugin."
     discourse_reactions_enabled_reactions: "Definerer en liste over aktiverede reaktioner, enhver emoji er tilladt her."

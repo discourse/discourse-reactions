@@ -6,7 +6,6 @@
 
 hu:
   site_settings:
-    discourse_reactions_like_icon: "Meghatározza a fő reakciógombhoz használt ikont."
     discourse_reactions_reaction_for_like: "Meghatározza a kedvelés művelethez kapcsolódó reakciót."
     discourse_reactions_enabled: "A discourse-reaction bővítmény engedélyezése."
     discourse_reactions_enabled_reactions: "Meghatározza az engedélyezett reakciók listáját, itt minden emodzsi engedélyezett."
