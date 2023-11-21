@@ -6,6 +6,7 @@
 
 he:
   site_settings:
+    discourse_reactions_like_icon: "מגדיר את הסמל לשימוש לכפתור תגובת הרגש הראשי. אמור להיות שם סמל של <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>, לא שם של אמוג׳י."
     discourse_reactions_reaction_for_like: "מגדיר את התחושה שמשויכת לפעולת לייק."
     discourse_reactions_enabled: "להפעיל את התוסף discourse-reactions (תחושות)."
     discourse_reactions_enabled_reactions: "מגדיר רשימה של תחושות מופעלות, מותר להשתמש כאן בכל אמוג׳י שהוא."
