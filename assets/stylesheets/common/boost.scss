@@ -1,0 +1,23 @@
+.boost {
+  display: flex;
+  align-items: center;
+  padding-right: 0.5rem;
+
+  p {
+    white-space: nowrap;
+  }
+
+  .avatar {
+    margin-right: 0.25rem;
+  }
+
+  .only-emoji {
+    height: 20px !important;
+    width: 20px !important;
+    margin: 0 !important;
+  }
+
+  p {
+    margin: 0;
+  }
+}

@@ -9,40 +9,22 @@
 
 enabled_site_setting :discourse_reactions_enabled
 
-register_asset "stylesheets/common/discourse-reactions.scss"
+register_asset "stylesheets/common/_index.scss"
 register_asset "stylesheets/desktop/discourse-reactions.scss", :desktop
 register_asset "stylesheets/mobile/discourse-reactions.scss", :mobile
 
 register_svg_icon "fas fa-star"
 register_svg_icon "far fa-star"
 
+module ::DiscourseReactions
+  PLUGIN_NAME = "discourse-reactions"
+end
+
+require_relative "lib/discourse_reactions/engine"
 require_relative "lib/reaction_for_like_site_setting_enum.rb"
 
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
-
-  module ::DiscourseReactions
-    PLUGIN_NAME ||= "discourse-reactions"
-
-    class Engine < ::Rails::Engine
-      engine_name PLUGIN_NAME
-      isolate_namespace DiscourseReactions
-    end
-  end
-
-  %w[
-    app/controllers/discourse_reactions/custom_reactions_controller.rb
-    app/models/discourse_reactions/reaction_user.rb
-    app/models/discourse_reactions/reaction.rb
-    app/serializers/user_reaction_serializer.rb
-    app/services/discourse_reactions/reaction_manager.rb
-    app/services/discourse_reactions/reaction_notification.rb
-    lib/discourse_reactions/guardian_extension.rb
-    lib/discourse_reactions/notification_extension.rb
-    lib/discourse_reactions/post_alerter_extension.rb
-    lib/discourse_reactions/post_extension.rb
-    lib/discourse_reactions/topic_view_serializer_extension.rb
-  ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
@@ -50,26 +32,6 @@ after_initialize do
     PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
     Guardian.class_eval { prepend DiscourseReactions::GuardianExtension }
     Notification.singleton_class.class_eval { prepend DiscourseReactions::NotificationExtension }
-  end
-
-  Discourse::Application.routes.append { mount ::DiscourseReactions::Engine, at: "/" }
-
-  DiscourseReactions::Engine.routes.draw do
-    get "/discourse-reactions/custom-reactions" => "custom_reactions#index",
-        :constraints => {
-          format: :json,
-        }
-    put "/discourse-reactions/posts/:post_id/custom-reactions/:reaction/toggle" =>
-          "custom_reactions#toggle",
-        :constraints => {
-          format: :json,
-        }
-    get "/discourse-reactions/posts/reactions" => "custom_reactions#reactions_given",
-        :as => "reactions_given"
-    get "/discourse-reactions/posts/reactions-received" => "custom_reactions#reactions_received",
-        :as => "reactions_received"
-    get "/discourse-reactions/posts/:id/reactions-users" => "custom_reactions#post_reactions_users",
-        :as => "post_reactions_users"
   end
 
   add_to_serializer(:post, :reactions) do
@@ -372,4 +334,55 @@ after_initialize do
       DiscourseReactions::ReactionUser.insert_all(reaction_users_attributes)
     end
   end
+
+  # boosts
+  reloadable_patch do
+    Post.include(DiscourseReactions::PostBoostExtension)
+    PostSerializer.include(DiscourseReactions::PostBoostSerializerExtension)
+    TopicView.prepend(DiscourseReactions::TopicBoostViewExtension)
+    User.include(DiscourseReactions::UserBoostExtension)
+    Notification.singleton_class.class_eval do
+      prepend DiscourseReactions::NotificationBoostExtension
+    end
+  end
+
+  TopicView.on_preload do |topic_view|
+    post_ids = topic_view.posts.pluck(:id)
+    next if post_ids.blank?
+
+    post_ids_sql = post_ids.join(",")
+
+    boost_ids_sql = <<~SQL
+    SELECT
+      discourse_reactions_boosts.id
+    FROM discourse_reactions_boosts
+    INNER JOIN LATERAL (
+      SELECT 1
+      FROM (
+        SELECT
+          boosts.id
+        FROM discourse_reactions_boosts boosts
+        WHERE boosts.post_id = discourse_reactions_boosts.post_id
+        AND boosts.deleted_at IS NULL
+        ORDER BY boosts.created_at DESC
+      ) X
+      WHERE X.id = discourse_reactions_boosts.id
+    ) Y ON true
+    WHERE discourse_reactions_boosts.post_id IN (#{post_ids_sql})
+    AND discourse_reactions_boosts.deleted_at IS NULL
+    SQL
+
+    topic_view.boosts = {}
+    DiscourseReactions::Boost
+      .where("id IN (#{boost_ids_sql})")
+      .order(created_at: :desc)
+      .each do |comment|
+        topic_view.boosts[comment.post_id] ||= []
+        topic_view.boosts[comment.post_id] << comment
+      end
+  end
+
+  register_user_destroyer_on_content_deletion_callback(
+    Proc.new { |user| DiscourseReactions::Boost.where(user_id: user.id).delete_all },
+  )
 end
