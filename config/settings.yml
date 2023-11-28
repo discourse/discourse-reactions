@@ -17,3 +17,18 @@ discourse_reactions:
   discourse_reactions_desaturated_reaction_panel:
     default: false
     client: true
+  discourse_reactions_boosts_enabled:
+    default: false
+    client: true
+  discourse_reactions_boosts_allowed_groups:
+    client: true
+    type: group_list
+    list_type: compact
+    default: "3|11" # 3: @staff, 11: @trust_level_1
+    allow_any: false
+    refresh: true
+  discourse_reactions_boosts_per_post:
+    default: 10
+    min: 1
+    max: 25
+    client: true
