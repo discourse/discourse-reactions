@@ -1,10 +1,10 @@
-import I18n from "I18n";
-import RawHtml from "discourse/widgets/raw-html";
-import { emojiUnescape } from "discourse/lib/text";
 import { h } from "virtual-dom";
-import { createWidget } from "discourse/widgets/widget";
+import { emojiUnescape } from "discourse/lib/text";
 import { avatarFor } from "discourse/widgets/post";
+import RawHtml from "discourse/widgets/raw-html";
+import { createWidget } from "discourse/widgets/widget";
 import { iconNode } from "discourse-common/lib/icon-library";
+import I18n from "I18n";
 
 const MAX_USERS_COUNT = 26;
 const MIN_USERS_COUNT = 8;

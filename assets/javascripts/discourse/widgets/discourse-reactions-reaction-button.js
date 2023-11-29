@@ -1,9 +1,9 @@
 import { isBlank } from "@ember/utils";
-import I18n from "I18n";
-import { iconNode } from "discourse-common/lib/icon-library";
-import { emojiUrlFor } from "discourse/lib/text";
 import { h } from "virtual-dom";
+import { emojiUrlFor } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
+import { iconNode } from "discourse-common/lib/icon-library";
+import I18n from "I18n";
 
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",

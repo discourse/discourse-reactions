@@ -13,9 +13,9 @@ module DiscourseReactions
     scope :positive, -> { where(reaction_value: self.positive_reactions) }
     scope :negative_or_neutral, -> { where(reaction_value: self.negative_or_neutral_reactions) }
     scope :by_user,
-          ->(user) {
+          ->(user) do
             joins(:reaction_users).where(discourse_reactions_reaction_users: { user_id: user.id })
-          }
+          end
 
     def self.valid_reactions
       Set[

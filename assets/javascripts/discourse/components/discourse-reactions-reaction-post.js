@@ -1,8 +1,8 @@
 import Component from "@glimmer/component";
 import { equal } from "@ember/object/computed";
-import getURL from "discourse-common/lib/get-url";
-import { emojiUrlFor } from "discourse/lib/text";
 import { inject as service } from "@ember/service";
+import { emojiUrlFor } from "discourse/lib/text";
+import getURL from "discourse-common/lib/get-url";
 
 export default class DiscourseReactionsReactionPost extends Component {
   @service site;

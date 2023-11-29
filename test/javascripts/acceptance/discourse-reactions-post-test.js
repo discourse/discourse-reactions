@@ -1,3 +1,4 @@
+import { visit } from "@ember/test-helpers";
 import { skip, test } from "qunit";
 import {
   acceptance,
@@ -5,7 +6,6 @@ import {
   queryAll,
 } from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtures";
-import { visit } from "@ember/test-helpers";
 
 acceptance("Discourse Reactions - Post", function (needs) {
   needs.user();

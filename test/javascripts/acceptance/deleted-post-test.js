@@ -1,7 +1,7 @@
+import { visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import { acceptance, exists } from "discourse/tests/helpers/qunit-helpers";
 import { default as ReactionsTopics } from "../fixtures/reactions-topic-fixtures";
-import { visit } from "@ember/test-helpers";
 
 acceptance("Discourse Reactions - Deleted post", function (needs) {
   needs.user();

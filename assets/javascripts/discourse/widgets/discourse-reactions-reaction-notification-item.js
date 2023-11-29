@@ -1,8 +1,8 @@
-import { createWidgetFrom } from "discourse/widgets/widget";
-import { DefaultNotificationItem } from "discourse/widgets/default-notification-item";
-import { iconNode } from "discourse-common/lib/icon-library";
-import { formatUsername, postUrl } from "discourse/lib/utilities";
 import { userPath } from "discourse/lib/url";
+import { formatUsername, postUrl } from "discourse/lib/utilities";
+import { DefaultNotificationItem } from "discourse/widgets/default-notification-item";
+import { createWidgetFrom } from "discourse/widgets/widget";
+import { iconNode } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
 
 createWidgetFrom(DefaultNotificationItem, "reaction-notification-item", {

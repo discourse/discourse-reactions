@@ -1,9 +1,9 @@
+import { schedule } from "@ember/runloop";
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
-import RawHtml from "discourse/widgets/raw-html";
 import { emojiUnescape } from "discourse/lib/text";
+import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
-import { schedule } from "@ember/runloop";
 import I18n from "I18n";
 
 const DISPLAY_MAX_USERS = 19;
