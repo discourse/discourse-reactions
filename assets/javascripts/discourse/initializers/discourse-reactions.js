@@ -1,10 +1,10 @@
-import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import { withPluginApi } from "discourse/lib/plugin-api";
-import { replaceIcon } from "discourse-common/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
+import { replaceIcon } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
+import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 
 const PLUGIN_ID = "discourse-reactions";
 

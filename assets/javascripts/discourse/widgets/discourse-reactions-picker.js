@@ -1,6 +1,6 @@
-import RawHtml from "discourse/widgets/raw-html";
-import { emojiUnescape } from "discourse/lib/text";
 import { h } from "virtual-dom";
+import { emojiUnescape } from "discourse/lib/text";
+import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
 
 export default createWidget("discourse-reactions-picker", {

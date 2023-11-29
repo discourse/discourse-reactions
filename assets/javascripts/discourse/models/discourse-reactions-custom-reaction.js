@@ -1,10 +1,10 @@
+import EmberObject from "@ember/object";
 import { ajax } from "discourse/lib/ajax";
+import Category from "discourse/models/category";
+import Post from "discourse/models/post";
 import RestModel from "discourse/models/rest";
 import Topic from "discourse/models/topic";
 import User from "discourse/models/user";
-import Post from "discourse/models/post";
-import Category from "discourse/models/category";
-import EmberObject from "@ember/object";
 
 const CustomReaction = RestModel.extend({
   init() {

@@ -1,11 +1,12 @@
-import { createPopper } from "@popperjs/core";
-import { emojiUrlFor } from "discourse/lib/text";
-import { Promise } from "rsvp";
 import { cancel, later, run, schedule } from "@ember/runloop";
+import { createPopper } from "@popperjs/core";
+import $ from "jquery";
+import { Promise } from "rsvp";
+import { emojiUrlFor } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
-import CustomReaction from "../models/discourse-reactions-custom-reaction";
 import { isTesting } from "discourse-common/config/environment";
 import I18n from "I18n";
+import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 const VIBRATE_DURATION = 5;
 
