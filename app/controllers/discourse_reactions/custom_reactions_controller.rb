@@ -45,7 +45,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
         include_inactive:
           current_user.try(:staff?) || (current_user && SiteSetting.show_inactive_accounts),
       )
-    raise Discourse::NotFound unless guardian.can_see_profile?(user)
+    raise Discourse::InvalidAccess unless guardian.can_see_notifications?(user)
 
     reaction_users =
       DiscourseReactions::ReactionUser
@@ -78,7 +78,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
         include_inactive:
           current_user.try(:staff?) || (current_user && SiteSetting.show_inactive_accounts),
       )
-    raise Discourse::NotFound unless guardian.can_see_profile?(user)
+    raise Discourse::InvalidAccess unless guardian.can_see_notifications?(user)
 
     posts = Post.joins(:topic).where(user_id: user.id)
     posts = guardian.filter_allowed_categories(posts)

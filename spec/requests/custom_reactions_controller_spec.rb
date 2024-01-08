@@ -167,27 +167,27 @@ describe DiscourseReactions::CustomReactionsController do
       Fabricate(:reaction_user, reaction: secure_reaction, user: user_2, post: secure_post)
     end
 
-    it "returns reactions given by a user" do
-      sign_in(user_1)
+    it "returns reactions given by a user when current user is admin" do
+      sign_in(admin)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      parsed = response.parsed_body
+      expect(response.status).to eq(200)
 
-      expect(parsed[0]["user"]["id"]).to eq(user_2.id)
-      expect(parsed[0]["post_id"]).to eq(post_2.id)
-      expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
-      expect(parsed[0]["reaction"]["id"]).to eq(reaction_1.id)
+      parsed = response.parsed_body
+      expect(parsed[2]["user"]["id"]).to eq(user_2.id)
+      expect(parsed[2]["post_id"]).to eq(post_2.id)
+      expect(parsed[2]["post"]["user"]["id"]).to eq(user_1.id)
+      expect(parsed[2]["reaction"]["id"]).to eq(reaction_1.id)
     end
 
-    it "does not return reactions for private messages" do
+    it "does not return reactions for private messages of other users" do
       sign_in(user_1)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      parsed = response.parsed_body
-      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(
-        private_post.id,
-      )
+      expect(response.status).to eq(403)
+    end
 
+    it "returns reactions for private messages of current user" do
       sign_in(user_2)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
@@ -202,15 +202,11 @@ describe DiscourseReactions::CustomReactionsController do
       sign_in(user_1)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      parsed = response.parsed_body
-      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(
-        secure_post.id,
-      )
+      expect(response.status).to eq(403)
 
       secure_group.add(user_1)
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      parsed = response.parsed_body
-      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
+      expect(response.status).to eq(403)
 
       sign_in(user_2)
 
@@ -281,8 +277,8 @@ describe DiscourseReactions::CustomReactionsController do
   end
 
   describe "#reactions_received" do
-    it "returns reactions received by a user" do
-      sign_in(user_2)
+    it "returns reactions received by a user when current user is admin" do
+      sign_in(admin)
 
       get "/discourse-reactions/posts/reactions-received.json",
           params: {
@@ -294,6 +290,17 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]["post_id"]).to eq(post_2.id)
       expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
       expect(parsed[0]["reaction"]["id"]).to eq(reaction_2.id)
+    end
+
+    it "does not return reactions received by a user when current user is not an admin" do
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions-received.json",
+          params: {
+            username: user_2.username,
+          }
+
+      expect(response.status).to eq(403)
     end
 
     it "filters by acting username" do
