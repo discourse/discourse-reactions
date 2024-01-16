@@ -224,7 +224,7 @@ export default {
   name: "discourse-reactions",
 
   initialize(container) {
-    const siteSettings = container.lookup("site-settings:main");
+    const siteSettings = container.lookup("service:site-settings");
     if (siteSettings.discourse_reactions_enabled) {
       withPluginApi("0.10.1", initializeDiscourseReactions);
     }
