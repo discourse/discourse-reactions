@@ -6,6 +6,7 @@
 
 es:
   site_settings:
+    discourse_reactions_like_icon: "Define el icono utilizado para el botón principal de reacción. Debe ser un nombre de icono <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>, no un nombre de emoji."
     discourse_reactions_reaction_for_like: "Define la reacción asociada al botón de me gusta."
     discourse_reactions_enabled: "Activar el plugin discourse-reactions."
     discourse_reactions_enabled_reactions: "Define una lista de reacciones activadas. Se permite cualquier emoji."

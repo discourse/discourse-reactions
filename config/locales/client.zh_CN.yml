@@ -25,17 +25,18 @@ zh_CN:
         add: "点赞此帖子"
         remove: "移除此赞"
         cant_remove: "您无法再移除您自己的赞了"
+        unauthenticated: "请注册或登录以点赞此帖子"
     notifications:
       reaction_1_user_multiple_posts:
         other: "回应了您的 %{count} 个帖子"
       reaction_2_users: "%{username}、%{username2}"
       reaction_multiple_users:
-        other: "%{username} 和其他 %{count}"
+        other: "%{username} 和其他 %{count} 人"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> 回应了您的 %{count} 个帖子"
       reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
       reaction_many:
-        other: "<span class='multi-user'>%{username} 和 %{count} 其他 </span> %{description}"
+        other: "<span class='multi-user'>%{username} 和其他 %{count} 人</span>%{description}"
       titles:
         reaction: "新回应"
