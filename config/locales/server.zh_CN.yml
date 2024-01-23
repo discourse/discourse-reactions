@@ -6,6 +6,7 @@
 
 zh_CN:
   site_settings:
+    discourse_reactions_like_icon: "定义用于主回应按钮的图标。这应该是一个 <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> 图标名称，而不是表情符号名称。"
     discourse_reactions_reaction_for_like: "定义与点赞操作相关联的回应。"
     discourse_reactions_enabled: "启用 discourse-reactions 插件。"
     discourse_reactions_enabled_reactions: "定义启用的回应列表，此处允许使用任何表情符号。"

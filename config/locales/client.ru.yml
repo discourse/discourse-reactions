@@ -25,7 +25,13 @@ ru:
         add: "Выразить своё отношение к этому сообщению"
         remove: "Удалить эту эмоцию"
         cant_remove: "Вы больше не можете удалить поставленный лайк"
+        unauthenticated: "Чтобы поставить лайк этой публикации, зарегистрируйтесь или войдите"
     notifications:
+      reaction_1_user_multiple_posts:
+        one: "отреагировал(-а) на %{count} вашу публикацию"
+        few: "отреагировал(-а) на %{count} ваши публикации"
+        many: "отреагировал(-а) на %{count} ваших публикаций"
+        other: "отреагировал(-а) на ваши публикации (%{count})"
       reaction_2_users: "%{username}, %{username2}"
       reaction_multiple_users:
         one: "%{username} и ещё %{count}"
@@ -36,5 +42,10 @@ ru:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> отреагировал на %{count} ваших сообщений"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
+        few: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
+        many: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
+        other: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
       titles:
         reaction: "Новая реакция"

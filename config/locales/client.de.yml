@@ -25,7 +25,11 @@ de:
         add: "Diesem Beitrag ein „Gefällt mir“ geben"
         remove: "Entferne dieses „Gefällt mir“"
         cant_remove: "Du kannst dein „Gefällt mir“ nicht mehr entfernen"
+        unauthenticated: "Bitte registriere dich oder melde dich an, um diesem Beitrag ein „Gefällt mir“ zu geben"
     notifications:
+      reaction_1_user_multiple_posts:
+        one: "reagierte auf %{count} deiner Beiträge"
+        other: "reagierte auf %{count} deiner Beiträge"
       reaction_2_users: "%{username}, %{username2}"
       reaction_multiple_users:
         one: "%{username} und %{count} andere Person"
@@ -35,7 +39,7 @@ de:
         multiple: "<span>%{username}</span> hat auf %{count} deiner Beiträge reagiert"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
       reaction_many:
-        one: "<span class='multi-user'>%{username} und %{count} andere</span> %{description}"
+        one: "<span class='multi-user'>%{username} und %{count} andere Person</span> %{description}"
         other: "<span class='multi-user'>%{username} und %{count} andere</span> %{description}"
       titles:
         reaction: "neue Reaktion"

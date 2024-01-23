@@ -25,7 +25,11 @@ fr:
         add: "Attribuer un « J'aime » à ce message"
         remove: "Supprimer ce « J'aime »"
         cant_remove: "Vous ne pouvez plus supprimer votre J'aime"
+        unauthenticated: "Veuillez vous inscrire ou vous connecter pour aimer cet article"
     notifications:
+      reaction_1_user_multiple_posts:
+        one: "a réagi à %{count} de vos messages"
+        other: "a réagi à %{count} de vos messages"
       reaction_2_users: "%{username}, %{username2}"
       reaction_multiple_users:
         one: "%{username} et %{count} autre utilisateur"
@@ -34,5 +38,8 @@ fr:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> a réagi à %{count} de vos messages."
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} et %{count} autre personne</span> %{description}"
+        other: "<span class='multi-user'>%{username} et %{count} autres personnes</span> %{description}"
       titles:
         reaction: "nouvelle réaction"

@@ -25,18 +25,33 @@ ar:
         add: "تسجيل الإعجاب بهذا المنشور"
         remove: "إزالة هذا الإعجاب"
         cant_remove: "لم يعد بإمكانك إزالة إعجابك"
+        unauthenticated: "يُرجى الاشتراك أو تسجيل الدخول لتسجيل الإعجاب بهذا المنشور"
     notifications:
+      reaction_1_user_multiple_posts:
+        zero: "تفاعل على %{count} من منشوراتك"
+        one: "تفاعل على منشور (%{count}) من منشوراتك"
+        two: "تفاعل على منشورين (%{count}) من منشوراتك"
+        few: "تفاعل على %{count} منشورات من منشوراتك"
+        many: "تفاعل على %{count} منشورًا من منشوراتك"
+        other: "تفاعل على %{count} منشور من منشوراتك"
       reaction_2_users: "%{username}، و%{username2}"
       reaction_multiple_users:
-        zero: "%{username} واثنان (%{count}) آخران"
+        zero: "%{username} و%{count} آخر"
         one: "%{username} وواحد (%{count}) آخر"
-        two: "%{username} و%{count} آخرين"
-        few: "%{username} واثنان (%{count}) آخران"
-        many: "%{username} واثنان (%{count}) آخران"
-        other: "%{username} واثنان (%{count}) آخران"
+        two: "%{username} واثنان (%{count}) آخران"
+        few: "%{username} و%{count} آخرين"
+        many: "%{username} و%{count} آخر"
+        other: "%{username} و%{count} آخر"
       reaction:
         single: "<span>%{username}</span> %{description}"
         multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"
       reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
+      reaction_many:
+        zero: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
+        one: "<span class='multi-user'>%{username} وواحد (%{count}) آخر</span> %{description}"
+        two: "<span class='multi-user'>%{username} واثنان (%{count}) آخران</span> %{description}"
+        few: "<span class='multi-user'>%{username} و%{count} آخرين</span> %{description}"
+        many: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
+        other: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
       titles:
         reaction: "تفاعل جديد"

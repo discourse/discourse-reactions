@@ -25,6 +25,7 @@ ja:
         add: "この投稿に「いいね！」する"
         remove: "この「いいね！」を削除する"
         cant_remove: "「いいね！」を削除できなくなりました"
+        unauthenticated: "この投稿に「いいね！」するには登録またはログインしてください"
     notifications:
       reaction_1_user_multiple_posts:
         other: "があなたの %{count} 件の投稿にリアクションしました"
@@ -35,5 +36,7 @@ ja:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> があなたの %{count} 件の投稿に反応しました"
       reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
+      reaction_many:
+        other: "<span class='multi-user'>%{username} および他 %{count} 人</span> %{description}"
       titles:
         reaction: "新しいリアクション"
