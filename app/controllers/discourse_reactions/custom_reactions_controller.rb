@@ -19,7 +19,6 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
         DiscourseReactions::ReactionManager.new(
           reaction_value: params[:reaction],
           user: current_user,
-          guardian: guardian,
           post: post,
         )
       manager.toggle!

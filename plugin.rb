@@ -372,4 +372,11 @@ after_initialize do
       DiscourseReactions::ReactionUser.insert_all(reaction_users_attributes)
     end
   end
+
+  on(:site_setting_changed) do |name, old_value, new_value|
+    # TODO (martin) Kick off job to fix historical things when deny site setting changes
+    if name == :discourse_reactions_excluded_from_like
+      # Job.enqueue(:update_post_reactions)
+    end
+  end
 end

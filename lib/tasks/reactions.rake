@@ -148,7 +148,6 @@ task "reactions:generate", %i[post_id reactions_count reaction] => [:environment
     DiscourseReactions::ReactionManager.new(
       reaction_value: reaction,
       user: user,
-      guardian: Guardian.new(user),
       post: post,
     ).toggle!
   end
