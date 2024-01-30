@@ -25,7 +25,11 @@ pt_BR:
         add: "Curta esta postagem"
         remove: "Remova essa curtida"
         cant_remove: "Você não pode mais remover sua curtida"
+        unauthenticated: "Cadastre-se ou faça login para curtir esta postagem"
     notifications:
+      reaction_1_user_multiple_posts:
+        one: "reagiu a %{count} da sua postagem"
+        other: "reagiu a %{count} das suas postagens"
       reaction_2_users: "%{username}, %{username2}"
       reaction_multiple_users:
         one: "%{username} e %{count} outro"
@@ -34,5 +38,8 @@ pt_BR:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagiu a %{count} de suas postagens"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} e mais %{count}</span> %{description}"
+        other: "<span class='multi-user'>%{username} e mais %{count}</span> %{description}"
       titles:
         reaction: "nova reação"
