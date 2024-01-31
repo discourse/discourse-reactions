@@ -30,8 +30,6 @@ after_initialize do
     end
   end
 
-  # TODO (martin) Add this back
-  # app/services/discourse_reactions/reaction_synchronizer.rb
   %w[
     app/controllers/discourse_reactions/custom_reactions_controller.rb
     app/models/discourse_reactions/reaction_user.rb
@@ -39,11 +37,13 @@ after_initialize do
     app/serializers/user_reaction_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
+    app/services/discourse_reactions/reaction_post_action_synchronizer.rb
     lib/discourse_reactions/guardian_extension.rb
     lib/discourse_reactions/notification_extension.rb
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
+    app/jobs/regular/discourse_reactions/post_action_synchronizer.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
@@ -376,9 +376,10 @@ after_initialize do
   end
 
   on(:site_setting_changed) do |name, old_value, new_value|
-    # TODO (martin) Kick off job to fix historical things when deny site setting changes
+    # TODO (martin) Do we need to somehow cancel the existing job if the setting changes
+    # again in the meantime? Don't want too much churn.
     if name == :discourse_reactions_excluded_from_like
-      # Job.enqueue(:update_post_reactions)
+      ::Jobs.enqueue(Jobs::DiscourseReactions::PostActionSynchronizer)
     end
   end
 end
