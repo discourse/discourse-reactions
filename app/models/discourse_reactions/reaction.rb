@@ -29,3 +29,21 @@ module DiscourseReactions
     end
   end
 end
+
+# == Schema Information
+#
+# Table name: discourse_reactions_reactions
+#
+#  id                   :bigint           not null, primary key
+#  post_id              :integer
+#  reaction_type        :integer
+#  reaction_value       :string
+#  reaction_users_count :integer
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#
+# Indexes
+#
+#  index_discourse_reactions_reactions_on_post_id  (post_id)
+#  reaction_type_reaction_value                    (post_id,reaction_type,reaction_value) UNIQUE
+#

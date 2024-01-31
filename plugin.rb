@@ -30,6 +30,8 @@ after_initialize do
     end
   end
 
+  # TODO (martin) Add this back
+  # app/services/discourse_reactions/reaction_synchronizer.rb
   %w[
     app/controllers/discourse_reactions/custom_reactions_controller.rb
     app/models/discourse_reactions/reaction_user.rb

@@ -5,13 +5,11 @@ discourse_reactions:
   discourse_reactions_like_icon:
     client: true
     default: "heart"
-    hidden: true
   discourse_reactions_reaction_for_like:
     client: true
     type: enum
     default: "heart"
     enum: ReactionForLikeSiteSettingEnum
-    hidden: true
   discourse_reactions_enabled_reactions:
     type: emoji_list
     default: +1|laughing|open_mouth|clap|confetti_ball|hugs
