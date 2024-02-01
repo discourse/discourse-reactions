@@ -11,5 +11,6 @@ RSpec.describe ReactionsExcludedFromLikeSiteSettingValidator do
     expect(described_class.new.valid_value?("clap")).to eq(false)
     expect(described_class.new.valid_value?("laughing")).to eq(true)
     expect(described_class.new.valid_value?("-1")).to eq(true)
+    expect(described_class.new.valid_value?("-1|laughing")).to eq(true)
   end
 end

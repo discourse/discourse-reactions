@@ -22,7 +22,10 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
     Fabricate(:reaction_user, user: user, post: post_2, reaction: reaction_clap)
   end
 
-  before { SiteSetting.discourse_reactions_excluded_from_like = "clap|-1" }
+  before do
+    SiteSetting.discourse_reactions_enabled_reactions += "heart|clap|+1|-1"
+    SiteSetting.discourse_reactions_excluded_from_like = "clap|-1"
+  end
 
   it "removes PostAction records for reactions added to the exception list (+1)" do
     SiteSetting.discourse_reactions_excluded_from_like += "|+1"
