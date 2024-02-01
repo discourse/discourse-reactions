@@ -17,6 +17,7 @@ register_svg_icon "fas fa-star"
 register_svg_icon "far fa-star"
 
 require_relative "lib/reaction_for_like_site_setting_enum.rb"
+require_relative "lib/reactions_excluded_from_like_site_setting_validator.rb"
 
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
