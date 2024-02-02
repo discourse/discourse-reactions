@@ -76,25 +76,80 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    reactions =
-      object
-        .emoji_reactions
-        .select { |reaction| reaction[:reaction_users_count] }
-        .map do |reaction|
-          {
-            id: reaction.reaction_value,
-            type: reaction.reaction_type.to_sym,
-            count: reaction.reaction_users_count,
-          }
-        end
+    reactions = []
+    reaction_users_counting_as_like = []
 
-    likes =
-      object.post_actions.select do |l|
-        l.post_action_type_id == PostActionType.types[:like] && l.deleted_at.blank?
+    object
+      .emoji_reactions
+      .select { |reaction| reaction[:reaction_users_count] }
+      .each do |reaction|
+        reactions << {
+          id: reaction.reaction_value,
+          type: reaction.reaction_type.to_sym,
+          count: reaction.reaction_users_count,
+        }
+
+        if DiscourseReactions::Reaction.reactions_counting_as_like.include?(reaction.reaction_value)
+          reaction_users_counting_as_like << reaction.reaction_users
+        end
       end
 
+    reaction_users_counting_as_like.flatten!
+
+    # /discourse-reactions/posts/${postId}/reactions-users.json
+    # to get attrs.reactionsUsers, we don't have this info straight away
+    # since at first all we are showing is the counts
+
+    # * Main reaction Like === PostAction only
+    # * Other reaction === PostAction and ReactionUser
+    # * Excluded reaction === ReactionUser only
+    #
+    # We have a few things in the UI:
+    #
+    #   * discourse-reactions-actions which is the post action Like button next to
+    #     the link copy button, which will show current_user_reaction with a caveat
+    #     that it will show the default like icon if there is a Like without a ReactionUser
+    #     OR if the ReactionUser matches the main_reaction_id.
+    #   * discourse-reactions-list, which will show all Reaction emojis made by
+    #     all users including Like reactions.
+    #   * discourse-reactions-counter which uses reaction_users_count to show a
+    #   * discourse-reactions-state-panel which shows all the Reaction emojis,
+    #     their individual counts which are from post#:reactions serializer, and who
+    #     reacted in this way.
+
+    likes =
+      object
+        .post_actions
+        .select do |post_action|
+          post_action.post_action_type_id == PostActionType.types[:like] && !post_action.trashed?
+        end
+        .reject do |post_action|
+          # Get rid of any PostAction records that match up to a ReactionUser
+          # that is NOT main_reaction_id and is NOT excluded, otherwise we double
+          # up on the count/reaction shown in the UI.
+          reaction_users_counting_as_like.find { |ru| ru.user_id == post_action.user_id }.present?
+        end
+
+    # So say we have 3 normal PostAction likes, and 2 main_reaction ReactionUser likes (which now
+    # also have a PostAction attached),
+    # then 4 ReactionUser likes that also have a PostAction attached, then we
+    # also have 6 ReactionUser records for an excluded reaction
+    #
+    # The main count indicator should show
+    #
+    # 5 :heart: (3 + 2)
+    # 4 :smile: (4)
+    # 6 :open_mouth: (6)
+    #
+    # So we need to subtract the number of Likes equal to the number of ReactionUser records
+    # that are not discourse_reactions_excluded_from_like
+
+    # Likes will only be blank if there are only reactions reactions where the reaction is in
+    # discourse_reactions_excluded_from_like. All other reactions will have a `PostAction` record.
     return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
 
+    # Reactions using main_reaction_id only have a `PostAction` record,
+    # not any `ReactionUser` records.
     reaction_likes, reactions =
       reactions.partition { |r| r[:id] == DiscourseReactions::Reaction.main_reaction_id }
 
@@ -108,12 +163,11 @@ after_initialize do
   end
 
   add_to_serializer(:post, :current_user_reaction) do
-    return nil unless scope.user.present?
+    return nil if scope.is_anonymous?
 
     object.emoji_reactions.each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
-
-      next unless reaction_user
+      next if reaction_user.blank?
 
       if reaction.reaction_users_count
         return(
@@ -126,15 +180,17 @@ after_initialize do
       end
     end
 
+    # Any PostAction Like that doesn't have a matching ReactionUser record
+    # will count as the main_reaction_id.
     like =
-      object.post_actions.find do |l|
-        l.post_action_type_id == PostActionType.types[:like] && l.deleted_at.blank? &&
-          l.user_id == scope.user.id
+      object.post_actions.find do |post_action|
+        post_action.post_action_type_id == PostActionType.types[:like] && !post_action.trashed? &&
+          post_action.user_id == scope.user.id
       end
 
     return nil if like.blank?
 
-    like_reaction = {
+    {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
       can_undo: scope.can_delete_post_action?(like),
@@ -147,12 +203,23 @@ after_initialize do
   end
 
   add_to_serializer(:post, :current_user_used_main_reaction) do
-    return false unless scope.user.present?
+    return false if scope.is_anonymous?
 
-    object.post_actions.any? do |l|
-      l.post_action_type_id == PostActionType.types[:like] && l.user_id == scope.user.id &&
-        l.deleted_at.blank?
-    end
+    # TODO (martin) This should be false if ReactionUser also exists, we only should
+    # count it as the "MAIN REACTION" if it's a PostAction by itself
+    like_post_action =
+      object.post_actions.find do |post_action|
+        post_action.post_action_type_id == PostActionType.types[:like] &&
+          post_action.user_id == scope.user.id && !post_action.trashed?
+      end
+
+    has_matching_reaction_user =
+      object.emoji_reactions.any? do |reaction|
+        DiscourseReactions::Reaction.reactions_counting_as_like.include?(reaction.reaction_value) &&
+          reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }.present?
+      end
+
+    like_post_action.present? && !has_matching_reaction_user
   end
 
   add_to_serializer(:topic_view, :valid_reactions) { DiscourseReactions::Reaction.valid_reactions }
