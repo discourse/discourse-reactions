@@ -102,8 +102,10 @@ describe DiscourseReactions::CustomReactionsController do
           put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
           put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/cry/toggle.json"
         end
-      expect(messages.count).to eq(2)
-      expect(messages.map(&:data).map { |m| m[:type] }.uniq).to eq(%i[acted])
+      expect(messages.count).to eq(6)
+      expect(messages.map(&:data).map { |m| m[:type] }.uniq).to match_array(
+        %i[acted liked unliked stats],
+      )
 
       messages =
         MessageBus.track_publish("/topic/#{post_1.topic.id}/reactions") do
