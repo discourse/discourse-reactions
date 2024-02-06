@@ -15,6 +15,7 @@ Fabricator(:reaction_user, class_name: "DiscourseReactions::ReactionUser") do
         user: reaction_user.user,
         post: reaction_user.post,
         post_action_type_id: PostActionType.types[:like],
+        created_at: reaction_user.created_at,
       )
     end
   end
