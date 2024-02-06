@@ -11,7 +11,7 @@ module DiscourseReactions
       @like =
         @post.post_actions.find_by(user: @user, post_action_type_id: PostActionType.types[:like])
       @previous_reaction_value =
-        if @like
+        if @like && !reaction_user
           DiscourseReactions::Reaction.main_reaction_id
         elsif reaction_user
           old_reaction_value(reaction_user)
@@ -90,10 +90,10 @@ module DiscourseReactions
       DiscourseReactions::Reaction.where(id: reaction_user.reaction_id).first&.reaction_value
     end
 
-    def add_shadow_like
+    def add_shadow_like(notify: true)
       silent = true
       PostActionCreator.like(@user, @post, silent)
-      add_reaction_notification
+      add_reaction_notification if notify
     end
 
     def remove_shadow_like
@@ -104,28 +104,30 @@ module DiscourseReactions
 
     def delete_like_reaction
       DiscourseReactions::Reaction.where(
-        "reaction_value = '#{DiscourseReactions::Reaction.main_reaction_id}' AND post_id = ?",
-        @post.id,
+        reaction_value: DiscourseReactions::Reaction.main_reaction_id,
+        post_id: @post.id,
       ).destroy_all
     end
 
     def add_reaction
       @reaction_user = reaction_user_scope if reaction_user.blank?
       @reaction_user.save!
+      add_shadow_like(notify: false) if !reaction_excluded_from_like?
       add_reaction_notification
     end
 
     def remove_reaction
       @reaction_user.destroy
-      remove_reaction_notification
-      delete_reaction
+      remove_shadow_like
+      delete_reaction_with_no_users
     end
 
-    def delete_reaction
-      DiscourseReactions::Reaction.where(
-        "reaction_users_count = 0 AND post_id = ?",
-        @post.id,
-      ).destroy_all
+    def delete_reaction_with_no_users
+      DiscourseReactions::Reaction.where(reaction_users_count: 0, post_id: @post.id).destroy_all
+    end
+
+    def reaction_excluded_from_like?
+      SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|").include?(@reaction_value)
     end
   end
 end
