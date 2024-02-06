@@ -4,14 +4,6 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
   fab!(:user) { Fabricate(:user) }
   fab!(:post) { Fabricate(:post) }
   fab!(:post_2) { Fabricate(:post) }
-  fab!(:post_action) do
-    Fabricate(
-      :post_action,
-      user: user,
-      post: post,
-      post_action_type_id: PostActionType.types[:like],
-    )
-  end
   fab!(:reaction_plus_one) { Fabricate(:reaction, reaction_value: "+1", post: post) }
   fab!(:reaction_user) do
     Fabricate(:reaction_user, user: user, post: post, reaction: reaction_plus_one)
@@ -19,7 +11,13 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
 
   fab!(:reaction_clap) { Fabricate(:reaction, reaction_value: "clap", post: post_2) }
   fab!(:reaction_user_2) do
-    Fabricate(:reaction_user, user: user, post: post_2, reaction: reaction_clap)
+    Fabricate(
+      :reaction_user,
+      user: user,
+      post: post_2,
+      reaction: reaction_clap,
+      skip_post_action: true,
+    )
   end
 
   before do

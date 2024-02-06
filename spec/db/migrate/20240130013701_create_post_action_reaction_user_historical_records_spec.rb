@@ -16,7 +16,7 @@ RSpec.describe CreatePostActionReactionUserHistoricalRecords do
       post_action_type_id: PostActionType.types[:like],
     )
     reaction = Fabricate(:reaction, reaction_value: "clap", post: post)
-    Fabricate(:reaction_user, post: post, user: user, reaction: reaction)
+    Fabricate(:reaction_user, post: post, user: user, reaction: reaction, skip_post_action: true)
     expect { CreatePostActionReactionUserHistoricalRecords.new.up }.not_to change {
       PostAction.count
     }
@@ -30,7 +30,7 @@ RSpec.describe CreatePostActionReactionUserHistoricalRecords do
     }
   end
 
-  it "will create a PostAction record for a variety of reactions across posts" do
+  it "will create a PostAction record for a variety of reactions across posts which do not have them" do
     8.times do |i|
       post_n = Fabricate(:post, raw: "some post content for reactions #{i}")
       reaction =
@@ -39,7 +39,13 @@ RSpec.describe CreatePostActionReactionUserHistoricalRecords do
           reaction_value: SiteSetting.discourse_reactions_enabled_reactions.split("|").sample,
           post: post_n,
         )
-      Fabricate(:reaction_user, post: post_n, user: user, reaction: reaction)
+      Fabricate(
+        :reaction_user,
+        post: post_n,
+        user: user,
+        reaction: reaction,
+        skip_post_action: true,
+      )
     end
 
     expect { CreatePostActionReactionUserHistoricalRecords.new.up }.to change {
