@@ -2,8 +2,8 @@
 
 Fabricator(:reaction_user, class_name: "DiscourseReactions::ReactionUser") do
   reaction { |attrs| attrs[:reaction] }
-  user { |attrs| attrs[:user] }
-  post { |attrs| attrs[:post] }
+  user { |attrs| attrs[:user] || Fabricate(:user) }
+  post { |attrs| attrs[:post] || Fabricate(:post) }
 
   after_create do |reaction_user|
     if DiscourseReactions::Reaction.reactions_counting_as_like.include?(
