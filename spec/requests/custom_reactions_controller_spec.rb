@@ -13,10 +13,10 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:post_2) { Fabricate(:post, user: user_1) }
   fab!(:private_topic) { Fabricate(:private_message_topic, user: user_2, recipient: admin) }
   fab!(:private_post) { Fabricate(:post, topic: private_topic) }
-  fab!(:reaction_1) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
-  fab!(:reaction_2) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
-  fab!(:reaction_3) { Fabricate(:reaction, post: post_2, reaction_value: "hugs") }
-  fab!(:reaction_4) { Fabricate(:reaction, post: private_post, reaction_value: "hugs") }
+  fab!(:laughing_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
+  fab!(:open_mouth_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
+  fab!(:hugs_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "hugs") }
+  fab!(:hugs_reaction_private) { Fabricate(:reaction, post: private_post, reaction_value: "hugs") }
   fab!(:like) do
     Fabricate(
       :post_action,
@@ -26,19 +26,19 @@ describe DiscourseReactions::CustomReactionsController do
     )
   end
   fab!(:reaction_user_1) do
-    Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_2)
+    Fabricate(:reaction_user, reaction: laughing_reaction, user: user_2, post: post_2)
   end
   fab!(:reaction_user_2) do
-    Fabricate(:reaction_user, reaction: reaction_1, user: user_1, post: post_2)
+    Fabricate(:reaction_user, reaction: laughing_reaction, user: user_1, post: post_2)
   end
   fab!(:reaction_user_3) do
-    Fabricate(:reaction_user, reaction: reaction_3, user: user_4, post: post_2)
+    Fabricate(:reaction_user, reaction: hugs_reaction, user: user_4, post: post_2)
   end
   fab!(:reaction_user_4) do
-    Fabricate(:reaction_user, reaction: reaction_2, user: user_3, post: post_2)
+    Fabricate(:reaction_user, reaction: open_mouth_reaction, user: user_3, post: post_2)
   end
   fab!(:reaction_user_5) do
-    Fabricate(:reaction_user, reaction: reaction_4, user: admin, post: private_post)
+    Fabricate(:reaction_user, reaction: hugs_reaction_private, user: admin, post: private_post)
   end
 
   before do
@@ -177,7 +177,7 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[2]["user"]["id"]).to eq(user_2.id)
       expect(parsed[2]["post_id"]).to eq(post_2.id)
       expect(parsed[2]["post"]["user"]["id"]).to eq(user_1.id)
-      expect(parsed[2]["reaction"]["id"]).to eq(reaction_1.id)
+      expect(parsed[2]["reaction"]["id"]).to eq(laughing_reaction.id)
     end
 
     it "does not return reactions for private messages of other users" do
@@ -289,7 +289,7 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]["user"]["id"]).to eq(user_3.id)
       expect(parsed[0]["post_id"]).to eq(post_2.id)
       expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
-      expect(parsed[0]["reaction"]["id"]).to eq(reaction_2.id)
+      expect(parsed[0]["reaction"]["id"]).to eq(open_mouth_reaction.id)
     end
 
     it "does not return reactions received by a user when current user is not an admin" do
@@ -317,7 +317,7 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]["user"]["id"]).to eq(user_4.id)
       expect(parsed[0]["post_id"]).to eq(post_2.id)
       expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
-      expect(parsed[0]["reaction"]["id"]).to eq(reaction_3.id)
+      expect(parsed[0]["reaction"]["id"]).to eq(hugs_reaction.id)
     end
 
     it "include likes" do
@@ -407,7 +407,7 @@ describe DiscourseReactions::CustomReactionsController do
     end
 
     it "return reaction_users of reaction when there are parameters" do
-      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{reaction_1.reaction_value}"
+      get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{laughing_reaction.reaction_value}"
       parsed = response.parsed_body
 
       expect(response.status).to eq(200)
@@ -426,16 +426,16 @@ describe DiscourseReactions::CustomReactionsController do
       expect(response.status).to eq(404)
     end
 
-    it "merges identic custom reaction into likes" do
+    it "merges matching custom reaction into likes" do
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=#{DiscourseReactions::Reaction.main_reaction_id}"
       parsed = response.parsed_body
       like_count = parsed["reaction_users"][0]["count"].to_i
-      expect(parsed["reaction_users"][0]["count"]).to eq(post_2.like_count)
+      expect(like_count).to eq(1)
 
       get "/discourse-reactions/posts/#{post_2.id}/reactions-users.json?reaction_value=laughing"
       parsed = response.parsed_body
       reaction_count = parsed["reaction_users"][0]["count"].to_i
-      expect(parsed["reaction_users"][0]["count"]).to eq(reaction_1.reaction_users_count)
+      expect(reaction_count).to eq(2)
 
       SiteSetting.discourse_reactions_reaction_for_like = "laughing"
 
