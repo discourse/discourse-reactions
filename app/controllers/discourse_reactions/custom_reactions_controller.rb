@@ -148,15 +148,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
       # record, which count as a like or will be double ups for main_reaction_id.
       likes =
         post.post_actions.where(
-          <<~SQL,
-           deleted_at IS NULL AND post_action_type_id = :like AND post_id NOT IN (
-             SELECT discourse_reactions_reaction_users.post_id
-             FROM discourse_reactions_reaction_users
-             INNER JOIN discourse_reactions_reactions ON discourse_reactions_reactions.id = discourse_reactions_reaction_users.reaction_id
-             WHERE discourse_reactions_reaction_users.user_id = post_actions.user_id
-             AND discourse_reactions_reactions.reaction_value IN (:valid_reactions)
-           )
-          SQL
+          DiscourseReactions::PostActionExtension.filter_reaction_likes_sql,
           like: PostActionType.types[:like],
           valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
         )

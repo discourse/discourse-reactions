@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-# * create a PostAction(Like) for every ReactionUser
-#   record that is _not_ in the discourse_reactions_excluded_from_like
-#   list (default only to -1)
-# * shouldn't need to create any Reaction records or ReactionUser
-#   records
 class CreatePostActionReactionUserHistoricalRecords < ActiveRecord::Migration[7.0]
   def up
     sql_query = <<~SQL
