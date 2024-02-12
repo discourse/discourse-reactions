@@ -9,7 +9,7 @@ zh_CN:
     admin:
       site_settings:
         categories:
-          discourse_reactions: "Discourse 回应"
+          discourse_reactions: "Discourse Reactions"
   js:
     discourse_reactions:
       reactions_title: "回应"
