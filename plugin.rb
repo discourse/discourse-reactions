@@ -404,7 +404,8 @@ after_initialize do
   end
 
   on(:site_setting_changed) do |name, old_value, new_value|
-    if name == :discourse_reactions_excluded_from_like
+    if name == :discourse_reactions_excluded_from_like &&
+         SiteSetting.discourse_reactions_like_sync_enabled
       ::Jobs.cancel_scheduled_job(Jobs::DiscourseReactions::PostActionSynchronizer)
       ::Jobs.enqueue_at(5.minutes.from_now, Jobs::DiscourseReactions::PostActionSynchronizer)
     end

@@ -57,7 +57,11 @@ module DiscourseReactions
       # The only difference between LIKE and WAS LIKED is the user;
       #   * LIKE is the post action user because they are the one who liked the post
       #   * WAS LIKED is done by the post user, because they are the like-ee
-      sql_query = <<~SQL
+      #
+      # No need to do any UserAction inserts if there wasn't any PostAction changes.
+      post_action_ids = (recovered_post_action_ids + inserted_post_action_ids).uniq
+      if post_action_ids.any?
+        sql_query = <<~SQL
           INSERT INTO user_actions (
             action_type, user_id, acting_user_id, target_post_id, target_topic_id, created_at, updated_at
           )
@@ -85,13 +89,14 @@ module DiscourseReactions
           FROM post_actions
           INNER JOIN posts ON posts.id = post_actions.post_id
           WHERE post_actions.id IN (:post_action_ids);
-      SQL
-      DB.exec(
-        sql_query,
-        ua_like: UserAction::LIKE,
-        ua_was_liked: UserAction::WAS_LIKED,
-        post_action_ids: (recovered_post_action_ids + inserted_post_action_ids).uniq,
-      )
+        SQL
+        DB.exec(
+          sql_query,
+          ua_like: UserAction::LIKE,
+          ua_was_liked: UserAction::WAS_LIKED,
+          post_action_ids: post_action_ids,
+        )
+      end
 
       # Find all PostAction records that have a ReactionUser record that
       # uses a reaction in the excluded_from_like list, and trash them.
