@@ -20,5 +20,7 @@ discourse_reactions:
   discourse_reactions_excluded_from_like:
     type: emoji_list
     default: "-1"
-    client: true
     validator: "ReactionsExcludedFromLikeSiteSettingValidator"
+  discourse_reactions_like_sync_enabled:
+    default: false
+    hidden: true
