@@ -23,4 +23,3 @@ discourse_reactions:
     validator: "ReactionsExcludedFromLikeSiteSettingValidator"
   discourse_reactions_like_sync_enabled:
     default: false
-    hidden: true
