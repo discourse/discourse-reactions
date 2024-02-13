@@ -98,6 +98,12 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
       ).to eq(true)
     end
 
+    it "skips UserAction records where the post has a null user" do
+      reaction_user_2.post.update_columns(user_id: nil)
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      expect { described_class.sync! }.not_to change { UserAction.count }
+    end
+
     it "if no reactions are excluded from like it adds post actions for ones previously excluded" do
       SiteSetting.discourse_reactions_excluded_from_like = ""
       expect(reaction_user_2.post_action_like).to be_nil

@@ -74,7 +74,8 @@ module DiscourseReactions
                  post_actions.created_at
           FROM post_actions
           INNER JOIN posts ON posts.id = post_actions.post_id
-          WHERE post_actions.id IN (:post_action_ids);
+          WHERE post_actions.id IN (:post_action_ids) AND posts.user_id IS NOT NULL
+          ON CONFLICT DO NOTHING;
 
           INSERT INTO user_actions (
             action_type, user_id, acting_user_id, target_post_id, target_topic_id, created_at, updated_at
@@ -88,7 +89,8 @@ module DiscourseReactions
                  post_actions.created_at
           FROM post_actions
           INNER JOIN posts ON posts.id = post_actions.post_id
-          WHERE post_actions.id IN (:post_action_ids);
+          WHERE post_actions.id IN (:post_action_ids) AND posts.user_id IS NOT NULL
+          ON CONFLICT DO NOTHING;
         SQL
         DB.exec(
           sql_query,
