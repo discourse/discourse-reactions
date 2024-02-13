@@ -6,7 +6,6 @@
 
 pl_PL:
   site_settings:
-    discourse_reactions_reaction_for_like: "Określa reakcję związaną ze zwykłym polubieniem."
     discourse_reactions_enabled: "Włącz wtyczkę discourse-reactions."
     discourse_reactions_enabled_reactions: "Definiuje listę włączonych reakcji, wszystkie emoji są tutaj dozwolone."
     discourse_reactions_desaturated_reaction_panel: "Redukuje wizualny szum reakcji poprzez wyświetlanie ich w postaci nienasyconej aż do momentu najechania na nie."

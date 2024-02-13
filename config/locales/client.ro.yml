@@ -24,7 +24,7 @@ ro:
       main_reaction:
         add: "Apreciază acest articol"
         remove: "Elimină această apreciere"
-        cant_remove: "Nu-ți mai poți elimina aprecierea."
+        cant_remove: "Nu-ți mai poți elimina aprecierea"
         unauthenticated: "Te rugăm să te înregistrezi sau să te conectezi pentru a aprecia acest articol."
     notifications:
       reaction_1_user_multiple_posts:
