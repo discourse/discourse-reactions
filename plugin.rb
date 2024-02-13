@@ -46,6 +46,7 @@ after_initialize do
     lib/discourse_reactions/post_action_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
     app/jobs/regular/discourse_reactions/post_action_synchronizer.rb
+    app/jobs/scheduled/discourse_reactions/scheduled_post_action_synchronizer.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
