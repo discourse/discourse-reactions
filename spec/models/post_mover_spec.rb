@@ -32,7 +32,7 @@ describe PostMover do
     old_topic = Fabricate(:topic)
     new_topic = Fabricate(:topic)
     post = Fabricate(:post, topic: old_topic)
-    reaction = Fabricate(:reaction, post: post, reaction_value: "heart")
+    Fabricate(:reaction, post: post, reaction_value: "heart")
 
     PostActionCreator.create(user, post, :like)
 

@@ -59,7 +59,6 @@ describe TopicViewSerializer do
       DiscourseReactions::ReactionManager.new(
         reaction_value: "heart",
         user: user_2,
-        guardian: Guardian.new(user_2),
         post: post_2,
       ).toggle!
       json =
@@ -74,7 +73,6 @@ describe TopicViewSerializer do
       DiscourseReactions::ReactionManager.new(
         reaction_value: "heart",
         user: user_2,
-        guardian: Guardian.new(user_2),
         post: post_2,
       ).toggle!
       json =

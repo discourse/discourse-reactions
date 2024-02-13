@@ -19,7 +19,6 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
         DiscourseReactions::ReactionManager.new(
           reaction_value: params[:reaction],
           user: current_user,
-          guardian: guardian,
           post: post,
         )
       manager.toggle!
@@ -136,7 +135,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
   end
 
   def post_reactions_users
-    id = params.require(:id).to_i
+    params.require(:id).to_i
     reaction_value = params[:reaction_value]
     post = fetch_post_from_params
 
@@ -144,11 +143,16 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
 
     reaction_users = []
 
-    likes =
-      post.post_actions.where(
-        "deleted_at IS NULL AND post_action_type_id = ?",
-        PostActionType.types[:like],
-      ) if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
+    if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
+      # We only want to get likes that don't have an associated ReactionUser
+      # record, which count as a like or will be double ups for main_reaction_id.
+      likes =
+        post.post_actions.where(
+          DiscourseReactions::PostActionExtension.filter_reaction_likes_sql,
+          like: PostActionType.types[:like],
+          valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
+        )
+    end
 
     if likes.present?
       main_reaction =
@@ -159,6 +163,9 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
       count = likes.length
       users = format_likes_users(likes)
 
+      # Also include ReactionUser records for main_reaction_id
+      # if they have been created in the past; new records created
+      # using main_reaction_id will only make a PostAction.
       if main_reaction && main_reaction[:reaction_users_count]
         (users << get_users(main_reaction)).flatten!
         users.sort_by! { |user| user[:created_at] }

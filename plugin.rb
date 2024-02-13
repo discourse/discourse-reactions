@@ -17,6 +17,7 @@ register_svg_icon "fas fa-star"
 register_svg_icon "far fa-star"
 
 require_relative "lib/reaction_for_like_site_setting_enum.rb"
+require_relative "lib/reactions_excluded_from_like_site_setting_validator.rb"
 
 after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
@@ -37,15 +38,19 @@ after_initialize do
     app/serializers/user_reaction_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
+    app/services/discourse_reactions/reaction_post_action_synchronizer.rb
     lib/discourse_reactions/guardian_extension.rb
     lib/discourse_reactions/notification_extension.rb
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
+    lib/discourse_reactions/post_action_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
+    app/jobs/regular/discourse_reactions/post_action_synchronizer.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
     Post.class_eval { prepend DiscourseReactions::PostExtension }
+    PostAction.class_eval { prepend DiscourseReactions::PostActionExtension }
     TopicViewSerializer.class_eval { prepend DiscourseReactions::TopicViewSerializerExtension }
     PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
     Guardian.class_eval { prepend DiscourseReactions::GuardianExtension }
@@ -73,25 +78,45 @@ after_initialize do
   end
 
   add_to_serializer(:post, :reactions) do
-    reactions =
-      object
-        .emoji_reactions
-        .select { |reaction| reaction[:reaction_users_count] }
-        .map do |reaction|
-          {
-            id: reaction.reaction_value,
-            type: reaction.reaction_type.to_sym,
-            count: reaction.reaction_users_count,
-          }
-        end
+    reactions = []
+    reaction_users_counting_as_like = []
 
-    likes =
-      object.post_actions.select do |l|
-        l.post_action_type_id == PostActionType.types[:like] && l.deleted_at.blank?
+    object
+      .emoji_reactions
+      .select { |reaction| reaction[:reaction_users_count] }
+      .each do |reaction|
+        reactions << {
+          id: reaction.reaction_value,
+          type: reaction.reaction_type.to_sym,
+          count: reaction.reaction_users_count,
+        }
+
+        if DiscourseReactions::Reaction.reactions_counting_as_like.include?(reaction.reaction_value)
+          reaction_users_counting_as_like << reaction.reaction_users
+        end
       end
 
+    reaction_users_counting_as_like.flatten!
+
+    likes =
+      object
+        .post_actions
+        .select do |post_action|
+          post_action.post_action_type_id == PostActionType.types[:like] && !post_action.trashed?
+        end
+        .reject do |post_action|
+          # Get rid of any PostAction records that match up to a ReactionUser
+          # that is NOT main_reaction_id and is NOT excluded, otherwise we double
+          # up on the count/reaction shown in the UI.
+          reaction_users_counting_as_like.find { |ru| ru.user_id == post_action.user_id }.present?
+        end
+
+    # Likes will only be blank if there are only reactions where the reaction is in
+    # discourse_reactions_excluded_from_like. All other reactions will have a `PostAction` record.
     return reactions.sort_by { |reaction| [-reaction[:count].to_i, reaction[:id]] } if likes.blank?
 
+    # Reactions using main_reaction_id only have a `PostAction` record,
+    # not any `ReactionUser` records.
     reaction_likes, reactions =
       reactions.partition { |r| r[:id] == DiscourseReactions::Reaction.main_reaction_id }
 
@@ -105,12 +130,11 @@ after_initialize do
   end
 
   add_to_serializer(:post, :current_user_reaction) do
-    return nil unless scope.user.present?
+    return nil if scope.is_anonymous?
 
     object.emoji_reactions.each do |reaction|
       reaction_user = reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }
-
-      next unless reaction_user
+      next if reaction_user.blank?
 
       if reaction.reaction_users_count
         return(
@@ -123,15 +147,17 @@ after_initialize do
       end
     end
 
+    # Any PostAction Like that doesn't have a matching ReactionUser record
+    # will count as the main_reaction_id.
     like =
-      object.post_actions.find do |l|
-        l.post_action_type_id == PostActionType.types[:like] && l.deleted_at.blank? &&
-          l.user_id == scope.user.id
+      object.post_actions.find do |post_action|
+        post_action.post_action_type_id == PostActionType.types[:like] && !post_action.trashed? &&
+          post_action.user_id == scope.user.id
       end
 
     return nil if like.blank?
 
-    like_reaction = {
+    {
       id: DiscourseReactions::Reaction.main_reaction_id,
       type: :emoji,
       can_undo: scope.can_delete_post_action?(like),
@@ -144,12 +170,21 @@ after_initialize do
   end
 
   add_to_serializer(:post, :current_user_used_main_reaction) do
-    return false unless scope.user.present?
+    return false if scope.is_anonymous?
 
-    object.post_actions.any? do |l|
-      l.post_action_type_id == PostActionType.types[:like] && l.user_id == scope.user.id &&
-        l.deleted_at.blank?
-    end
+    like_post_action =
+      object.post_actions.find do |post_action|
+        post_action.post_action_type_id == PostActionType.types[:like] &&
+          post_action.user_id == scope.user.id && !post_action.trashed?
+      end
+
+    has_matching_reaction_user =
+      object.emoji_reactions.any? do |reaction|
+        DiscourseReactions::Reaction.reactions_counting_as_like.include?(reaction.reaction_value) &&
+          reaction.reaction_users.find { |ru| ru.user_id == scope.user.id }.present?
+      end
+
+    like_post_action.present? && !has_matching_reaction_user
   end
 
   add_to_serializer(:topic_view, :valid_reactions) { DiscourseReactions::Reaction.valid_reactions }
@@ -160,12 +195,6 @@ after_initialize do
 
   add_report("reactions") do |report|
     main_id = DiscourseReactions::Reaction.main_reaction_id
-    count_relation = ->(relation, start_date) do
-      relation
-        .where("created_at >= ?", start_date)
-        .where("created_at <= ?", start_date + 1.day)
-        .count
-    end
 
     report.icon = "discourse-emojis"
     report.modes = [:table]
@@ -194,30 +223,31 @@ after_initialize do
     reactions_results =
       DB.query(<<~SQL, start_date: report.start_date.to_date, end_date: report.end_date.to_date)
       SELECT
-        drr.reaction_value,
-        count(drru.id) as reactions_count,
-        date_trunc('day', drru.created_at)::date as day
-      FROM discourse_reactions_reactions as drr
-      LEFT OUTER JOIN discourse_reactions_reaction_users as drru on drr.id = drru.reaction_id
-      WHERE drr.reaction_users_count IS NOT NULL
-        AND drru.created_at::DATE >= :start_date::DATE AND drru.created_at::DATE <= :end_date::DATE
-      GROUP BY drr.reaction_value, day
+        reactions.reaction_value,
+        count(reaction_users.id) as reactions_count,
+        date_trunc('day', reaction_users.created_at)::date as day
+      FROM discourse_reactions_reactions as reactions
+      LEFT OUTER JOIN discourse_reactions_reaction_users as reaction_users on reactions.id = reaction_users.reaction_id
+      WHERE reactions.reaction_users_count IS NOT NULL
+        AND reaction_users.created_at::DATE >= :start_date::DATE AND reaction_users.created_at::DATE <= :end_date::DATE
+      GROUP BY reactions.reaction_value, day
     SQL
 
     likes_results =
       DB.query(
         <<~SQL,
       SELECT
-        count(pa.id) as likes_count,
-        date_trunc('day', pa.created_at)::date as day
-      FROM post_actions as pa
-      WHERE pa.post_action_type_id = :likes
-      AND pa.created_at::DATE >= :start_date::DATE AND pa.created_at::DATE <= :end_date::DATE
+        count(post_actions.id) as likes_count,
+        date_trunc('day', post_actions.created_at)::date as day
+      FROM post_actions as post_actions
+      WHERE post_actions.created_at::DATE >= :start_date::DATE AND post_actions.created_at::DATE <= :end_date::DATE
+      AND #{DiscourseReactions::PostActionExtension.filter_reaction_likes_sql}
       GROUP BY day
     SQL
         start_date: report.start_date.to_date,
         end_date: report.end_date.to_date,
-        likes: PostActionType.types[:like],
+        like: PostActionType.types[:like],
+        valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
       )
 
     (report.start_date.to_date..report.end_date.to_date).each do |date|
@@ -370,6 +400,14 @@ after_initialize do
         end
 
       DiscourseReactions::ReactionUser.insert_all(reaction_users_attributes)
+    end
+  end
+
+  on(:site_setting_changed) do |name, old_value, new_value|
+    if name == :discourse_reactions_excluded_from_like &&
+         SiteSetting.discourse_reactions_like_sync_enabled
+      ::Jobs.cancel_scheduled_job(Jobs::DiscourseReactions::PostActionSynchronizer)
+      ::Jobs.enqueue_at(5.minutes.from_now, Jobs::DiscourseReactions::PostActionSynchronizer)
     end
   end
 end
