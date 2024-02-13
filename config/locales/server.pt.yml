@@ -6,7 +6,6 @@
 
 pt:
   site_settings:
-    discourse_reactions_reaction_for_like: "Define a reação associada à ação de gostar."
     discourse_reactions_enabled: "Ativar o plugin de reações discourse."
     discourse_reactions_enabled_reactions: "Define uma lista de reações ativadas, qualquer emoji é permitido aqui."
   badges:

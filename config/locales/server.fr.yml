@@ -7,7 +7,6 @@
 fr:
   site_settings:
     discourse_reactions_like_icon: "Définit l'icône utilisée pour le bouton de réaction principal. Il doit s'agir d'un nom d'icône <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> , et non d'un nom d'émoji."
-    discourse_reactions_reaction_for_like: "Définit la réaction associée à l'action « J'aime »."
     discourse_reactions_enabled: "Activer l'extension discourse-reactions."
     discourse_reactions_enabled_reactions: "Définit une liste de réactions activées, n'importe quel émoji est autorisé ici."
     discourse_reactions_desaturated_reaction_panel: "Réduit le bruit visuel des réactions en les affichant désaturées lorsqu'elles ne sont pas survolées."

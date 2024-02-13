@@ -7,7 +7,6 @@
 nl:
   site_settings:
     discourse_reactions_like_icon: "Definieert het pictogram dat wordt gebruikt voor de hoofdreactieknop. Dit moet een <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>-pictogramnaam zijn, geen emojinaam."
-    discourse_reactions_reaction_for_like: "Definieert de reactie die is gekoppeld aan de like-actie."
     discourse_reactions_enabled: "Schakel de Discourse-reactiesplug-in in."
     discourse_reactions_enabled_reactions: "Definieert een lijst van ingeschakelde reacties, elke emoji is hier toegestaan."
     discourse_reactions_desaturated_reaction_panel: "Vermindert visuele ruis van reacties door ze onverzadigd weer te geven totdat er met de muis overheen wordt gegaan."
