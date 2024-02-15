@@ -376,6 +376,15 @@ after_initialize do
   register_notification_consolidation_plan(reacted_by_two_users)
   register_notification_consolidation_plan(consolidated_reactions)
 
+  # Filter out Likes that are also Reactions, for the user likes-received page.
+  register_modifier(:user_action_stream_builder) do |builder|
+    builder.left_join(<<~SQL)
+      discourse_reactions_reaction_users ON discourse_reactions_reaction_users.post_id = a.target_post_id
+      AND discourse_reactions_reaction_users.user_id = a.acting_user_id
+    SQL
+    builder.where("discourse_reactions_reaction_users.id IS NULL")
+  end
+
   on(:first_post_moved) do |target_post, original_post|
     id_map = {}
     ActiveRecord::Base.transaction do
