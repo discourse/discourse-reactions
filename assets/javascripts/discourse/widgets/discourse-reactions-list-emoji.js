@@ -19,8 +19,22 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (!window.matchMedia("(hover: none)").matches) {
       this._setupPopper(".user-list");
 
-      if (!this.attrs.users?.length) {
-        this.callWidgetFunction("getUsers", this.attrs.reaction.id);
+      if (
+        !this.attrs.users?.length &&
+        !this.debounceLoadReactions &&
+        !this.loadingReactions
+      ) {
+        this.loadingReactions = true;
+        this.callWidgetFunction("getUsers", this.attrs.reaction.id)
+          .catch(() => {
+            this.debounceLoadReactions = true;
+            setTimeout(() => {
+              this.debounceLoadReactions = false;
+            }, 3000);
+          })
+          .finally(() => {
+            this.loadingReactions = false;
+          });
       }
     }
   },
