@@ -385,6 +385,23 @@ after_initialize do
     builder.where("discourse_reactions_reaction_users.id IS NULL")
   end
 
+  # Filter out the users who Liked as well as Reacted to the post, for the
+  # user avatars that show beneath the post when you click the "show more actions"
+  # [...] button.
+  register_modifier(:post_action_users_list) do |query, post|
+    where_clause = <<~SQL
+      post_actions.id NOT IN (
+        SELECT post_actions.id
+        FROM post_actions
+        INNER JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.post_id = post_actions.post_id
+          AND discourse_reactions_reaction_users.user_id = post_actions.user_id
+        WHERE post_actions.post_id = #{post.id}
+      )
+    SQL
+
+    query.where(where_clause)
+  end
+
   on(:first_post_moved) do |target_post, original_post|
     id_map = {}
     ActiveRecord::Base.transaction do
