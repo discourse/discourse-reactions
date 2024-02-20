@@ -29,6 +29,8 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
     sign_in(current_user)
     visit(post.url)
 
+    page.execute_script("window.isSystemTest = true;")
+
     expect(reactions_list).to have_reaction("heart")
     expect(reactions_list).to have_reaction("clap")
 
@@ -47,6 +49,7 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
 
     it "shows a list of users who have liked a post on hover for unauthenticated users" do
       visit(post.url)
+      page.execute_script("window.isSystemTest = true;")
 
       expect(reactions_list).to have_reaction("heart")
 
@@ -58,6 +61,7 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
       anonymous_user = Fabricate(:anonymous)
       sign_in(anonymous_user)
       visit(post.url)
+      page.execute_script("window.isSystemTest = true;")
 
       expect(reactions_list).to have_reaction("heart")
 
