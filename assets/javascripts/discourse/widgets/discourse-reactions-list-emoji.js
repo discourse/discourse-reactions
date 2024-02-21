@@ -1,4 +1,4 @@
-import { schedule } from "@ember/runloop";
+import { debounce, schedule } from "@ember/runloop";
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { emojiUnescape } from "discourse/lib/text";
@@ -16,11 +16,11 @@ export default createWidget("discourse-reactions-list-emoji", {
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
   mouseOver() {
-    if (!window.matchMedia("(hover: none)").matches) {
+    if (this._allowHover) {
       this._setupPopper(".user-list");
 
-      if (!this.attrs.users?.length) {
-        this.callWidgetFunction("getUsers", this.attrs.reaction.id);
+      if (!this.attrs.users?.length && !this.loadingReactions) {
+        debounce(this, this._loadReactionUsers, 3000, true);
       }
     }
   },
@@ -74,7 +74,7 @@ export default createWidget("discourse-reactions-list-emoji", {
       }),
     ];
 
-    if (!window.matchMedia("(hover: none)").matches) {
+    if (this._allowHover) {
       elements.push(h("div.user-list", h("div.container", displayUsers)));
     }
 
@@ -108,5 +108,18 @@ export default createWidget("discourse-reactions-list-emoji", {
         });
       }
     });
+  },
+
+  _loadReactionUsers() {
+    this.loadingReactions = true;
+    this.callWidgetFunction("getUsers", this.attrs.reaction.id).finally(() => {
+      this.loadingReactions = false;
+    });
+  },
+
+  _allowHover() {
+    // So we can allow for hovering even if hover: none is present in the media-query,
+    // as is the case for headless chrome in system tests.
+    return window.isSystemTest || !window.matchMedia("(hover: none)").matches;
   },
 });
