@@ -1,4 +1,4 @@
-import { schedule } from "@ember/runloop";
+import { debounce, schedule } from "@ember/runloop";
 import { createPopper } from "@popperjs/core";
 import { h } from "virtual-dom";
 import { emojiUnescape } from "discourse/lib/text";
@@ -19,22 +19,8 @@ export default createWidget("discourse-reactions-list-emoji", {
     if (this._allowHover) {
       this._setupPopper(".user-list");
 
-      if (
-        !this.attrs.users?.length &&
-        !this.debounceLoadReactions &&
-        !this.loadingReactions
-      ) {
-        this.loadingReactions = true;
-        this.callWidgetFunction("getUsers", this.attrs.reaction.id)
-          .catch(() => {
-            this.debounceLoadReactions = true;
-            setTimeout(() => {
-              this.debounceLoadReactions = false;
-            }, 3000);
-          })
-          .finally(() => {
-            this.loadingReactions = false;
-          });
+      if (!this.attrs.users?.length && !this.loadingReactions) {
+        debounce(this, this._loadReactionUsers, 3000, true);
       }
     }
   },
@@ -121,6 +107,13 @@ export default createWidget("discourse-reactions-list-emoji", {
           ],
         });
       }
+    });
+  },
+
+  _loadReactionUsers() {
+    this.loadingReactions = true;
+    this.callWidgetFunction("getUsers", this.attrs.reaction.id).finally(() => {
+      this.loadingReactions = false;
     });
   },
 
