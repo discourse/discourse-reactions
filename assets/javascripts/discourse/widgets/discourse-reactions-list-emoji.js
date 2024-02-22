@@ -16,7 +16,7 @@ export default createWidget("discourse-reactions-list-emoji", {
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
   mouseOver() {
-    if (this._allowHover) {
+    if (this._allowHover()) {
       this._setupPopper(".user-list");
 
       if (!this.attrs.users?.length && !this.loadingReactions) {
@@ -74,7 +74,7 @@ export default createWidget("discourse-reactions-list-emoji", {
       }),
     ];
 
-    if (this._allowHover) {
+    if (this._allowHover()) {
       elements.push(h("div.user-list", h("div.container", displayUsers)));
     }
 
