@@ -169,24 +169,28 @@ describe DiscourseReactions::CustomReactionsController do
       Fabricate(:reaction_user, reaction: secure_reaction, user: user_2, post: secure_post)
     end
 
-    it "returns reactions given by a user when current user is admin" do
-      sign_in(admin)
+    it "returns reactions given by a user" do
+      sign_in(user_1)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
       expect(response.status).to eq(200)
 
       parsed = response.parsed_body
-      expect(parsed[2]["user"]["id"]).to eq(user_2.id)
-      expect(parsed[2]["post_id"]).to eq(post_2.id)
-      expect(parsed[2]["post"]["user"]["id"]).to eq(user_1.id)
-      expect(parsed[2]["reaction"]["id"]).to eq(laughing_reaction.id)
+      expect(parsed[0]["user"]["id"]).to eq(user_2.id)
+      expect(parsed[0]["post_id"]).to eq(post_2.id)
+      expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
+      expect(parsed[0]["reaction"]["id"]).to eq(laughing_reaction.id)
     end
 
-    it "does not return reactions for private messages of other users" do
+    it "does not return reactions for private messages" do
       sign_in(user_1)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      expect(response.status).to eq(403)
+
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(
+        private_post.id,
+      )
     end
 
     it "returns reactions for private messages of current user" do
@@ -204,11 +208,15 @@ describe DiscourseReactions::CustomReactionsController do
       sign_in(user_1)
 
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      expect(response.status).to eq(403)
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(
+        secure_post.id,
+      )
 
       secure_group.add(user_1)
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
-      expect(response.status).to eq(403)
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
 
       sign_in(user_2)
 
