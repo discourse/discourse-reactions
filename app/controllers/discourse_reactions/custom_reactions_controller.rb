@@ -109,6 +109,9 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
     reaction_users = reaction_users.order(created_at: :desc).limit(20).to_a
 
     if params[:include_likes]
+      # We do not want to include likes that also count as
+      # a reaction, otherwise it is confusing in the UI. We
+      # do the same on the likes-received endpoint.
       likes =
         PostAction
           .where(
@@ -116,6 +119,12 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
             deleted_at: nil,
             post_action_type_id: PostActionType.types[:like],
           )
+          .joins(<<~SQL)
+            LEFT JOIN discourse_reactions_reaction_users ON
+              discourse_reactions_reaction_users.post_id = post_actions.post_id
+              AND discourse_reactions_reaction_users.user_id = post_actions.user_id
+          SQL
+          .where("discourse_reactions_reaction_users.id IS NULL")
           .order(created_at: :desc)
           .limit(20)
 
