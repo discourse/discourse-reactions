@@ -349,6 +349,32 @@ describe DiscourseReactions::CustomReactionsController do
       expect(parsed[0]["reaction"]["id"]).to eq(like.id)
     end
 
+    it "does not include reactions which also count as a like when include_likes is true" do
+      sign_in(user_1)
+      other_post = Fabricate(:post, user: user_1)
+      laugh = Fabricate(:reaction_user, reaction: laughing_reaction, user: user_5, post: other_post)
+
+      get "/discourse-reactions/posts/reactions-received.json",
+          params: {
+            username: user_1.username,
+            include_likes: true,
+            acting_username: user_5.username,
+          }
+
+      parsed = response.parsed_body
+      expect(parsed.size).to eq(2)
+
+      expect(parsed[0]["user"]["id"]).to eq(user_5.id)
+      expect(parsed[0]["post_id"]).to eq(other_post.id)
+      expect(parsed[0]["post"]["user"]["id"]).to eq(user_1.id)
+      expect(parsed[0]["reaction"]["id"]).to eq(laugh.reaction.id)
+
+      expect(parsed[1]["user"]["id"]).to eq(user_5.id)
+      expect(parsed[1]["post_id"]).to eq(post_2.id)
+      expect(parsed[1]["post"]["user"]["id"]).to eq(user_1.id)
+      expect(parsed[1]["reaction"]["id"]).to eq(like.id)
+    end
+
     it "also filter likes by id when including likes" do
       latest_like =
         Fabricate(
