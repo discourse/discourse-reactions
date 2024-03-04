@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
-  fab!(:user) { Fabricate(:user) }
-  fab!(:post) { Fabricate(:post) }
+  fab!(:user)
+  fab!(:post)
   fab!(:post_2) { Fabricate(:post) }
   fab!(:reaction_plus_one) { Fabricate(:reaction, reaction_value: "+1", post: post) }
   fab!(:reaction_user) do

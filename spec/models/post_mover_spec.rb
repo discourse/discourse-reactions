@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 describe PostMover do
-  fab!(:admin) { Fabricate(:admin) }
-  fab!(:user) { Fabricate(:user) }
+  fab!(:admin)
+  fab!(:user)
   fab!(:topic_1) { Fabricate(:topic, user: user) }
   fab!(:topic_2) { Fabricate(:topic, user: user) }
   fab!(:topic_3) { Fabricate(:topic, user: user) }

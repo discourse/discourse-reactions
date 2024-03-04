@@ -50,12 +50,12 @@ after_initialize do
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
-    Post.class_eval { prepend DiscourseReactions::PostExtension }
-    PostAction.class_eval { prepend DiscourseReactions::PostActionExtension }
-    TopicViewSerializer.class_eval { prepend DiscourseReactions::TopicViewSerializerExtension }
-    PostAlerter.class_eval { prepend DiscourseReactions::PostAlerterExtension }
-    Guardian.class_eval { prepend DiscourseReactions::GuardianExtension }
-    Notification.singleton_class.class_eval { prepend DiscourseReactions::NotificationExtension }
+    Post.prepend DiscourseReactions::PostExtension
+    PostAction.prepend DiscourseReactions::PostActionExtension
+    TopicViewSerializer.prepend DiscourseReactions::TopicViewSerializerExtension
+    PostAlerter.prepend DiscourseReactions::PostAlerterExtension
+    Guardian.prepend DiscourseReactions::GuardianExtension
+    Notification.singleton_class.prepend DiscourseReactions::NotificationExtension
   end
 
   Discourse::Application.routes.append { mount ::DiscourseReactions::Engine, at: "/" }
