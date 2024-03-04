@@ -7,7 +7,7 @@ RSpec.describe PostActionUsersController do
     fab!(:current_user) { Fabricate(:user) }
     fab!(:user_1) { Fabricate(:user) }
     fab!(:user_2) { Fabricate(:user) }
-    fab!(:post) { Fabricate(:post) }
+    fab!(:post)
 
     before do
       DiscourseReactions::ReactionManager.new(

@@ -5,8 +5,8 @@ require_relative "../fabricators/reaction_fabricator.rb"
 require_relative "../fabricators/reaction_user_fabricator.rb"
 
 describe BadgeGranter do
-  fab!(:user) { Fabricate(:user) }
-  fab!(:post) { Fabricate(:post) }
+  fab!(:user)
+  fab!(:post)
   fab!(:reaction) { Fabricate(:reaction, post: post) }
   fab!(:reaction_user) { Fabricate(:reaction_user, reaction: reaction, user: user, post: post) }
   let(:badge) { Badge.find_by(name: "First Reaction") }

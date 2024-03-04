@@ -6,7 +6,7 @@ RSpec.describe DiscourseReactions::ReactionManager do
   end
 
   fab!(:user)
-  fab!(:post) { Fabricate(:post) }
+  fab!(:post)
   fab!(:reaction_plus_one) { Fabricate(:reaction, reaction_value: "+1", post: post) }
   fab!(:reaction_minus_one) { Fabricate(:reaction, reaction_value: "-1", post: post) }
   fab!(:reaction_clap) { Fabricate(:reaction, reaction_value: "clap", post: post) }
