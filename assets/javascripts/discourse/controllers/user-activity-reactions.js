@@ -43,6 +43,10 @@ export default class UserActivityReactions extends Controller {
 
   @action
   loadMore() {
+    if (!this.canLoadMore || this.loading) {
+      return;
+    }
+
     this.loading = true;
     const reactionUsers = this.model;
 
