@@ -38,15 +38,15 @@ after_initialize do
     app/serializers/user_reaction_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
-    app/services/discourse_reactions/reaction_post_action_synchronizer.rb
+    app/services/discourse_reactions/reaction_like_synchronizer.rb
     lib/discourse_reactions/guardian_extension.rb
     lib/discourse_reactions/notification_extension.rb
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/post_action_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
-    app/jobs/regular/discourse_reactions/post_action_synchronizer.rb
-    app/jobs/scheduled/discourse_reactions/scheduled_post_action_synchronizer.rb
+    app/jobs/regular/discourse_reactions/like_synchronizer.rb
+    app/jobs/scheduled/discourse_reactions/scheduled_like_synchronizer.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
+RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
   fab!(:user)
-  fab!(:post)
-  fab!(:post_2) { Fabricate(:post) }
+  fab!(:post) { Fabricate(:post, like_count: 1) }
+  fab!(:post_2) { Fabricate(:post, like_count: 0) }
   fab!(:reaction_plus_one) { Fabricate(:reaction, reaction_value: "+1", post: post) }
   fab!(:reaction_user) do
     Fabricate(:reaction_user, user: user, post: post, reaction: reaction_plus_one)
@@ -35,7 +35,7 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
     expect { described_class.sync! }.not_to change { PostAction.count }
   end
 
-  describe "when reactions are added to the exception list" do
+  describe "when reactions are added to the exclusion list" do
     before do
       SiteSetting.discourse_reactions_excluded_from_like += "|+1" # +1 added
     end
@@ -51,9 +51,30 @@ RSpec.describe DiscourseReactions::ReactionPostActionSynchronizer do
     it "removes UserAction records for LIKED and WAS_LIKED" do
       expect { described_class.sync! }.to change { UserAction.count }.by(-2)
     end
+
+    it "updates the like_count on the associated Post records" do
+      described_class.sync!
+      expect(post.reload.like_count).to eq(0)
+      expect(post_2.reload.like_count).to eq(0)
+    end
+
+    it "updates the like_count on the associated Topic records" do
+      described_class.sync!
+      expect(post.topic.reload.like_count).to eq(0)
+      expect(post_2.topic.reload.like_count).to eq(0)
+    end
+
+    it "updates the liked column on TopicUser for associated topic and users" do
+    end
+
+    it "updates the UserStat likes_given and likes_received columns" do
+    end
+
+    it "updates/recalculates the GivenDailyLike table likes_given on all given_date days" do
+    end
   end
 
-  describe "when reactions are removed from the exception list" do
+  describe "when reactions are removed from the exclusion list" do
     it "creates PostAction records" do
       SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
       expect(reaction_user_2.post_action_like).to be_nil
