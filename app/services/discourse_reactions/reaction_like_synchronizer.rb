@@ -16,9 +16,15 @@ module DiscourseReactions
       trashed_post_action_ids = trash_excluded_related_records(excluded_from_like)
 
       all_affected_post_action_ids = (post_action_ids + trashed_post_action_ids).uniq
+      all_affected_post_ids =
+        PostAction.with_deleted.where(id: all_affected_post_action_ids).pluck(:post_id).uniq
 
       update_post_like_counts(all_affected_post_action_ids)
       update_topic_like_counts(all_affected_post_action_ids)
+
+      TopicUser.update_post_action_cache(post_id: all_affected_post_ids)
+
+      update_user_stats(all_affected_post_ids)
     end
 
     # Find all ReactionUser records that do not have a corresponding
@@ -78,7 +84,7 @@ module DiscourseReactions
     #
     # No need to do any UserAction inserts if there wasn't any PostAction changes.
     def self.create_missing_user_actions(post_action_ids)
-      return if post_action_ids.none?
+      return [] if post_action_ids.none?
 
       sql_query = <<~SQL
         INSERT INTO user_actions (
@@ -124,7 +130,7 @@ module DiscourseReactions
     # uses a reaction in the excluded_from_like list, and trash them,
     # and also delete the UserAction records.
     def self.trash_excluded_related_records(excluded_from_like)
-      return if excluded_from_like.none?
+      return [] if excluded_from_like.none?
 
       sql_query = <<~SQL
         WITH deleted_post_actions AS (
@@ -204,6 +210,9 @@ module DiscourseReactions
         like: PostActionType.types[:like],
         all_affected_post_action_ids: all_affected_post_action_ids,
       )
+    end
+
+    def self.update_user_stats
     end
   end
 end

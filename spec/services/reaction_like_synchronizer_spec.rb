@@ -1,24 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
-  fab!(:user)
-  fab!(:post) { Fabricate(:post, like_count: 1) }
-  fab!(:post_2) { Fabricate(:post, like_count: 0) }
-  fab!(:reaction_plus_one) { Fabricate(:reaction, reaction_value: "+1", post: post) }
-  fab!(:reaction_user) do
-    Fabricate(:reaction_user, user: user, post: post, reaction: reaction_plus_one)
-  end
-
-  fab!(:reaction_clap) { Fabricate(:reaction, reaction_value: "clap", post: post_2) }
-  fab!(:reaction_user_2) do
-    Fabricate(
-      :reaction_user,
-      user: user,
-      post: post_2,
-      reaction: reaction_clap,
-      skip_post_action: true,
-    )
-  end
+  let!(:user) { Fabricate(:user) }
+  let!(:post) { Fabricate(:post, like_count: 1) }
+  let!(:post_2) { Fabricate(:post, like_count: 0) }
 
   before do
     SiteSetting.discourse_reactions_like_sync_enabled = true
@@ -26,7 +11,25 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
     SiteSetting.discourse_reactions_excluded_from_like = "clap|-1"
 
     UserActionManager.enable
-    UserActionManager.post_action_created(reaction_user.post_action_like)
+  end
+
+  let!(:topic_user) { Fabricate(:topic_user, user: user, topic: post.topic) }
+  let!(:topic_user_2) { Fabricate(:topic_user, user: user, topic: post_2.topic) }
+
+  let!(:reaction_user) do
+    DiscourseReactions::ReactionManager.new(reaction_value: "+1", user: user, post: post).toggle!
+    @reaction_plus_one = DiscourseReactions::Reaction.find_by(reaction_value: "+1", post: post)
+    DiscourseReactions::ReactionUser.find_by(user: user, post: post, reaction: @reaction_plus_one)
+  end
+
+  let!(:reaction_user_2) do
+    DiscourseReactions::ReactionManager.new(
+      reaction_value: "clap",
+      user: user,
+      post: post_2,
+    ).toggle!
+    @reaction_clap = DiscourseReactions::Reaction.find_by(reaction_value: "clap", post: post_2)
+    DiscourseReactions::ReactionUser.find_by(user: user, post: post_2, reaction: @reaction_clap)
   end
 
   it "does nothing if discourse_reactions_like_sync_enabled is false" do
@@ -53,21 +56,34 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
     end
 
     it "updates the like_count on the associated Post records" do
+      expect(post.reload.like_count).to eq(1)
+      expect(post_2.reload.like_count).to eq(0)
       described_class.sync!
       expect(post.reload.like_count).to eq(0)
       expect(post_2.reload.like_count).to eq(0)
     end
 
     it "updates the like_count on the associated Topic records" do
+      expect(post.topic.reload.like_count).to eq(1)
+      expect(post_2.topic.reload.like_count).to eq(0)
       described_class.sync!
       expect(post.topic.reload.like_count).to eq(0)
       expect(post_2.topic.reload.like_count).to eq(0)
     end
 
     it "updates the liked column on TopicUser for associated topic and users" do
+      expect(post.topic.topic_users.find_by(user: user).liked).to eq(true)
+      expect(post_2.topic.topic_users.find_by(user: user).liked).to eq(false)
+      described_class.sync!
+      expect(post.topic.topic_users.find_by(user: user).liked).to eq(false)
+      expect(post_2.topic.topic_users.find_by(user: user).liked).to eq(false)
     end
 
+    # UserAction.log_action! / update_like_count
     it "updates the UserStat likes_given and likes_received columns" do
+      expect(user.user_stat.likes_given).to eq(1)
+      described_class.sync!
+      expect(user.user_stat.likes_given).to eq(0)
     end
 
     it "updates/recalculates the GivenDailyLike table likes_given on all given_date days" do
