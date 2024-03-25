@@ -14,8 +14,8 @@ module DiscourseReactions
         (recovered_post_action_ids + inserted_post_action_ids).uniq
       create_missing_user_actions(created_or_recovered_post_action_ids)
 
-      trashed_post_action_ids = trash_excluded_related_records(excluded_from_like)
-      delete_invalid_user_actions(trashed_post_action_ids)
+      trashed_post_action_ids = trash_excluded_post_actions(excluded_from_like)
+      delete_excluded_user_actions(trashed_post_action_ids)
 
       all_affected_post_action_ids =
         (created_or_recovered_post_action_ids + trashed_post_action_ids).uniq
@@ -28,6 +28,7 @@ module DiscourseReactions
       TopicUser.update_post_action_cache(post_id: all_affected_post_ids)
 
       update_user_stats(all_affected_post_action_ids)
+      upsert_given_daily_likes(all_affected_post_action_ids)
     end
 
     # Find all ReactionUser records that do not have a corresponding
@@ -57,9 +58,9 @@ module DiscourseReactions
       )
     end
 
+    # Find all trashed PostAction records matching ReactionUser records,
+    # which are not in excluded_from_like, and untrash them.
     def self.recover_trashed_post_actions(excluded_from_like)
-      # Find all trashed PostAction records matching ReactionUser records,
-      # which are not in excluded_from_like, and untrash them.
       sql_query = <<~SQL
         UPDATE post_actions
         SET deleted_at = NULL, deleted_by_id = NULL, updated_at = NOW()
@@ -87,7 +88,7 @@ module DiscourseReactions
     #
     # No need to do any UserAction inserts if there wasn't any PostAction changes.
     def self.create_missing_user_actions(post_action_ids)
-      return [] if post_action_ids.none?
+      return if post_action_ids.none?
 
       sql_query = <<~SQL
         INSERT INTO user_actions (
@@ -131,7 +132,9 @@ module DiscourseReactions
 
     # Delete any UserAction records for LIKE or WAS_LIKED that match up with
     # PostAction records that got trashed.
-    def self.delete_invalid_user_actions(trashed_post_action_ids)
+    def self.delete_excluded_user_actions(trashed_post_action_ids)
+      return if trashed_post_action_ids.empty?
+
       sql_query = <<~SQL
         DELETE FROM user_actions
         WHERE id IN (
@@ -165,9 +168,8 @@ module DiscourseReactions
     end
 
     # Find all PostAction records that have a ReactionUser record that
-    # uses a reaction in the excluded_from_like list, and trash them,
-    # and also delete the UserAction records.
-    def self.trash_excluded_related_records(excluded_from_like)
+    # uses a reaction in the excluded_from_like list and trash them.
+    def self.trash_excluded_post_actions(excluded_from_like)
       return [] if excluded_from_like.none?
 
       sql_query = <<~SQL
@@ -201,6 +203,8 @@ module DiscourseReactions
       )
     end
 
+    # Update the like_count counter cache on all Post records
+    # affected by created/recovered/trashed post actions.
     def self.update_post_like_counts(all_affected_post_action_ids)
       sql_query = <<~SQL
         WITH like_counts AS (
@@ -227,6 +231,8 @@ module DiscourseReactions
       )
     end
 
+    # Update the like_count counter cache on all Topic records
+    # affected by created/recovered/trashed post actions.
     def self.update_topic_like_counts(all_affected_post_action_ids)
       sql_query = <<~SQL
         WITH like_counts AS (
@@ -250,14 +256,21 @@ module DiscourseReactions
       )
     end
 
+    # Update the likes_given and likes_received counter caches on the
+    # UserStat table based on posts matching up with created/restored/trashed
+    # post actions.
+    #
+    # The UserAction records (which are created/deleted before this) are an
+    # easier way to calculate this rather than going via PostAction again.
     def self.update_user_stats(all_affected_post_action_ids)
       return if all_affected_post_action_ids.empty?
 
-      users_needing_likes_received_recalc =
-        DB.query_single(
-          "SELECT DISTINCT posts.user_id FROM posts INNER JOIN post_actions ON post_actions.post_id = posts.id WHERE post_actions.id IN (?)",
-          all_affected_post_action_ids.join(","),
-        )
+      users_needing_likes_received_recalc = DB.query_single(<<~SQL, all_affected_post_action_ids)
+        SELECT DISTINCT posts.user_id
+        FROM posts
+        INNER JOIN post_actions ON post_actions.post_id = posts.id
+        WHERE post_actions.id IN (?)
+      SQL
 
       if users_needing_likes_received_recalc.any?
         sql_query = <<~SQL
@@ -275,7 +288,7 @@ module DiscourseReactions
         changed_user_ids =
           DB.query_single(
             sql_query,
-            affected_user_ids: users_needing_likes_received_recalc.join(","),
+            affected_user_ids: users_needing_likes_received_recalc,
             was_liked: UserAction::WAS_LIKED,
           )
         UserStat.where(user_id: users_needing_likes_received_recalc - changed_user_ids).update_all(
@@ -283,36 +296,85 @@ module DiscourseReactions
         )
       end
 
-      users_needing_likes_given_recalc =
-        DB.query_single(
-          "SELECT DISTINCT user_id FROM post_actions WHERE post_actions.id IN (?)",
-          all_affected_post_action_ids.join(","),
-        )
+      users_needing_likes_given_recalc = DB.query_single(<<~SQL, all_affected_post_action_ids)
+        SELECT DISTINCT user_id
+        FROM post_actions
+        WHERE post_actions.id IN (?)
+      SQL
 
       if users_needing_likes_given_recalc.any?
         sql_query = <<~SQL
-        WITH likes_given_cte AS (
-          SELECT user_actions.acting_user_id AS user_id, COUNT(user_actions.id) AS new_likes_given
-          FROM user_actions
-          WHERE user_actions.action_type = :like AND user_actions.acting_user_id IN (:affected_user_ids)
-          GROUP BY user_actions.acting_user_id
-        )
-        UPDATE user_stats
-        SET likes_given = lgc.new_likes_given
-        FROM likes_given_cte lgc
-        WHERE user_stats.user_id = lgc.user_id
-        RETURNING user_stats.user_id
-      SQL
+          WITH likes_given_cte AS (
+            SELECT user_actions.acting_user_id AS user_id, COUNT(user_actions.id) AS new_likes_given
+            FROM user_actions
+            WHERE user_actions.action_type = :like AND user_actions.acting_user_id IN (:affected_user_ids)
+            GROUP BY user_actions.acting_user_id
+          )
+          UPDATE user_stats
+          SET likes_given = lgc.new_likes_given
+          FROM likes_given_cte lgc
+          WHERE user_stats.user_id = lgc.user_id
+          RETURNING user_stats.user_id
+        SQL
         changed_user_ids =
           DB.query_single(
             sql_query,
-            affected_user_ids: users_needing_likes_given_recalc.join(","),
+            affected_user_ids: users_needing_likes_given_recalc,
             like: UserAction::LIKE,
           )
         UserStat.where(user_id: users_needing_likes_given_recalc - changed_user_ids).update_all(
           likes_given: 0,
         )
       end
+    end
+
+    # Upsert any existing GivenDailyLike records for the users who created
+    # or were affected by the created/restored/trashed post actions. There
+    # is a count per day per user that needs to be recalculated.
+    #
+    # We delete any GivenDailyLike records that would equate to a count of 0
+    # for that day and that user, which is based on UserAction records (which
+    # are created or destroyed before this).
+    def self.upsert_given_daily_likes(all_affected_post_action_ids)
+      return if all_affected_post_action_ids.blank?
+
+      sql_query = <<~SQL
+        SELECT user_id FROM post_actions WHERE post_actions.id = ANY(ARRAY[:all_affected_post_action_ids])
+        UNION
+        SELECT posts.user_id
+        FROM posts
+        INNER JOIN post_actions ON post_actions.post_id = posts.id 
+        WHERE post_actions.id = ANY(ARRAY[:all_affected_post_action_ids])
+      SQL
+      user_ids =
+        DB.query_single(sql_query, all_affected_post_action_ids: all_affected_post_action_ids)
+
+      return if user_ids.blank?
+
+      sql_query = <<~SQL
+        INSERT INTO given_daily_likes (user_id, given_date, likes_given)
+        SELECT user_actions.acting_user_id, DATE(user_actions.created_at) AS given_date, COUNT(*) AS likes_given
+        FROM user_actions
+        WHERE user_actions.action_type = :like
+          AND user_actions.acting_user_id IN (:user_ids)
+        GROUP BY user_actions.acting_user_id, DATE(user_actions.created_at)
+        ON CONFLICT (user_id, given_date)
+        DO UPDATE SET likes_given = EXCLUDED.likes_given
+      SQL
+      DB.exec(sql_query, like: UserAction::LIKE, user_ids: user_ids)
+
+      sql_query = <<~SQL
+        DELETE FROM given_daily_likes gdl
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM user_actions
+          WHERE
+              user_actions.acting_user_id = gdl.user_id
+              AND user_actions.action_type = :like
+              AND DATE(user_actions.created_at) = gdl.given_date
+        ) AND gdl.user_id IN (:user_ids)
+      SQL
+      DB.exec(sql_query, like: UserAction::LIKE, user_ids: user_ids)
     end
   end
 end

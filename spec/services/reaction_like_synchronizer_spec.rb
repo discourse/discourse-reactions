@@ -91,6 +91,11 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
     end
 
     it "updates/recalculates the GivenDailyLike table likes_given on all given_date days" do
+      expect(
+        GivenDailyLike.exists?(user: user, given_date: Time.now.to_date, likes_given: 1),
+      ).to eq(true)
+      described_class.sync!
+      expect(GivenDailyLike.exists?(user: user, given_date: Time.now.to_date)).to eq(false)
     end
   end
 
