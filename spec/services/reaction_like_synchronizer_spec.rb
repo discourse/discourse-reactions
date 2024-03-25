@@ -16,6 +16,8 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
   let!(:topic_user) { Fabricate(:topic_user, user: user, topic: post.topic) }
   let!(:topic_user_2) { Fabricate(:topic_user, user: user, topic: post_2.topic) }
 
+  # This and reaction_user_2 use the ReactionManager so the proper PostActionCreator
+  # records are created, rather than building this all manually.
   let!(:reaction_user) do
     DiscourseReactions::ReactionManager.new(reaction_value: "+1", user: user, post: post).toggle!
     @reaction_plus_one = DiscourseReactions::Reaction.find_by(reaction_value: "+1", post: post)
@@ -51,6 +53,7 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
       expect(PostAction.with_deleted.find_by(id: post_action_id).deleted_at).to be_present
     end
 
+    # TODO (martin) How did this work before I added the DELETE query?
     it "removes UserAction records for LIKED and WAS_LIKED" do
       expect { described_class.sync! }.to change { UserAction.count }.by(-2)
     end
@@ -79,11 +82,12 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
       expect(post_2.topic.topic_users.find_by(user: user).liked).to eq(false)
     end
 
-    # UserAction.log_action! / update_like_count
     it "updates the UserStat likes_given and likes_received columns" do
-      expect(user.user_stat.likes_given).to eq(1)
+      expect(user.user_stat.reload.likes_given).to eq(1)
+      expect(post.user.user_stat.reload.likes_received).to eq(1)
       described_class.sync!
-      expect(user.user_stat.likes_given).to eq(0)
+      expect(user.user_stat.reload.likes_given).to eq(0)
+      expect(post.user.user_stat.reload.likes_received).to eq(0)
     end
 
     it "updates/recalculates the GivenDailyLike table likes_given on all given_date days" do
