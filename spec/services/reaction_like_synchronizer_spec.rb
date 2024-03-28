@@ -53,7 +53,6 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
       expect(PostAction.with_deleted.find_by(id: post_action_id).deleted_at).to be_present
     end
 
-    # TODO (martin) How did this work before I added the DELETE query?
     it "removes UserAction records for LIKED and WAS_LIKED" do
       expect { described_class.sync! }.to change { UserAction.count }.by(-2)
     end
@@ -90,7 +89,7 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
       expect(post.user.user_stat.reload.likes_received).to eq(0)
     end
 
-    it "updates/recalculates the GivenDailyLike table likes_given on all given_date days" do
+    it "updates/recalculates the GivenDailyLike table likes_given on all given_date days and deletes records where likes_given would be 0" do
       expect(
         GivenDailyLike.exists?(user: user, given_date: Time.now.to_date, likes_given: 1),
       ).to eq(true)
@@ -155,6 +154,55 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
       expect(reaction_user_2.post_action_like).to be_nil
       expect { described_class.sync! }.to change { PostAction.count }.by(1)
       expect(reaction_user_2.reload.post_action_like).to be_present
+    end
+
+    it "updates the like_count on the associated Post records" do
+      expect(post.reload.like_count).to eq(1)
+      expect(post_2.reload.like_count).to eq(0)
+
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      described_class.sync!
+      expect(post.reload.like_count).to eq(1)
+      expect(post_2.reload.like_count).to eq(1)
+    end
+
+    it "updates the like_count on the associated Topic records" do
+      expect(post.topic.reload.like_count).to eq(1)
+      expect(post_2.topic.reload.like_count).to eq(0)
+
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      described_class.sync!
+      expect(post.topic.reload.like_count).to eq(1)
+      expect(post_2.topic.reload.like_count).to eq(1)
+    end
+
+    it "updates the liked column on TopicUser for associated topic and users" do
+      expect(post.topic.topic_users.find_by(user: user).liked).to eq(true)
+      expect(post_2.topic.topic_users.find_by(user: user).liked).to eq(false)
+
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      described_class.sync!
+      expect(post.topic.topic_users.find_by(user: user).liked).to eq(true)
+      expect(post_2.topic.topic_users.find_by(user: user).liked).to eq(true)
+    end
+
+    it "updates the UserStat likes_given and likes_received columns" do
+      expect(user.user_stat.reload.likes_given).to eq(1)
+      expect(post.user.user_stat.reload.likes_received).to eq(1)
+      expect(post_2.user.user_stat.reload.likes_received).to eq(0)
+
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      described_class.sync!
+      expect(user.user_stat.reload.likes_given).to eq(2)
+      expect(post.user.user_stat.reload.likes_received).to eq(1)
+      expect(post_2.user.user_stat.reload.likes_received).to eq(1)
+    end
+
+    it "updates/recalculates the GivenDailyLike table likes_given on all given_date days and deletes records where likes_given would be 0" do
+      SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed
+      expect { described_class.sync! }.to change {
+        GivenDailyLike.find_by(user: user, given_date: Time.now.to_date).likes_given
+      }.to 2
     end
   end
 end
