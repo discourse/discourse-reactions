@@ -2,7 +2,7 @@
 
 module Jobs
   module DiscourseReactions
-    class ScheduledPostActionSynchronizer < ::Jobs::Scheduled
+    class ScheduledLikeSynchronizer < ::Jobs::Scheduled
       every 1.hour
 
       def execute(args = {})
@@ -11,7 +11,7 @@ module Jobs
           return
         end
 
-        ::DiscourseReactions::ReactionPostActionSynchronizer.sync!
+        ::DiscourseReactions::ReactionLikeSynchronizer.sync!
       end
     end
   end
