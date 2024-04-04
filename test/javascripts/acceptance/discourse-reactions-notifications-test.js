@@ -141,7 +141,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
   test("reaction notifications", async (assert) => {
     await visit("/");
-    await click(".d-header-icons .current-user");
+    await click(".d-header-icons .current-user button");
 
     const notifications = queryAll(
       "#quick-access-all-notifications ul li.notification.reaction a"
