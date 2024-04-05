@@ -13,10 +13,16 @@ describe DiscourseReactions::CustomReactionsController do
   fab!(:post_2) { Fabricate(:post, user: user_1) }
   fab!(:private_topic) { Fabricate(:private_message_topic, user: user_2, recipient: admin) }
   fab!(:private_post) { Fabricate(:post, topic: private_topic) }
+  fab!(:whisper_post) do
+    Fabricate(:post, topic: Fabricate(:topic), post_type: Post.types[:whisper])
+  end
   fab!(:laughing_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "laughing") }
   fab!(:open_mouth_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "open_mouth") }
   fab!(:hugs_reaction) { Fabricate(:reaction, post: post_2, reaction_value: "hugs") }
   fab!(:hugs_reaction_private) { Fabricate(:reaction, post: private_post, reaction_value: "hugs") }
+  fab!(:laughing_reaction_whisper) do
+    Fabricate(:reaction, post: whisper_post, reaction_value: "laughing")
+  end
   fab!(:like) do
     Fabricate(
       :post_action,
@@ -39,6 +45,9 @@ describe DiscourseReactions::CustomReactionsController do
   end
   fab!(:reaction_user_5) do
     Fabricate(:reaction_user, reaction: hugs_reaction_private, user: admin, post: private_post)
+  end
+  fab!(:reaction_user_6) do
+    Fabricate(:reaction_user, reaction: laughing_reaction_whisper, user: user_2, post: whisper_post)
   end
 
   before do
@@ -223,6 +232,27 @@ describe DiscourseReactions::CustomReactionsController do
       get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
       parsed = response.parsed_body
       expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(secure_post.id)
+    end
+
+    it "does not return reactions for whispers if the user is not in whispers_allowed_groups" do
+      sign_in(user_1)
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).not_to include(
+        whisper_post.id,
+      )
+
+      SiteSetting.whispers_allowed_groups = Group::AUTO_GROUPS[:trust_level_0].to_s
+      Group.refresh_automatic_groups!
+
+      get "/discourse-reactions/posts/reactions.json", params: { username: user_2.username }
+
+      parsed = response.parsed_body
+      expect(response.parsed_body.map { |reaction| reaction["post_id"] }).to include(
+        whisper_post.id,
+      )
     end
 
     describe "a post with one of your reactions has been deleted" do
