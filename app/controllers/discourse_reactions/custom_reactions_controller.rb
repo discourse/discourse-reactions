@@ -51,9 +51,13 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
         .joins(
           "INNER JOIN discourse_reactions_reactions ON discourse_reactions_reactions.id = discourse_reactions_reaction_users.reaction_id",
         )
-        .joins("INNER JOIN posts p ON p.id = discourse_reactions_reaction_users.post_id")
+        .joins(
+          "INNER JOIN posts p ON p.id = discourse_reactions_reaction_users.post_id AND p.deleted_at IS NULL",
+        )
         .joins("INNER JOIN topics t ON t.id = p.topic_id AND t.deleted_at IS NULL")
-        .joins("INNER JOIN posts p2 ON p2.topic_id = t.id AND p2.post_number = 1")
+        .joins(
+          "INNER JOIN posts p2 ON p2.topic_id = t.id AND p2.post_number = 1 AND p.deleted_at IS NULL",
+        )
         .joins("LEFT JOIN categories c ON c.id = t.category_id")
         .includes(:user, :post, :reaction)
         .where(user_id: user.id)
