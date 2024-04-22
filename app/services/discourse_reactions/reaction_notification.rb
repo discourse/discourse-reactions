@@ -13,7 +13,7 @@ module DiscourseReactions
     def create
       post_user = @post.user
 
-      if post_user.user_option.like_notification_frequency ==
+      if post_user.user_option&.like_notification_frequency ==
            UserOption.like_notification_frequency_type[:never]
         return
       end
