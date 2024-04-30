@@ -7,6 +7,11 @@ module DiscourseReactions
 
       excluded_from_like = SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|")
 
+      pre_run_report = DiscourseReactions::MigrationReport.run(print_report: false)
+      Rails.logger.info(
+        "[ReactionLikeSynchronizer] Starting sync.... Pre-run report:\n\n#{DiscourseReactions::MigrationReport.humanized_report_data(pre_run_report)}",
+      )
+
       # We want this to be all-or-nothing because the scope of each update/insert/delete
       # batch is so dependent on the `all_affected_post_action_ids` or previously affected
       # IDs. If we don't do this in a transaction, we could end up with a partial update
@@ -17,9 +22,17 @@ module DiscourseReactions
 
         created_or_recovered_post_action_ids =
           (recovered_post_action_ids + inserted_post_action_ids).uniq
+
+        Rails.logger.info(
+          "[ReactionLikeSynchronizer] Inserted #{inserted_post_action_ids.length} post action likes, recovered #{recovered_post_action_ids.length} trashed post action likes. (#{created_or_recovered_post_action_ids.length} total)",
+        )
+
         create_missing_user_actions(created_or_recovered_post_action_ids)
 
         trashed_post_action_ids = trash_excluded_post_actions(excluded_from_like)
+        Rails.logger.info(
+          "[ReactionLikeSynchronizer] Trashed #{trashed_post_action_ids.length} post action likes.",
+        )
         delete_excluded_user_actions(trashed_post_action_ids)
 
         all_affected_post_action_ids =
@@ -35,6 +48,18 @@ module DiscourseReactions
             PostAction.with_deleted.where(id: all_affected_post_action_ids).pluck(:post_id).uniq,
         )
       end
+
+      post_run_report =
+        DiscourseReactions::MigrationReport.run(
+          print_report: false,
+          previous_report_data: pre_run_report,
+        )
+
+      Rails.logger.info(
+        "[ReactionLikeSynchronizer] Sync completed! Post-run report:\n\n#{DiscourseReactions::MigrationReport.humanized_report_data(post_run_report, pre_run_report)}",
+      )
+
+      { pre_run_report:, post_run_report: }
     end
 
     # Find all ReactionUser records that do not have a corresponding
@@ -110,8 +135,15 @@ module DiscourseReactions
         FROM post_actions
         INNER JOIN posts ON posts.id = post_actions.post_id
         WHERE post_actions.id IN (:post_action_ids) AND posts.user_id IS NOT NULL
-        ON CONFLICT DO NOTHING;
+        ON CONFLICT DO NOTHING
+      SQL
+      inserted_user_action_count =
+        DB.exec(sql_query, ua_like: UserAction::LIKE, post_action_ids: post_action_ids)
+      Rails.logger.info(
+        "[ReactionsLikeSynchronizer] Inserted #{inserted_user_action_count} like UserActions",
+      )
 
+      sql_query = <<~SQL
         INSERT INTO user_actions (
           action_type, user_id, acting_user_id, target_post_id, target_topic_id, created_at, updated_at
         )
@@ -125,14 +157,12 @@ module DiscourseReactions
         FROM post_actions
         INNER JOIN posts ON posts.id = post_actions.post_id
         WHERE post_actions.id IN (:post_action_ids) AND posts.user_id IS NOT NULL
-        ON CONFLICT DO NOTHING;
+        ON CONFLICT DO NOTHING
       SQL
-
-      DB.exec(
-        sql_query,
-        ua_like: UserAction::LIKE,
-        ua_was_liked: UserAction::WAS_LIKED,
-        post_action_ids: post_action_ids,
+      inserted_user_action_count =
+        DB.exec(sql_query, ua_was_liked: UserAction::WAS_LIKED, post_action_ids: post_action_ids)
+      Rails.logger.info(
+        "[ReactionsLikeSynchronizer] Inserted #{inserted_user_action_count} was_liked UserActions",
       )
     end
 
@@ -212,54 +242,66 @@ module DiscourseReactions
     # Update the like_count counter cache on all Post records
     # affected by created/recovered/trashed post actions.
     def self.update_post_like_counts(all_affected_post_action_ids)
-      sql_query = <<~SQL
-        WITH like_counts AS (
-          SELECT posts.id AS post_id,
-            COUNT(post_actions.id) FILTER (
-              WHERE post_actions.post_action_type_id = :like AND
-              post_actions.deleted_at IS NULL
-            ) AS like_count
-          FROM posts
-          LEFT JOIN post_actions ON post_actions.post_id = posts.id
-            AND post_actions.post_action_type_id = :like
-          WHERE post_actions.id IN (:all_affected_post_action_ids)
-          GROUP BY posts.id
-        )
-        UPDATE posts
-        SET like_count = like_counts.like_count
-        FROM like_counts
-        WHERE posts.id = like_counts.post_id
+      # sql_query = <<~SQL
+      #   WITH like_counts AS (
+      #     SELECT posts.id AS post_id,
+      #       COUNT(post_actions.id) FILTER (
+      #         WHERE post_actions.post_action_type_id = :like AND
+      #         post_actions.deleted_at IS NULL
+      #       ) AS like_count
+      #     FROM posts
+      #     LEFT JOIN post_actions ON post_actions.post_id = posts.id
+      #       AND post_actions.post_action_type_id = :like
+      #     WHERE post_actions.id IN (:all_affected_post_action_ids)
+      #     GROUP BY posts.id
+      #   )
+      #   UPDATE posts
+      #   SET like_count = like_counts.like_count
+      #   FROM like_counts
+      #   WHERE posts.id = like_counts.post_id
+      # SQL
+
+      post_ids = DB.query_single(<<~SQL, post_action_ids: all_affected_post_action_ids)
+        SELECT DISTINCT post_id
+        FROM post_actions
+        WHERE ID IN (:post_action_ids)
       SQL
-      DB.exec(
-        sql_query,
-        like: PostActionType.types[:like],
-        all_affected_post_action_ids: all_affected_post_action_ids,
-      )
+
+      sql_query = <<~SQL
+        UPDATE posts
+        SET like_count = (
+          SELECT COUNT(*)
+          FROM post_actions
+          WHERE post_actions.post_id = posts.id
+          AND post_action_type_id = 2
+          AND post_actions.deleted_at IS NULL
+        )
+        WHERE posts.id IN (:post_ids)
+      SQL
+      DB.exec(sql_query, post_ids: post_ids)
     end
 
     # Update the like_count counter cache on all Topic records
     # affected by created/recovered/trashed post actions.
     def self.update_topic_like_counts(all_affected_post_action_ids)
-      sql_query = <<~SQL
-        WITH like_counts AS (
-          SELECT topics.id AS topic_id, SUM(posts.like_count) AS like_count
-          FROM topics
-          LEFT JOIN posts ON posts.topic_id = topics.id
-          WHERE posts.id IN (
-            SELECT post_id FROM post_actions WHERE id IN (:all_affected_post_action_ids)
-          )
-          GROUP BY topics.id
-        )
-        UPDATE topics
-        SET like_count = like_counts.like_count
-        FROM like_counts
-        WHERE topics.id = like_counts.topic_id
+      topic_ids = DB.query_single(<<~SQL, post_action_ids: all_affected_post_action_ids)
+        SELECT DISTINCT topic_id
+        FROM posts
+        INNER JOIN post_actions ON post_actions.post_id = posts.id
+        WHERE post_actions.id IN (:post_action_ids)
       SQL
-      DB.exec(
-        sql_query,
-        like: PostActionType.types[:like],
-        all_affected_post_action_ids: all_affected_post_action_ids,
-      )
+
+      sql_query = <<~SQL
+        UPDATE topics
+        SET like_count = (
+          SELECT SUM(like_count)
+          FROM posts
+          WHERE posts.topic_id = topics.id
+        )
+        WHERE topics.id IN (:topic_ids)
+      SQL
+
+      DB.exec(sql_query, topic_ids: topic_ids)
     end
 
     # Update the likes_given and likes_received counter caches on the
@@ -354,7 +396,9 @@ module DiscourseReactions
       return if all_affected_post_action_ids.blank?
 
       sql_query = <<~SQL
-        SELECT user_id FROM post_actions WHERE post_actions.id = ANY(ARRAY[:all_affected_post_action_ids])
+        SELECT user_id
+        FROM post_actions
+        WHERE post_actions.id = ANY(ARRAY[:all_affected_post_action_ids])
         UNION
         SELECT posts.user_id
         FROM posts

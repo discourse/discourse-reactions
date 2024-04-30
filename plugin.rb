@@ -45,6 +45,7 @@ after_initialize do
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/post_action_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
+    lib/discourse_reactions/migration_report.rb
     app/jobs/regular/discourse_reactions/like_synchronizer.rb
     app/jobs/scheduled/discourse_reactions/scheduled_like_synchronizer.rb
   ].each { |path| require_relative path }
