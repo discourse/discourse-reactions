@@ -3,9 +3,15 @@
 module DiscourseReactions
   class ReactionLikeSynchronizer
     def self.sync!
-      return if !SiteSetting.discourse_reactions_like_sync_enabled
+      self.new.sync!
+    end
 
-      excluded_from_like = SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|")
+    def initialize
+      @excluded_from_like = SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|")
+    end
+
+    def sync!
+      return if !SiteSetting.discourse_reactions_like_sync_enabled
 
       pre_run_report = DiscourseReactions::MigrationReport.run(print_report: false)
       Rails.logger.info(
@@ -17,8 +23,8 @@ module DiscourseReactions
       # IDs. If we don't do this in a transaction, we could end up with a partial update
       # on error and have no easy way of correcting data.
       ActiveRecord::Base.transaction do
-        inserted_post_action_ids = create_missing_post_actions(excluded_from_like)
-        recovered_post_action_ids = recover_trashed_post_actions(excluded_from_like)
+        inserted_post_action_ids = create_missing_post_actions
+        recovered_post_action_ids = recover_trashed_post_actions
 
         created_or_recovered_post_action_ids =
           (recovered_post_action_ids + inserted_post_action_ids).uniq
@@ -29,7 +35,7 @@ module DiscourseReactions
 
         create_missing_user_actions(created_or_recovered_post_action_ids)
 
-        trashed_post_action_ids = trash_excluded_post_actions(excluded_from_like)
+        trashed_post_action_ids = trash_excluded_post_actions
         Rails.logger.info(
           "[ReactionLikeSynchronizer] Trashed #{trashed_post_action_ids.length} post action likes.",
         )
@@ -65,7 +71,7 @@ module DiscourseReactions
     # Find all ReactionUser records that do not have a corresponding
     # PostAction like record, for any reactions that are not in
     # excluded_from_like, and create a PostAction record for each.
-    def self.create_missing_post_actions(excluded_from_like)
+    def create_missing_post_actions
       sql_query = <<~SQL
         INSERT INTO post_actions(
           post_id, user_id, post_action_type_id, created_at, updated_at
@@ -78,20 +84,20 @@ module DiscourseReactions
           ON post_actions.user_id = ru.user_id
           AND post_actions.post_id = ru.post_id
         WHERE post_actions.id IS NULL
-        #{excluded_from_like.any? ? " AND discourse_reactions_reactions.reaction_value NOT IN (:excluded_from_like)" : ""}
+        #{@excluded_from_like.any? ? " AND discourse_reactions_reactions.reaction_value NOT IN (:excluded_from_like)" : ""}
         RETURNING post_actions.id
       SQL
 
       DB.query_single(
         sql_query,
         pa_like: PostActionType.types[:like],
-        excluded_from_like: excluded_from_like,
+        excluded_from_like: @excluded_from_like,
       )
     end
 
     # Find all trashed PostAction records matching ReactionUser records,
     # which are not in excluded_from_like, and untrash them.
-    def self.recover_trashed_post_actions(excluded_from_like)
+    def recover_trashed_post_actions
       sql_query = <<~SQL
         UPDATE post_actions
         SET deleted_at = NULL, deleted_by_id = NULL, updated_at = NOW()
@@ -100,13 +106,13 @@ module DiscourseReactions
           ON discourse_reactions_reactions.id = ru.reaction_id
         WHERE post_actions.deleted_at IS NOT NULL AND post_actions.user_id = ru.user_id
           AND post_actions.post_id = ru.post_id AND post_actions.post_action_type_id = :pa_like
-        #{excluded_from_like.any? ? " AND discourse_reactions_reactions.reaction_value NOT IN (:excluded_from_like)" : ""}
+        #{@excluded_from_like.any? ? " AND discourse_reactions_reactions.reaction_value NOT IN (:excluded_from_like)" : ""}
       SQL
 
       DB.query_single(
         sql_query,
         pa_like: PostActionType.types[:like],
-        excluded_from_like: excluded_from_like,
+        excluded_from_like: @excluded_from_like,
       )
     end
 
@@ -118,7 +124,7 @@ module DiscourseReactions
     #   * WAS LIKED is done by the post user, because they are the like-ee
     #
     # No need to do any UserAction inserts if there wasn't any PostAction changes.
-    def self.create_missing_user_actions(post_action_ids)
+    def create_missing_user_actions(post_action_ids)
       return if post_action_ids.none?
 
       sql_query = <<~SQL
@@ -168,7 +174,7 @@ module DiscourseReactions
 
     # Delete any UserAction records for LIKE or WAS_LIKED that match up with
     # PostAction records that got trashed.
-    def self.delete_excluded_user_actions(trashed_post_action_ids)
+    def delete_excluded_user_actions(trashed_post_action_ids)
       return if trashed_post_action_ids.empty?
 
       sql_query = <<~SQL
@@ -205,35 +211,25 @@ module DiscourseReactions
 
     # Find all PostAction records that have a ReactionUser record that
     # uses a reaction in the excluded_from_like list and trash them.
-    def self.trash_excluded_post_actions(excluded_from_like)
-      return [] if excluded_from_like.none?
+    def trash_excluded_post_actions
+      return [] if @excluded_from_like.none?
 
       sql_query = <<~SQL
-        WITH deleted_post_actions AS (
-          UPDATE post_actions
-          SET deleted_at = NOW()
-          FROM discourse_reactions_reaction_users ru
-          INNER JOIN discourse_reactions_reactions ON discourse_reactions_reactions.id = ru.reaction_id
-          WHERE post_actions.user_id = ru.user_id
-            AND post_actions.post_id = ru.post_id
-            AND post_actions.post_action_type_id = :like
-            AND discourse_reactions_reactions.reaction_value IN (:excluded_from_like)
-          RETURNING post_actions.id, post_actions.post_id, post_actions.user_id
-        )
-
-        DELETE FROM user_actions
-        USING deleted_post_actions
-        WHERE user_actions.target_post_id = deleted_post_actions.post_id
-        AND user_actions.acting_user_id = deleted_post_actions.user_id
-        AND user_actions.action_type IN (:ua_like, :ua_was_liked)
-
-        RETURNING deleted_post_actions.id
+        UPDATE post_actions
+        SET deleted_at = NOW()
+        FROM discourse_reactions_reaction_users ru
+        INNER JOIN discourse_reactions_reactions ON discourse_reactions_reactions.id = ru.reaction_id
+        WHERE post_actions.user_id = ru.user_id
+          AND post_actions.post_id = ru.post_id
+          AND post_actions.post_action_type_id = :like
+          AND discourse_reactions_reactions.reaction_value IN (:excluded_from_like)
+        RETURNING post_actions.id
       SQL
 
       DB.query_single(
         sql_query,
         like: PostActionType.types[:like],
-        excluded_from_like: excluded_from_like,
+        excluded_from_like: @excluded_from_like,
         ua_like: UserAction::LIKE,
         ua_was_liked: UserAction::WAS_LIKED,
       )
@@ -241,26 +237,7 @@ module DiscourseReactions
 
     # Update the like_count counter cache on all Post records
     # affected by created/recovered/trashed post actions.
-    def self.update_post_like_counts(all_affected_post_action_ids)
-      # sql_query = <<~SQL
-      #   WITH like_counts AS (
-      #     SELECT posts.id AS post_id,
-      #       COUNT(post_actions.id) FILTER (
-      #         WHERE post_actions.post_action_type_id = :like AND
-      #         post_actions.deleted_at IS NULL
-      #       ) AS like_count
-      #     FROM posts
-      #     LEFT JOIN post_actions ON post_actions.post_id = posts.id
-      #       AND post_actions.post_action_type_id = :like
-      #     WHERE post_actions.id IN (:all_affected_post_action_ids)
-      #     GROUP BY posts.id
-      #   )
-      #   UPDATE posts
-      #   SET like_count = like_counts.like_count
-      #   FROM like_counts
-      #   WHERE posts.id = like_counts.post_id
-      # SQL
-
+    def update_post_like_counts(all_affected_post_action_ids)
       post_ids = DB.query_single(<<~SQL, post_action_ids: all_affected_post_action_ids)
         SELECT DISTINCT post_id
         FROM post_actions
@@ -283,7 +260,7 @@ module DiscourseReactions
 
     # Update the like_count counter cache on all Topic records
     # affected by created/recovered/trashed post actions.
-    def self.update_topic_like_counts(all_affected_post_action_ids)
+    def update_topic_like_counts(all_affected_post_action_ids)
       topic_ids = DB.query_single(<<~SQL, post_action_ids: all_affected_post_action_ids)
         SELECT DISTINCT topic_id
         FROM posts
@@ -310,7 +287,7 @@ module DiscourseReactions
     #
     # The UserAction records (which are created/deleted before this) are an
     # easier way to calculate this rather than going via PostAction again.
-    def self.update_user_stats(all_affected_post_action_ids)
+    def update_user_stats(all_affected_post_action_ids)
       return if all_affected_post_action_ids.empty?
 
       users_needing_likes_received_recalc = DB.query_single(<<~SQL, all_affected_post_action_ids)
@@ -392,7 +369,7 @@ module DiscourseReactions
     # We delete any GivenDailyLike records that would equate to a count of 0
     # for that day and that user, which is based on UserAction records (which
     # are created or destroyed before this).
-    def self.upsert_given_daily_likes(all_affected_post_action_ids)
+    def upsert_given_daily_likes(all_affected_post_action_ids)
       return if all_affected_post_action_ids.blank?
 
       sql_query = <<~SQL
