@@ -38,15 +38,16 @@ after_initialize do
     app/serializers/user_reaction_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
-    app/services/discourse_reactions/reaction_post_action_synchronizer.rb
+    app/services/discourse_reactions/reaction_like_synchronizer.rb
     lib/discourse_reactions/guardian_extension.rb
     lib/discourse_reactions/notification_extension.rb
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/post_action_extension.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
-    app/jobs/regular/discourse_reactions/post_action_synchronizer.rb
-    app/jobs/scheduled/discourse_reactions/scheduled_post_action_synchronizer.rb
+    lib/discourse_reactions/migration_report.rb
+    app/jobs/regular/discourse_reactions/like_synchronizer.rb
+    app/jobs/scheduled/discourse_reactions/scheduled_like_synchronizer.rb
   ].each { |path| require_relative path }
 
   reloadable_patch do |plugin|
@@ -433,8 +434,8 @@ after_initialize do
   on(:site_setting_changed) do |name, old_value, new_value|
     if name == :discourse_reactions_excluded_from_like &&
          SiteSetting.discourse_reactions_like_sync_enabled
-      ::Jobs.cancel_scheduled_job(Jobs::DiscourseReactions::PostActionSynchronizer)
-      ::Jobs.enqueue_at(5.minutes.from_now, Jobs::DiscourseReactions::PostActionSynchronizer)
+      ::Jobs.cancel_scheduled_job(Jobs::DiscourseReactions::LikeSynchronizer)
+      ::Jobs.enqueue_at(5.minutes.from_now, Jobs::DiscourseReactions::LikeSynchronizer)
     end
   end
 end
