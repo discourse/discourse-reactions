@@ -10,18 +10,18 @@ describe PostSerializer do
   fab!(:user_3) { Fabricate(:user) }
   fab!(:user_4) { Fabricate(:user) }
   fab!(:post_1) { Fabricate(:post, user: user_1) }
-  fab!(:reaction_1) { Fabricate(:reaction, reaction_value: "otter", post: post_1) }
-  fab!(:reaction_2) { Fabricate(:reaction, reaction_value: "+1", post: post_1) }
-  fab!(:reaction_user_1) do
-    Fabricate(:reaction_user, reaction: reaction_1, user: user_1, post: post_1)
+  let(:reaction_otter) { Fabricate(:reaction, reaction_value: "otter", post: post_1) }
+  let(:reaction_plus_1) { Fabricate(:reaction, reaction_value: "+1", post: post_1) }
+  let(:reaction_user_1) do
+    Fabricate(:reaction_user, reaction: reaction_otter, user: user_1, post: post_1)
   end
-  fab!(:reaction_user_2) do
-    Fabricate(:reaction_user, reaction: reaction_1, user: user_2, post: post_1)
+  let(:reaction_user_2) do
+    Fabricate(:reaction_user, reaction: reaction_otter, user: user_2, post: post_1)
   end
-  fab!(:reaction_user_3) do
+  let(:reaction_user_3) do
     Fabricate(
       :reaction_user,
-      reaction: reaction_2,
+      reaction: reaction_plus_1,
       user: user_3,
       post: post_1,
       created_at: 20.minutes.ago,
@@ -41,6 +41,8 @@ describe PostSerializer do
     SiteSetting.post_undo_action_window_mins = 10
     SiteSetting.discourse_reactions_enabled_reactions = "otter|+1"
     SiteSetting.discourse_reactions_like_icon = "heart"
+
+    reaction_user_1 && reaction_user_2 && reaction_user_3 && like
   end
 
   it "renders custom reactions which should be sorted by count" do
@@ -62,6 +64,19 @@ describe PostSerializer do
   end
 
   it "renders custom reactions sorted alphabetically if count is equal" do
+    json = PostSerializer.new(post_1, scope: Guardian.new(user_1), root: false).as_json
+
+    expect(json[:reactions]).to eq(
+      [
+        { id: "otter", type: :emoji, count: 2 },
+        { id: "+1", type: :emoji, count: 1 },
+        { id: "heart", type: :emoji, count: 1 },
+      ],
+    )
+  end
+
+  it "does not double up reactions which also count as likes if the reaction is no longer enabled" do
+    SiteSetting.discourse_reactions_enabled_reactions = "+1"
     json = PostSerializer.new(post_1, scope: Guardian.new(user_1), root: false).as_json
 
     expect(json[:reactions]).to eq(

@@ -20,7 +20,7 @@ module DiscourseReactions
     def self.valid_reactions
       Set[
         DiscourseReactions::Reaction.main_reaction_id,
-        *SiteSetting.discourse_reactions_enabled_reactions.split("|")
+        *SiteSetting.discourse_reactions_enabled_reactions.to_s.split("|")
       ]
     end
 
@@ -28,11 +28,14 @@ module DiscourseReactions
       SiteSetting.discourse_reactions_reaction_for_like.gsub("-", "")
     end
 
+    def self.reactions_excluded_from_like
+      SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|")
+    end
+
     def self.reactions_counting_as_like
       Set[
         *(
-          valid_reactions.to_a -
-            SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|") -
+          valid_reactions.to_a - reactions_excluded_from_like -
             [DiscourseReactions::Reaction.main_reaction_id]
         ).flatten
       ]

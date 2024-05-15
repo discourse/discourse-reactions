@@ -93,7 +93,11 @@ after_initialize do
           count: reaction.reaction_users_count,
         }
 
-        if DiscourseReactions::Reaction.reactions_counting_as_like.include?(reaction.reaction_value)
+        # NOTE: It does not matter if the reaction is currently an enabled one,
+        # we need to handle historical data here too so we don't see double-ups in the UI.
+        if !DiscourseReactions::Reaction.reactions_excluded_from_like.include?(
+             reaction.reaction_value,
+           ) && reaction.reaction_value != DiscourseReactions::Reaction.main_reaction_id
           reaction_users_counting_as_like << reaction.reaction_users
         end
       end
