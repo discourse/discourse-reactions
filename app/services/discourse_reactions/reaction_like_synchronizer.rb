@@ -7,7 +7,7 @@ module DiscourseReactions
     end
 
     def initialize
-      @excluded_from_like = SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|")
+      @excluded_from_like = DiscourseReactions::Reaction.reactions_excluded_from_like
     end
 
     def sync!
