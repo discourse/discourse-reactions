@@ -172,7 +172,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
 
       # Filter out likes for reactions that are not longer enabled,
       # which match up to a ReactionUser in historical data.
-      historical_likes =
+      historical_reaction_likes =
         likes
           .joins(
             "LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.user_id = post_actions.user_id AND discourse_reactions_reaction_users.post_id = post_actions.post_id",
@@ -185,7 +185,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
             valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
           )
 
-      likes = likes.where.not(id: historical_likes.pluck(&:id))
+      likes = likes.where.not(id: historical_reaction_likes.select(&:id))
     end
 
     if likes.present?

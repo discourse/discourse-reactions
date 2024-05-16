@@ -114,16 +114,17 @@ after_initialize do
           # Get rid of any PostAction records that match up to a ReactionUser
           # that is NOT main_reaction_id and is NOT excluded, otherwise we double
           # up on the count/reaction shown in the UI.
-          reaction_users_counting_as_like
-            .find { |ru| ru.user_id == post_action.user_id }
-            .present? ||
-            # Also get rid of any PostAction records that match up to a ReactionUser
-            # that is now the main_reaction_id and has historical data.
-            (
-              post_action.reaction_user.present? &&
-                post_action.reaction_user.reaction.reaction_value ==
-                  DiscourseReactions::Reaction.main_reaction_id
-            )
+          is_reaction_like_duplicate =
+            reaction_users_counting_as_like.any? { |ru| ru.user_id == post_action.user_id }
+
+          # Also get rid of any PostAction records that match up to a ReactionUser
+          # that is now the main_reaction_id and has historical data.
+          is_previously_enabled_reaction =
+            post_action.reaction_user.present? &&
+              post_action.reaction_user.reaction.reaction_value ==
+                DiscourseReactions::Reaction.main_reaction_id
+
+          is_reaction_like_duplicate || is_previously_enabled_reaction
         end
 
     # Likes will only be blank if there are only reactions where the reaction is in
