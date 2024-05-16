@@ -520,6 +520,50 @@ describe DiscourseReactions::CustomReactionsController do
       get "/discourse-reactions/posts/#{private_post.id}/reactions-users.json"
       expect(response.status).to eq(200)
     end
+
+    it "does not double up reactions which also count as likes if the reaction is no longer enabled" do
+      post_for_enabled_reactions = Fabricate(:post, user: user_2)
+      new_reaction_1 =
+        Fabricate(:reaction, post: post_for_enabled_reactions, reaction_value: "laughing")
+      new_reaction_user_1 =
+        Fabricate(
+          :reaction_user,
+          user: user_5,
+          reaction: new_reaction_1,
+          post: post_for_enabled_reactions,
+        )
+      new_like_1 =
+        Fabricate(
+          :post_action,
+          post: post_for_enabled_reactions,
+          user: user_4,
+          post_action_type_id: PostActionType.types[:like],
+        )
+
+      get "/discourse-reactions/posts/#{post_for_enabled_reactions.id}/reactions-users.json"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(
+        parsed["reaction_users"].find { |reaction| reaction["id"] == "laughing" }["count"],
+      ).to eq(1)
+      expect(parsed["reaction_users"].find { |reaction| reaction["id"] == "heart" }["count"]).to eq(
+        1,
+      )
+
+      SiteSetting.discourse_reactions_enabled_reactions = "+1"
+
+      get "/discourse-reactions/posts/#{post_for_enabled_reactions.id}/reactions-users.json"
+      parsed = response.parsed_body
+
+      expect(response.status).to eq(200)
+      expect(
+        parsed["reaction_users"].find { |reaction| reaction["id"] == "laughing" }["count"],
+      ).to eq(1)
+      expect(parsed["reaction_users"].find { |reaction| reaction["id"] == "heart" }["count"]).to eq(
+        1,
+      )
+    end
   end
 
   describe "positive notifications" do
