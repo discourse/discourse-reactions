@@ -185,7 +185,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
             valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
           )
 
-      likes = likes.where.not(id: historical_reaction_likes.select(&:id))
+      likes = likes.where.not(id: historical_reaction_likes.select(:id))
     end
 
     if likes.present?
