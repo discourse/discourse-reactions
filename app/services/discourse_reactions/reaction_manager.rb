@@ -127,7 +127,7 @@ module DiscourseReactions
     end
 
     def reaction_excluded_from_like?
-      SiteSetting.discourse_reactions_excluded_from_like.to_s.split("|").include?(@reaction_value)
+      DiscourseReactions::Reaction.reactions_excluded_from_like.include?(@reaction_value)
     end
   end
 end

@@ -162,13 +162,30 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
 
     if !reaction_value || reaction_value == DiscourseReactions::Reaction.main_reaction_id
       # We only want to get likes that don't have an associated ReactionUser
-      # record, which count as a like or will be double ups for main_reaction_id.
+      # record, which count as a like or there will be double ups for main_reaction_id.
       likes =
         post.post_actions.where(
           DiscourseReactions::PostActionExtension.filter_reaction_likes_sql,
           like: PostActionType.types[:like],
           valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
         )
+
+      # Filter out likes for reactions that are not longer enabled,
+      # which match up to a ReactionUser in historical data.
+      historical_reaction_likes =
+        likes
+          .joins(
+            "LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.user_id = post_actions.user_id AND discourse_reactions_reaction_users.post_id = post_actions.post_id",
+          )
+          .joins(
+            "LEFT JOIN discourse_reactions_reactions ON discourse_reactions_reactions.id = discourse_reactions_reaction_users.reaction_id",
+          )
+          .where(
+            "discourse_reactions_reactions.reaction_value NOT IN (:valid_reactions)",
+            valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
+          )
+
+      likes = likes.where.not(id: historical_reaction_likes.select(&:id))
     end
 
     if likes.present?

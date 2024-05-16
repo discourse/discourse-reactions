@@ -43,7 +43,7 @@ describe TopicViewSerializer do
         %w[laughing heart open_mouth cry angry thumbsup thumbsdown].to_set,
       )
       expect(json[:post_stream][:posts][0][:reactions]).to eq(
-        [{ id: "heart", type: :emoji, count: 2 }, { id: "otter", type: :emoji, count: 2 }],
+        [{ id: "otter", type: :emoji, count: 2 }],
       )
 
       expect(json[:post_stream][:posts][0][:reaction_users_count]).to eq(2)
