@@ -104,6 +104,20 @@ after_initialize do
 
     reaction_users_counting_as_like.flatten!
 
+    # Used to remove historical like data in the filter below.
+    previous_main_reaction_like_ids =
+      object
+        .post_actions
+        .where(
+          "post_actions.post_action_type_id = :like AND
+            post_actions.post_id IN (
+              #{DiscourseReactions::PostActionExtension.post_action_with_reaction_user_sql}
+            )",
+          like: PostActionType.types[:like],
+          valid_reactions: [DiscourseReactions::Reaction.main_reaction_id],
+        )
+        .pluck(:id)
+
     likes =
       object
         .post_actions
@@ -119,10 +133,7 @@ after_initialize do
 
           # Also get rid of any PostAction records that match up to a ReactionUser
           # that is now the main_reaction_id and has historical data.
-          is_previously_enabled_reaction =
-            post_action.reaction_user.present? &&
-              post_action.reaction_user.reaction.reaction_value ==
-                DiscourseReactions::Reaction.main_reaction_id
+          is_previously_enabled_reaction = previous_main_reaction_like_ids.include?(post_action.id)
 
           is_reaction_like_duplicate || is_previously_enabled_reaction
         end
