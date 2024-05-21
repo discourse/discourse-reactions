@@ -22,4 +22,4 @@ discourse_reactions:
     default: "-1"
     validator: "ReactionsExcludedFromLikeSiteSettingValidator"
   discourse_reactions_like_sync_enabled:
-    default: false
+    default: true
