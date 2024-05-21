@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module DiscourseReactions::PostExtension
+  attr_accessor :post_actions_with_reaction_users
+
   def self.prepended(base)
     base.has_many :reactions, class_name: "DiscourseReactions::Reaction"
     base.has_many :reactions_user, class_name: "DiscourseReactions::ReactionUser"
