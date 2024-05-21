@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
 module DiscourseReactions::PostActionExtension
-  def reaction_user
-    return if self.post_action_type_id != PostActionType.types[:like]
-    @reaction_user ||=
-      DiscourseReactions::ReactionUser.find_by(post_id: self.post_id, user_id: self.user_id)
+  def self.prepended(base)
+    base.has_one :reaction_user,
+                 ->(post_action) { where(user_id: post_action.user_id) },
+                 foreign_key: :post_id,
+                 primary_key: :post_id,
+                 class_name: "DiscourseReactions::ReactionUser"
+    base.has_one :reaction, class_name: "DiscourseReactions::Reaction", through: :reaction_user
   end
 
   def self.filter_reaction_likes_sql
