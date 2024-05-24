@@ -105,6 +105,7 @@ export default createWidget("discourse-reactions-actions", {
   defaultState() {
     return {
       reactionsPickerExpanded: false,
+      statePanelExpanded: false,
     };
   },
 
@@ -172,9 +173,11 @@ export default createWidget("discourse-reactions-actions", {
     this._validTouch = true;
 
     cancel(this._touchTimeout);
+
     if (this.capabilities.touch) {
-      const root = document.getElementsByTagName("html")[0];
-      root?.classList?.add("discourse-reactions-no-select");
+      document
+        .querySelector("html")
+        ?.classList?.toggle("discourse-reactions-no-select", true);
 
       this._touchStartAt = Date.now();
       this._touchTimeout = later(() => {
@@ -198,9 +201,6 @@ export default createWidget("discourse-reactions-actions", {
     if (!this._validTouch) {
       return;
     }
-
-    const root = document.getElementsByTagName("html")[0];
-    root && root.classList.remove("discourse-reactions-no-select");
 
     if (this.capabilities.touch) {
       if (event.originalEvent.changedTouches.length) {
@@ -581,6 +581,9 @@ export default createWidget("discourse-reactions-actions", {
 
   collapseAllPanels() {
     cancel(this._collapseHandler);
+    document
+      .querySelector("html")
+      ?.classList?.toggle("discourse-reactions-no-select", false);
     this._collapseHandler = null;
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
