@@ -10,7 +10,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
   def toggle
     post = fetch_post_from_params
 
-    unless DiscourseReactions::Reaction.valid_reactions.include?(params[:reaction])
+    if DiscourseReactions::Reaction.valid_reactions.exclude?(params[:reaction])
       return render_json_error(post)
     end
 
