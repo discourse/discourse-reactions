@@ -32,5 +32,8 @@ hu:
         single: "<span>%{username}</span> %{description}"
         multiple: "<span>%{username}</span> reagált %{count} bejegyzésére"
       reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
+      reaction_many:
+        one: "<span class='multi-user'>%{username} és %{count} a többiek</span>%{description}"
+        other: "<span class='multi-user'>%{username} és %{count} a többiek</span>%{description}"
       titles:
         reaction: "új reakció"
