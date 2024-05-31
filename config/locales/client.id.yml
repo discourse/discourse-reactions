@@ -6,6 +6,9 @@
 
 id:
   js:
+    discourse_reactions:
+      main_reaction:
+        add: "Sukai post ini"
     notifications:
       reaction_multiple_users:
         other: "%{username} dan %{count} lainnya"
