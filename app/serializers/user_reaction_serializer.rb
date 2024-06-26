@@ -4,5 +4,5 @@ class UserReactionSerializer < ApplicationSerializer
 
   has_one :user, serializer: GroupPostUserSerializer, embed: :object
   has_one :post, serializer: GroupPostSerializer, embed: :object
-  has_one :reaction, embed: :object
+  has_one :reaction, serializer: ReactionSerializer, embed: :object
 end

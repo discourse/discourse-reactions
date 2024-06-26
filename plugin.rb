@@ -35,6 +35,7 @@ after_initialize do
     app/controllers/discourse_reactions/custom_reactions_controller.rb
     app/models/discourse_reactions/reaction_user.rb
     app/models/discourse_reactions/reaction.rb
+    app/serializers/reaction_serializer.rb
     app/serializers/user_reaction_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
