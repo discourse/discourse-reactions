@@ -8,7 +8,8 @@ module DiscourseReactions
         topic_user_liked: TopicUser.where(liked: true).count,
         user_actions_liked: UserAction.where(action_type: UserAction::LIKE).count,
         user_actions_was_liked: UserAction.where(action_type: UserAction::WAS_LIKED).count,
-        post_action_likes: PostAction.where(post_action_type_id: PostActionType.types[:like]).count,
+        post_action_likes:
+          PostAction.where(post_action_type_id: PostActionType::LIKE_POST_ACTION_ID).count,
         post_like_count_total: Post.sum(:like_count),
         topic_like_count_total: Topic.sum(:like_count),
         user_stat_likes_given_total: UserStat.sum(:likes_given),
@@ -58,12 +59,12 @@ module DiscourseReactions
       <<~REPORT
       Reaction migration report:
       ------------------------------------------------------------
-      
+
       main_reaction_id:                       #{DiscourseReactions::Reaction.main_reaction_id}
       discourse_reactions_like_sync_enabled:  #{SiteSetting.discourse_reactions_like_sync_enabled}
       discourse_reactions_enabled_reactions:  #{SiteSetting.discourse_reactions_enabled_reactions}
       discourse_reactions_excluded_from_like: #{SiteSetting.discourse_reactions_excluded_from_like}
-      
+
       PostAction likes:        #{report_data[:post_action_likes]}#{report_data_diff_indicators[:post_action_likes]}
       UserActions.liked:       #{report_data[:user_actions_liked]}#{report_data_diff_indicators[:user_actions_liked]}
       UserActions.was_liked:   #{report_data[:user_actions_was_liked]}#{report_data_diff_indicators[:user_actions_was_liked]}

@@ -28,7 +28,7 @@ RSpec.describe PostActionUsersController do
       get "/post_action_users.json",
           params: {
             id: post.id,
-            post_action_type_id: PostActionType.types[:like],
+            post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
           }
       expect(response.status).to eq(200)
       expect(response.parsed_body["post_action_users"].map { |u| u["id"] }).to match_array(

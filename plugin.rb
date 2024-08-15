@@ -165,8 +165,8 @@ after_initialize do
     # will count as the main_reaction_id.
     like =
       object.post_actions.find do |post_action|
-        post_action.post_action_type_id == PostActionType.types[:like] && !post_action.trashed? &&
-          post_action.user_id == scope.user.id
+        post_action.post_action_type_id == PostActionType::LIKE_POST_ACTION_ID &&
+          !post_action.trashed? && post_action.user_id == scope.user.id
       end
 
     return nil if like.blank?
@@ -188,7 +188,7 @@ after_initialize do
 
     like_post_action =
       object.post_actions.find do |post_action|
-        post_action.post_action_type_id == PostActionType.types[:like] &&
+        post_action.post_action_type_id == PostActionType::LIKE_POST_ACTION_ID &&
           post_action.user_id == scope.user.id && !post_action.trashed?
       end
 
@@ -260,7 +260,7 @@ after_initialize do
     SQL
         start_date: report.start_date.to_date,
         end_date: report.end_date.to_date,
-        like: PostActionType.types[:like],
+        like: PostActionType::LIKE_POST_ACTION_ID,
         valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
       )
 

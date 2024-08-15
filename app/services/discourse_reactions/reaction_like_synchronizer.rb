@@ -90,7 +90,7 @@ module DiscourseReactions
 
       DB.query_single(
         sql_query,
-        pa_like: PostActionType.types[:like],
+        pa_like: PostActionType::LIKE_POST_ACTION_ID,
         excluded_from_like: @excluded_from_like,
       )
     end
@@ -111,7 +111,7 @@ module DiscourseReactions
 
       DB.query_single(
         sql_query,
-        pa_like: PostActionType.types[:like],
+        pa_like: PostActionType::LIKE_POST_ACTION_ID,
         excluded_from_like: @excluded_from_like,
       )
     end
@@ -228,7 +228,7 @@ module DiscourseReactions
 
       DB.query_single(
         sql_query,
-        like: PostActionType.types[:like],
+        like: PostActionType::LIKE_POST_ACTION_ID,
         excluded_from_like: @excluded_from_like,
         ua_like: UserAction::LIKE,
         ua_was_liked: UserAction::WAS_LIKED,

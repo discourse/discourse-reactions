@@ -112,7 +112,7 @@ RSpec.describe DiscourseReactions::ReactionLikeSynchronizer do
           :post_action,
           post: reaction_user_2.post,
           user: reaction_user_2.user,
-          post_action_type_id: PostActionType.types[:like],
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
         )
       trashed_post_action.trash!(Fabricate(:user))
       SiteSetting.discourse_reactions_excluded_from_like = "-1" # clap removed

@@ -28,7 +28,7 @@ describe DiscourseReactions::CustomReactionsController do
       :post_action,
       post: post_2,
       user: user_5,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
     )
   end
   fab!(:reaction_user_1) do
@@ -411,7 +411,7 @@ describe DiscourseReactions::CustomReactionsController do
           :post_action,
           post: post_1,
           user: user_5,
-          post_action_type_id: PostActionType.types[:like],
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
         )
       sign_in(user_1)
 
@@ -438,7 +438,7 @@ describe DiscourseReactions::CustomReactionsController do
           :post_action,
           post: post_1,
           user: user_4,
-          post_action_type_id: PostActionType.types[:like],
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
         )
       sign_in(user_1)
 
@@ -537,7 +537,7 @@ describe DiscourseReactions::CustomReactionsController do
           :post_action,
           post: post_for_enabled_reactions,
           user: user_4,
-          post_action_type_id: PostActionType.types[:like],
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
         )
 
       get "/discourse-reactions/posts/#{post_for_enabled_reactions.id}/reactions-users.json"
@@ -575,7 +575,7 @@ describe DiscourseReactions::CustomReactionsController do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"
       end.to change { Notification.count }.by(1).and change { PostAction.count }.by(1)
 
-      expect(PostAction.last.post_action_type_id).to eq(PostActionType.types[:like])
+      expect(PostAction.last.post_action_type_id).to eq(PostActionType::LIKE_POST_ACTION_ID)
 
       expect do
         put "/discourse-reactions/posts/#{post_1.id}/custom-reactions/heart/toggle.json"

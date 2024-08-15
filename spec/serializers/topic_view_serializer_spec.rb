@@ -20,7 +20,7 @@ describe TopicViewSerializer do
         :post_action,
         post: post_1,
         user: user_1,
-        post_action_type_id: PostActionType.types[:like],
+        post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       )
     end
     fab!(:like_2) do
@@ -28,7 +28,7 @@ describe TopicViewSerializer do
         :post_action,
         post: post_1,
         user: user_2,
-        post_action_type_id: PostActionType.types[:like],
+        post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       )
     end
     let(:topic) { post_1.topic }
@@ -94,7 +94,7 @@ describe TopicViewSerializer do
         :post_action,
         post: post_1,
         user: user_1,
-        post_action_type_id: PostActionType.types[:like],
+        post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       )
     end
     let(:topic) { post_1.topic }
