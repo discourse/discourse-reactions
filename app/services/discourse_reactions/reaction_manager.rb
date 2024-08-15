@@ -9,7 +9,10 @@ module DiscourseReactions
       @user = user
       @post = post
       @like =
-        @post.post_actions.find_by(user: @user, post_action_type_id: PostActionType::LIKE_POST_ACTION_ID)
+        @post.post_actions.find_by(
+          user: @user,
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
+        )
       @previous_reaction_value =
         if @like && !reaction_user
           DiscourseReactions::Reaction.main_reaction_id

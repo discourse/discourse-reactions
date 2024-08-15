@@ -42,7 +42,8 @@ module DiscourseReactions::TopicViewSerializerExtension
   def self.prepended(base)
     def base.posts_reaction_users_count(post_ids)
       posts_reaction_users_count_query =
-        DB.query(<<~SQL, post_ids: Array.wrap(post_ids), like_id: PostActionType::LIKE_POST_ACTION_ID)
+        DB.query(
+          <<~SQL,
         SELECT union_subquery.post_id, COUNT(DISTINCT(union_subquery.user_id)) FROM (
             SELECT user_id, post_id FROM post_actions
               WHERE post_id IN (:post_ids)
@@ -55,6 +56,9 @@ module DiscourseReactions::TopicViewSerializerExtension
               WHERE posts.id IN (:post_ids)
         ) AS union_subquery WHERE union_subquery.post_ID IS NOT NULL GROUP BY union_subquery.post_id
       SQL
+          post_ids: Array.wrap(post_ids),
+          like_id: PostActionType::LIKE_POST_ACTION_ID,
+        )
 
       posts_reaction_users_count_query.each_with_object({}) do |row, hash|
         hash[row.post_id] = row.count
