@@ -18,7 +18,7 @@ describe Report do
       :post_action,
       post: post_1,
       user: user_1,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       created_at: 1.day.ago,
     )
     Fabricate(
@@ -32,7 +32,7 @@ describe Report do
       :post_action,
       post: post_2,
       user: user_2,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       created_at: 1.day.ago,
     )
 
@@ -73,14 +73,14 @@ describe Report do
       :post_action,
       post: post_1,
       user: user_1,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       created_at: 1.day.ago,
     )
     Fabricate(
       :post_action,
       post: post_2,
       user: user_2,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
       created_at: 1.day.ago,
       deleted_at: 1.day.ago,
     )

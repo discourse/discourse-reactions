@@ -32,7 +32,7 @@ describe PostSerializer do
       :post_action,
       post: post_1,
       user: user_4,
-      post_action_type_id: PostActionType.types[:like],
+      post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
     )
   end
 

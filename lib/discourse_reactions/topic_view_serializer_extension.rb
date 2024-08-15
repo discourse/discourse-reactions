@@ -9,7 +9,7 @@ module DiscourseReactions::TopicViewSerializerExtension
       )
       .where(post_id: post_ids)
       .where("post_actions.deleted_at IS NULL")
-      .where(post_action_type_id: PostActionType.types[:like])
+      .where(post_action_type_id: PostActionType::LIKE_POST_ACTION_ID)
       .where(
         "post_actions.post_id IN (#{DiscourseReactions::PostActionExtension.post_action_with_reaction_user_sql})",
         valid_reactions: DiscourseReactions::Reaction.reactions_counting_as_like,
@@ -42,7 +42,7 @@ module DiscourseReactions::TopicViewSerializerExtension
   def self.prepended(base)
     def base.posts_reaction_users_count(post_ids)
       posts_reaction_users_count_query =
-        DB.query(<<~SQL, post_ids: Array.wrap(post_ids), like_id: PostActionType.types[:like])
+        DB.query(<<~SQL, post_ids: Array.wrap(post_ids), like_id: PostActionType::LIKE_POST_ACTION_ID)
         SELECT union_subquery.post_id, COUNT(DISTINCT(union_subquery.user_id)) FROM (
             SELECT user_id, post_id FROM post_actions
               WHERE post_id IN (:post_ids)

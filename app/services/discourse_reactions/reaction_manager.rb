@@ -9,7 +9,7 @@ module DiscourseReactions
       @user = user
       @post = post
       @like =
-        @post.post_actions.find_by(user: @user, post_action_type_id: PostActionType.types[:like])
+        @post.post_actions.find_by(user: @user, post_action_type_id: PostActionType::LIKE_POST_ACTION_ID)
       @previous_reaction_value =
         if @like && !reaction_user
           DiscourseReactions::Reaction.main_reaction_id
@@ -97,7 +97,7 @@ module DiscourseReactions
     end
 
     def remove_shadow_like
-      PostActionDestroyer.new(@user, @post, PostActionType.types[:like]).perform
+      PostActionDestroyer.new(@user, @post, PostActionType::LIKE_POST_ACTION_ID).perform
       delete_like_reaction
       remove_reaction_notification
     end

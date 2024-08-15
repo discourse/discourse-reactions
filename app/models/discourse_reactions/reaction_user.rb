@@ -40,7 +40,7 @@ module DiscourseReactions
         PostAction.find_by(
           user_id: self.user_id,
           post_id: self.post_id,
-          post_action_type_id: PostActionType.types[:like],
+          post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
         )
     end
 

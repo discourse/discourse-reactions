@@ -125,7 +125,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
           .where(
             post_id: post_ids,
             deleted_at: nil,
-            post_action_type_id: PostActionType.types[:like],
+            post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
           )
           .joins(<<~SQL)
             LEFT JOIN discourse_reactions_reaction_users ON
@@ -166,7 +166,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
       likes =
         post.post_actions.where(
           DiscourseReactions::PostActionExtension.filter_reaction_likes_sql,
-          like: PostActionType.types[:like],
+          like: PostActionType::LIKE_POST_ACTION_ID,
           valid_reactions: DiscourseReactions::Reaction.valid_reactions.to_a,
         )
 

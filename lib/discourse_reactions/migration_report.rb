@@ -8,7 +8,7 @@ module DiscourseReactions
         topic_user_liked: TopicUser.where(liked: true).count,
         user_actions_liked: UserAction.where(action_type: UserAction::LIKE).count,
         user_actions_was_liked: UserAction.where(action_type: UserAction::WAS_LIKED).count,
-        post_action_likes: PostAction.where(post_action_type_id: PostActionType.types[:like]).count,
+        post_action_likes: PostAction.where(post_action_type_id: PostActionType::LIKE_POST_ACTION_ID).count,
         post_like_count_total: Post.sum(:like_count),
         topic_like_count_total: Topic.sum(:like_count),
         user_stat_likes_given_total: UserStat.sum(:likes_given),

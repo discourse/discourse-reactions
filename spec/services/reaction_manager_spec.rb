@@ -86,7 +86,7 @@ RSpec.describe DiscourseReactions::ReactionManager do
               PostAction.find_by(
                 post: post,
                 user: user,
-                post_action_type_id: PostActionType.types[:like],
+                post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
               ),
             ).to be_nil
           end
@@ -104,7 +104,7 @@ RSpec.describe DiscourseReactions::ReactionManager do
               PostAction.find_by(
                 post: post,
                 user: user,
-                post_action_type_id: PostActionType.types[:like],
+                post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
               ),
             ).to be_present
           end
@@ -158,7 +158,7 @@ RSpec.describe DiscourseReactions::ReactionManager do
             :post_action,
             post: post,
             user: user,
-            post_action_type_id: PostActionType.types[:like],
+            post_action_type_id: PostActionType::LIKE_POST_ACTION_ID,
           )
         end
 
