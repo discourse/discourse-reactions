@@ -3,7 +3,6 @@
 module DiscourseReactions::TopicViewSerializerExtension
   def self.load_post_action_reaction_users_for_posts(post_ids)
     PostAction
-      .includes(reaction_user: :reaction)
       .joins(
         "LEFT JOIN discourse_reactions_reaction_users ON discourse_reactions_reaction_users.post_id = post_actions.post_id AND discourse_reactions_reaction_users.user_id = post_actions.user_id",
       )
