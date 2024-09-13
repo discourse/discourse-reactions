@@ -1,40 +1,24 @@
+import {
+  POST_MENU_LIKE_BUTTON_KEY,
+  POST_MENU_REPLIES_BUTTON_KEY,
+} from "discourse/components/post/menu";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
+import { withSilencedDeprecations } from "discourse-common/lib/deprecated";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
+import ReactionsActionButton from "../components/discourse-reactions-actions-button";
+import ReactionsActionSummary from "../components/discourse-reactions-actions-summary";
 
 const PLUGIN_ID = "discourse-reactions";
 
 replaceIcon("notification.reaction", "bell");
 
-function initializeDiscourseReactions(api) {
-  if (api.replacePostMenuButton) {
-    api.replacePostMenuButton("like", {
-      name: "discourse-reactions-actions",
-      buildAttrs: (widget) => {
-        return { post: widget.findAncestorModel() };
-      },
-      shouldRender: (widget) => {
-        const post = widget.findAncestorModel();
-        return post && !post.deleted_at;
-      },
-    });
-  } else {
-    api.removePostMenuButton("like");
-    api.decorateWidget("post-menu:before-extra-controls", (dec) => {
-      const post = dec.getModel();
-      if (!post || post.deleted_at) {
-        return;
-      }
-
-      return dec.attach("discourse-reactions-actions", {
-        post,
-      });
-    });
-  }
+function initializeDiscourseReactions(api, container) {
+  customizePostMenu(api, container);
 
   api.addKeyboardShortcut("l", null, {
     click: ".topic-post.selected .discourse-reactions-reaction-button",
@@ -71,33 +55,6 @@ function initializeDiscourseReactions(api) {
       const topicId = this.model.id;
       topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
     },
-  });
-
-  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
-    if (dec.widget.site.mobileView) {
-      return;
-    }
-
-    const mainReaction =
-      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
-    const post = dec.getModel();
-
-    if (!post || post.deleted_at) {
-      return;
-    }
-
-    if (
-      post.reactions &&
-      post.reactions.length === 1 &&
-      post.reactions[0].id === mainReaction
-    ) {
-      return;
-    }
-
-    return dec.attach("discourse-reactions-actions", {
-      post,
-      position: "left",
-    });
   });
 
   api.modifyClass(
@@ -220,13 +177,92 @@ function initializeDiscourseReactions(api) {
   }
 }
 
+function customizePostMenu(api, container) {
+  const currentUser = container.lookup("service:current-user");
+
+  if (!api.postMenuButtons || !currentUser?.use_glimmer_post_menu) {
+    // fallback in case the glimmer post menu is not available or enabled
+    customizeWidgetPostMenu(api);
+    return;
+  }
+
+  api.postMenuButtons.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
+  api.postMenuButtons.add(
+    "discourse-reactions-actions",
+    ReactionsActionSummary,
+    { after: POST_MENU_REPLIES_BUTTON_KEY, extraControls: true }
+  );
+
+  // fallback if some customizations triggers the compatibility mode
+  withSilencedDeprecations("discourse.post-menu-widget-overrides", () =>
+    customizeWidgetPostMenu(api)
+  );
+}
+
+function customizeWidgetPostMenu(api) {
+  if (api.replacePostMenuButton) {
+    api.replacePostMenuButton("like", {
+      name: "discourse-reactions-actions",
+      buildAttrs: (widget) => {
+        return { post: widget.findAncestorModel() };
+      },
+      shouldRender: (widget) => {
+        const post = widget.findAncestorModel();
+        return post && !post.deleted_at;
+      },
+    });
+  } else {
+    api.removePostMenuButton("like");
+    api.decorateWidget("post-menu:before-extra-controls", (dec) => {
+      const post = dec.getModel();
+      if (!post || post.deleted_at) {
+        return;
+      }
+
+      return dec.attach("discourse-reactions-actions", {
+        post,
+      });
+    });
+  }
+
+  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
+    if (dec.widget.site.mobileView) {
+      return;
+    }
+
+    const mainReaction =
+      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
+    const post = dec.getModel();
+
+    if (!post || post.deleted_at) {
+      return;
+    }
+
+    if (
+      post.reactions &&
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
+    ) {
+      return;
+    }
+
+    return dec.attach("discourse-reactions-actions", {
+      post,
+      position: "left",
+    });
+  });
+}
+
 export default {
   name: "discourse-reactions",
 
   initialize(container) {
     const siteSettings = container.lookup("service:site-settings");
+
     if (siteSettings.discourse_reactions_enabled) {
-      withPluginApi("0.10.1", initializeDiscourseReactions);
+      withPluginApi("0.10.1", (api) =>
+        initializeDiscourseReactions(api, container)
+      );
     }
   },
 
