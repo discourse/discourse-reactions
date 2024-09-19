@@ -180,23 +180,24 @@ function initializeDiscourseReactions(api, container) {
 function customizePostMenu(api, container) {
   const currentUser = container.lookup("service:current-user");
 
-  if (!api.postMenuButtons || !currentUser?.use_glimmer_post_menu) {
-    // fallback in case the glimmer post menu is not available or enabled
-    customizeWidgetPostMenu(api);
-    return;
-  }
+  const transformerRegistered =
+    currentUser?.use_glimmer_post_menu &&
+    api.registerValueTransformer(
+      "post-menu-registered-buttons",
+      ({ value: dag }) => {
+        dag.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
+        dag.add("discourse-reactions-actions", ReactionsActionSummary, {
+          after: POST_MENU_REPLIES_BUTTON_KEY,
+        });
 
-  api.postMenuButtons.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
-  api.postMenuButtons.add(
-    "discourse-reactions-actions",
-    ReactionsActionSummary,
-    { after: POST_MENU_REPLIES_BUTTON_KEY, extraControls: true }
-  );
+        return dag;
+      }
+    );
 
-  // fallback if some customizations triggers the compatibility mode
-  withSilencedDeprecations("discourse.post-menu-widget-overrides", () =>
-    customizeWidgetPostMenu(api)
-  );
+  const silencedKey =
+    transformerRegistered && "discourse.post-menu-widget-overrides";
+
+  withSilencedDeprecations(silencedKey, () => customizeWidgetPostMenu(api));
 }
 
 function customizeWidgetPostMenu(api) {

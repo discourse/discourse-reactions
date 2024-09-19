@@ -4,10 +4,12 @@ import { getOwner } from "@ember/owner";
 import MountWidget from "discourse/components/mount-widget";
 
 export default class ReactionsActionSummary extends Component {
-  static shouldRender(post) {
+  static extraControls = true;
+
+  static shouldRender(args) {
     const site = getOwner(this).lookup("service:site");
 
-    if (site.mobileView || post.deleted) {
+    if (site.mobileView || args.post.deleted) {
       return false;
     }
 
@@ -15,9 +17,9 @@ export default class ReactionsActionSummary extends Component {
     const mainReaction = siteSettings.discourse_reactions_reaction_for_like;
 
     return !(
-      post.reactions &&
-      post.reactions.length === 1 &&
-      post.reactions[0].id === mainReaction
+      args.post.reactions &&
+      args.post.reactions.length === 1 &&
+      args.post.reactions[0].id === mainReaction
     );
   }
 
