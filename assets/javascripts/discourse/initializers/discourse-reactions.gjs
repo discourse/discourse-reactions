@@ -181,7 +181,7 @@ function customizePostMenu(api, container) {
   const currentUser = container.lookup("service:current-user");
 
   const transformerRegistered =
-    currentUser?.use_glimmer_post_menu &&
+    currentUser?.use_auto_glimmer_post_menu &&
     api.registerValueTransformer(
       "post-menu-registered-buttons",
       ({ value: dag }) => {
