@@ -182,17 +182,14 @@ function customizePostMenu(api, container) {
 
   const transformerRegistered =
     currentUser?.use_auto_glimmer_post_menu &&
-    api.registerValueTransformer(
-      "post-menu-registered-buttons",
-      ({ value: dag }) => {
-        dag.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
-        dag.add("discourse-reactions-actions", ReactionsActionSummary, {
-          after: POST_MENU_REPLIES_BUTTON_KEY,
-        });
+    api.registerValueTransformer("post-menu-buttons", ({ value: dag }) => {
+      dag.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
+      dag.add("discourse-reactions-actions", ReactionsActionSummary, {
+        after: POST_MENU_REPLIES_BUTTON_KEY,
+      });
 
-        return dag;
-      }
-    );
+      return dag;
+    });
 
   const silencedKey =
     transformerRegistered && "discourse.post-menu-widget-overrides";
