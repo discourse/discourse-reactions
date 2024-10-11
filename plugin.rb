@@ -103,6 +103,13 @@ after_initialize do
         end
       end
 
+    object.post_actions_with_reaction_users ||=
+      DiscourseReactions::TopicViewSerializerExtension.load_post_action_reaction_users_for_posts(
+        [object.id],
+      )[
+        object.id
+      ]
+
     likes =
       object.post_actions.reject do |post_action|
         # Get rid of any PostAction records that match up to a ReactionUser
@@ -112,9 +119,7 @@ after_initialize do
 
         # Also get rid of any PostAction records that match up to a ReactionUser
         # that is now the main_reaction_id and has historical data.
-        object
-          .post_actions_with_reaction_users
-          &.dig(post_action.id)
+        object.post_actions_with_reaction_users[post_action.id]
           &.reaction_user
           &.reaction
           &.reaction_value == DiscourseReactions::Reaction.main_reaction_id
