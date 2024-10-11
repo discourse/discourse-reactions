@@ -13,6 +13,11 @@ module DiscourseReactions::TopicViewSerializerExtension
         "post_actions.post_id IN (#{DiscourseReactions::PostActionExtension.post_action_with_reaction_user_sql})",
         valid_reactions: DiscourseReactions::Reaction.reactions_counting_as_like,
       )
+      .reduce({}) do |hash, post_action|
+        hash[post_action.post_id] ||= {}
+        hash[post_action.post_id][post_action.id] = post_action
+        hash
+      end
   end
 
   def posts
@@ -29,8 +34,7 @@ module DiscourseReactions::TopicViewSerializerExtension
         )
 
       posts.each do |post|
-        post.post_actions_with_reaction_users =
-          post_actions_with_reaction_users.select { |post_action| post_action.post_id == post.id }
+        post.post_actions_with_reaction_users = post_actions_with_reaction_users[post.id] || {}
       end
 
       object.instance_variable_set(:@posts, posts)

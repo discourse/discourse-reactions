@@ -112,14 +112,10 @@ after_initialize do
 
         # Also get rid of any PostAction records that match up to a ReactionUser
         # that is now the main_reaction_id and has historical data.
-        object
-          .post_actions_with_reaction_users
-          &.find do |pa|
-            pa.id == post_action.id &&
-              pa.reaction_user&.reaction&.reaction_value ==
-                DiscourseReactions::Reaction.main_reaction_id
-          end
-          .present?
+        object.post_actions_with_reaction_users[post_action.id]
+          &.reaction_user
+          &.reaction
+          &.reaction_value == DiscourseReactions::Reaction.main_reaction_id
       end
 
     # Likes will only be blank if there are only reactions where the reaction is in
