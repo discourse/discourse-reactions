@@ -82,7 +82,7 @@ after_initialize do
 
   add_to_serializer(:post, :reactions) do
     reactions = []
-    reaction_users_counting_as_like = []
+    reaction_users_counting_as_like = Set.new
 
     object
       .emoji_reactions
@@ -99,18 +99,16 @@ after_initialize do
         if !DiscourseReactions::Reaction.reactions_excluded_from_like.include?(
              reaction.reaction_value,
            ) && reaction.reaction_value != DiscourseReactions::Reaction.main_reaction_id
-          reaction_users_counting_as_like << reaction.reaction_users
+          reaction_users_counting_as_like.merge(reaction.reaction_users.pluck(:user_id))
         end
       end
-
-    reaction_users_counting_as_like.flatten!
 
     likes =
       object.post_actions.reject do |post_action|
         # Get rid of any PostAction records that match up to a ReactionUser
         # that is NOT main_reaction_id and is NOT excluded, otherwise we double
         # up on the count/reaction shown in the UI.
-        next true if reaction_users_counting_as_like.any? { |ru| ru.user_id == post_action.user_id }
+        next true if reaction_users_counting_as_like.include?(post_action.user_id)
 
         # Also get rid of any PostAction records that match up to a ReactionUser
         # that is now the main_reaction_id and has historical data.
