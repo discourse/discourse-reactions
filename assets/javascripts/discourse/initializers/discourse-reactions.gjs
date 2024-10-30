@@ -17,8 +17,8 @@ const PLUGIN_ID = "discourse-reactions";
 
 replaceIcon("notification.reaction", "bell");
 
-function initializeDiscourseReactions(api, container) {
-  customizePostMenu(api, container);
+function initializeDiscourseReactions(api) {
+  customizePostMenu(api);
 
   api.addKeyboardShortcut("l", null, {
     click: ".topic-post.selected .discourse-reactions-reaction-button",
@@ -177,19 +177,18 @@ function initializeDiscourseReactions(api, container) {
   }
 }
 
-function customizePostMenu(api, container) {
-  const currentUser = container.lookup("service:current-user");
-
-  const transformerRegistered =
-    currentUser?.use_auto_glimmer_post_menu &&
-    api.registerValueTransformer("post-menu-buttons", ({ value: dag }) => {
+function customizePostMenu(api) {
+  const transformerRegistered = api.registerValueTransformer(
+    "post-menu-buttons",
+    ({ value: dag }) => {
       dag.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
       dag.add("discourse-reactions-actions", ReactionsActionSummary, {
         after: POST_MENU_REPLIES_BUTTON_KEY,
       });
 
       return dag;
-    });
+    }
+  );
 
   const silencedKey =
     transformerRegistered && "discourse.post-menu-widget-overrides";
@@ -258,9 +257,7 @@ export default {
     const siteSettings = container.lookup("service:site-settings");
 
     if (siteSettings.discourse_reactions_enabled) {
-      withPluginApi("0.10.1", (api) =>
-        initializeDiscourseReactions(api, container)
-      );
+      withPluginApi("1.34.0", initializeDiscourseReactions);
     }
   },
 
