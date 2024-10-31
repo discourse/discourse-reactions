@@ -24,6 +24,7 @@ export default class ReactionsActionSummary extends Component {
 
   <template>
     {{#if @shouldRender}}
+      {{! template-lint-disable no-capital-arguments }}
       <MountWidget
         @widget="discourse-reactions-actions"
         @args={{hash post=@post position="left"}}
