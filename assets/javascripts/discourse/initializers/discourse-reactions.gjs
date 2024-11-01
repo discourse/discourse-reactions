@@ -185,8 +185,6 @@ function customizePostMenu(api) {
       dag.add("discourse-reactions-actions", ReactionsActionSummary, {
         after: POST_MENU_REPLIES_BUTTON_KEY,
       });
-
-      return dag;
     }
   );
 
