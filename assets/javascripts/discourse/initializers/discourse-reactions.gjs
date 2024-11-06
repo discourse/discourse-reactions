@@ -1,7 +1,3 @@
-import {
-  POST_MENU_LIKE_BUTTON_KEY,
-  POST_MENU_REPLIES_BUTTON_KEY,
-} from "discourse/components/post/menu";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
@@ -180,10 +176,10 @@ function initializeDiscourseReactions(api) {
 function customizePostMenu(api) {
   const transformerRegistered = api.registerValueTransformer(
     "post-menu-buttons",
-    ({ value: dag }) => {
-      dag.replace(POST_MENU_LIKE_BUTTON_KEY, ReactionsActionButton);
+    ({ value: dag, context: { buttonKeys } }) => {
+      dag.replace(buttonKeys.LIKE, ReactionsActionButton);
       dag.add("discourse-reactions-actions", ReactionsActionSummary, {
-        after: POST_MENU_REPLIES_BUTTON_KEY,
+        after: buttonKeys.REPLIES,
       });
     }
   );
