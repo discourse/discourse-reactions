@@ -4,7 +4,7 @@ module DiscourseReactions
   class Reaction < ActiveRecord::Base
     self.table_name = "discourse_reactions_reactions"
 
-    enum reaction_type: { emoji: 0 }
+    enum :reaction_type, { emoji: 0 }
 
     has_many :reaction_users, class_name: "DiscourseReactions::ReactionUser"
     has_many :users, through: :reaction_users
