@@ -21,7 +21,6 @@ acceptance("Discourse Reactions - Enabled", function (needs) {
 
   test("It shows reactions controls", async (assert) => {
     await visit("/t/topic_with_reactions_and_likes/374");
-    await pauseTest();
 
     assert.ok(
       exists(".discourse-reactions-actions"),
