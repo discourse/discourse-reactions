@@ -2,39 +2,19 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
+import { withSilencedDeprecations } from "discourse-common/lib/deprecated";
 import { replaceIcon } from "discourse-common/lib/icon-library";
 import I18n from "I18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
+import ReactionsActionButton from "../components/discourse-reactions-actions-button";
+import ReactionsActionSummary from "../components/discourse-reactions-actions-summary";
 
 const PLUGIN_ID = "discourse-reactions";
 
 replaceIcon("notification.reaction", "bell");
 
 function initializeDiscourseReactions(api) {
-  if (api.replacePostMenuButton) {
-    api.replacePostMenuButton("like", {
-      name: "discourse-reactions-actions",
-      buildAttrs: (widget) => {
-        return { post: widget.findAncestorModel() };
-      },
-      shouldRender: (widget) => {
-        const post = widget.findAncestorModel();
-        return post && !post.deleted_at;
-      },
-    });
-  } else {
-    api.removePostMenuButton("like");
-    api.decorateWidget("post-menu:before-extra-controls", (dec) => {
-      const post = dec.getModel();
-      if (!post || post.deleted_at) {
-        return;
-      }
-
-      return dec.attach("discourse-reactions-actions", {
-        post,
-      });
-    });
-  }
+  customizePostMenu(api);
 
   api.addKeyboardShortcut("l", null, {
     click: ".topic-post.selected .discourse-reactions-reaction-button",
@@ -71,33 +51,6 @@ function initializeDiscourseReactions(api) {
       const topicId = this.model.id;
       topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
     },
-  });
-
-  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
-    if (dec.widget.site.mobileView) {
-      return;
-    }
-
-    const mainReaction =
-      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
-    const post = dec.getModel();
-
-    if (!post || post.deleted_at) {
-      return;
-    }
-
-    if (
-      post.reactions &&
-      post.reactions.length === 1 &&
-      post.reactions[0].id === mainReaction
-    ) {
-      return;
-    }
-
-    return dec.attach("discourse-reactions-actions", {
-      post,
-      position: "left",
-    });
   });
 
   api.modifyClass(
@@ -220,13 +173,85 @@ function initializeDiscourseReactions(api) {
   }
 }
 
+function customizePostMenu(api) {
+  const transformerRegistered = api.registerValueTransformer(
+    "post-menu-buttons",
+    ({ value: dag, context: { buttonKeys } }) => {
+      dag.replace(buttonKeys.LIKE, ReactionsActionButton);
+      dag.add("discourse-reactions-actions", ReactionsActionSummary, {
+        after: buttonKeys.REPLIES,
+      });
+    }
+  );
+
+  const silencedKey =
+    transformerRegistered && "discourse.post-menu-widget-overrides";
+
+  withSilencedDeprecations(silencedKey, () => customizeWidgetPostMenu(api));
+}
+
+function customizeWidgetPostMenu(api) {
+  if (api.replacePostMenuButton) {
+    api.replacePostMenuButton("like", {
+      name: "discourse-reactions-actions",
+      buildAttrs: (widget) => {
+        return { post: widget.findAncestorModel() };
+      },
+      shouldRender: (widget) => {
+        const post = widget.findAncestorModel();
+        return post && !post.deleted_at;
+      },
+    });
+  } else {
+    api.removePostMenuButton("like");
+    api.decorateWidget("post-menu:before-extra-controls", (dec) => {
+      const post = dec.getModel();
+      if (!post || post.deleted_at) {
+        return;
+      }
+
+      return dec.attach("discourse-reactions-actions", {
+        post,
+      });
+    });
+  }
+
+  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
+    if (dec.widget.site.mobileView) {
+      return;
+    }
+
+    const mainReaction =
+      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
+    const post = dec.getModel();
+
+    if (!post || post.deleted_at) {
+      return;
+    }
+
+    if (
+      post.reactions &&
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
+    ) {
+      return;
+    }
+
+    return dec.attach("discourse-reactions-actions", {
+      post,
+      position: "left",
+    });
+  });
+}
+
 export default {
   name: "discourse-reactions",
 
   initialize(container) {
     const siteSettings = container.lookup("service:site-settings");
+
     if (siteSettings.discourse_reactions_enabled) {
-      withPluginApi("0.10.1", initializeDiscourseReactions);
+      withPluginApi("1.34.0", initializeDiscourseReactions);
     }
   },
 
