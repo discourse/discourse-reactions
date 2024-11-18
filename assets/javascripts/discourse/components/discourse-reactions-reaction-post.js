@@ -1,6 +1,6 @@
 import Component from "@glimmer/component";
 import { equal } from "@ember/object/computed";
-import { inject as service } from "@ember/service";
+import { service } from "@ember/service";
 import { emojiUrlFor } from "discourse/lib/text";
 import getURL from "discourse-common/lib/get-url";
 
