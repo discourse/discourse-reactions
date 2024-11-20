@@ -175,9 +175,10 @@ export default createWidget("discourse-reactions-actions", {
     cancel(this._touchTimeout);
 
     if (this.capabilities.touch) {
-      document
-        .querySelector("html")
-        ?.classList?.toggle("discourse-reactions-no-select", true);
+      document.documentElement?.classList?.toggle(
+        "discourse-reactions-no-select",
+        true
+      );
 
       this._touchStartAt = Date.now();
       this._touchTimeout = later(() => {
@@ -581,9 +582,10 @@ export default createWidget("discourse-reactions-actions", {
 
   collapseAllPanels() {
     cancel(this._collapseHandler);
-    document
-      .querySelector("html")
-      ?.classList?.toggle("discourse-reactions-no-select", false);
+    document.documentElement?.classList?.toggle(
+      "discourse-reactions-no-select",
+      false
+    );
     this._collapseHandler = null;
     this.state.statePanelExpanded = false;
     this.state.reactionsPickerExpanded = false;
