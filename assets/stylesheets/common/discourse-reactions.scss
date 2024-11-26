@@ -42,6 +42,9 @@ html.discourse-reactions-no-select {
         .user-list {
           visibility: visible;
           opacity: 0.9;
+          .spinner {
+            animation-play-state: running;
+          }
         }
       }
     }
@@ -55,6 +58,10 @@ html.discourse-reactions-no-select {
       padding: 0.5em 0;
       min-width: 120px;
       min-height: 80px;
+
+      .spinner {
+        animation-play-state: paused;
+      }
 
       .container {
         margin-top: 0.5em;
