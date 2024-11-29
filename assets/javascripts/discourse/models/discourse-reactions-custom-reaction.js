@@ -6,16 +6,8 @@ import RestModel from "discourse/models/rest";
 import Topic from "discourse/models/topic";
 import User from "discourse/models/user";
 
-const CustomReaction = RestModel.extend({
-  init() {
-    this._super(...arguments);
-
-    this.__type = "discourse-reactions-custom-reaction";
-  },
-});
-
-CustomReaction.reopenClass({
-  toggle(post, reactionId) {
+export default class CustomReaction extends RestModel {
+  static toggle(post, reactionId) {
     return ajax(
       `/discourse-reactions/posts/${post.id}/custom-reactions/${reactionId}/toggle.json`,
       { type: "PUT" }
@@ -25,9 +17,9 @@ CustomReaction.reopenClass({
         reaction: result.current_user_reaction,
       });
     });
-  },
+  }
 
-  findReactions(url, username, opts) {
+  static findReactions(url, username, opts) {
     opts = opts || {};
     const data = { username };
 
@@ -63,9 +55,9 @@ CustomReaction.reopenClass({
         return EmberObject.create(reaction);
       });
     });
-  },
+  }
 
-  findReactionUsers(postId, opts) {
+  static findReactionUsers(postId, opts) {
     opts = opts || {};
     const data = {};
 
@@ -76,7 +68,10 @@ CustomReaction.reopenClass({
     return ajax(`/discourse-reactions/posts/${postId}/reactions-users.json`, {
       data,
     });
-  },
-});
+  }
 
-export default CustomReaction;
+  init() {
+    super.init(...arguments);
+    this.__type = "discourse-reactions-custom-reaction";
+  }
+}
