@@ -11,7 +11,7 @@ import ReactionsActionSummary from "../components/discourse-reactions-actions-su
 
 const PLUGIN_ID = "discourse-reactions";
 
-replaceIcon("notification.reaction", "bell");
+["notification.reaction", "bell"]
 
 function initializeDiscourseReactions(api) {
   customizePostMenu(api);
@@ -94,7 +94,7 @@ function initializeDiscourseReactions(api) {
     { ignoreMissing: true }
   );
 
-  api.replaceIcon("notification.reaction", "discourse-emojis");
+  api.["notification.reaction", "discourse-emojis"]
 
   if (api.registerNotificationTypeRenderer) {
     api.registerNotificationTypeRenderer("reaction", (NotificationTypeBase) => {

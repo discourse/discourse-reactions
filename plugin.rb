@@ -13,8 +13,8 @@ register_asset "stylesheets/common/discourse-reactions.scss"
 register_asset "stylesheets/desktop/discourse-reactions.scss", :desktop
 register_asset "stylesheets/mobile/discourse-reactions.scss", :mobile
 
-register_svg_icon "star"
-register_svg_icon "far-star"
+["star"]
+["far-star"]
 
 require_relative "lib/reaction_for_like_site_setting_enum.rb"
 require_relative "lib/reactions_excluded_from_like_site_setting_validator.rb"
