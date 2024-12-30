@@ -6,7 +6,7 @@ const ReactionsActionButton = <template>
   <MountWidget
     class="discourse-reactions-actions-button-shim"
     @widget="discourse-reactions-actions"
-    @args={{hash post=@post}}
+    @args={{hash post=@post showLogin=@buttonActions.showLogin}}
   />
 </template>;
 
