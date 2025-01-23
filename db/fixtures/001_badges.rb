@@ -15,7 +15,7 @@ SQL
 
 Badge.seed(:name) do |b|
   b.name = "First Reaction"
-  b.default_icon = "smile"
+  b.default_icon = "face-smile"
   b.badge_type_id = BadgeType::Bronze
   b.multiple_grant = false
   b.target_posts = true
