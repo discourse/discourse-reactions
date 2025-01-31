@@ -6,7 +6,7 @@
 
 ja:
   site_settings:
-    discourse_reactions_like_icon: "メインのリアクションボタンに使用するアイコンを定義します。これは絵文字名ではなく、<a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> アイコン名です。"
+    discourse_reactions_like_icon: "メインのリアクションボタンに使用するアイコンを定義します。これは絵文字名ではなく、<a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a> アイコン名です。"
     discourse_reactions_reaction_for_like: "「いいね！」操作に関連付けられたリアクションを定義します。この設定を変更しても、過去の「いいね！」の記録は変更されません。この設定を絶対に変更しないことを<strong>強くお勧めします</strong>。"
     discourse_reactions_enabled: "discourse-reactions プラグインを有効にします。"
     discourse_reactions_enabled_reactions: "有効なリアクションのリストを定義します。ここではすべての絵文字を使用できます。"

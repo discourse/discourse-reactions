@@ -6,7 +6,7 @@
 
 ar:
   site_settings:
-    discourse_reactions_like_icon: "يحدِّد الأيقونة المُستخدَمة لزر التفاعل الرئيسي. ينبغي أن يكون هذا اسم أيقونة من <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>، وليس اسم رمز تعبيري."
+    discourse_reactions_like_icon: "يحدِّد الأيقونة المُستخدَمة لزر التفاعل الرئيسي. ينبغي أن يكون هذا اسم أيقونة من <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>، وليس اسم رمز تعبيري."
     discourse_reactions_reaction_for_like: "يحدِّد التفاعل المرتبط بالإجراء \"أعجبني\". لن يتم تغيير سجلات الإعجاب التاريخية إذا تغيَّر هذا الإعداد، فمن <strong>الموصى به بشدة</strong> عدم تغيير هذا الإعداد أبدًا."
     discourse_reactions_enabled: "يفعِّل المكوِّن الإضافي discourse-reactions"
     discourse_reactions_enabled_reactions: "يحدد قائمة بالتفاعلات المفعَّلة، ويُسمَح بأي رمز تعبيري هنا."

@@ -6,7 +6,7 @@
 
 tr_TR:
   site_settings:
-    discourse_reactions_like_icon: "Ana tepki düğmesi için kullanılan simgeyi tanımlar. Bu bir emoji adı değil, <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> simge adı olmalıdır."
+    discourse_reactions_like_icon: "Ana tepki düğmesi için kullanılan simgeyi tanımlar. Bu bir emoji adı değil, <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a> simge adı olmalıdır."
     discourse_reactions_reaction_for_like: "Beğen eylemiyle ilişkili tepkiyi tanımlar. Bu ayar değişirse Geçmiş Beğeni kayıtları değişmez; bu ayarın hiçbir zaman değiştirilmemesi <strong>şiddetle tavsiye edilir</strong> ."
     discourse_reactions_enabled: "Discourse-tepkileri eklentisini etkinleştirin."
     discourse_reactions_enabled_reactions: "Etkinleştirilmiş tepkilerin bir listesini tanımlar, burada tüm emoji'lere izin verilir."

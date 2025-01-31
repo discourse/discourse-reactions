@@ -6,7 +6,7 @@
 
 it:
   site_settings:
-    discourse_reactions_like_icon: "Definisce l'icona utilizzata per il pulsante di reazione principale. Dovrebbe essere il nome di un'icona <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>, non il nome di un emoji."
+    discourse_reactions_like_icon: "Definisce l'icona utilizzata per il pulsante di reazione principale. Dovrebbe essere il nome di un'icona <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>, non il nome di un emoji."
     discourse_reactions_reaction_for_like: "Definisce la reazione associata all'azione Mi piace. La cronologia dei Mi piace non verrà modificata se questa impostazione cambia, è <strong>fortemente consigliato</strong> che questa impostazione non venga mai modificata."
     discourse_reactions_enabled: "Abilita il plugin discourse-reactions."
     discourse_reactions_enabled_reactions: "Definisce un elenco di reazioni abilitate, tutti gli emoji sono consentiti qui."
