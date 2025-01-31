@@ -6,7 +6,7 @@
 
 de:
   site_settings:
-    discourse_reactions_like_icon: "Definiert das Symbol, das für die Hauptreaktionsschaltfläche verwendet wird. Dies sollte ein <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>-Symbolname sein, kein Emoji-Name."
+    discourse_reactions_like_icon: "Definiert das Symbol, das für die Hauptreaktionsschaltfläche verwendet wird. Dies sollte ein <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>-Symbolname sein, kein Emoji-Name."
     discourse_reactions_reaction_for_like: "Legt die Reaktion fest, die mit der „Gefällt mir“-Aktion verbunden ist. Historische „Gefällt mir“-Datensätze werden nicht geändert, wenn diese Einstellung geändert wird. Es wird <strong>dringend empfohlen</strong>, diese Einstellung nie zu ändern."
     discourse_reactions_enabled: "Aktiviere das discourse-reactions-Plug-in"
     discourse_reactions_enabled_reactions: "Definiert eine Liste von aktivierten Reaktionen. Jedes Emoji ist hier erlaubt."

@@ -6,7 +6,7 @@
 
 fi:
   site_settings:
-    discourse_reactions_like_icon: "Määrittää pääreaktiopainikkeen kuvakkeen. Tämän pitäisi olla <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a> -kuvakkeen nimi, ei emojin nimi."
+    discourse_reactions_like_icon: "Määrittää pääreaktiopainikkeen kuvakkeen. Tämän pitäisi olla <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a> -kuvakkeen nimi, ei emojin nimi."
     discourse_reactions_reaction_for_like: "Määrittää tykkäystoimintoon liittyvän reaktion. Historialliset tykkäystietueet eivät muutu, jos tämä asetus muuttuu. On <strong>vahvasti suositeltavaa</strong> , ettei tätä asetusta muuteta koskaan."
     discourse_reactions_enabled: "Ota discourse-reactions-lisäosa käyttöön."
     discourse_reactions_enabled_reactions: "Määrittää luettelon käytössä olevista reaktioista, kaikki emojit ovat sallittuja tässä."

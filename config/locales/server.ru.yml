@@ -6,7 +6,7 @@
 
 ru:
   site_settings:
-    discourse_reactions_like_icon: "Определяет значок, используемый для основной кнопки реакции. Это должно быть название значка <a href='https://fontawesome.com/v5/search?o=r&m=free' target='_blank'>Font Awesome</a>, а не название эмодзи."
+    discourse_reactions_like_icon: "Определяет значок, используемый для основной кнопки реакции. Это должно быть название значка <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>, а не название эмодзи."
     discourse_reactions_reaction_for_like: "Определяет реакцию, связанную с действием «Нравится». Исторические записи о лайках не будут изменены, если этот параметр изменится, поэтому <strong>настоятельно рекомендуется</strong> никогда его не менять."
     discourse_reactions_enabled: "Включить плагин 'discourse-reactions'."
     discourse_reactions_enabled_reactions: "Определение списка доступных реакций. Разрешены любые эмодзи."
