@@ -424,6 +424,7 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-double-button {
   display: inline-flex;
+  user-select: none;
 }
 
 .discourse-reactions-reaction-button {
