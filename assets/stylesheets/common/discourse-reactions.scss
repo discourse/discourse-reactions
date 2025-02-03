@@ -1,7 +1,6 @@
 html.discourse-reactions-no-select {
   -webkit-touch-callout: none; /* Disables long-touch menu */
-  -webkit-user-select: none; /* Disable text selection (for Webkit) */
-  user-select: none; /* Disable text selection (standard syntax) */
+  @include user-select(none); /* Disable text selection */
 }
 
 .discourse-reactions-list {
@@ -424,7 +423,7 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-double-button {
   display: inline-flex;
-  user-select: none;
+  @include user-select(none);
 }
 
 .discourse-reactions-reaction-button {
