@@ -45,6 +45,7 @@ after_initialize do
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/post_action_extension.rb
+    lib/discourse_reactions/posts_reaction_loader.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
     lib/discourse_reactions/topic_view_posts_serializer_extension.rb
     lib/discourse_reactions/migration_report.rb
