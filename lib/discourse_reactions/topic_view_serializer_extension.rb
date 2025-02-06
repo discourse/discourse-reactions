@@ -20,6 +20,7 @@ module DiscourseReactions::TopicViewSerializerExtension
       end
   end
 
+  # See also DiscourseReactions::TopicViewPostsSerializerExtension
   def posts
     if SiteSetting.discourse_reactions_enabled
       posts = object.posts.includes(:post_actions, reactions: { reaction_users: :user })
