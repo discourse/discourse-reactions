@@ -1,9 +1,9 @@
 import { isBlank } from "@ember/utils";
 import { h } from "virtual-dom";
+import { iconNode } from "discourse/lib/icon-library";
 import { emojiUrlFor } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
-import { iconNode } from "discourse-common/lib/icon-library";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 
 export default createWidget("discourse-reactions-reaction-button", {
   tagName: "div.discourse-reactions-reaction-button",
@@ -52,7 +52,7 @@ export default createWidget("discourse-reactions-reaction-button", {
   buildAttributes(attrs) {
     if (!this.currentUser) {
       return {
-        title: I18n.t("discourse_reactions.main_reaction.unauthenticated"),
+        title: i18n("discourse_reactions.main_reaction.unauthenticated"),
       };
     }
 
@@ -94,9 +94,7 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }
 
-    return options
-      ? { title: I18n.t(title, options) }
-      : { title: I18n.t(title) };
+    return options ? { title: i18n(title, options) } : { title: i18n(title) };
   },
 
   html(attrs) {

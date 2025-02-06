@@ -4,7 +4,7 @@ import { h } from "virtual-dom";
 import { emojiUnescape } from "discourse/lib/text";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 
 const DISPLAY_MAX_USERS = 19;
 let _popperReactionUserPanel;
@@ -54,7 +54,7 @@ export default createWidget("discourse-reactions-list-emoji", {
         displayUsers.push(
           h(
             "span.other-users",
-            I18n.t("discourse_reactions.state_panel.more_users", {
+            i18n("discourse_reactions.state_panel.more_users", {
               count: attrs.reaction.count - DISPLAY_MAX_USERS,
             })
           )

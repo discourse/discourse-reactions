@@ -1,6 +1,6 @@
 import { h } from "virtual-dom";
+import { iconNode } from "discourse/lib/icon-library";
 import { createWidget } from "discourse/widgets/widget";
-import { iconNode } from "discourse-common/lib/icon-library";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default createWidget("discourse-reactions-counter", {
