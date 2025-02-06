@@ -2,10 +2,10 @@ import { cancel, later, run, schedule } from "@ember/runloop";
 import { createPopper } from "@popperjs/core";
 import $ from "jquery";
 import { Promise } from "rsvp";
+import { isTesting } from "discourse/lib/environment";
 import { emojiUrlFor } from "discourse/lib/text";
 import { createWidget } from "discourse/widgets/widget";
-import { isTesting } from "discourse-common/config/environment";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 const VIBRATE_DURATION = 5;
@@ -709,7 +709,7 @@ export default createWidget("discourse-reactions-actions", {
     const xhr = e.xhr || e.jqXHR;
 
     if (!xhr || !xhr.status) {
-      return I18n.t("errors.desc.network");
+      return i18n("errors.desc.network");
     }
 
     if (
@@ -720,9 +720,9 @@ export default createWidget("discourse-reactions-actions", {
     ) {
       return xhr.responseJSON.errors[0];
     } else if (xhr.status === 403) {
-      return I18n.t("discourse_reactions.reaction.forbidden");
+      return i18n("discourse_reactions.reaction.forbidden");
     } else {
-      return I18n.t("errors.desc.unknown");
+      return i18n("errors.desc.unknown");
     }
   },
 });

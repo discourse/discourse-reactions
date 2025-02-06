@@ -1,10 +1,10 @@
 import { h } from "virtual-dom";
+import { iconNode } from "discourse/lib/icon-library";
 import { emojiUnescape } from "discourse/lib/text";
 import { avatarFor } from "discourse/widgets/post";
 import RawHtml from "discourse/widgets/raw-html";
 import { createWidget } from "discourse/widgets/widget";
-import { iconNode } from "discourse-common/lib/icon-library";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 
 const MAX_USERS_COUNT = 26;
 const MIN_USERS_COUNT = 8;
@@ -75,7 +75,7 @@ export default createWidget("discourse-reactions-state-panel-reaction", {
 
     let more;
     if (attrs.isDisplayed && attrs.reaction.count > MAX_USERS_COUNT) {
-      more = I18n.t("discourse_reactions.state_panel.more_users", {
+      more = i18n("discourse_reactions.state_panel.more_users", {
         count: attrs.reaction.count - MAX_USERS_COUNT,
       });
     }

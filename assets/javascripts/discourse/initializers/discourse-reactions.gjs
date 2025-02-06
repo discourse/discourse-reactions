@@ -1,10 +1,10 @@
+import { withSilencedDeprecations } from "discourse/lib/deprecated";
+import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
-import { withSilencedDeprecations } from "discourse-common/lib/deprecated";
-import { replaceIcon } from "discourse-common/lib/icon-library";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
 import ReactionsActionSummary from "../components/discourse-reactions-actions-summary";
@@ -100,7 +100,7 @@ function initializeDiscourseReactions(api) {
     api.registerNotificationTypeRenderer("reaction", (NotificationTypeBase) => {
       return class extends NotificationTypeBase {
         get linkTitle() {
-          return I18n.t("notifications.titles.reaction");
+          return i18n("notifications.titles.reaction");
         }
 
         get linkHref() {
@@ -135,12 +135,12 @@ function initializeDiscourseReactions(api) {
           }
 
           if (count > 2) {
-            return I18n.t("notifications.reaction_multiple_users", {
+            return i18n("notifications.reaction_multiple_users", {
               username,
               count: count - 1,
             });
           } else {
-            return I18n.t("notifications.reaction_2_users", {
+            return i18n("notifications.reaction_2_users", {
               username,
               username2: formatUsername(this.notification.data.username2),
             });
@@ -162,7 +162,7 @@ function initializeDiscourseReactions(api) {
             this.notification.data.count > 1 &&
             !this.notification.data.username2
           ) {
-            return I18n.t("notifications.reaction_1_user_multiple_posts", {
+            return i18n("notifications.reaction_1_user_multiple_posts", {
               count: this.notification.data.count,
             });
           }

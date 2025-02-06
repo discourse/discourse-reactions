@@ -1,7 +1,7 @@
 import { click, visit } from "@ember/test-helpers";
 import { test } from "qunit";
 import { acceptance, queryAll } from "discourse/tests/helpers/qunit-helpers";
-import I18n from "I18n";
+import { i18n } from "discourse-i18n";
 
 acceptance("Discourse Reactions - Notifications", function (needs) {
   needs.user({ redesigned_user_menu_enabled: true });
@@ -167,7 +167,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[1].textContent.replaceAll(/\s+/g, " ").trim(),
-      `${I18n.t("notifications.reaction_2_users", {
+      `${i18n("notifications.reaction_2_users", {
         username: "jammed-radio",
         username2: "broken-radio",
       })} Topic with 2 likes (total) from 2 users`,
@@ -186,7 +186,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
-      `${I18n.t("notifications.reaction_multiple_users", {
+      `${i18n("notifications.reaction_multiple_users", {
         username: "jam-and-cheese",
         count: 2,
       })} Topic with likes from multiple users`,
@@ -205,7 +205,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[3].textContent.replaceAll(/\s+/g, " ").trim(),
-      `${I18n.t("notifications.reaction_multiple_users", {
+      `${i18n("notifications.reaction_multiple_users", {
         username: "nuclear-reactor",
         count: 3,
       })} Topic with likes and reactions`,
@@ -224,7 +224,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 
     assert.strictEqual(
       notifications[4].textContent.replaceAll(/\s+/g, " ").trim(),
-      `johnny ${I18n.t("notifications.reaction_1_user_multiple_posts", {
+      `johnny ${i18n("notifications.reaction_1_user_multiple_posts", {
         count: 2,
       })}`,
       "notification for reactions from 1 users on multiple posts has the right content"
