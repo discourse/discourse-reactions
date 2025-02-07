@@ -45,7 +45,9 @@ after_initialize do
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
     lib/discourse_reactions/post_action_extension.rb
+    lib/discourse_reactions/posts_reaction_loader.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
+    lib/discourse_reactions/topic_view_posts_serializer_extension.rb
     lib/discourse_reactions/migration_report.rb
     app/jobs/regular/discourse_reactions/like_synchronizer.rb
     app/jobs/scheduled/discourse_reactions/scheduled_like_synchronizer.rb
@@ -55,6 +57,7 @@ after_initialize do
     Post.prepend DiscourseReactions::PostExtension
     PostAction.prepend DiscourseReactions::PostActionExtension
     TopicViewSerializer.prepend DiscourseReactions::TopicViewSerializerExtension
+    TopicViewPostsSerializer.prepend DiscourseReactions::TopicViewPostsSerializerExtension
     PostAlerter.prepend DiscourseReactions::PostAlerterExtension
     Guardian.prepend DiscourseReactions::GuardianExtension
     Notification.singleton_class.prepend DiscourseReactions::NotificationExtension
