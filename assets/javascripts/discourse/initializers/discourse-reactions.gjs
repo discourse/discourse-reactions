@@ -129,10 +129,10 @@ function initializeDiscourseReactions(api) {
         get label() {
           const count = this.notification.data.count;
           const nameOrUsername = this.siteSettings.prioritize_full_name_in_ux
-            ? this.notification.data.display_name ||
-              this.username
+            ? this.notification.data.display_name || this.username
             : this.username;
 
+          // A single reaction works locally for me
           if (!count || count === 1 || !this.notification.data.username2) {
             return nameOrUsername;
           }
@@ -143,7 +143,8 @@ function initializeDiscourseReactions(api) {
             });
           } else {
             const nameOrUsername2 = this.siteSettings.prioritize_full_name_in_ux
-              ? this.notification.data.name2 || formatUsername(this.notification.data.username2)
+              ? this.notification.data.name2 ||
+                formatUsername(this.notification.data.username2)
               : formatUsername(this.notification.data.username2);
             return i18n("notifications.reaction_2_users", {
               username: nameOrUsername,
