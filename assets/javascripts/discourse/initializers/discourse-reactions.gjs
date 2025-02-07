@@ -128,22 +128,43 @@ function initializeDiscourseReactions(api) {
 
         get label() {
           const count = this.notification.data.count;
+          const fullname = this.notification.data.original_name;
           const username = this.username;
 
+          // A single reaction works locally for me
           if (!count || count === 1 || !this.notification.data.username2) {
-            return username;
+            if (!this.siteSettings.prioritize_full_name_in_ux) {
+              return username;
+            } else {
+              return fullname || username;
+            }
           }
-
+          // the following two (react consolidation) are running into an issue
           if (count > 2) {
-            return i18n("notifications.reaction_multiple_users", {
-              username,
-              count: count - 1,
-            });
+            if (!this.siteSettings.prioritize_full_name_in_ux) {
+              return I18n.t("notifications.reaction_multiple_users", {
+                username,
+                count: count - 1,
+              });
+            } else {
+              return I18n.t("notifications.reaction_multiple_users", {
+                fullname,
+                count: count - 1,
+              });
+            }
           } else {
-            return i18n("notifications.reaction_2_users", {
-              username,
-              username2: formatUsername(this.notification.data.username2),
-            });
+            if (!this.siteSettings.prioritize_full_name_in_ux) {
+              console.log("HERE I AM");
+              return I18n.t("notifications.reaction_2_users", {
+                username,
+                username2: formatUsername(this.notification.data.username2),
+              });
+            } else {
+              return I18n.t("notifications.reaction_2_users", {
+                fullname,
+                fullname2: null, // can't get into this to figure out what this would be on 'this.notification.data.??'
+              });
+            }
           }
         }
 
