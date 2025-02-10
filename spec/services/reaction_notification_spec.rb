@@ -135,7 +135,7 @@ describe DiscourseReactions::ReactionNotification do
       ).to eq(1)
 
       notification = Notification.where(notification_type: Notification.types[:reaction]).last
-      expect(notification.data_hash[:name]).to eq(true)
+      expect(notification.data_hash[:name]).to eq(user_2.name)
     end
   end
 
