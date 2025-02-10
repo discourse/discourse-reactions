@@ -142,24 +142,24 @@ function initializeDiscourseReactions(api) {
           // the following two (react consolidation) are running into an issue
           if (count > 2) {
             if (!this.siteSettings.prioritize_full_name_in_ux) {
-              return I18n.t("notifications.reaction_multiple_users", {
+              return i18n("notifications.reaction_multiple_users", {
                 username,
                 count: count - 1,
               });
             } else {
-              return I18n.t("notifications.fullname.reaction_multiple_users", {
+              return i18n("notifications.fullname.reaction_multiple_users", {
                 fullname,
                 count: count - 1,
               });
             }
           } else {
             if (!this.siteSettings.prioritize_full_name_in_ux) {
-              return I18n.t("notifications.reaction_2_users", {
+              return i18n("notifications.reaction_2_users", {
                 username,
                 username2: formatUsername(this.notification.data.username2),
               });
             } else {
-              return I18n.t("notifications.fullname.reaction_2_users", {
+              return i18n("notifications.fullname.reaction_2_users", {
                 fullname,
                 fullname2: null, // can't get into this to figure out what this would be on 'this.notification.data.??'
               });
