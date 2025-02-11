@@ -6,6 +6,7 @@
 
 cs:
   site_settings:
+    discourse_reactions_like_icon: "Definuje ikonu použitou pro hlavní reakční tlačítko. Mělo by se jednat o název ikony <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>, nikoli o název emoji."
     discourse_reactions_reaction_for_like: "Definuje reakci přidruženou k akci Líbí se. Pokud změníte toto nastavení, nebude to mít vliv na historické záznamy a <strong>důrazně doporučujeme</strong> toto nastavení nikdy neměnit."
     discourse_reactions_enabled: "Povolit plugin Discourse-Reakce."
     discourse_reactions_enabled_reactions: "Určuje seznam povolených reakcí, všechny emoji jsou zde povoleny."
