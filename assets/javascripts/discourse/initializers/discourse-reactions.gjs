@@ -132,7 +132,6 @@ function initializeDiscourseReactions(api) {
             ? this.notification.data.display_name || this.username
             : this.username;
 
-          // A single reaction works locally for me
           if (!count || count === 1 || !this.notification.data.username2) {
             return nameOrUsername;
           }
