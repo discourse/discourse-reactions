@@ -353,7 +353,7 @@ after_initialize do
       .set_mutations(
         set_data_blk:
           Proc.new do |notification|
-            existing_notification_of_same_type =
+            existing_notification_of_same_type = # the answer I want is in this section, but I can't seem to get into this object!
               Notification
                 .where(user: notification.user)
                 .order("notifications.id DESC")
