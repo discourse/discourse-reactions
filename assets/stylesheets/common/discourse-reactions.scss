@@ -37,12 +37,14 @@ html.discourse-reactions-no-select {
         }
       }
 
-      &:hover {
-        .user-list {
-          visibility: visible;
-          opacity: 0.9;
-          .spinner {
-            animation-play-state: running;
+      .discourse-no-touch & {
+        &:hover {
+          .user-list {
+            visibility: visible;
+            opacity: 0.9;
+            .spinner {
+              animation-play-state: running;
+            }
           }
         }
       }
