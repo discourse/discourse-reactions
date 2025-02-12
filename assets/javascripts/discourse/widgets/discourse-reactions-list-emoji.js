@@ -76,9 +76,7 @@ export default createWidget("discourse-reactions-list-emoji", {
       }),
     ];
 
-    if (this._allowHover()) {
-      elements.push(h("div.user-list", h("div.container", displayUsers)));
-    }
+    elements.push(h("div.user-list", h("div.container", displayUsers)));
 
     return elements;
   },
@@ -117,11 +115,5 @@ export default createWidget("discourse-reactions-list-emoji", {
     this.callWidgetFunction("getUsers", this.attrs.reaction.id).finally(() => {
       this.loadingReactions = false;
     });
-  },
-
-  _allowHover() {
-    // So we can allow for hovering even if hover: none is present in the media-query,
-    // as is the case for headless chrome in system tests.
-    return window.isSystemTest || !window.matchMedia("(hover: none)").matches;
   },
 });
