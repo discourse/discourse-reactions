@@ -18,16 +18,20 @@ export default createWidget("discourse-reactions-picker", {
     return classes;
   },
 
-  mouseOut() {
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
+  pointerOut(event) {
+    if (event.pointerType !== "mouse") {
+      return;
     }
+
+    this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
   },
 
-  mouseOver() {
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("cancelCollapse");
+  pointerOver() {
+    if (event.pointerType !== "mouse") {
+      return;
     }
+
+    this.callWidgetFunction("cancelCollapse");
   },
 
   html(attrs) {

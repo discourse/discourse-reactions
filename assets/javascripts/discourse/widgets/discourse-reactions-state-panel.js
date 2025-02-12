@@ -22,16 +22,20 @@ export default createWidget("discourse-reactions-state-panel", {
     return classes;
   },
 
-  mouseOut() {
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+  pointerOut(event) {
+    if (event.pointerType !== "mouse") {
+      return;
     }
+
+    this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
   },
 
-  mouseOver() {
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("cancelCollapse");
+  pointerOver(event) {
+    if (event.pointerType !== "mouse") {
+      return;
     }
+
+    this.callWidgetFunction("cancelCollapse");
   },
 
   showUsers(reactionId) {

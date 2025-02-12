@@ -23,7 +23,11 @@ export default createWidget("discourse-reactions-reaction-button", {
     }
   },
 
-  mouseOver(event) {
+  pointerOver(event) {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
+
     this.callWidgetFunction("cancelCollapse");
 
     const likeAction = this.attrs.post.likeAction;
@@ -36,17 +40,16 @@ export default createWidget("discourse-reactions-reaction-button", {
       return;
     }
 
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("toggleReactions", event);
-    }
+    this.callWidgetFunction("toggleReactions", event);
   },
 
-  mouseOut() {
-    this.callWidgetFunction("cancelExpand");
-
-    if (!window.matchMedia("(hover: none)").matches) {
-      this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
+  pointerOut(event) {
+    if (event.pointerType !== "mouse") {
+      return;
     }
+
+    this.callWidgetFunction("cancelExpand");
+    this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
   },
 
   buildAttributes(attrs) {

@@ -15,13 +15,15 @@ export default createWidget("discourse-reactions-list-emoji", {
   buildId: (attrs) =>
     `discourse-reactions-list-emoji-${attrs.post.id}-${attrs.reaction.id}`,
 
-  mouseOver() {
-    if (this._allowHover()) {
-      this._setupPopper(".user-list");
+  pointerOver(event) {
+    if (event.pointerType !== "mouse") {
+      return;
+    }
 
-      if (!this.attrs.users?.length && !this.loadingReactions) {
-        debounce(this, this._loadReactionUsers, 3000, true);
-      }
+    this._setupPopper(".user-list");
+
+    if (!this.attrs.users?.length && !this.loadingReactions) {
+      debounce(this, this._loadReactionUsers, 3000, true);
     }
   },
 

@@ -177,11 +177,11 @@ export default createWidget("discourse-reactions-counter", {
     }
   },
 
-  mouseOver() {
+  pointerOver() {
     this.callWidgetFunction("cancelCollapse");
   },
 
-  mouseOut(event) {
+  pointerOut(event) {
     if (!event.relatedTarget?.closest(`#${this.buildId(this.attrs)}`)) {
       this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
     }
