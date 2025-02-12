@@ -128,18 +128,16 @@ function initializeDiscourseReactions(api) {
 
         get label() {
           const count = this.notification.data.count;
-          const fullname = this.notification.data.original_name;
+          const fullName = this.notification.acting_user_name;
           const username = this.username;
 
-          // A single reaction works locally for me
           if (!count || count === 1 || !this.notification.data.username2) {
             if (!this.siteSettings.prioritize_full_name_in_ux) {
               return username;
             } else {
-              return fullname || username;
+              return fullName || username;
             }
           }
-          // the following two (react consolidation) are running into an issue
           if (count > 2) {
             if (!this.siteSettings.prioritize_full_name_in_ux) {
               return i18n("notifications.reaction_multiple_users", {
@@ -148,7 +146,7 @@ function initializeDiscourseReactions(api) {
               });
             } else {
               return i18n("notifications.fullname.reaction_multiple_users", {
-                fullname,
+                fullName,
                 count: count - 1,
               });
             }
@@ -160,8 +158,8 @@ function initializeDiscourseReactions(api) {
               });
             } else {
               return i18n("notifications.fullname.reaction_2_users", {
-                fullname,
-                fullname2: null, // can't get into this to figure out what this would be on 'this.notification.data.??'
+                fullName,
+                fullName2: this.notification.data, // this is not correct, but I'm not sure what the correct object value is after "data"
               });
             }
           }
