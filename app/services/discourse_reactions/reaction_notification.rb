@@ -70,7 +70,7 @@ module DiscourseReactions
       }
 
       data[:username2] = remaining_data[1][0] if remaining_data[1]
-      data[:name2] = remaining_data[1][1] if remaining_data[1] # something's not connecting correctly...
+      data[:name2] = remaining_data[1][1] if remaining_data[1]
 
       if remaining_data.all? { |element| element[2] == HEART_ICON_NAME }
         data[:reaction_icon] = HEART_ICON_NAME

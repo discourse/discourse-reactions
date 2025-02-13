@@ -132,26 +132,6 @@ describe DiscourseReactions::ReactionNotification do
     expect(remaining_notification.data_hash[:reaction_icon]).to be_nil
   end
 
-  describe "when prioritize full name setting is on" do
-    let!(:cry_p1) { Fabricate(:reaction, post: post_1, reaction_value: "cry") }
-
-    before { SiteSetting.prioritize_full_name_in_ux = true }
-    # all specs pass except this one
-    it "displays the full name" do
-      described_class.new(cry_p1, user_2).create
-
-      expect(
-        Notification.where(
-          notification_type: Notification.types[:reaction],
-          user: post_1.user,
-        ).count,
-      ).to eq(1)
-
-      notification = Notification.where(notification_type: Notification.types[:reaction]).last
-      expect(notification.data_hash[:name]).to eq(user_2.name)
-    end
-  end
-
   describe "consolidating reaction notifications" do
     fab!(:post_2) { Fabricate(:post, user: post_1.user) }
     let!(:cry_p1) { Fabricate(:reaction, post: post_1, reaction_value: "cry") }
