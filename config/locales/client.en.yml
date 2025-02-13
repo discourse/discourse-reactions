@@ -28,24 +28,5 @@ en:
       reaction_multiple_users:
         one: "%{username} and %{count} other"
         other: "%{username} and %{count} others"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> reacted to %{count} of your posts"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} and %{count} other</span> %{description}"
-        other: "<span class='multi-user'>%{username} and %{count} others</span> %{description}"
       titles:
         reaction: "new reaction"
-      fullname:
-        reaction_2_users: "%{fullname}, %{fullname2}"
-        reaction_multiple_users:
-          one: "%{fullname} and %{count} other"
-          other: "%{fullname} and %{count} others"
-        reaction:
-          single: "<span>%{fullname}</span> %{description}"
-          multiple: "<span>%{fullname}</span> reacted to %{count} of your posts"
-        reaction_2: "<span class='double-user'>%{fullname}, %{fullname2}</span> %{description}"
-        reaction_many:
-          one: "<span class='multi-user'>%{fullname} and %{count} other</span> %{description}"
-          other: "<span class='multi-user'>%{fullname} and %{count} others</span> %{description}"

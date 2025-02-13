@@ -79,7 +79,7 @@ describe "Reactions | Notifications", type: :system, js: true do
 
       expect(labels[0]).to have_text(
         I18n.t(
-          "js.notifications.fullname.reaction_multiple_users.one",
+          "js.notifications.reaction_multiple_users.one",
           fullname: acting_user_2.name,
           count: 2,
         ),
@@ -87,7 +87,7 @@ describe "Reactions | Notifications", type: :system, js: true do
 
       expect(labels[1]).to have_text(
         I18n.t(
-          "js.notifications.fullname.reaction_2_users",
+          "js.notifications.reaction_2_users",
           fullname: acting_user_2.name,
           fullname2: acting_user_1.name,
         ),

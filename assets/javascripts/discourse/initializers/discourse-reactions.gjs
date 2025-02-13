@@ -3,7 +3,6 @@ import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
-import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
@@ -128,40 +127,27 @@ function initializeDiscourseReactions(api) {
 
         get label() {
           const count = this.notification.data.count;
-          const fullName = this.notification.acting_user_name;
-          const username = this.username;
+          const nameOrUsername = this.siteSettings.prioritize_full_name_in_ux
+            ? this.notification.data.display_name
+            : this.notification.data.display_username;
 
           if (!count || count === 1 || !this.notification.data.username2) {
-            if (!this.siteSettings.prioritize_full_name_in_ux) {
-              return username;
-            } else {
-              return fullName || username;
-            }
+            return nameOrUsername;
           }
           if (count > 2) {
-            if (!this.siteSettings.prioritize_full_name_in_ux) {
-              return i18n("notifications.reaction_multiple_users", {
-                username,
-                count: count - 1,
-              });
-            } else {
-              return i18n("notifications.fullname.reaction_multiple_users", {
-                fullName,
-                count: count - 1,
-              });
-            }
+            return i18n("notifications.reaction_multiple_users", {
+              username: nameOrUsername,
+              count: count - 1,
+            });
           } else {
-            if (!this.siteSettings.prioritize_full_name_in_ux) {
-              return i18n("notifications.reaction_2_users", {
-                username,
-                username2: formatUsername(this.notification.data.username2),
-              });
-            } else {
-              return i18n("notifications.fullname.reaction_2_users", {
-                fullName,
-                fullName2: this.notification.data, // this is not correct, but I'm not sure what the correct object value is after "data"
-              });
-            }
+            const name2OrUsername2 = this.siteSettings
+              .prioritize_full_name_in_ux
+              ? this.notification.data.name2
+              : this.notification.data.username2;
+            return i18n("notifications.reaction_2_users", {
+              username: nameOrUsername,
+              username2: name2OrUsername2,
+            });
           }
         }
 
