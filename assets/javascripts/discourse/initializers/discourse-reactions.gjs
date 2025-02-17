@@ -3,7 +3,6 @@ import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
-import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
@@ -128,21 +127,26 @@ function initializeDiscourseReactions(api) {
 
         get label() {
           const count = this.notification.data.count;
-          const username = this.username;
+          const nameOrUsername = this.siteSettings.prioritize_full_name_in_ux
+            ? this.notification.data.display_name
+            : this.notification.data.display_username;
 
           if (!count || count === 1 || !this.notification.data.username2) {
-            return username;
+            return nameOrUsername;
           }
-
           if (count > 2) {
             return i18n("notifications.reaction_multiple_users", {
-              username,
+              username: nameOrUsername,
               count: count - 1,
             });
           } else {
+            const name2OrUsername2 = this.siteSettings
+              .prioritize_full_name_in_ux
+              ? this.notification.data.name2
+              : this.notification.data.username2;
             return i18n("notifications.reaction_2_users", {
-              username,
-              username2: formatUsername(this.notification.data.username2),
+              username: nameOrUsername,
+              username2: name2OrUsername2,
             });
           }
         }
