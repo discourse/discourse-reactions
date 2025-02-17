@@ -78,21 +78,17 @@ describe "Reactions | Notifications", type: :system, js: true do
       labels = page.all("#quick-access-all-notifications .notification.reaction .item-label")
 
       expect(labels[0]).to have_text(
-        I18n.t(
-          "js.notifications.reaction_multiple_users.one",
-          fullname: acting_user_2.name,
-          count: 2,
-        ),
+        I18n.t("js.notifications.reaction_multiple_users", username: acting_user_2.name, count: 2),
       )
 
       expect(labels[1]).to have_text(
         I18n.t(
           "js.notifications.reaction_2_users",
-          fullname: acting_user_2.name,
-          fullname2: acting_user_1.name,
+          username: acting_user_2.name,
+          username2: acting_user_1.name,
         ),
       )
-      expect(labels[2]).to have_text(acting_user_1.username)
+      expect(labels[2]).to have_text(acting_user_1.name)
     end
   end
 end

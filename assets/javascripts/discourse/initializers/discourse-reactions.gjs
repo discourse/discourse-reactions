@@ -140,13 +140,12 @@ function initializeDiscourseReactions(api) {
               count: count - 1,
             });
           } else {
-            const name2OrUsername2 = this.siteSettings
-              .prioritize_full_name_in_ux
+            const nameOrUsername2 = this.siteSettings.prioritize_full_name_in_ux
               ? this.notification.data.name2
               : this.notification.data.username2;
             return i18n("notifications.reaction_2_users", {
               username: nameOrUsername,
-              username2: name2OrUsername2,
+              username2: nameOrUsername2,
             });
           }
         }
