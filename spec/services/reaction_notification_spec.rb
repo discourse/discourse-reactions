@@ -90,6 +90,8 @@ describe DiscourseReactions::ReactionNotification do
   end
 
   it "displays the full name" do
+    cry_p1 = Fabricate(:reaction, post: post_1, reaction_value: "cry")
+
     described_class.new(cry_p1, user_2).create
 
     expect(
