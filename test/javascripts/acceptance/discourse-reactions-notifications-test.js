@@ -241,3 +241,179 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
     );
   });
 });
+
+acceptance(
+  "Discourse Reactions - Notifications | Full Name Setting On",
+  function (needs) {
+    needs.user({ redesigned_user_menu_enabled: true });
+
+    needs.settings({
+      discourse_reactions_enabled: true,
+      discourse_reactions_enabled_reactions: "otter|open_mouth",
+      discourse_reactions_reaction_for_like: "heart",
+      discourse_reactions_like_icon: "heart",
+      prioritize_full_name_in_ux: true,
+    });
+
+    needs.pretender((server, helper) => {
+      server.get("/notifications", () => {
+        return helper.response({
+          notifications: [
+            {
+              id: 1334,
+              user_id: 88,
+              notification_type: 25,
+              read: true,
+              high_priority: false,
+              created_at: "2022-08-18T13:00:11.166Z",
+              post_number: 12,
+              topic_id: 8432,
+              fancy_title: "Topic with one reaction from a user",
+              slug: "topic-with-one-reaction-from-a-user",
+              data: {
+                topic_title: "Topic with one reaction from a user",
+                original_post_id: 3349,
+                original_post_type: 1,
+                original_username: "krus",
+                revision_number: null,
+                display_username: "krus",
+                display_name: "Brucer Wayner II",
+                reaction_icon: "heart",
+                previous_notification_id: 933,
+                count: 1,
+              },
+            },
+            {
+              id: 842,
+              user_id: 88,
+              notification_type: 25,
+              read: true,
+              high_priority: false,
+              created_at: "2021-08-19T23:00:11.166Z",
+              post_number: 3,
+              topic_id: 138,
+              fancy_title: "Topic with 2 likes (total) from 2 users",
+              slug: "topic-with-2-likes-total-from-2-users",
+              data: {
+                topic_title: "Topic with 2 likes (total) from 2 users",
+                original_post_id: 443,
+                original_post_type: 1,
+                original_username: "jammed-radio",
+                revision_number: null,
+                display_username: "jammed-radio",
+                display_name: "Bruce Wayne I",
+                previous_notification_id: 933,
+                username2: "broken-radio",
+                name2: "Brucer Wayner II",
+                reaction_icon: "heart",
+                count: 2,
+              },
+            },
+            {
+              id: 3843,
+              user_id: 88,
+              notification_type: 25,
+              read: true,
+              high_priority: false,
+              created_at: "2021-08-19T23:00:11.166Z",
+              post_number: 31,
+              topic_id: 832,
+              fancy_title: "Topic with likes from multiple users",
+              slug: "topic-with-likes-from-multiple-users",
+              data: {
+                topic_title: "Topic with likes from multiple users",
+                original_post_id: 903,
+                original_post_type: 1,
+                original_username: "jam-and-cheese",
+                revision_number: null,
+                display_username: "jam-and-cheese",
+                name: "Pickles McGee",
+                previous_notification_id: 933,
+                username2: "cheesy-monkey",
+                name2: "Hamburger Patty",
+                reaction_icon: "heart",
+                count: 3,
+              },
+            },
+            {
+              id: 2189,
+              user_id: 88,
+              notification_type: 25,
+              read: true,
+              high_priority: false,
+              created_at: "2020-11-13T03:10:41.166Z",
+              post_number: 31,
+              topic_id: 913,
+              fancy_title: "Topic with likes and reactions",
+              slug: "topic-with-likes-and-reactions",
+              data: {
+                topic_title: "Topic with likes and reactions",
+                original_post_id: 384,
+                original_post_type: 1,
+                original_username: "nuclear-reactor",
+                revision_number: null,
+                display_username: "nuclear-reactor",
+                display_name: "Monkey D. Luffy",
+                previous_notification_id: 933,
+                username2: "solar-engine",
+                name2: "Roronoa Zoro",
+                count: 4,
+              },
+            },
+            {
+              id: 7731,
+              user_id: 88,
+              notification_type: 25,
+              read: true,
+              high_priority: false,
+              created_at: "2022-07-18T10:00:11.186Z",
+              post_number: null,
+              topic_id: null,
+              fancy_title: null,
+              slug: null,
+              data: {
+                topic_title: "Double reactions on multiple posts from one user",
+                original_post_id: 843,
+                original_post_type: 1,
+                original_username: "johnny",
+                revision_number: null,
+                display_username: "johnny",
+                username: "johnny",
+                consolidated: true,
+                count: 2,
+              },
+            },
+          ],
+        });
+      });
+    });
+
+    test("reaction notifications with full name site setting on", async (assert) => {
+      await visit("/");
+      await click(".d-header-icons .current-user button");
+
+      const notifications = queryAll(
+        "#quick-access-all-notifications ul li.notification.reaction a"
+      );
+
+      assert.strictEqual(
+        notifications[1].textContent.replaceAll(/\s+/g, " ").trim(),
+        `${i18n("notifications.reaction_2_users", {
+          username: "Bruce Wayne I",
+          username2: "Brucer Wayner II",
+        })} Topic with 2 likes (total) from 2 users`,
+        "notification for 2 likes from 2 users has the right content"
+      );
+
+      // this one isn't receiving username value for the translation for some reason - solution should also fix the rails test error
+      assert.strictEqual(
+        notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
+        `${i18n("notifications.reaction_multiple_users", {
+          username: "Monkey D. Luffy",
+          count: 3,
+        })} Topic with likes and reactions`,
+        "notification for reactions from 3 or more users has the right content"
+      );
+    });
+  }
+);

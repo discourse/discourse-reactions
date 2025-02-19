@@ -135,6 +135,8 @@ function initializeDiscourseReactions(api) {
             return nameOrUsername;
           }
           if (count > 2) {
+            console.log("OVER TWO REACTIONS!!!!!!!!!");
+            console.log(nameOrUsername);
             return i18n("notifications.reaction_multiple_users", {
               username: nameOrUsername,
               count: count - 1,

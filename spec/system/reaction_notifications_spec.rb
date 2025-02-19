@@ -88,6 +88,7 @@ describe "Reactions | Notifications", type: :system, js: true do
           username2: acting_user_1.name,
         ),
       )
+
       expect(labels[2]).to have_text(acting_user_1.name)
     end
   end
