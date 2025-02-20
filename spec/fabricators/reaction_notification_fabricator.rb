@@ -12,6 +12,7 @@ Fabricator(:one_reaction_notification, from: :notification) do
       original_post_id: attrs[:post].id,
       original_post_type: attrs[:post].post_type,
       original_username: acting_user.username,
+      display_name: acting_user.name,
       revision_number: nil,
       display_username: acting_user.username,
     }.to_json
@@ -31,8 +32,10 @@ Fabricator(:multiple_reactions_notification, from: :one_reaction_notification) d
       original_username: acting_user_2.username,
       revision_number: nil,
       display_username: acting_user_2.username,
+      display_name: acting_user_2.name,
       previous_notification_id: 2019,
       username2: acting_user.username,
+      name2: acting_user.name,
       count: attrs[:count] || 2,
     }.to_json
   end

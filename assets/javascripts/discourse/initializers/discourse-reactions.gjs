@@ -3,6 +3,7 @@ import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
+import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
@@ -129,14 +130,12 @@ function initializeDiscourseReactions(api) {
           const count = this.notification.data.count;
           const nameOrUsername = this.siteSettings.prioritize_full_name_in_ux
             ? this.notification.data.display_name
-            : this.notification.data.display_username;
+            : this.username;
 
           if (!count || count === 1 || !this.notification.data.username2) {
             return nameOrUsername;
           }
           if (count > 2) {
-            console.log("OVER TWO REACTIONS!!!!!!!!!");
-            console.log(nameOrUsername);
             return i18n("notifications.reaction_multiple_users", {
               username: nameOrUsername,
               count: count - 1,
@@ -144,7 +143,7 @@ function initializeDiscourseReactions(api) {
           } else {
             const nameOrUsername2 = this.siteSettings.prioritize_full_name_in_ux
               ? this.notification.data.name2
-              : this.notification.data.username2;
+              : formatUsername(this.notification.data.username2);
             return i18n("notifications.reaction_2_users", {
               username: nameOrUsername,
               username2: nameOrUsername2,

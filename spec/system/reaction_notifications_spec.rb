@@ -2,8 +2,8 @@
 
 describe "Reactions | Notifications", type: :system, js: true do
   fab!(:current_user) { Fabricate(:user) }
-  fab!(:acting_user_1) { Fabricate(:user) }
-  fab!(:acting_user_2) { Fabricate(:user) }
+  fab!(:acting_user_1) { Fabricate(:user, name: "Bruce Wayne I") }
+  fab!(:acting_user_2) { Fabricate(:user, name: "Bruce Wayne II") }
 
   fab!(:one_reaction_notification) do
     Fabricate(:one_reaction_notification, user: current_user, acting_user: acting_user_1)
@@ -65,11 +65,7 @@ describe "Reactions | Notifications", type: :system, js: true do
   end
 
   context "when prioritize full names in ux site setting is on" do
-    before do
-      SiteSetting.prioritize_full_name_in_ux = true
-      SiteSetting.discourse_reactions_enabled = true
-      sign_in(current_user)
-    end
+    before { SiteSetting.prioritize_full_name_in_ux = true }
 
     it "renders reaction notifications with full names" do
       visit("/")
