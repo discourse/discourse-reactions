@@ -3,6 +3,7 @@ import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
+import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
 import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
@@ -135,8 +136,6 @@ function initializeDiscourseReactions(api) {
             return nameOrUsername;
           }
           if (count > 2) {
-            console.log("OVER TWO REACTIONS!!!!!!!!!");
-            console.log(nameOrUsername);
             return i18n("notifications.reaction_multiple_users", {
               username: nameOrUsername,
               count: count - 1,
