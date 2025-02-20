@@ -310,32 +310,6 @@ acceptance(
               },
             },
             {
-              id: 3843,
-              user_id: 88,
-              notification_type: 25,
-              read: true,
-              high_priority: false,
-              created_at: "2021-08-19T23:00:11.166Z",
-              post_number: 31,
-              topic_id: 832,
-              fancy_title: "Topic with likes from multiple users",
-              slug: "topic-with-likes-from-multiple-users",
-              data: {
-                topic_title: "Topic with likes from multiple users",
-                original_post_id: 903,
-                original_post_type: 1,
-                original_username: "jam-and-cheese",
-                revision_number: null,
-                display_username: "jam-and-cheese",
-                name: "Pickles McGee",
-                previous_notification_id: 933,
-                username2: "cheesy-monkey",
-                name2: "Hamburger Patty",
-                reaction_icon: "heart",
-                count: 3,
-              },
-            },
-            {
               id: 2189,
               user_id: 88,
               notification_type: 25,
@@ -360,29 +334,6 @@ acceptance(
                 count: 4,
               },
             },
-            {
-              id: 7731,
-              user_id: 88,
-              notification_type: 25,
-              read: true,
-              high_priority: false,
-              created_at: "2022-07-18T10:00:11.186Z",
-              post_number: null,
-              topic_id: null,
-              fancy_title: null,
-              slug: null,
-              data: {
-                topic_title: "Double reactions on multiple posts from one user",
-                original_post_id: 843,
-                original_post_type: 1,
-                original_username: "johnny",
-                revision_number: null,
-                display_username: "johnny",
-                username: "johnny",
-                consolidated: true,
-                count: 2,
-              },
-            },
           ],
         });
       });
@@ -405,7 +356,6 @@ acceptance(
         "notification for 2 likes from 2 users has the right content"
       );
 
-      // this one isn't receiving username value for the translation for some reason - solution should also fix the rails test error
       assert.strictEqual(
         notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
         `${i18n("notifications.reaction_multiple_users", {
