@@ -313,7 +313,11 @@ after_initialize do
         set_data_blk:
           Proc.new do |notification|
             data = notification.data_hash
-            data.merge(username: data[:display_username], consolidated: true)
+            data.merge(
+              username: data[:display_username],
+              name: data[:display_name],
+              consolidated: true,
+            )
           end,
       )
       .set_precondition(precondition_blk: Proc.new { |data| data[:username2].blank? })
@@ -366,6 +370,7 @@ after_initialize do
                 data.merge(
                   previous_notification_id: existing_notification_of_same_type.id,
                   username2: same_type_data[:display_username],
+                  name2: same_type_data[:display_name],
                   count: (same_type_data[:count] || 1).to_i + 1,
                 )
 
