@@ -323,29 +323,9 @@ acceptance(
         .dom("li.notification.reaction:nth-child(1) a")
         .hasText(/Bruce Wayne I, Brucer Wayner II/);
 
-<<<<<<< HEAD
       assert
         .dom("li.notification.reaction:nth-child(2) a")
         .hasText(/Monkey D. Luffy and 3 others/);
-=======
-      assert.strictEqual(
-        notifications[1].textContent.replaceAll(/\s+/g, " ").trim(),
-        `${i18n("notifications.reaction_2_users", {
-          username: "Bruce Wayne I",
-          username2: "Brucer Wayner II",
-        })} Topic with 2 likes (total) from 2 users`,
-        "notification for 2 likes from 2 users has the right content"
-      );
-
-      assert.strictEqual(
-        notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
-        `${i18n("notifications.reaction_multiple_users", {
-          username: "Monkey D. Luffy",
-          count: 3,
-        })} Topic with likes and reactions`,
-        "notification for reactions from 3 or more users has the right content"
-      );
->>>>>>> 2a07f6f (Last bit of spec fixes)
     });
   }
 );
