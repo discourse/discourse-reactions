@@ -130,7 +130,7 @@ function initializeDiscourseReactions(api) {
           const count = this.notification.data.count;
           const nameOrUsername = this.siteSettings.prioritize_full_name_in_ux
             ? this.notification.data.display_name ||
-              this.notification.data.username
+              this.username
             : this.username;
 
           if (!count || count === 1 || !this.notification.data.username2) {
