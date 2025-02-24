@@ -4,7 +4,7 @@ import { acceptance, queryAll } from "discourse/tests/helpers/qunit-helpers";
 import { i18n } from "discourse-i18n";
 
 acceptance("Discourse Reactions - Notifications", function (needs) {
-  needs.user({ redesigned_user_menu_enabled: true });
+  needs.user();
 
   needs.settings({
     discourse_reactions_enabled: true,
@@ -245,7 +245,7 @@ acceptance("Discourse Reactions - Notifications", function (needs) {
 acceptance(
   "Discourse Reactions - Notifications | Full Name Setting On",
   function (needs) {
-    needs.user({ redesigned_user_menu_enabled: true });
+    needs.user();
 
     needs.settings({
       discourse_reactions_enabled: true,
