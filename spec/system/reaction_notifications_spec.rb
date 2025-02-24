@@ -65,6 +65,17 @@ describe "Reactions | Notifications", type: :system, js: true do
   end
 
   context "when prioritize full names in ux site setting is on" do
+    fab!(:acting_user_3) { Fabricate(:user, username: "missingno", name: nil) }
+    fab!(:null_name_notification) do
+      Fabricate(
+        :multiple_reactions_notification,
+        user: current_user,
+        count: 2,
+        acting_user: acting_user_3,
+        acting_user_2: acting_user_2,
+      )
+    end
+
     before { SiteSetting.prioritize_full_name_in_ux = true }
 
     it "renders reaction notifications with full names" do
@@ -73,11 +84,11 @@ describe "Reactions | Notifications", type: :system, js: true do
 
       labels = page.all("#quick-access-all-notifications .notification.reaction .item-label")
 
-      expect(labels[0]).to have_text(
+      expect(labels[1]).to have_text(
         I18n.t("js.notifications.reaction_multiple_users", username: acting_user_2.name, count: 2),
       )
 
-      expect(labels[1]).to have_text(
+      expect(labels[2]).to have_text(
         I18n.t(
           "js.notifications.reaction_2_users",
           username: acting_user_2.name,
@@ -86,6 +97,7 @@ describe "Reactions | Notifications", type: :system, js: true do
       )
 
       expect(labels[2]).to have_text(acting_user_1.name)
+      expect(labels[0]).to have_text(acting_user_3.username)
     end
   end
 end

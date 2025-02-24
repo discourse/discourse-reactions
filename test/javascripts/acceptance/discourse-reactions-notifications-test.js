@@ -260,30 +260,6 @@ acceptance(
         return helper.response({
           notifications: [
             {
-              id: 1334,
-              user_id: 88,
-              notification_type: 25,
-              read: true,
-              high_priority: false,
-              created_at: "2022-08-18T13:00:11.166Z",
-              post_number: 12,
-              topic_id: 8432,
-              fancy_title: "Topic with one reaction from a user",
-              slug: "topic-with-one-reaction-from-a-user",
-              data: {
-                topic_title: "Topic with one reaction from a user",
-                original_post_id: 3349,
-                original_post_type: 1,
-                original_username: "krus",
-                revision_number: null,
-                display_username: "krus",
-                display_name: "Brucer Wayner II",
-                reaction_icon: "heart",
-                previous_notification_id: 933,
-                count: 1,
-              },
-            },
-            {
               id: 842,
               user_id: 88,
               notification_type: 25,
@@ -339,31 +315,17 @@ acceptance(
       });
     });
 
-    test("reaction notifications with full name site setting on", async (assert) => {
+    test("reaction notifications with full name site setting on", async function (assert) {
       await visit("/");
       await click(".d-header-icons .current-user button");
 
-      const notifications = queryAll(
-        "#quick-access-all-notifications ul li.notification.reaction a"
-      );
+      assert
+        .dom("li.notification.reaction:nth-child(1) a")
+        .hasText(/Bruce Wayne I, Brucer Wayner II/);
 
-      assert.strictEqual(
-        notifications[1].textContent.replaceAll(/\s+/g, " ").trim(),
-        `${i18n("notifications.reaction_2_users", {
-          username: "Bruce Wayne I",
-          username2: "Brucer Wayner II",
-        })} Topic with 2 likes (total) from 2 users`,
-        "notification for 2 likes from 2 users has the right content"
-      );
-
-      assert.strictEqual(
-        notifications[2].textContent.replaceAll(/\s+/g, " ").trim(),
-        `${i18n("notifications.reaction_multiple_users", {
-          username: "Monkey D. Luffy",
-          count: 3,
-        })} Topic with likes and reactions`,
-        "notification for reactions from 3 or more users has the right content"
-      );
+      assert
+        .dom("li.notification.reaction:nth-child(2) a")
+        .hasText(/Monkey D. Luffy and 3 others/);
     });
   }
 );

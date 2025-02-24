@@ -45,7 +45,7 @@ export default createWidget("discourse-reactions-list-emoji", {
           !this.siteSettings.prioritize_username_in_ux &&
           this.siteSettings.prioritize_full_name_in_ux
         ) {
-          displayName = user.name;
+          displayName = user.name || user.username;
         } else if (this.siteSettings.prioritize_username_in_ux) {
           displayName = user.username;
         } else if (!user.name) {
