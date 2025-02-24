@@ -97,6 +97,13 @@ describe "Reactions | Notifications", type: :system, js: true do
       )
 
       expect(labels[2]).to have_text(acting_user_1.name)
+    end
+
+    it "falls back to the username when name field is nil" do
+      visit("/")
+      user_menu.open
+
+      labels = page.all("#quick-access-all-notifications .notification.reaction .item-label")
       expect(labels[0]).to have_text(acting_user_3.username)
     end
   end
