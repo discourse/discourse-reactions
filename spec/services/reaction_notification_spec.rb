@@ -12,9 +12,9 @@ describe DiscourseReactions::ReactionNotification do
 
   fab!(:post_1) { Fabricate(:post) }
   fab!(:thumbsup) { Fabricate(:reaction, post: post_1, reaction_value: "thumbsup") }
-  fab!(:user_1) { Fabricate(:user) }
+  fab!(:user_1) { Fabricate(:user, name: "Bruce Wayne Jr.") }
   fab!(:user_2) { Fabricate(:user) }
-  fab!(:user_3) { Fabricate(:user) }
+  fab!(:user_3) { Fabricate(:user, name: "Bruce Wayne Sr.") }
   fab!(:reaction_user1) { Fabricate(:reaction_user, reaction: thumbsup, user: user_1) }
   fab!(:like_reaction) { Fabricate(:reaction, post: post_1, reaction_value: "heart") }
 
@@ -87,6 +87,19 @@ describe DiscourseReactions::ReactionNotification do
 
     DiscourseReactions::ReactionUser.find_by(reaction: cry, user: user_2).destroy
     expect { described_class.new(cry, user_2).delete }.to change { Notification.count }.by(-1)
+  end
+
+  it "displays the full name" do
+    cry_p1 = Fabricate(:reaction, post: post_1, reaction_value: "cry")
+
+    described_class.new(cry_p1, user_2).create
+
+    expect(
+      Notification.where(notification_type: Notification.types[:reaction], user: post_1.user).count,
+    ).to eq(1)
+
+    notification = Notification.where(notification_type: Notification.types[:reaction]).last
+    expect(notification.data_hash[:display_name]).to eq(user_2.name)
   end
 
   it "adds the heart icon when the remaining notification is a like" do
@@ -224,8 +237,10 @@ describe DiscourseReactions::ReactionNotification do
         consolidated_notification =
           Notification.where(notification_type: Notification.types[:reaction]).last
 
-        expect(consolidated_notification.data_hash[:username2]).to eq(user_2.username)
         expect(consolidated_notification.data_hash[:display_username]).to eq(user_3.username)
+        expect(consolidated_notification.data_hash[:username2]).to eq(user_2.username)
+        expect(consolidated_notification.data_hash[:display_name]).to eq(user_3.name)
+        expect(consolidated_notification.data_hash[:name2]).to eq(user_2.name)
       end
 
       it "creates a new notification if the last one was created more than one day ago" do
