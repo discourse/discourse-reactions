@@ -1,9 +1,3 @@
-# WARNING: Never edit this file.
-# It will be overwritten when translations are pulled from Crowdin.
-#
-# To work with us on translations, join this project:
-# https://translate.discourse.org/
-
 ur:
   js:
     discourse_reactions:
@@ -11,8 +5,5 @@ ur:
         add: "اس پوسٹ کو پسند کریں"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "نیا ردعمل"

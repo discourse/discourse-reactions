@@ -1,9 +1,3 @@
-# WARNING: Never edit this file.
-# It will be overwritten when translations are pulled from Crowdin.
-#
-# To work with us on translations, join this project:
-# https://translate.discourse.org/
-
 ru:
   site_settings:
     discourse_reactions_like_icon: "Определяет значок, используемый для основной кнопки реакции. Это должно быть название значка <a href='https://fontawesome.com/v6/search?o=r&m=free' target='_blank'>Font Awesome</a>, а не название эмодзи."
