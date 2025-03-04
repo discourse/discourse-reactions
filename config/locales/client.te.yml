@@ -14,11 +14,5 @@ te:
       reaction_multiple_users:
         one: "%{username} మరియు %{count} ఇతర"
         other: "%{username} మరియు %{count} ఇతరులు"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} మరియు %{count} ఇతర</span> %{description}"
-        other: "<span class='multi-user'>%{username} మరియు %{count} ఇతరులు</span> %{description}"
       titles:
         reaction: "కొత్త స్పందన"

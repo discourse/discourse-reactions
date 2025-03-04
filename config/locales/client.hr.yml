@@ -17,12 +17,5 @@ hr:
         one: "%{username} i %{count} drugi"
         few: "%{username} i %{count} druga"
         other: "%{username} i %{count} drugih"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} i %{count} drugi</span> %{description}"
-        few: "<span class='multi-user'>%{username} i %{count} druga</span> %{description}"
-        other: "<span class='multi-user'>%{username} i %{count} drugih</span> %{description}"
       titles:
         reaction: "nova reakcija"

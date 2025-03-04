@@ -32,11 +32,5 @@ ja:
       reaction_2_users: "%{username}、%{username2}"
       reaction_multiple_users:
         other: "%{username} および他 %{count} 人"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> があなたの %{count} 件の投稿に反応しました"
-      reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
-      reaction_many:
-        other: "<span class='multi-user'>%{username} および他 %{count} 人</span> %{description}"
       titles:
         reaction: "新しいリアクション"

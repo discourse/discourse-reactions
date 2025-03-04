@@ -34,12 +34,5 @@ tr_TR:
       reaction_multiple_users:
         one: "%{username} ve %{count} kişi daha"
         other: "%{username} ve %{count} kişi daha"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> %{count} gönderinize tepki verdi"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} ve %{count} </span> %{description} daha"
-        other: "<span class='multi-user'>%{username} ve %{count} </span> %{description} daha"
       titles:
         reaction: "yeni tepki"

@@ -5,8 +5,3 @@
 # https://translate.discourse.org/
 
 th:
-  js:
-    notifications:
-      reaction:
-        single: "<span>%{username}</span>%{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span>%{description}"

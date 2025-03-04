@@ -15,10 +15,5 @@ vi:
       reaction_2_users: "%{username}, %{username2}"
       reaction_multiple_users:
         other: "%{username} và %{count} khác"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        other: "<span class='multi-user'>%{username} và %{count} người khác</span> %{description}"
       titles:
         reaction: "phản ứng mới"

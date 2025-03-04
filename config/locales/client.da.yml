@@ -28,9 +28,5 @@ da:
         unauthenticated: "Tilmeld dig eller log ind for at 'synes godt om' dette indlæg"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> reagerede på %{count} af dine indlæg"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "ny reaktion"

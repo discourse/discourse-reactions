@@ -38,14 +38,5 @@ ru:
         few: "%{username} и ещё %{count}"
         many: "%{username} и ещё %{count}"
         other: "%{username} и ещё %{count}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> отреагировал на %{count} ваших сообщений"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
-        few: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
-        many: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
-        other: "<span class='multi-user'>%{username} и ещё %{count}</span> %{description}"
       titles:
         reaction: "Новая реакция"

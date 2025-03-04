@@ -38,14 +38,5 @@ he:
         two: "%{username} ועוד %{count}"
         many: "%{username} ועוד %{count}"
         other: "%{username} ועוד %{count}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "התקבלו תחושות מאת <span>%{username}</span> ל־%{count} מהפוסטים שלך"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
-        two: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
-        many: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
-        other: "<span class='multi-user'>%{username} ועוד %{count}</span> %{description}"
       titles:
         reaction: "תחושה חדשה"
