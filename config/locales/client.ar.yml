@@ -42,16 +42,5 @@ ar:
         few: "%{username} و%{count} آخرين"
         many: "%{username} و%{count} آخر"
         other: "%{username} و%{count} آخر"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "تفاعل <span>%{username}</span> على %{count} من منشوراتك"
-      reaction_2: "<span class='double-user'>%{username}، %{username2}</span> %{description}"
-      reaction_many:
-        zero: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
-        one: "<span class='multi-user'>%{username} وواحد (%{count}) آخر</span> %{description}"
-        two: "<span class='multi-user'>%{username} واثنان (%{count}) آخران</span> %{description}"
-        few: "<span class='multi-user'>%{username} و%{count} آخرين</span> %{description}"
-        many: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
-        other: "<span class='multi-user'>%{username} و%{count} آخر</span> %{description}"
       titles:
         reaction: "تفاعل جديد"

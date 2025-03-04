@@ -18,13 +18,5 @@ sk:
         few: "%{username} a %{count} ďalších"
         many: "%{username} a %{count} ďalších"
         other: "%{username} a %{count} ďalších"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} a %{count} iné</span> %{description}"
-        few: "<span class='multi-user'>%{username} a %{count} iných</span> %{description}"
-        many: "<span class='multi-user'>%{username} a %{count} iné</span> %{description}"
-        other: "<span class='multi-user'>%{username} a %{count} iné</span> %{description}"
       titles:
         reaction: "nová reakcia"

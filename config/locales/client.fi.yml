@@ -34,12 +34,5 @@ fi:
       reaction_multiple_users:
         one: "%{username} ja %{count} muu"
         other: "%{username} ja %{count} muuta"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> reagoi %{count} viesteistäsi"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} ja %{count} muu</span> %{description}"
-        other: "<span class='multi-user'>%{username} ja %{count} muuta</span> %{description}"
       titles:
         reaction: "uusi reaktio"

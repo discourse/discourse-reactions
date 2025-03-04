@@ -12,5 +12,3 @@ id:
     notifications:
       reaction_multiple_users:
         other: "%{username} dan %{count} lainnya"
-      reaction_many:
-        other: "<span class='multi-user'>%{username} dan %{count} lainnya</span> %{description}"

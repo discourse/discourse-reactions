@@ -16,11 +16,5 @@ ug:
       reaction_multiple_users:
         one: "%{username} ۋە باشقا %{count} كىشى"
         other: "%{username} ۋە باشقا %{count} كىشى"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} ۋە باشقا %{count} كىشى</span> %{description}"
-        other: "<span class='multi-user'>%{username} ۋە باشقا %{count} كىشى</span> %{description}"
       titles:
         reaction: "يېڭى ئىنكاس"

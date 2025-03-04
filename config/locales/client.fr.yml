@@ -34,12 +34,5 @@ fr:
       reaction_multiple_users:
         one: "%{username} et %{count} autre utilisateur"
         other: "%{username} et %{count} autres utilisateurs"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> a réagi à %{count} de vos messages."
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} et %{count} autre personne</span> %{description}"
-        other: "<span class='multi-user'>%{username} et %{count} autres personnes</span> %{description}"
       titles:
         reaction: "nouvelle réaction"

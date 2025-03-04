@@ -18,13 +18,5 @@ uk:
         few: "%{username} і ще %{count}"
         many: "%{username} і ще %{count}"
         other: "%{username} і ще %{count}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} та %{count} інший</span> %{description}"
-        few: "<span class='multi-user'>%{username} та %{count} інших</span> %{description}"
-        many: "<span class='multi-user'>%{username} та %{count} інші</span> %{description}"
-        other: "<span class='multi-user'>%{username} та %{count} інші</span> %{description}"
       titles:
         reaction: "нова реакція"

@@ -34,12 +34,5 @@ nl:
       reaction_multiple_users:
         one: "%{username} en %{count} ander"
         other: "%{username} en %{count} anderen"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> heeft gereageerd op %{count} van je berichten"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} en %{count} ander</span> %{description}"
-        other: "<span class='multi-user'>%{username} en %{count} anderen</span> %{description}"
       titles:
         reaction: "nieuwe reactie"

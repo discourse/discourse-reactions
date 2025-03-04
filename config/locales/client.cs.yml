@@ -38,14 +38,5 @@ cs:
         few: "%{username} a %{count} další"
         many: "%{username} a %{count} dalších"
         other: "%{username} a %{count} dalších"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> reagovali na %{count} vašich příspěvků"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span>%{username} a %{count} další</span> %{description}"
-        few: "<span>%{username} a %{count} dalších</span> %{description}"
-        many: "<span>%{username} a %{count} dalších</span> %{description}"
-        other: "<span>%{username} a %{count} dalších</span> %{description}"
       titles:
         reaction: "nová reakce"

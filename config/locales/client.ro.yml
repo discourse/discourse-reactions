@@ -36,13 +36,5 @@ ro:
         one: "%{username} și încă %{count}"
         few: "%{username} și încă %{count}"
         other: "%{username} și încă %{count}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> a reacționat la %{count} dintre articolele tale"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} și încă %{count}</span> %{description}"
-        few: "<span class='multi-user'>%{username} și încă %{count}</span> %{description}"
-        other: "<span class='multi-user'>%{username} și încă %{count}</span> %{description}"
       titles:
         reaction: "reacție nouă"

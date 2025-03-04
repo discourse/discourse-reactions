@@ -33,14 +33,5 @@ pl_PL:
         few: "%{username} i %{count} inni"
         many: "%{username} i %{count} innych"
         other: "%{username} i %{count} innych"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> zareagował na %{count} twoich postów"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} i %{count} inny</span> %{description}"
-        few: "<span class='multi-user'>%{username} i %{count} inni</span> %{description}"
-        many: "<span class='multi-user'>%{username} i %{count} inni</span> %{description}"
-        other: "<span class='multi-user'>%{username} i %{count} inni</span> %{description}"
       titles:
         reaction: "nowa reakcja"

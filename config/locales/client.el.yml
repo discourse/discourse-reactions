@@ -34,12 +34,5 @@ el:
       reaction_multiple_users:
         one: "%{username} και %{count} ακόμη"
         other: "%{username} και %{count} ακόμη"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> αντέδρασε σε %{count} από τις αναρτήσεις σας"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
-      reaction_many:
-        one: "<span class='multi-user'>%{username} και %{count} ακόμη</span> %{description}"
-        other: "<span class='multi-user'>%{username} και %{count} ακόμη</span> %{description}"
       titles:
         reaction: "νέα αντίδραση"

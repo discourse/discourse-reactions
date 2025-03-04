@@ -32,11 +32,5 @@ zh_CN:
       reaction_2_users: "%{username}、%{username2}"
       reaction_multiple_users:
         other: "%{username} 和其他 %{count} 人"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-        multiple: "<span>%{username}</span> 回应了您的 %{count} 个帖子"
-      reaction_2: "<span class='double-user'>%{username}、%{username2}</span> %{description}"
-      reaction_many:
-        other: "<span class='multi-user'>%{username} 和其他 %{count} 人</span>%{description}"
       titles:
         reaction: "新回应"

@@ -11,8 +11,5 @@ nb_NO:
         add: "Liker dette innlegget"
     notifications:
       reaction_2_users: "%{username}, %{username2}"
-      reaction:
-        single: "<span>%{username}</span> %{description}"
-      reaction_2: "<span class='double-user'>%{username}, %{username2}</span> %{description}"
       titles:
         reaction: "ny reaksjon"
