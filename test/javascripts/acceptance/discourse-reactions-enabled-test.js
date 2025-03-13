@@ -47,7 +47,7 @@ acceptance("Discourse Reactions - Enabled | Anonymous user", function (needs) {
     await visit("/t/topic_with_reactions_and_likes/374");
     await click(".actions button.btn-toggle-reaction-like");
 
-    assert.dom(".d-modal.login-modal").exists("login modal was displayed");
+    assert.dom("#login-form").exists("login form was displayed");
   });
 });
 
@@ -97,6 +97,6 @@ acceptance("Discourse Reactions - Widgets | Anonymous user", function (needs) {
     await visit("/t/topic_with_reactions_and_likes/374");
     await click(".actions button.btn-toggle-reaction-like");
 
-    assert.dom(".d-modal.login-modal").exists("login modal was displayed");
+    assert.dom("#login-form").exists("login form was displayed");
   });
 });
