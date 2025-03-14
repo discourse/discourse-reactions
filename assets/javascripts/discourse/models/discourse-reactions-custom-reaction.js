@@ -19,6 +19,20 @@ export default class CustomReaction extends RestModel {
     });
   }
 
+  static findReactionActivity(username){
+    const data = { username };
+    
+    return ajax(`/discourse-reactions/posts/activity/recieved.json`, {
+      data,
+    }).then((postReactionActivity) => {
+      return postReactionActivity.map((activity) => {
+        activity = Post.create(activity);
+        return EmberObject.create(activity);
+      });
+    });
+
+  }
+
   static findReactions(url, username, opts) {
     opts = opts || {};
     const data = { username };

@@ -37,6 +37,7 @@ after_initialize do
     app/models/discourse_reactions/reaction.rb
     app/serializers/reaction_serializer.rb
     app/serializers/user_reaction_serializer.rb
+    app/serializers/post_reactions_serializer.rb
     app/services/discourse_reactions/reaction_manager.rb
     app/services/discourse_reactions/reaction_notification.rb
     app/services/discourse_reactions/reaction_like_synchronizer.rb
@@ -44,7 +45,9 @@ after_initialize do
     lib/discourse_reactions/notification_extension.rb
     lib/discourse_reactions/post_alerter_extension.rb
     lib/discourse_reactions/post_extension.rb
+    lib/discourse_reactions/posts_controller_extension.rb
     lib/discourse_reactions/post_action_extension.rb
+    lib/discourse_reactions/post_serializer_extension.rb
     lib/discourse_reactions/posts_reaction_loader.rb
     lib/discourse_reactions/topic_view_serializer_extension.rb
     lib/discourse_reactions/topic_view_posts_serializer_extension.rb
@@ -55,7 +58,9 @@ after_initialize do
 
   reloadable_patch do |plugin|
     Post.prepend DiscourseReactions::PostExtension
+    PostsController.prepend DiscourseReactions::PostsControllerExtension
     PostAction.prepend DiscourseReactions::PostActionExtension
+    PostSerializer.prepend DiscourseReactions::PostSerializerExtension
     TopicViewSerializer.prepend DiscourseReactions::TopicViewSerializerExtension
     TopicViewPostsSerializer.prepend DiscourseReactions::TopicViewPostsSerializerExtension
     PostAlerter.prepend DiscourseReactions::PostAlerterExtension
@@ -63,7 +68,10 @@ after_initialize do
     Notification.singleton_class.prepend DiscourseReactions::NotificationExtension
   end
 
-  Discourse::Application.routes.append { mount ::DiscourseReactions::Engine, at: "/" }
+  Discourse::Application.routes.append do
+    mount ::DiscourseReactions::Engine, at: "/"
+    get "/discourse-reactions/posts/activity/recieved" => "posts#reactions_recieved_posts"
+  end
 
   DiscourseReactions::Engine.routes.draw do
     get "/discourse-reactions/custom-reactions" => "custom_reactions#index",
