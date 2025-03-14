@@ -31,7 +31,7 @@ export default class DiscourseReactionsReactionPost extends Component {
     const name = this.args.reaction.user.name;
     const username = this.args.reaction.user.username;
     if (this.siteSettings.prioritize_full_name_in_ux || !username) {
-      return excerpt.replace(/@\w+/, `@${name || username}`);
+      return excerpt.replace(/@\p{L}+/u, `@${name || username}`);
     } else {
       excerpt;
     }
