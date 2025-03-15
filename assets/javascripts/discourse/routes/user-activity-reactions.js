@@ -3,8 +3,7 @@ import CustomReaction from "../models/discourse-reactions-custom-reaction";
 
 export default class UserActivityReactions extends DiscourseRoute {
   model() {
-    return CustomReaction.findReactions(
-      "reactions",
+    return CustomReaction.findReactionActivity(
       this.modelFor("user").get("username")
     );
   }
