@@ -23,7 +23,7 @@ after_initialize do
   SeedFu.fixture_paths << Rails.root.join("plugins", "discourse-reactions", "db", "fixtures").to_s
 
   module ::DiscourseReactions
-    PLUGIN_NAME ||= "discourse-reactions"
+    PLUGIN_NAME = "discourse-reactions"
 
     class Engine < ::Rails::Engine
       engine_name PLUGIN_NAME

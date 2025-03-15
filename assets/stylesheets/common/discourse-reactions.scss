@@ -1,5 +1,6 @@
 html.discourse-reactions-no-select {
   -webkit-touch-callout: none; /* Disables long-touch menu */
+
   @include user-select(none); /* Disable text selection */
 }
 
@@ -42,6 +43,7 @@ html.discourse-reactions-no-select {
           .user-list {
             visibility: visible;
             opacity: 0.9;
+
             .spinner {
               animation-play-state: running;
             }
@@ -110,6 +112,7 @@ html.discourse-reactions-no-select {
   0% {
     opacity: 0;
   }
+
   100% {
     visibility: visible;
     opacity: 1;
@@ -162,6 +165,7 @@ html.discourse-reactions-no-select {
 
     &.can-undo {
       cursor: pointer;
+
       .discourse-no-touch & {
         &:hover {
           background: none !important;
@@ -258,6 +262,7 @@ html.discourse-reactions-no-select {
       display: flex;
       align-items: center;
       justify-content: center;
+
       .avatar {
         // constrain to container
         width: 100%;
@@ -284,6 +289,7 @@ html.discourse-reactions-no-select {
       font-size: $font-down-1;
       color: var(--primary-medium);
       text-align: left;
+
       @include ellipsis;
     }
 
@@ -332,12 +338,14 @@ html.discourse-reactions-no-select {
   &:not(.custom-reaction-used) {
     .discourse-reactions-counter {
       line-height: 1;
+
       + .discourse-reactions-reaction-button {
         button {
           padding-left: 0.45em;
         }
       }
     }
+
     .reactions-counter {
       padding: 8px 0 8px 10px;
     }
@@ -376,7 +384,6 @@ html.discourse-reactions-no-select {
           .d-icon {
             color: var(--primary-low-mid);
           }
-
           background: var(--primary-low);
         }
       }
@@ -402,7 +409,6 @@ html.discourse-reactions-no-select {
           .d-icon {
             color: var(--primary-low-mid);
           }
-
           background: var(--primary-low);
         }
       }
@@ -412,11 +418,11 @@ html.discourse-reactions-no-select {
       .discourse-no-touch & {
         .discourse-reactions-double-button:hover,
         .discourse-reactions-reaction-button:hover .reaction-button {
+          background: var(--love-low);
+
           .d-icon {
             color: var(--love);
           }
-
-          background: var(--love-low);
         }
       }
     }
@@ -425,6 +431,7 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-double-button {
   display: inline-flex;
+
   @include user-select(none);
 }
 
