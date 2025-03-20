@@ -1,10 +1,33 @@
 <LoadMore @selector=".user-stream-item" @action={{action "loadMore"}}>
   <div class="user-stream">
-    {{#each @model as |reaction|}}
+    {{log this}}
+    {{log @model}}
+
+     {{!-- <PostList
+            @posts={{@model}}
+            @fetchMorePosts={{loadMore}}
+          >
+          </PostList> --}}
+
+
+<PostList
+    @posts={{@model}}
+    @fetchMorePosts={{@loadMore}}
+    @emptyText={{i18n "custom_identifier.empty"}}
+    @additionalItemClasses="user-stream-item"
+    @showUserInfo={{false}}
+     class="user-stream"
+ />
+
+{{!-- 
+       {{else}} 
+       <div class="alert alert-info">{{i18n "notifications.empty"}}</div> --}}
+    {{!-- {{#each @model as |reaction|}}
       <DiscourseReactionsReactionPost @reaction={{reaction}} />
-    {{else}}
-      <div class="alert alert-info">{{i18n "notifications.empty"}}</div>
-    {{/each}}
+
+      
+    
+    {{/each}} --}}
   </div>
 
   <ConditionalLoadingSpinner @condition={{this.loading}} />
