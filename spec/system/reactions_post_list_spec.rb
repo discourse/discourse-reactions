@@ -45,7 +45,7 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
   end
 
   context "when the site allows anonymous users to like posts" do
-    before { SiteSetting.allow_anonymous_likes = true }
+    before { SiteSetting.allow_likes_in_anonymous_mode = true }
 
     it "shows a list of users who have liked a post on hover for unauthenticated users" do
       visit(post.url)
