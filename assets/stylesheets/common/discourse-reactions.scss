@@ -431,6 +431,7 @@ html.discourse-reactions-no-select {
 
 .discourse-reactions-double-button {
   display: inline-flex;
+  border-radius: var(--d-post-control-border-radius);
 
   @include user-select(none);
 }
