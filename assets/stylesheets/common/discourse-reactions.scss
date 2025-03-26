@@ -326,6 +326,7 @@ html.discourse-reactions-no-select {
 .discourse-reactions-actions {
   display: inline-flex;
   justify-content: flex-end;
+  height: 100%;
 
   .spinner-container {
     align-self: center;
