@@ -259,14 +259,9 @@ export default createWidget("discourse-reactions-actions", {
   toggle(params) {
     if (!this.currentUser) {
       if (this.attrs.showLogin) {
-        // the glimmer post menu provides the showLogin action as a parameter
         this.attrs.showLogin();
         return;
       }
-
-      // the widget post menu provide showLogin as a widget action
-      // TODO (glimmer-post-menu): remove this once the glimmer post menu is used everywhere
-      return this.sendWidgetAction("showLogin");
     }
 
     if (
@@ -441,14 +436,9 @@ export default createWidget("discourse-reactions-actions", {
   toggleFromButton(attrs) {
     if (!this.currentUser) {
       if (this.attrs.showLogin) {
-        // the glimmer post menu provides the showLogin action as a parameter
         this.attrs.showLogin();
         return;
       }
-
-      // the widget post menu provide showLogin as a widget action
-      // TODO (glimmer-post-menu): remove this once the glimmer post menu is used everywhere
-      return this.sendWidgetAction("showLogin");
     }
 
     this.collapseAllPanels();
