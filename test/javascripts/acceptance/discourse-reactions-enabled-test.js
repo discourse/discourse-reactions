@@ -49,4 +49,3 @@ acceptance("Discourse Reactions - Enabled | Anonymous user", function (needs) {
     assert.dom("#login-form").exists("login form was displayed");
   });
 });
-

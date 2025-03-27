@@ -1,4 +1,3 @@
-import { withSilencedDeprecations } from "discourse/lib/deprecated";
 import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
