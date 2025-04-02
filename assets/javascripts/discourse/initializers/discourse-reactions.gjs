@@ -1,4 +1,3 @@
-import { withSilencedDeprecations } from "discourse/lib/deprecated";
 import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -179,7 +178,7 @@ function initializeDiscourseReactions(api) {
 }
 
 function customizePostMenu(api) {
-  const transformerRegistered = api.registerValueTransformer(
+  api.registerValueTransformer(
     "post-menu-buttons",
     ({ value: dag, context: { buttonKeys } }) => {
       dag.replace(buttonKeys.LIKE, ReactionsActionButton);
@@ -188,65 +187,6 @@ function customizePostMenu(api) {
       });
     }
   );
-
-  const silencedKey =
-    transformerRegistered && "discourse.post-menu-widget-overrides";
-
-  withSilencedDeprecations(silencedKey, () => customizeWidgetPostMenu(api));
-}
-
-function customizeWidgetPostMenu(api) {
-  if (api.replacePostMenuButton) {
-    api.replacePostMenuButton("like", {
-      name: "discourse-reactions-actions",
-      buildAttrs: (widget) => {
-        return { post: widget.findAncestorModel() };
-      },
-      shouldRender: (widget) => {
-        const post = widget.findAncestorModel();
-        return post && !post.deleted_at;
-      },
-    });
-  } else {
-    api.removePostMenuButton("like");
-    api.decorateWidget("post-menu:before-extra-controls", (dec) => {
-      const post = dec.getModel();
-      if (!post || post.deleted_at) {
-        return;
-      }
-
-      return dec.attach("discourse-reactions-actions", {
-        post,
-      });
-    });
-  }
-
-  api.decorateWidget("post-menu:extra-post-controls", (dec) => {
-    if (dec.widget.site.mobileView) {
-      return;
-    }
-
-    const mainReaction =
-      dec.widget.siteSettings.discourse_reactions_reaction_for_like;
-    const post = dec.getModel();
-
-    if (!post || post.deleted_at) {
-      return;
-    }
-
-    if (
-      post.reactions &&
-      post.reactions.length === 1 &&
-      post.reactions[0].id === mainReaction
-    ) {
-      return;
-    }
-
-    return dec.attach("discourse-reactions-actions", {
-      post,
-      position: "left",
-    });
-  });
 }
 
 export default {
