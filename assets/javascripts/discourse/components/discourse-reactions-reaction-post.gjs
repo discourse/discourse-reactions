@@ -1,8 +1,11 @@
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
+import { hash } from "@ember/helper";
 import { action } from "@ember/object";
 import { equal } from "@ember/object/computed";
 import { service } from "@ember/service";
+import UserStreamItem from "discourse/components/user-stream-item";
+import avatar from "discourse/helpers/avatar";
 import { ajax } from "discourse/lib/ajax";
 import getURL from "discourse/lib/get-url";
 import { emojiUrlFor } from "discourse/lib/text";
@@ -116,4 +119,43 @@ export default class DiscourseReactionsReactionPost extends Component {
     const reactionValue = this.args.reaction.reaction.reaction_value;
     return reactionValue ? emojiUrlFor(reactionValue) : null;
   }
+
+  <template>
+    <UserStreamItem
+      @item={{hash
+        username=@reaction.post_user.username
+        name=@reaction.post_user.name
+        avatar_template=@reaction.post_user.avatar_template
+        created_at=@reaction.created_at
+        postUrl=this.postUrl
+        category=@reaction.category
+        title=@reaction.topic.title
+        expandedExcerpt=this.updatedExpandedExcerpt
+        excerpt=this.updatedExcerpt
+        topic_id=@reaction.topic_id
+        post_id=@reaction.post_id
+        user_id=@reaction.user_id
+      }}
+    >
+      <:bottom>
+        {{#if @reaction.reaction.reaction_users_count}}
+          <div class="discourse-reactions-my-reaction">
+            <img src={{this.emojiUrl}} class="reaction-emoji" />
+            <a
+              href={{@reaction.user.userUrl}}
+              data-user-card={{@reaction.user.username}}
+              class="avatar-link"
+            >
+              {{avatar
+                @reaction.user
+                imageSize="tiny"
+                extraClasses="actor"
+                ignoreTitle="true"
+              }}
+            </a>
+          </div>
+        {{/if}}
+      </:bottom>
+    </UserStreamItem>
+  </template>
 }
