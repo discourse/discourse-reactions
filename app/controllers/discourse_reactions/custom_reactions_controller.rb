@@ -74,7 +74,7 @@ class DiscourseReactions::CustomReactionsController < ApplicationController
     end
 
     reaction_users = reaction_users.order(created_at: :desc).limit(20)
-
+    byebug
     render_serialized(reaction_users.to_a, UserReactionSerializer)
   end
 
