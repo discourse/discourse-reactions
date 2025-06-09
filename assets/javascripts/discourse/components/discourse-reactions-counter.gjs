@@ -160,62 +160,6 @@ export default class DiscourseReactionsCounter extends Component {
     }
   }
 
-  // html(attrs) {
-  //   if (attrs.post.reaction_users_count) {
-  //     const post = attrs.post;
-  //     const count = post.reaction_users_count;
-  //     if (count <= 0) {
-  //       return;
-  //     }
-
-  //     const mainReaction =
-  //       this.siteSettings.discourse_reactions_reaction_for_like;
-  //     const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-  //     const items = [];
-
-  //     items.push(
-  //       this.attach(
-  //         "discourse-reactions-state-panel",
-  //         Object.assign({}, attrs, {
-  //           reactionsUsers: this.state.reactionsUsers,
-  //         })
-  //       )
-  //     );
-
-  //     if (
-  //       !(post.reactions.length === 1 && post.reactions[0].id === mainReaction)
-  //     ) {
-  //       items.push(
-  //         this.attach("discourse-reactions-list", {
-  //           reactionsUsers: this.state.reactionsUsers,
-  //           post: attrs.post,
-  //         })
-  //       );
-  //     }
-
-  //     items.push(h("span.reactions-counter", count.toString()));
-
-  //     if (
-  //       post.yours &&
-  //       post.reactions &&
-  //       post.reactions.length === 1 &&
-  //       post.reactions[0].id === mainReaction
-  //     ) {
-  //       items.push(
-  //         h(
-  //           "div.discourse-reactions-reaction-button.my-likes",
-  //           h(
-  //             "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
-  //             [iconNode(`${mainReactionIcon}`)]
-  //           )
-  //         )
-  //       );
-  //     }
-
-  //     return items;
-  //   }
-  // }
-
   get onlyOneMainReaction() {
     return (
       this.args.post.reactions?.length === 1 &&
