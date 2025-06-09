@@ -1,111 +1,87 @@
-import { h } from "virtual-dom";
-import { emojiUnescape } from "discourse/lib/text";
-import RawHtml from "discourse/widgets/raw-html";
-import { createWidget } from "discourse/widgets/widget";
+import Component from "@glimmer/component";
+import { fn, hash } from "@ember/helper";
+import { on } from "@ember/modifier";
+import { action } from "@ember/object";
+import { service } from "@ember/service";
+import DButton from "discourse/components/d-button";
+import concatClass from "discourse/helpers/concat-class";
+import emoji from "discourse/helpers/emoji";
+import { i18n } from "discourse-i18n";
 
-export default createWidget("discourse-reactions-picker", {
-  tagName: "div.discourse-reactions-picker",
+export default class DiscourseReactionsPicker extends Component {
+  @service siteSettings;
 
-  buildKey: (attrs) => `discourse-reactions-picker-${attrs.post.id}`,
-
-  buildClasses(attrs) {
-    const classes = [];
-
-    if (attrs.reactionsPickerExpanded) {
-      classes.push("is-expanded");
-    }
-
-    return classes;
-  },
-
+  @action
   pointerOut(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
-  },
+    this.args.scheduleCollapse("collapseReactionsPicker");
+  }
 
+  @action
   pointerOver() {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("cancelCollapse");
-  },
+    this.args.cancelCollapse();
+  }
 
-  html(attrs) {
-    if (attrs.reactionsPickerExpanded) {
-      const reactions = this.siteSettings.discourse_reactions_enabled_reactions
-        .split("|")
-        .filter(Boolean);
+  get reactionInfo() {
+    const reactions = this.siteSettings.discourse_reactions_enabled_reactions
+      .split("|")
+      .filter(Boolean);
+
+    if (
+      !reactions.includes(
+        this.siteSettings.discourse_reactions_reaction_for_like
+      )
+    ) {
+      reactions.unshift(
+        this.siteSettings.discourse_reactions_reaction_for_like
+      );
+    }
+
+    const { post } = this.args;
+    const currentUserReaction = post.current_user_reaction;
+
+    return reactions.map((reaction) => {
+      let isUsed;
+      let canUndo;
 
       if (
-        !reactions.includes(
-          this.siteSettings.discourse_reactions_reaction_for_like
-        )
+        reaction === this.siteSettings.discourse_reactions_reaction_for_like
       ) {
-        reactions.unshift(
-          this.siteSettings.discourse_reactions_reaction_for_like
-        );
+        isUsed = post.current_user_used_main_reaction;
+      } else {
+        isUsed = currentUserReaction && currentUserReaction.id === reaction;
       }
 
-      const currentUserReaction = attrs.post.current_user_reaction;
-      return [
-        h(
-          `div.discourse-reactions-picker-container.col-${this._getOptimalColsCount(
-            reactions.length
-          )}`,
-          reactions.map((reaction) => {
-            let isUsed;
-            let canUndo;
+      if (currentUserReaction) {
+        canUndo = currentUserReaction.can_undo && post.likeAction.canToggle;
+      } else {
+        canUndo = post.likeAction.canToggle;
+      }
 
-            if (
-              reaction ===
-              this.siteSettings.discourse_reactions_reaction_for_like
-            ) {
-              isUsed = attrs.post.current_user_used_main_reaction;
-            } else {
-              isUsed =
-                currentUserReaction && currentUserReaction.id === reaction;
-            }
+      let title;
+      let titleOptions;
+      if (canUndo) {
+        title = "discourse_reactions.picker.react_with";
+        titleOptions = { reaction };
+      } else {
+        title = "discourse_reactions.picker.cant_remove_reaction";
+      }
 
-            if (currentUserReaction) {
-              canUndo =
-                currentUserReaction.can_undo && attrs.post.likeAction.canToggle;
-            } else {
-              canUndo = attrs.post.likeAction.canToggle;
-            }
-
-            let title;
-            let titleOptions;
-            if (canUndo) {
-              title = "discourse_reactions.picker.react_with";
-              titleOptions = { reaction };
-            } else {
-              title = "discourse_reactions.picker.cant_remove_reaction";
-            }
-
-            return this.attach("button", {
-              action: "toggle",
-              data: { reaction },
-              actionParam: { reaction, postId: attrs.post.id, canUndo },
-              className: `pickable-reaction ${reaction} ${
-                canUndo ? "can-undo" : ""
-              } ${isUsed ? "is-used" : ""}`,
-              title,
-              titleOptions,
-              contents: [
-                new RawHtml({
-                  html: emojiUnescape(`:${reaction}:`),
-                }),
-              ],
-            });
-          })
-        ),
-      ];
-    }
-  },
+      return {
+        id: reaction,
+        title: i18n(title, titleOptions),
+        canUndo,
+        isUsed,
+      };
+    });
+  }
 
   _getOptimalColsCount(count) {
     let x;
@@ -138,5 +114,45 @@ export default createWidget("discourse-reactions-picker", {
     }
 
     return x;
-  },
-});
+  }
+
+  <template>
+    <div
+      class={{concatClass
+        "discourse-reactions-picker"
+        (if @reactionsPickerExpanded "is-expanded")
+      }}
+      {{on "pointerover" this.pointerOver}}
+      {{on "pointerout" this.pointerOut}}
+    >
+      {{#if @reactionsPickerExpanded}}
+        <div
+          class="discourse-reactions-picker-container col-{{this._getOptimalColsCount
+              this.reactionInfo.length
+            }}"
+        >
+          {{#each this.reactionInfo as |reaction|}}
+            <DButton
+              class={{concatClass
+                "pickable-reaction"
+                reaction.id
+                (if reaction.canUndo "can-undo")
+                (if reaction.isUsed "is-used")
+              }}
+              data-reaction={{reaction.id}}
+              @action={{fn
+                @toggle
+                (hash
+                  reaction=reaction.id postId=@post.id canUndo=reaction.canUndo
+                )
+              }}
+              @translatedTitle={{reaction.title}}
+            >
+              {{emoji reaction.id}}
+            </DButton>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}

@@ -1,76 +1,87 @@
-import { h } from "virtual-dom";
-import { iconNode } from "discourse/lib/icon-library";
-import { createWidget } from "discourse/widgets/widget";
+import Component from "@glimmer/component";
+import { hash } from "@ember/helper";
+import { on } from "@ember/modifier";
+import { action } from "@ember/object";
+import { service } from "@ember/service";
+import { TrackedObject } from "@ember-compat/tracked-built-ins";
+import { and } from "truth-helpers";
+import icon from "discourse/helpers/d-icon";
+import { bind } from "discourse/lib/decorators";
+import closeOnClickOutside from "discourse/modifiers/close-on-click-outside";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
+import DiscourseReactionsList from "./discourse-reactions-list";
+import DiscourseReactionsStatePanel from "./discourse-reactions-state-panel";
 
-export default createWidget("discourse-reactions-counter", {
-  tagName: "div",
+export default class DiscourseReactionsCounter extends Component {
+  @service capabilities;
+  @service site;
+  @service siteSettings;
 
-  buildKey: (attrs) =>
-    `discourse-reactions-counter-${attrs.post.id}-${attrs.position || "right"}`,
+  reactionsUsers = new TrackedObject();
 
-  buildId: (attrs) =>
-    `discourse-reactions-counter-${attrs.post.id}-${attrs.position || "right"}`,
+  get elementId() {
+    return `discourse-reactions-counter-${this.args.post.id}-${
+      this.args.position || "right"
+    }`;
+  }
 
   reactionsChanged(data) {
     data.reactions.uniq().forEach((reaction) => {
       this.getUsers(reaction);
     });
-  },
+  }
 
-  defaultState() {
-    return {
-      reactionsUsers: {},
-      statePanelExpanded: false,
-    };
-  },
-
+  @bind
   getUsers(reactionValue) {
-    return CustomReaction.findReactionUsers(this.attrs.post.id, {
+    return CustomReaction.findReactionUsers(this.args.post.id, {
       reactionValue,
     }).then((response) => {
       response.reaction_users.forEach((reactionUser) => {
-        this.state.reactionsUsers[reactionUser.id] = reactionUser.users;
+        this.reactionsUsers[reactionUser.id] = reactionUser.users;
       });
 
-      this.scheduleRerender();
-      this.callWidgetFunction("updatePopperPosition");
+      this.args.updatePopperPosition();
     });
-  },
+  }
 
+  @action
   mouseDown(event) {
     event.stopImmediatePropagation();
     return false;
-  },
+  }
 
+  @action
   mouseUp(event) {
     event.stopImmediatePropagation();
     return false;
-  },
+  }
 
+  @action
   click(event) {
-    this.callWidgetFunction("cancelCollapse");
+    this.args.cancelCollapse();
 
     if (!this.capabilities.touch || !this.site.mobileView) {
       event.stopPropagation();
       event.preventDefault();
 
-      if (!this.attrs.statePanelExpanded) {
+      if (!this.args.statePanelExpanded) {
         this.getUsers();
       }
 
       this.toggleStatePanel(event);
     }
-  },
+  }
 
+  @action
   clickOutside() {
-    if (this.attrs.statePanelExpanded) {
-      this.callWidgetFunction("collapseAllPanels");
+    if (this.args.statePanelExpanded) {
+      this.args.collapseAllPanels();
     }
-  },
+  }
 
+  @action
   touchStart(event) {
-    this.callWidgetFunction("cancelCollapse");
+    this.args.cancelCollapse();
 
     if (
       event.target.classList.contains("show-users") ||
@@ -79,7 +90,7 @@ export default createWidget("discourse-reactions-counter", {
       return true;
     }
 
-    if (this.attrs.statePanelExpanded) {
+    if (this.args.statePanelExpanded) {
       event.stopPropagation();
       event.preventDefault();
       return;
@@ -91,107 +102,112 @@ export default createWidget("discourse-reactions-counter", {
       this.getUsers();
       this.toggleStatePanel(event);
     }
-  },
+  }
 
-  buildClasses(attrs) {
+  get classes() {
     const classes = [];
     const mainReaction =
       this.siteSettings.discourse_reactions_reaction_for_like;
 
+    const { post } = this.args;
+
     if (
-      attrs.post.reactions &&
-      attrs.post.reactions.length === 1 &&
-      attrs.post.reactions[0].id === mainReaction
+      post.reactions &&
+      post.reactions.length === 1 &&
+      post.reactions[0].id === mainReaction
     ) {
       classes.push("only-like");
     }
 
-    if (attrs.post.reaction_users_count > 0) {
+    if (post.reaction_users_count > 0) {
       classes.push("discourse-reactions-counter");
     }
 
-    return classes;
-  },
-
-  html(attrs) {
-    if (attrs.post.reaction_users_count) {
-      const post = attrs.post;
-      const count = post.reaction_users_count;
-      if (count <= 0) {
-        return;
-      }
-
-      const mainReaction =
-        this.siteSettings.discourse_reactions_reaction_for_like;
-      const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-      const items = [];
-
-      items.push(
-        this.attach(
-          "discourse-reactions-state-panel",
-          Object.assign({}, attrs, {
-            reactionsUsers: this.state.reactionsUsers,
-          })
-        )
-      );
-
-      if (
-        !(post.reactions.length === 1 && post.reactions[0].id === mainReaction)
-      ) {
-        items.push(
-          this.attach("discourse-reactions-list", {
-            reactionsUsers: this.state.reactionsUsers,
-            post: attrs.post,
-          })
-        );
-      }
-
-      items.push(h("span.reactions-counter", count.toString()));
-
-      if (
-        post.yours &&
-        post.reactions &&
-        post.reactions.length === 1 &&
-        post.reactions[0].id === mainReaction
-      ) {
-        items.push(
-          h(
-            "div.discourse-reactions-reaction-button.my-likes",
-            h(
-              "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
-              [iconNode(`${mainReactionIcon}`)]
-            )
-          )
-        );
-      }
-
-      return items;
-    }
-  },
+    return classes.join(" ");
+  }
 
   toggleStatePanel() {
-    if (!this.attrs.statePanelExpanded) {
-      this.callWidgetFunction("expandStatePanel");
+    if (!this.args.statePanelExpanded) {
+      this.args.expandStatePanel();
     } else {
-      this.callWidgetFunction("collapseStatePanel");
+      this.args.collapseStatePanel();
     }
-  },
+  }
 
+  @action
   pointerOver(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("cancelCollapse");
-  },
+    this.args.cancelCollapse();
+  }
 
+  @action
   pointerOut(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    if (!event.relatedTarget?.closest(`#${this.buildId(this.attrs)}`)) {
-      this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
+    if (!event.relatedTarget?.closest(`#${this.elementId}`)) {
+      this.args.scheduleCollapse("collapseStatePanel");
     }
-  },
-});
+  }
+
+  get onlyOneMainReaction() {
+    return (
+      this.args.post.reactions?.length === 1 &&
+      this.args.post.reactions[0].id ===
+        this.siteSettings.discourse_reactions_reaction_for_like
+    );
+  }
+
+  <template>
+    {{! template-lint-disable no-invalid-interactive no-pointer-down-event-binding }}
+    <div
+      id={{this.elementId}}
+      class={{this.classes}}
+      {{on "mousedown" this.mouseDown}}
+      {{on "mouseup" this.mouseUp}}
+      {{closeOnClickOutside this.clickOutside (hash)}}
+      {{on "touchstart" this.touchStart}}
+      {{on "pointerover" this.pointerOver}}
+      {{on "pointerout" this.pointerOut}}
+      {{on "click" this.click}}
+    >
+      {{#if @post.reaction_users_count}}
+        <DiscourseReactionsStatePanel
+          @post={{@post}}
+          @reactionsUsers={{this.reactionsUsers}}
+          @statePanelExpanded={{@statePanelExpanded}}
+          @scheduleCollapse={{@scheduleCollapse}}
+          @cancelCollapse={{@cancelCollapse}}
+        />
+
+        {{#unless this.onlyOneMainReaction}}
+          <DiscourseReactionsList
+            {{on "click" this.click}}
+            @post={{@post}}
+            @reactionsUsers={{this.reactionsUsers}}
+            @getUsers={{this.getUsers}}
+          />
+        {{/unless}}
+
+        <span class="reactions-counter">
+          {{@post.reaction_users_count}}
+        </span>
+
+        {{#if (and @post.yours this.onlyOneMainReaction)}}
+          <div class="discourse-reactions-reaction-button my-likes">
+            <button
+              type="button"
+              class="btn-toggle-reaction-like btn-icon no-text reaction-button"
+            >
+              {{icon this.siteSettings.discourse_reactions_like_icon}}
+            </button>
+          </div>
+        {{/if}}
+      {{/if}}
+    </div>
+  </template>
+}

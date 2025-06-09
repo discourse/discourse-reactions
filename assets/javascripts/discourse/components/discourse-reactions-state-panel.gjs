@@ -1,82 +1,96 @@
-import { h } from "virtual-dom";
-import { createWidget } from "discourse/widgets/widget";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { on } from "@ember/modifier";
+import { action, get } from "@ember/object";
+import { and, eq } from "truth-helpers";
+import concatClass from "discourse/helpers/concat-class";
+import DiscourseReactionsStatePanelReaction from "./discourse-reactions-state-panel-reaction";
 
-export default createWidget("discourse-reactions-state-panel", {
-  tagName: "div.discourse-reactions-state-panel",
+export default class DiscourseReactionsStatePanel extends Component {
+  @tracked displayedReactionId;
 
-  buildKey: (attrs) => `discourse-reactions-state-panel-${attrs.post.id}`,
-
-  buildClasses(attrs) {
+  get classes() {
     const classes = [];
 
-    if (attrs.post && attrs.post.reactions) {
-      const maxCount = Math.max(...attrs.post.reactions.mapBy("count"));
+    const { post } = this.args;
+    if (post?.reactions) {
+      const maxCount = Math.max(...post.reactions.mapBy("count"));
       const charsCount = maxCount.toString().length;
       classes.push(`max-length-${charsCount}`);
     }
 
-    if (attrs.statePanelExpanded) {
+    if (this.args.statePanelExpanded) {
       classes.push("is-expanded");
     }
 
     return classes;
-  },
+  }
 
+  @action
   pointerOut(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("scheduleCollapse", "collapseStatePanel");
-  },
+    this.args.scheduleCollapse("collapseStatePanel");
+  }
 
+  @action
   pointerOver(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("cancelCollapse");
-  },
+    this.args.cancelCollapse();
+  }
 
+  @action
   showUsers(reactionId) {
-    if (!this.state.displayedReactionId) {
-      this.state.displayedReactionId = reactionId;
-    } else if (this.state.displayedReactionId === reactionId) {
+    if (!this.displayedReactionId) {
+      this.displayedReactionId = reactionId;
+    } else if (this.displayedReactionId === reactionId) {
       this.hideUsers();
-    } else if (this.state.displayedReactionId !== reactionId) {
-      this.state.displayedReactionId = reactionId;
+    } else if (this.displayedReactionId !== reactionId) {
+      this.displayedReactionId = reactionId;
     }
-  },
+  }
 
+  @action
   hideUsers() {
-    this.state.displayedReactionId = null;
-  },
+    this.displayedReactionId = null;
+  }
 
-  defaultState() {
-    return {
-      displayedReactionId: null,
-    };
-  },
+  get hasReactionData() {
+    return !!Object.keys(this.args.reactionsUsers).length;
+  }
 
-  html(attrs) {
-    if (!attrs.statePanelExpanded || !attrs.post.reactions.length) {
-      return;
-    }
-
-    const reactions = Object.keys(attrs.reactionsUsers).length
-      ? h(
-          "div.counters",
-          attrs.post.reactions.map((reaction) =>
-            this.attach("discourse-reactions-state-panel-reaction", {
-              reaction,
-              users: attrs.reactionsUsers[reaction.id],
-              post: attrs.post,
-              isDisplayed: reaction.id === this.state.displayedReactionId,
-            })
-          )
-        )
-      : h("div.spinner-container", h("div.spinner.small"));
-
-    return h("div.container", reactions);
-  },
-});
+  <template>
+    <div
+      class={{concatClass "discourse-reactions-state-panel" this.classes}}
+      {{on "pointerout" this.pointerOut}}
+      {{on "pointerover" this.pointerOver}}
+    >
+      {{#if (and @statePanelExpanded @post.reactions.length)}}
+        <div class="container">
+          {{#if this.hasReactionData}}
+            <div class="counters">
+              {{#each @post.reactions key="id" as |reaction|}}
+                <DiscourseReactionsStatePanelReaction
+                  @reaction={{reaction}}
+                  @users={{get @reactionsUsers reaction.id}}
+                  @post={{@post}}
+                  @isDisplayed={{eq reaction.id this.displayedReactionId}}
+                  @showUsers={{this.showUsers}}
+                />
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="spinner-container">
+              <div class="spinner small"></div>
+            </div>
+          {{/if}}
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}

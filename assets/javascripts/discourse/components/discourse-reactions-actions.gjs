@@ -1,12 +1,25 @@
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { hash } from "@ember/helper";
+import { on } from "@ember/modifier";
+import { action } from "@ember/object";
 import { cancel, later, run, schedule } from "@ember/runloop";
+import { service } from "@ember/service";
 import { createPopper } from "@popperjs/core";
+import curryComponent from "ember-curry-component";
 import $ from "jquery";
 import { Promise } from "rsvp";
+import { and, eq, not } from "truth-helpers";
+import lazyHash from "discourse/helpers/lazy-hash";
 import { isTesting } from "discourse/lib/environment";
 import { emojiUrlFor } from "discourse/lib/text";
-import { createWidget } from "discourse/widgets/widget";
+import closeOnClickOutside from "discourse/modifiers/close-on-click-outside";
 import { i18n } from "discourse-i18n";
 import CustomReaction from "../models/discourse-reactions-custom-reaction";
+import DiscourseReactionsCounter from "./discourse-reactions-counter";
+import DiscourseReactionsDoubleButton from "./discourse-reactions-double-button";
+import DiscourseReactionsPicker from "./discourse-reactions-picker";
+import DiscourseReactionsReactionButton from "./discourse-reactions-reaction-button";
 
 const VIBRATE_DURATION = 5;
 
@@ -98,26 +111,22 @@ function scaleReactionAnimation(mainReaction, start, end, complete) {
     );
 }
 
-export default createWidget("discourse-reactions-actions", {
-  tagName: "div.discourse-reactions-actions",
-  services: ["dialog"],
+export default class DiscourseReactionsActions extends Component {
+  @service dialog;
+  @service capabilities;
+  @service siteSettings;
+  @service site;
+  @service currentUser;
 
-  defaultState() {
-    return {
-      reactionsPickerExpanded: false,
-      statePanelExpanded: false,
-    };
-  },
+  @tracked reactionsPickerExpanded = false;
+  @tracked statePanelExpanded = false;
 
-  buildKey: (attrs) =>
-    `discourse-reactions-actions-${attrs.post.id}-${attrs.position || "right"}`,
-
-  buildClasses(attrs) {
-    if (!attrs.post.reactions) {
+  get classes() {
+    const { post } = this.args;
+    if (!post.reactions) {
       return;
     }
 
-    const post = attrs.post;
     const hasReactions = post.reactions.length;
     const hasReacted = post.current_user_reaction;
     const customReactionUsed =
@@ -156,19 +165,21 @@ export default createWidget("discourse-reactions-actions", {
       classes.push("can-toggle-reaction");
     }
 
-    return classes;
-  },
+    return classes.join(" ");
+  }
 
+  @action
   toggleReactions(event) {
-    if (!this.state.reactionsPickerExpanded) {
-      if (this.state.statePanelExpanded) {
+    if (!this.reactionsPickerExpanded) {
+      if (this.statePanelExpanded) {
         this.scheduleExpand("expandReactionsPicker");
       } else {
         this.expandReactionsPicker(event);
       }
     }
-  },
+  }
 
+  @action
   touchStart() {
     this._validTouch = true;
 
@@ -187,15 +198,17 @@ export default createWidget("discourse-reactions-actions", {
       }, 400);
       return false;
     }
-  },
+  }
 
+  @action
   touchMove() {
     // if users move while touching we consider it as a scroll and don't want to
     // trigger the reaction or the picker
     this._validTouch = false;
     cancel(this._touchTimeout);
-  },
+  }
 
+  @action
   touchEnd(event) {
     cancel(this._touchTimeout);
 
@@ -204,10 +217,10 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (this.capabilities.touch) {
-      if (event.originalEvent.changedTouches.length) {
+      if (event.changedTouches.length) {
         const endTarget = document.elementFromPoint(
-          event.originalEvent.changedTouches[0].clientX,
-          event.originalEvent.changedTouches[0].clientY
+          event.changedTouches[0].clientX,
+          event.changedTouches[0].clientY
         );
 
         if (endTarget) {
@@ -230,11 +243,9 @@ export default createWidget("discourse-reactions-actions", {
       this._touchStartAt = null;
       if (duration > 400) {
         if (
-          event.originalEvent &&
-          event.originalEvent.target &&
-          event.originalEvent.target.classList.contains(
-            "discourse-reactions-reaction-button"
-          )
+          event &&
+          event.target &&
+          event.target.classList.contains("discourse-reactions-reaction-button")
         ) {
           this.toggleReactions(event);
         }
@@ -247,27 +258,28 @@ export default createWidget("discourse-reactions-actions", {
             event.target.classList.contains("reaction-button"))
         ) {
           this.toggleFromButton({
-            reaction: this.attrs.post.current_user_reaction
-              ? this.attrs.post.current_user_reaction.id
+            reaction: this.args.post.current_user_reaction
+              ? this.args.post.current_user_reaction.id
               : this.siteSettings.discourse_reactions_reaction_for_like,
           });
         }
       }
     }
-  },
+  }
 
+  @action
   toggle(params) {
     if (!this.currentUser) {
-      if (this.attrs.showLogin) {
-        this.attrs.showLogin();
+      if (this.args.showLogin) {
+        this.args.showLogin();
         return;
       }
     }
 
     if (
-      !this.attrs.post.current_user_reaction ||
-      (this.attrs.post.current_user_reaction.can_undo &&
-        this.attrs.post.likeAction.canToggle)
+      !this.args.post.current_user_reaction ||
+      (this.args.post.current_user_reaction.can_undo &&
+        this.args.post.likeAction.canToggle)
     ) {
       if (this.capabilities.userHasBeenActive && this.capabilities.canVibrate) {
         navigator.vibrate(VIBRATE_DURATION);
@@ -285,7 +297,7 @@ export default createWidget("discourse-reactions-actions", {
       return new Promise((resolve) => {
         scaleReactionAnimation(pickedReaction, scales[0], scales[1], () => {
           scaleReactionAnimation(pickedReaction, scales[1], scales[0], () => {
-            const post = this.attrs.post;
+            const post = this.args.post;
             const postContainer = document.querySelector(
               `[data-post-id="${params.postId}"]`
             );
@@ -298,7 +310,7 @@ export default createWidget("discourse-reactions-actions", {
 
               later(() => {
                 dropReaction(postContainer, params.reaction, () => {
-                  return CustomReaction.toggle(this.attrs.post, params.reaction)
+                  return CustomReaction.toggle(this.args.post, params.reaction)
                     .then(resolve)
                     .catch((e) => {
                       this.dialog.alert(this._extractErrors(e));
@@ -310,7 +322,7 @@ export default createWidget("discourse-reactions-actions", {
               addReaction(postContainer, params.reaction, () => {
                 this.toggleReaction(params);
 
-                CustomReaction.toggle(this.attrs.post, params.reaction)
+                CustomReaction.toggle(this.args.post, params.reaction)
                   .then(resolve)
                   .catch((e) => {
                     this.dialog.alert(this._extractErrors(e));
@@ -322,23 +334,22 @@ export default createWidget("discourse-reactions-actions", {
         });
       }).finally(() => {
         this.collapseAllPanels();
-        this.scheduleRerender();
       });
     }
-  },
+  }
 
   toggleReaction(attrs) {
     this.collapseAllPanels();
 
     if (
-      this.attrs.post.current_user_reaction &&
-      !this.attrs.post.current_user_reaction.can_undo &&
-      !this.attrs.post.likeAction.canToggle
+      this.args.post.current_user_reaction &&
+      !this.args.post.current_user_reaction.can_undo &&
+      !this.args.post.likeAction.canToggle
     ) {
       return;
     }
 
-    const post = this.attrs.post;
+    const post = this.args.post;
 
     if (post.current_user_reaction) {
       post.reactions.every((reaction, index) => {
@@ -431,12 +442,18 @@ export default createWidget("discourse-reactions-actions", {
     } else {
       post.current_user_used_main_reaction = false;
     }
-  },
 
+    // Trigger re-render for anything autotracking reactions.
+    // In future, we should make reactions a deeply-trackable structure.
+    // eslint-disable-next-line no-self-assign
+    post.reactions = post.reactions;
+  }
+
+  @action
   toggleFromButton(attrs) {
     if (!this.currentUser) {
-      if (this.attrs.showLogin) {
-        this.attrs.showLogin();
+      if (this.args.showLogin) {
+        this.args.showLogin();
         return;
       }
     }
@@ -445,7 +462,7 @@ export default createWidget("discourse-reactions-actions", {
 
     const mainReactionName =
       this.siteSettings.discourse_reactions_reaction_for_like;
-    const post = this.attrs.post;
+    const post = this.args.post;
     const current_user_reaction = post.current_user_reaction;
 
     if (
@@ -456,8 +473,8 @@ export default createWidget("discourse-reactions-actions", {
     }
 
     if (
-      this.attrs.post.current_user_reaction &&
-      !this.attrs.post.current_user_reaction.can_undo
+      this.args.post.current_user_reaction &&
+      !this.args.post.current_user_reaction.can_undo
     ) {
       return;
     }
@@ -472,7 +489,7 @@ export default createWidget("discourse-reactions-actions", {
 
     if (current_user_reaction && current_user_reaction.id === attrs.reaction) {
       this.toggleReaction(attrs);
-      return CustomReaction.toggle(this.attrs.post, attrs.reaction).catch(
+      return CustomReaction.toggle(this.args.post, attrs.reaction).catch(
         (e) => {
           this.dialog.alert(this._extractErrors(e));
           this._rollbackState(post);
@@ -486,12 +503,12 @@ export default createWidget("discourse-reactions-actions", {
       post.reactions.length === 1 &&
       post.reactions[0].id === mainReactionName
     ) {
-      selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-double-button .discourse-reactions-reaction-button .d-icon`;
+      selector = `[data-post-id="${this.args.post.id}"] .discourse-reactions-double-button .discourse-reactions-reaction-button .d-icon`;
     } else {
       if (!attrs.reaction || attrs.reaction === mainReactionName) {
-        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .d-icon`;
+        selector = `[data-post-id="${this.args.post.id}"] .discourse-reactions-reaction-button .d-icon`;
       } else {
-        selector = `[data-post-id="${this.attrs.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
+        selector = `[data-post-id="${this.args.post.id}"] .discourse-reactions-reaction-button .reaction-button .btn-toggle-reaction-emoji`;
       }
     }
 
@@ -508,7 +525,7 @@ export default createWidget("discourse-reactions-actions", {
               ? attrs.reaction
               : this.siteSettings.discourse_reactions_reaction_for_like;
 
-          CustomReaction.toggle(this.attrs.post, toggleReaction)
+          CustomReaction.toggle(this.args.post, toggleReaction)
             .then(resolve)
             .catch((e) => {
               this.dialog.alert(this._extractErrors(e));
@@ -517,75 +534,81 @@ export default createWidget("discourse-reactions-actions", {
         });
       });
     });
-  },
+  }
 
+  @action
   cancelCollapse() {
     cancel(this._collapseHandler);
-  },
+  }
 
+  @action
   cancelExpand() {
     cancel(this._expandHandler);
-  },
+  }
 
   scheduleExpand(handler) {
     this.cancelExpand();
 
     this._expandHandler = later(this, this[handler], 250);
-  },
+  }
 
+  @action
   scheduleCollapse(handler) {
     this.cancelCollapse();
 
     this._collapseHandler = later(this, this[handler], 500);
-  },
+  }
 
-  buildId: (attrs) =>
-    `discourse-reactions-actions-${attrs.post.id}-${attrs.position || "right"}`,
+  get elementId() {
+    return `discourse-reactions-actions-${this.args.post.id}-${
+      this.args.position || "right"
+    }`;
+  }
 
+  @action
   clickOutside() {
-    if (this.state.reactionsPickerExpanded || this.state.statePanelExpanded) {
+    if (this.reactionsPickerExpanded || this.statePanelExpanded) {
       this.collapseAllPanels();
     }
-  },
+  }
 
   expandReactionsPicker() {
     cancel(this._collapseHandler);
     _currentReactionWidget?.collapseAllPanels();
-    this.state.statePanelExpanded = false;
-    this.state.reactionsPickerExpanded = true;
-    this.scheduleRerender();
+    this.statePanelExpanded = false;
+    this.reactionsPickerExpanded = true;
     this._setupPopper([
       ".discourse-reactions-reaction-button",
       ".discourse-reactions-picker",
     ]);
-  },
+  }
 
+  @action
   expandStatePanel() {
     cancel(this._collapseHandler);
     _currentReactionWidget?.collapseAllPanels();
-    this.state.statePanelExpanded = true;
-    this.state.reactionsPickerExpanded = false;
-    this.scheduleRerender();
+    this.statePanelExpanded = true;
+    this.reactionsPickerExpanded = false;
     this._setupPopper([
       ".discourse-reactions-counter",
       ".discourse-reactions-state-panel",
     ]);
-  },
+  }
 
+  @action
   collapseStatePanel() {
     cancel(this._collapseHandler);
     this._collapseHandler = null;
-    this.state.statePanelExpanded = false;
-    this.scheduleRerender();
-  },
+    this.statePanelExpanded = false;
+  }
 
   collapseReactionsPicker() {
     cancel(this._collapseHandler);
     this._collapseHandler = null;
-    this.state.reactionsPickerExpanded = false;
-    this.scheduleRerender();
-  },
+    this.reactionsPickerExpanded = false;
+  }
 
+  @action
   collapseAllPanels() {
     cancel(this._collapseHandler);
     document.documentElement?.classList?.toggle(
@@ -593,61 +616,19 @@ export default createWidget("discourse-reactions-actions", {
       false
     );
     this._collapseHandler = null;
-    this.state.statePanelExpanded = false;
-    this.state.reactionsPickerExpanded = false;
-    this.scheduleRerender();
-  },
+    this.statePanelExpanded = false;
+    this.reactionsPickerExpanded = false;
+  }
 
+  @action
   updatePopperPosition() {
     _popperPicker?.update();
-  },
-
-  html(attrs) {
-    const post = attrs.post;
-    const items = [];
-    const mainReaction =
-      this.siteSettings.discourse_reactions_reaction_for_like;
-
-    const payload = Object.assign({}, attrs, {
-      reactionsPickerExpanded: this.state.reactionsPickerExpanded,
-      statePanelExpanded: this.state.statePanelExpanded,
-    });
-
-    if (this.currentUser && post.user_id !== this.currentUser.id) {
-      items.push(this.attach("discourse-reactions-picker", payload));
-    }
-
-    if (attrs.position === "left") {
-      items.push(this.attach("discourse-reactions-counter", payload));
-      return items;
-    }
-
-    if (
-      post.reactions &&
-      post.reactions.length === 1 &&
-      post.reactions[0].id === mainReaction
-    ) {
-      items.push(this.attach("discourse-reactions-double-button", payload));
-    } else if (this.site.mobileView) {
-      if (!post.yours) {
-        items.push(this.attach("discourse-reactions-counter", payload));
-        items.push(this.attach("discourse-reactions-reaction-button", payload));
-      } else if (post.yours && post.reactions && post.reactions.length) {
-        items.push(this.attach("discourse-reactions-counter", payload));
-      }
-    } else {
-      if (!post.yours) {
-        items.push(this.attach("discourse-reactions-reaction-button", payload));
-      }
-    }
-
-    return items;
-  },
+  }
 
   _setupPopper(selectors) {
     schedule("afterRender", () => {
-      const position = this.attrs.position || "right";
-      const id = this.attrs.post.id;
+      const position = this.args.position || "right";
+      const id = this.args.post.id;
       const trigger = document.querySelector(
         `#discourse-reactions-actions-${id}-${position} ${selectors[0]}`
       );
@@ -659,7 +640,7 @@ export default createWidget("discourse-reactions-actions", {
       _popperPicker = this._applyPopper(trigger, popper);
       _currentReactionWidget = this;
     });
-  },
+  }
 
   _applyPopper(button, picker) {
     return createPopper(button, picker, {
@@ -679,7 +660,7 @@ export default createWidget("discourse-reactions-actions", {
         },
       ],
     });
-  },
+  }
 
   _rollbackState(post) {
     const current_user_reaction = post.current_user_reaction;
@@ -692,8 +673,7 @@ export default createWidget("discourse-reactions-actions", {
     post.current_user_used_main_reaction = current_user_used_main_reaction;
     post.reactions = reactions;
     post.reaction_users_count = reaction_users_count;
-    this.scheduleRerender();
-  },
+  }
 
   _extractErrors(e) {
     const xhr = e.xhr || e.jqXHR;
@@ -714,5 +694,94 @@ export default createWidget("discourse-reactions-actions", {
     } else {
       return i18n("errors.desc.unknown");
     }
-  },
-});
+  }
+
+  get onlyOneMainReaction() {
+    return (
+      this.args.post.reactions?.length === 1 &&
+      this.args.post.reactions[0].id ===
+        this.siteSettings.discourse_reactions_reaction_for_like
+    );
+  }
+
+  get showReactionsPicker() {
+    return (
+      this.currentUser &&
+      this.args.post.user_id !== this.currentUser.id &&
+      this.reactionsPickerExpanded
+    );
+  }
+
+  <template>
+    <div
+      id={{this.elementId}}
+      class="discourse-reactions-actions {{this.classes}}"
+      {{on "touchstart" this.touchStart}}
+      {{on "touchmove" this.touchMove}}
+      {{on "touchend" this.touchEnd}}
+      {{closeOnClickOutside this.clickOutside (hash)}}
+    >
+      {{#let
+        (hash
+          counter=(curryComponent
+            DiscourseReactionsCounter
+            (lazyHash
+              post=@post
+              position=@position
+              reactionsPickerExpanded=this.reactionsPickerExpanded
+              statePanelExpanded=this.statePanelExpanded
+              expandStatePanel=this.expandStatePanel
+              collapseStatePanel=this.collapseStatePanel
+              cancelCollapse=this.cancelCollapse
+              scheduleCollapse=this.scheduleCollapse
+              updatePopperPosition=this.updatePopperPosition
+              collapseAllPanels=this.collapseAllPanels
+            )
+          )
+          button=(curryComponent
+            DiscourseReactionsReactionButton
+            (lazyHash
+              post=@post
+              position=@position
+              cancelCollapse=this.cancelCollapse
+              toggleFromButton=this.toggleFromButton
+              toggleReactions=this.toggleReactions
+              cancelExpand=this.cancelExpand
+              scheduleCollapse=this.scheduleCollapse
+            )
+          )
+        )
+        as |components|
+      }}
+        {{#if this.showReactionsPicker}}
+          <DiscourseReactionsPicker
+            @post={{@post}}
+            @scheduleCollapse={{this.scheduleCollapse}}
+            @cancelCollapse={{this.cancelCollapse}}
+            @reactionsPickerExpanded={{this.reactionsPickerExpanded}}
+            @toggle={{this.toggle}}
+          />
+        {{/if}}
+
+        {{#if (eq @position "left")}}
+          <components.counter />
+        {{else if this.onlyOneMainReaction}}
+          <DiscourseReactionsDoubleButton
+            @post={{@post}}
+            @counterComponent={{components.counter}}
+            @buttonComponent={{components.button}}
+          />
+        {{else if this.site.mobileView}}
+          {{#if (not @post.yours)}}
+            <components.counter />
+            <components.button />
+          {{else if (and @post.yours @post.reactions @post.reactions.length)}}
+            <components.counter />
+          {{/if}}
+        {{else if (not @post.yours)}}
+          <components.button />
+        {{/if}}
+      {{/let}}
+    </div>
+  </template>
+}
