@@ -237,10 +237,10 @@ export default class DiscourseReactionsCounter extends Component {
       {{on "pointerout" this.pointerOut}}
     >
       {{#if @post.reaction_users_count}}
-        {{! reactions-state-panel }}
+        {{! reactions-state-panel }}SP
 
         {{#if (not this.onlyOneMainReaction)}}
-          {{! reactions-list }}
+          {{! reactions-list }}RL
         {{/if}}
 
         <span class="reactions-counter">

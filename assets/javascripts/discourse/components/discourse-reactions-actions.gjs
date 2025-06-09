@@ -164,7 +164,7 @@ export default class DiscourseReactionsActions extends Component {
       classes.push("can-toggle-reaction");
     }
 
-    return classes;
+    return classes.join(" ");
   }
 
   @action
@@ -601,6 +601,7 @@ export default class DiscourseReactionsActions extends Component {
     this.state.reactionsPickerExpanded = false;
   }
 
+  @action
   collapseAllPanels() {
     cancel(this._collapseHandler);
     document.documentElement?.classList?.toggle(
@@ -758,18 +759,41 @@ export default class DiscourseReactionsActions extends Component {
           @cancelCollapse={{this.cancelCollapse}}
           @scheduleCollapse={{this.scheduleCollapse}}
           @updatePopperPosition={{this.updatePopperPosition}}
+          @collapseAllPanels={{this.collapseAllPanels}}
         />
       {{else if this.onlyOneMainReaction}}
-        {{! Double button }}
+        {{! Double button }}DB
       {{else if this.site.mobileView}}
         {{#if (not @post.yours)}}
-          {{! discourse-reactions-counter }}
-          {{! discourse-reactions-reaction-button }}
+          <DiscourseReactionsCounter
+            @post={{@post}}
+            @position={{@position}}
+            @reactionsPickerExpanded={{this.state.reactionsPickerExpanded}}
+            @statePanelExpanded={{this.state.statePanelExpanded}}
+            @expandStatePanel={{this.expandStatePanel}}
+            @collapseStatePanel={{this.collapseStatePanel}}
+            @cancelCollapse={{this.cancelCollapse}}
+            @scheduleCollapse={{this.scheduleCollapse}}
+            @updatePopperPosition={{this.updatePopperPosition}}
+            @collapseAllPanels={{this.collapseAllPanels}}
+          />
+          {{! discourse-reactions-reaction-button }}RB
         {{else if (and @post.yours @post.reactions @post.reactions.length)}}
-          {{! discourse-reactions-counter }}
+          <DiscourseReactionsCounter
+            @post={{@post}}
+            @position={{@position}}
+            @reactionsPickerExpanded={{this.state.reactionsPickerExpanded}}
+            @statePanelExpanded={{this.state.statePanelExpanded}}
+            @expandStatePanel={{this.expandStatePanel}}
+            @collapseStatePanel={{this.collapseStatePanel}}
+            @cancelCollapse={{this.cancelCollapse}}
+            @scheduleCollapse={{this.scheduleCollapse}}
+            @updatePopperPosition={{this.updatePopperPosition}}
+            @collapseAllPanels={{this.collapseAllPanels}}
+          />
         {{/if}}
       {{else if (not @post.yours)}}
-        {{! discourse-reactions-reaction-button }}
+        {{! discourse-reactions-reaction-button }}RB
       {{/if}}
     </div>
   </template>
