@@ -1,25 +1,21 @@
-import { h } from "virtual-dom";
-import { createWidget } from "discourse/widgets/widget";
+import { get } from "@ember/helper";
+import DiscourseReactionsListEmoji from "./discourse-reactions-list-emoji";
 
-export default createWidget("discourse-reactions-list", {
-  tagName: "div.discourse-reactions-list",
+const DiscourseReactionsList = <template>
+  <div class="discourse-reactions-list" ...attributes>
+    {{#if @post.reaction_users_count}}
+      <div class="reactions">
+        {{#each @post.reactions as |reaction|}}
+          <DiscourseReactionsListEmoji
+            @reaction={{reaction}}
+            @users={{get @reactionsUsers reaction.id}}
+            @post={{@post}}
+            @getUsers={{@getUsers}}
+          />
+        {{/each}}
+      </div>
+    {{/if}}
+  </div>
+</template>;
 
-  html(attrs) {
-    if (attrs.post.reaction_users_count <= 0) {
-      return;
-    }
-
-    return [
-      h(
-        "div.reactions",
-        attrs.post.reactions.map((reaction) =>
-          this.attach("discourse-reactions-list-emoji", {
-            reaction,
-            users: attrs.reactionsUsers[reaction.id],
-            post: attrs.post,
-          })
-        )
-      ),
-    ];
-  },
-});
+export default DiscourseReactionsList;

@@ -1,37 +1,43 @@
+import Component from "@glimmer/component";
+import { concat } from "@ember/helper";
+import { on } from "@ember/modifier";
+import { action } from "@ember/object";
+import { service } from "@ember/service";
 import { isBlank } from "@ember/utils";
-import { h } from "virtual-dom";
-import { iconNode } from "discourse/lib/icon-library";
+import icon from "discourse/helpers/d-icon";
 import { emojiUrlFor } from "discourse/lib/text";
-import { createWidget } from "discourse/widgets/widget";
 import { i18n } from "discourse-i18n";
 
-export default createWidget("discourse-reactions-reaction-button", {
-  tagName: "div.discourse-reactions-reaction-button",
+export default class ReactionsReactionButton extends Component {
+  @service capabilities;
+  @service siteSettings;
+  @service site;
+  @service currentUser;
 
-  buildKey: (attrs) => `discourse-reactions-reaction-button-${attrs.post.id}`,
-
+  @action
   click() {
-    this.callWidgetFunction("cancelCollapse");
+    this.args.cancelCollapse();
 
-    const currentUserReaction = this.attrs.post.current_user_reaction;
+    const currentUserReaction = this.args.post.current_user_reaction;
     if (!this.capabilities.touch || !this.site.mobileView) {
-      this.callWidgetFunction("toggleFromButton", {
+      this.args.toggleFromButton({
         reaction: currentUserReaction
           ? currentUserReaction.id
           : this.siteSettings.discourse_reactions_reaction_for_like,
       });
     }
-  },
+  }
 
+  @action
   pointerOver(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("cancelCollapse");
+    this.args.cancelCollapse();
 
-    const likeAction = this.attrs.post.likeAction;
-    const currentUserReaction = this.attrs.post.current_user_reaction;
+    const likeAction = this.args.post.likeAction;
+    const currentUserReaction = this.args.post.current_user_reaction;
     if (
       currentUserReaction &&
       !currentUserReaction.can_undo &&
@@ -40,33 +46,32 @@ export default createWidget("discourse-reactions-reaction-button", {
       return;
     }
 
-    this.callWidgetFunction("toggleReactions", event);
-  },
+    this.args.toggleReactions(event);
+  }
 
+  @action
   pointerOut(event) {
     if (event.pointerType !== "mouse") {
       return;
     }
 
-    this.callWidgetFunction("cancelExpand");
-    this.callWidgetFunction("scheduleCollapse", "collapseReactionsPicker");
-  },
+    this.args.cancelExpand();
+    this.args.scheduleCollapse("collapseReactionsPicker");
+  }
 
-  buildAttributes(attrs) {
+  get title() {
     if (!this.currentUser) {
-      return {
-        title: i18n("discourse_reactions.main_reaction.unauthenticated"),
-      };
+      return i18n("discourse_reactions.main_reaction.unauthenticated");
     }
 
-    const likeAction = attrs.post.likeAction;
+    const likeAction = this.args.post.likeAction;
     if (!likeAction) {
-      return {};
+      return null;
     }
 
     let title;
     let options;
-    const currentUserReaction = this.attrs.post.current_user_reaction;
+    const currentUserReaction = this.args.post.current_user_reaction;
 
     if (likeAction.canToggle && isBlank(likeAction.can_undo)) {
       title = "discourse_reactions.main_reaction.add";
@@ -97,43 +102,49 @@ export default createWidget("discourse-reactions-reaction-button", {
       title = "discourse_reactions.picker.cant_remove_reaction";
     }
 
-    return options ? { title: i18n(title, options) } : { title: i18n(title) };
-  },
+    return options ? i18n(title, options) : i18n(title);
+  }
 
-  html(attrs) {
-    const mainReactionIcon = this.siteSettings.discourse_reactions_like_icon;
-    const hasUsedMainReaction = attrs.post.current_user_used_main_reaction;
-    const currentUserReaction = attrs.post.current_user_reaction;
-
-    if (hasUsedMainReaction) {
-      return h(
-        "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
-        {
-          title: this.buildAttributes(attrs).title,
-        },
-        [iconNode(mainReactionIcon)]
-      );
-    }
-
-    if (currentUserReaction) {
-      return h(
-        "button.btn-icon.no-text.reaction-button",
-        {
-          title: this.buildAttributes(attrs).title,
-        },
-        h("img.btn-toggle-reaction-emoji.reaction-button", {
-          src: emojiUrlFor(currentUserReaction.id),
-          alt: `:${currentUserReaction.id}:`,
-        })
-      );
-    }
-
-    return h(
-      "button.btn-toggle-reaction-like.btn-icon.no-text.reaction-button",
-      {
-        title: this.buildAttributes(attrs).title,
-      },
-      [iconNode(`far-${mainReactionIcon}`)]
-    );
-  },
-});
+  <template>
+    {{! template-lint-disable no-invalid-interactive }}
+    <div
+      class="discourse-reactions-reaction-button"
+      {{on "click" this.click}}
+      {{on "pointerover" this.pointerOver}}
+      {{on "pointerout" this.pointerOut}}
+      title={{this.title}}
+    >
+      {{#if @post.current_user_used_main_reaction}}
+        <button
+          type="button"
+          class="btn-toggle-reaction-like btn-icon no-text reaction-button"
+          title={{this.title}}
+        >
+          {{icon this.siteSettings.discourse_reactions_like_icon}}
+        </button>
+      {{else if @post.current_user_reaction}}
+        <button
+          type="button"
+          class="btn-icon no-text reaction-button"
+          title={{this.title}}
+        >
+          <img
+            class="btn-toggle-reaction-emoji reaction-button"
+            src={{emojiUrlFor @post.current_user_reaction.id}}
+            alt={{concat ":" @post.current_user_reaction.id}}
+          />
+        </button>
+      {{else}}
+        <button
+          type="button"
+          class="btn-toggle-reaction-like btn-icon no-text reaction-button"
+          title={{this.title}}
+        >
+          {{icon
+            (concat "far-" this.siteSettings.discourse_reactions_like_icon)
+          }}
+        </button>
+      {{/if}}
+    </div>
+  </template>
+}

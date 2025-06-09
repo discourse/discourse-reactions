@@ -1,108 +1,103 @@
-import { hbs } from "ember-cli-htmlbars";
-import { h } from "virtual-dom";
-import { iconNode } from "discourse/lib/icon-library";
-import { emojiUnescape } from "discourse/lib/text";
-import RawHtml from "discourse/widgets/raw-html";
-import RenderGlimmer from "discourse/widgets/render-glimmer";
-import { createWidget } from "discourse/widgets/widget";
+import Component from "@glimmer/component";
+import { on } from "@ember/modifier";
+import { action } from "@ember/object";
+import { gt } from "truth-helpers";
+import UserAvatar from "discourse/components/user-avatar";
+import concatClass from "discourse/helpers/concat-class";
+import icon from "discourse/helpers/d-icon";
+import emoji from "discourse/helpers/emoji";
 import { i18n } from "discourse-i18n";
 
 const MAX_USERS_COUNT = 26;
 const MIN_USERS_COUNT = 8;
 
-export default createWidget("discourse-reactions-state-panel-reaction", {
-  tagName: "div.discourse-reactions-state-panel-reaction",
-
-  buildClasses(attrs) {
-    if (attrs.isDisplayed) {
-      return "is-displayed";
-    }
-  },
-
+export default class DiscourseReactionsStatePanelReaction extends Component {
+  @action
   click(event) {
     if (event?.target?.classList?.contains("show-users")) {
       event.preventDefault();
       event.stopPropagation();
 
-      this.sendWidgetAction("showUsers", this.attrs?.reaction?.id);
+      this.args.showUsers(this.args.reaction.id);
     }
-  },
+  }
 
-  html(attrs) {
-    const elements = [];
+  get firstLineUsers() {
+    return this.args.users.slice(0, MIN_USERS_COUNT);
+  }
 
-    if (!attrs.users) {
-      return;
-    }
+  get otherUsers() {
+    return this.args.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT);
+  }
 
-    elements.push(
-      h("div.reaction-wrapper", [
-        h("div.emoji-wrapper", [
-          new RawHtml({
-            html: emojiUnescape(`:${attrs.reaction.id}:`),
-          }),
-        ]),
-        h("div.count", attrs.reaction.count.toString()),
-      ])
-    );
+  get columnsCount() {
+    return this.args.users.length > MIN_USERS_COUNT
+      ? this.firstLineUsers.length + 1
+      : this.firstLineUsers.length;
+  }
 
-    const firsLineUsers = attrs.users.slice(0, MIN_USERS_COUNT);
-    const list = firsLineUsers.map(
-      (user) =>
-        new RenderGlimmer(
-          this,
-          "span",
-          hbs`<UserAvatar class="trigger-user-card" @size="tiny" @user={{@data.user}} />`,
-          {
-            user,
-          }
-        )
-    );
-
-    if (attrs.users.length > MIN_USERS_COUNT) {
-      list.push(
-        h(
-          "button.show-users",
-          iconNode(attrs.isDisplayed ? "chevron-up" : "chevron-down")
-        )
-      );
-    }
-
-    if (attrs.isDisplayed) {
-      list.push(
-        attrs.users.slice(MIN_USERS_COUNT, MAX_USERS_COUNT).map(
-          (user) =>
-            new RenderGlimmer(
-              this,
-              "span",
-              hbs`<UserAvatar class="trigger-user-card" @size="tiny" @user={{@data.user}} />`,
-              {
-                user,
-              }
-            )
-        )
-      );
-    }
-
-    let more;
-    if (attrs.isDisplayed && attrs.reaction.count > MAX_USERS_COUNT) {
-      more = i18n("discourse_reactions.state_panel.more_users", {
-        count: attrs.reaction.count - MAX_USERS_COUNT,
+  get moreLabel() {
+    if (this.args.isDisplayed && this.args.reaction.count > MAX_USERS_COUNT) {
+      return i18n("discourse_reactions.state_panel.more_users", {
+        count: this.args.reaction.count - MAX_USERS_COUNT,
       });
     }
+  }
 
-    const columnsCount =
-      attrs.users.length > MIN_USERS_COUNT
-        ? firsLineUsers.length + 1
-        : firsLineUsers.length;
+  <template>
+    {{! template-lint-disable no-invalid-interactive }}
+    <div
+      class={{concatClass
+        "discourse-reactions-state-panel-reaction"
+        (if @isDisplayed "is-displayed")
+      }}
+      {{on "click" this.click}}
+    >
+      {{#if @users}}
+        <div class="reaction-wrapper">
+          <div class="emoji-wrapper">
+            {{emoji @reaction.id}}
+          </div>
+          <div class="count">
+            {{@reaction.count}}
+          </div>
+        </div>
 
-    elements.push(
-      h("div.users", [
-        h(`div.list.list-columns-${columnsCount}`, list),
-        h("span.more", more),
-      ])
-    );
+        <div class="users">
+          <div class="list list-columns-{{this.columnsCount}}">
+            {{#each this.firstLineUsers key="username" as |user|}}
+              <span>
+                <UserAvatar
+                  class="trigger-user-card"
+                  @size="tiny"
+                  @user={{user}}
+                />
+              </span>
+            {{/each}}
 
-    return elements;
-  },
-});
+            {{#if (gt @users.length MIN_USERS_COUNT)}}
+              <button type="button" class="show-users">
+                {{icon (if @isDisplayed "chevron-up" "chevron-down")}}
+              </button>
+            {{/if}}
+
+            {{#if @isDisplayed}}
+              {{#each this.otherUsers key="username" as |user|}}
+                <span>
+                  <UserAvatar
+                    class="trigger-user-card"
+                    @size="tiny"
+                    @user={{user}}
+                  />
+                </span>
+              {{/each}}
+            {{/if}}
+          </div>
+          <span class="more">
+            {{this.moreLabel}}
+          </span>
+        </div>
+      {{/if}}
+    </div>
+  </template>
+}
