@@ -28,6 +28,7 @@ export default createWidget("discourse-reactions-list-emoji", {
   },
 
   html(attrs) {
+    return;
     if (attrs.reaction.count <= 0) {
       return;
     }

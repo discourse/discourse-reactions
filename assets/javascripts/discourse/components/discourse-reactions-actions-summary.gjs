@@ -1,6 +1,7 @@
 import Component from "@glimmer/component";
 import { hash } from "@ember/helper";
 import MountWidget from "discourse/components/mount-widget";
+import Actions from "./discourse-reactions/actions";
 
 export default class ReactionsActionSummary extends Component {
   static extraControls = true;
@@ -24,6 +25,8 @@ export default class ReactionsActionSummary extends Component {
 
   <template>
     {{#if @shouldRender}}
+      <Actions @post={{@post}} @position="left" />
+
       {{! template-lint-disable no-capital-arguments }}
       <MountWidget
         @widget="discourse-reactions-actions"

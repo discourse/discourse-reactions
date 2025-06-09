@@ -1,6 +1,5 @@
 html.discourse-reactions-no-select {
   -webkit-touch-callout: none; /* Disables long-touch menu */
-
   @include user-select(none); /* Disable text selection */
 }
 
@@ -37,34 +36,13 @@ html.discourse-reactions-no-select {
           }
         }
       }
-
-      .discourse-no-touch & {
-        &:hover {
-          .user-list {
-            visibility: visible;
-            opacity: 0.9;
-
-            .spinner {
-              animation-play-state: running;
-            }
-          }
-        }
-      }
     }
 
     .user-list {
-      position: absolute;
-      visibility: hidden;
       z-index: z("usercard") - 2;
-      transition: opacity 0.33s;
-      opacity: 0;
       padding: 0.5em 0;
       min-width: 120px;
       min-height: 80px;
-
-      .spinner {
-        animation-play-state: paused;
-      }
 
       .container {
         margin-top: 0.5em;
@@ -154,7 +132,6 @@ html.discourse-reactions-no-select {
     border-radius: 8px;
 
     .emoji {
-      pointer-events: none;
       height: 1.2em;
       width: 1.2em;
     }
@@ -184,14 +161,7 @@ html.discourse-reactions-no-select {
 .discourse-reactions-counter .discourse-reactions-state-panel {
   cursor: default;
   z-index: z("usercard") - 2;
-  position: absolute;
-  visibility: hidden;
   padding: 15px 0;
-
-  &.is-expanded {
-    min-width: 80px;
-    visibility: visible;
-  }
 
   .discourse-reactions-state-panel-reaction .count {
     padding-right: 0.25em;
@@ -312,7 +282,6 @@ html.discourse-reactions-no-select {
     .d-icon {
       color: var(--primary-medium) !important;
       margin: 0;
-      pointer-events: none;
     }
   }
 
@@ -444,13 +413,11 @@ html.discourse-reactions-no-select {
 
   .btn-toggle-reaction-like {
     outline: none;
-    pointer-events: none;
     background: none;
   }
 
   .btn-toggle-reaction-emoji {
     outline: none;
-    pointer-events: none;
     background: none;
     width: 1em;
     height: 1em;
@@ -461,13 +428,12 @@ html.discourse-reactions-no-select {
   display: flex;
   align-items: center;
   text-align: center;
-  cursor: pointer;
+  position: relative;
 
   .reactions-counter {
     font-size: $font-up-1;
     color: var(--primary-low-mid);
     display: flex;
-    pointer-events: none;
     margin-left: 0.5em;
   }
 
