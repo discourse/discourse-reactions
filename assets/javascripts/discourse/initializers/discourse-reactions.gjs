@@ -4,7 +4,7 @@ import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
-import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
+// import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/widgets/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
 import ReactionsActionSummary from "../components/discourse-reactions-actions-summary";
 
@@ -201,6 +201,6 @@ export default {
   },
 
   teardown() {
-    resetCurrentReaction();
+    // resetCurrentReaction();
   },
 };
