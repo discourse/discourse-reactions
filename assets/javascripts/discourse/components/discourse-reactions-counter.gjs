@@ -58,6 +58,10 @@ export default class DiscourseReactionsCounter extends Component {
 
   @action
   click(event) {
+    if (event.target.closest("[data-user-card]")) {
+      return;
+    }
+
     this.args.cancelCollapse();
 
     if (!this.capabilities.touch || !this.site.mobileView) {
