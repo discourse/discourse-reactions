@@ -33,8 +33,6 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
         sign_in(current_user)
         visit(post.url)
 
-        page.execute_script("window.isSystemTest = true;")
-
         expect(reactions_list).to have_reaction("heart")
         expect(reactions_list).to have_reaction("clap")
 
@@ -48,6 +46,17 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
         expect(reactions_list).to have_users_for_reaction("clap", [user_3.username])
       end
 
+      it "shows more info about reactions when clicking" do
+        visit(post.url)
+        expect(reactions_list).to have_reaction("heart")
+        reactions_list.click_reaction("heart")
+
+        expect(page).to have_css(".discourse-reactions-state-panel")
+        find(".discourse-reactions-state-panel [data-user-card=#{user_2.username}]").click
+
+        expect(page).to have_css(".user-card.user-card-#{user_2.username}")
+      end
+
       context "when the site allows anonymous users to like posts" do
         before do
           SiteSetting.allow_anonymous_mode = true
@@ -56,7 +65,6 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
 
         it "shows a list of users who have liked a post on hover for unauthenticated users" do
           visit(post.url)
-          page.execute_script("window.isSystemTest = true;")
 
           expect(reactions_list).to have_reaction("heart")
 
@@ -68,7 +76,6 @@ describe "Reactions | Post reaction user list", type: :system, js: true do
           anonymous_user = Fabricate(:anonymous)
           sign_in(anonymous_user)
           visit(post.url)
-          page.execute_script("window.isSystemTest = true;")
 
           expect(reactions_list).to have_reaction("heart")
 
