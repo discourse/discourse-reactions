@@ -5,6 +5,8 @@
 # https://translate.discourse.org/
 
 el:
+  site_settings:
+    discourse_reactions_enabled: "Ενεργοποιήστε το πρόσθετο discourse-reactions."
   badges:
     first_reaction:
       name: Πρώτη Αντίδραση
