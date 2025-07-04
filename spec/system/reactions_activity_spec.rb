@@ -28,6 +28,8 @@ describe "Reactions | Activity", type: :system, js: true do
     context "when unicode usernames is enabled " do
       before do
         SiteSetting.external_system_avatars_enabled = true
+        SiteSetting.external_system_avatars_url =
+          "/letter_avatar_proxy/v4/letter/{first_letter}/{color}/{size}.png"
         SiteSetting.unicode_usernames = true
       end
 
