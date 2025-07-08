@@ -1,10 +1,11 @@
+import { withSilencedDeprecations } from "discourse/lib/deprecated";
 import { replaceIcon } from "discourse/lib/icon-library";
 import { withPluginApi } from "discourse/lib/plugin-api";
 import { emojiUrlFor } from "discourse/lib/text";
 import { userPath } from "discourse/lib/url";
 import { formatUsername } from "discourse/lib/utilities";
 import { i18n } from "discourse-i18n";
-import { resetCurrentReaction } from "discourse/plugins/discourse-reactions/discourse/components/discourse-reactions-actions";
+import { resetCurrentReaction } from "../components/discourse-reactions-actions";
 import ReactionsActionButton from "../components/discourse-reactions-actions-button";
 import ReactionsActionSummary from "../components/discourse-reactions-actions-summary";
 
@@ -14,42 +15,10 @@ replaceIcon("notification.reaction", "bell");
 
 function initializeDiscourseReactions(api) {
   customizePostMenu(api);
+  customizeWidgetPost(api);
 
   api.addKeyboardShortcut("l", null, {
     click: ".topic-post.selected .discourse-reactions-reaction-button",
-  });
-
-  api.modifyClass("component:scrolling-post-stream", {
-    pluginId: PLUGIN_ID,
-
-    didInsertElement() {
-      this._super(...arguments);
-
-      const topicId = this?.posts?.firstObject?.topic_id;
-      if (topicId) {
-        this.messageBus.subscribe(`/topic/${topicId}/reactions`, (data) => {
-          this.dirtyKeys.keyDirty(
-            `discourse-reactions-counter-${data.post_id}`,
-            {
-              onRefresh: "reactionsChanged",
-              refreshArg: data,
-            }
-          );
-          this._refresh({ id: data.post_id });
-        });
-      }
-    },
-  });
-
-  api.modifyClass("controller:topic", {
-    pluginId: PLUGIN_ID,
-
-    unsubscribe() {
-      this._super(...arguments);
-
-      const topicId = this.model.id;
-      topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
-    },
   });
 
   api.addTrackedPostProperties(
@@ -182,6 +151,43 @@ function initializeDiscourseReactions(api) {
       };
     });
   }
+}
+
+function customizeWidgetPost(api) {
+  withSilencedDeprecations("discourse.post-stream-widget-overrides", () => {
+    api.modifyClass("component:scrolling-post-stream", {
+      pluginId: PLUGIN_ID,
+
+      didInsertElement() {
+        this._super(...arguments);
+
+        const topicId = this?.posts?.firstObject?.topic_id;
+        if (topicId) {
+          this.messageBus.subscribe(`/topic/${topicId}/reactions`, (data) => {
+            this.dirtyKeys.keyDirty(
+              `discourse-reactions-counter-${data.post_id}`,
+              {
+                onRefresh: "reactionsChanged",
+                refreshArg: data,
+              }
+            );
+            this._refresh({ id: data.post_id });
+          });
+        }
+      },
+    });
+
+    api.modifyClass("controller:topic", {
+      pluginId: PLUGIN_ID,
+
+      unsubscribe() {
+        this._super(...arguments);
+
+        const topicId = this.model.id;
+        topicId && this.messageBus.unsubscribe(`/topic/${topicId}/reactions`);
+      },
+    });
+  });
 }
 
 function customizePostMenu(api) {
