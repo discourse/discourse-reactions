@@ -1,0 +1,4 @@
+en:
+  dashboard:
+    problem:
+      deprecation: "The discourse-reactions plugin has been integrated into discourse core. Please remove the plugin from your app.yml and rebuild your container."

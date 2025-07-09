@@ -8,7 +8,6 @@
 # url: https://github.com/discourse/discourse-reactions
 
 after_initialize do
-  AdminDashboardData.add_problem_check do
-    "The discourse-reactions plugin has been integrated into discourse core. Please remove the plugin from your app.yml and rebuild your container."
-  end
+  require_relative "app/services/problem_check/deprecation"
+  register_problem_check ProblemCheck::Deprecation
 end
